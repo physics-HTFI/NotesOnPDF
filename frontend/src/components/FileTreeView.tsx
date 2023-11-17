@@ -2,7 +2,7 @@ import React from "react";
 import { ExpandMore, ChevronRight } from "@mui/icons-material";
 import { alpha, styled } from "@mui/material/styles";
 import { TreeView, TreeItem, treeItemClasses } from "@mui/x-tree-view";
-import { Files } from "../types/Files";
+import { FileTree } from "../types/FileTree";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 
@@ -19,8 +19,8 @@ const StyledTreeItem = styled(TreeItem)(({ theme }) => ({
   },
 }));
 
-const FileTree: React.FC = () => {
-  const files: Files = [
+const FileTreeView: React.FC = () => {
+  const files: FileTree = [
     [
       "dir1/",
       [
@@ -36,7 +36,7 @@ const FileTree: React.FC = () => {
     "file2",
   ];
 
-  const getTreeItems = (f: Files) =>
+  const getTreeItems = (f: FileTree) =>
     f.map((i) => {
       const getFileName = (path: string) =>
         path.match(/[^\\/]+(?=[\\/]?$)/) ?? ""; // "dir1/di2/" => "dir2"
@@ -67,4 +67,4 @@ const FileTree: React.FC = () => {
   );
 };
 
-export default FileTree;
+export default FileTreeView;

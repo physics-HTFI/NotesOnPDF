@@ -17,4 +17,4 @@
  *   file,
  * ]
  */
-export type Files = (string | [string, Files])[];
+export type FileTree = (string | [string, FileTree])[];
