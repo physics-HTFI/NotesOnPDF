@@ -18,7 +18,7 @@ const getTreeItems = (fileTree: FileTree) =>
       return (
         <TreeItemWithInfo
           label={getFileName(i)}
-          info="50%"
+          progress={100 * Math.random()}
           nodeId={i}
           key={i}
         />

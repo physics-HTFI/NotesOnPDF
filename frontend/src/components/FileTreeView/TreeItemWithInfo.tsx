@@ -20,14 +20,14 @@ const StyledTreeItem = styled(TreeItem)(({ theme }) => ({
 
 interface Props extends TreeItemProps {
   label: string;
-  info?: string;
+  progress?: number;
 }
 
 /**
  * `TreeItem`の右端にインフォを表示できるようにしたもの
  */
 const TreeItemWithInfo: React.FC<Props> = (props: Props) => {
-  const { label, info, ...other } = props;
+  const { label, progress, ...other } = props;
   return (
     <StyledTreeItem
       label={
@@ -39,27 +39,23 @@ const TreeItemWithInfo: React.FC<Props> = (props: Props) => {
             pr: 0,
           }}
         >
-          <Typography
-            variant="caption"
-            sx={
-              info
-                ? {
-                    background: "gray",
-                    color: "white",
-                    borderRadius: 10,
-                    pr: 0.7,
-                    pl: 0.7,
-                    mr: 0.5,
-                    fontSize: "60%",
-                  }
-                : {}
-            }
-          >
-            {info}
-          </Typography>
           <Typography variant="body2" sx={{ flexGrow: 1 }}>
             {label}
           </Typography>
+          <Box
+            sx={
+              progress
+                ? {
+                    background: `linear-gradient(to right, gray ${progress}%, white ${progress}%)`,
+                    borderRadius: 1,
+                    border: "solid 1px",
+                    width: 20,
+                    height: 6,
+                    ml: 2,
+                  }
+                : {}
+            }
+          />
         </Box>
       }
       {...other}
