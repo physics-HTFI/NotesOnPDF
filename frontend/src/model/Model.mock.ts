@@ -1,10 +1,11 @@
 import { FileTree } from "../types/FileTree";
+import { PDFsInfo } from "../types/PDFsInfo";
 import IModel from "./IModel";
 
 export default class ModelMock implements IModel {
   private wait = () => new Promise((resolve) => setTimeout(resolve, 300));
 
-  public getFiles = async (): Promise<FileTree> => {
+  public getFileTree = async (): Promise<FileTree> => {
     await this.wait();
     return [
       [
@@ -21,5 +22,44 @@ export default class ModelMock implements IModel {
       "file1",
       "file2",
     ];
+  };
+
+  public getPDFsInfo = async (): Promise<PDFsInfo> => {
+    await this.wait();
+    return {
+      recentPath: "dir1/file12",
+      PDFs: {
+        "dir1/dir2/file121": {
+          allPages: 110,
+          enabledPages: 100,
+          notedPages: 100,
+        },
+        "dir1/dir2/file122": {
+          allPages: 110,
+          enabledPages: 100,
+          notedPages: 99,
+        },
+        "dir1/dir2/file123": {
+          allPages: 110,
+          enabledPages: 100,
+          notedPages: 80,
+        },
+        "dir1/file11": {
+          allPages: 110,
+          enabledPages: 100,
+          notedPages: 50,
+        },
+        "dir1/file12": {
+          allPages: 110,
+          enabledPages: 100,
+          notedPages: 10,
+        },
+        file1: {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 1,
+        },
+      },
+    };
   };
 }

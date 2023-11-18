@@ -1,5 +1,7 @@
 import { FileTree } from "../types/FileTree";
+import { PDFsInfo } from "../types/PDFsInfo";
 
 export default interface IModel {
-  getFiles(dirname: string): Promise<FileTree>;
+  getFileTree(): Promise<FileTree>;
+  getPDFsInfo(): Promise<PDFsInfo>;
 }
