@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ExpandMore, ChevronRight } from "@mui/icons-material";
 import { alpha, styled } from "@mui/material/styles";
 import { TreeView, TreeItem, treeItemClasses } from "@mui/x-tree-view";
-import { FileTree } from "../types/FileTree";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
+import ModelContext from "../model/ModelContext";
+import { FileTree } from "../types/FileTree";
 
 const StyledTreeItem = styled(TreeItem)(({ theme }) => ({
   [`& .${treeItemClasses.iconContainer}`]: {
@@ -20,21 +21,23 @@ const StyledTreeItem = styled(TreeItem)(({ theme }) => ({
 }));
 
 const FileTreeView: React.FC = () => {
-  const files: FileTree = [
-    [
-      "dir1/",
-      [
-        [
-          "dir1/dir2/",
-          ["dir1/dir2/file121", "dir1/dir2/file122", "dir1/dir2/file123"],
-        ],
-        "dir1/file11",
-        "dir1/file12",
-      ],
-    ],
-    "file1",
-    "file2",
-  ];
+  const modelContext = useContext(ModelContext);
+  const [fileTree, setFileTree] = useState<FileTree>([]);
+
+  useEffect(() => {
+    if (!modelContext) {
+      setFileTree([]);
+      return;
+    }
+    modelContext
+      .getFiles("")
+      .then((files) => {
+        setFileTree(files);
+      })
+      .catch(() => {
+        setFileTree([]);
+      });
+  }, [modelContext]);
 
   const getTreeItems = (f: FileTree) =>
     f.map((i) => {
@@ -62,7 +65,7 @@ const FileTreeView: React.FC = () => {
         color: "dimgray",
       }}
     >
-      {getTreeItems(files)}
+      {getTreeItems(fileTree)}
     </TreeView>
   );
 };
