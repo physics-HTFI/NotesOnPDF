@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import ModelContext from "../model/ModelContext";
 import { FileTree } from "../types/FileTree";
-import StyledTreeItem from "./FileTreeView/StyledTreeItem";
+import TreeItemWithInfo from "./FileTreeView/TreeItemWithInfo";
 
 /**
  * 使用方法：`<TreeView> {getTreeItems(fileTree)} </TreeView>`
@@ -13,14 +13,21 @@ import StyledTreeItem from "./FileTreeView/StyledTreeItem";
 const getTreeItems = (fileTree: FileTree) =>
   fileTree.map((i) => {
     const getFileName = (path: string) =>
-      path.match(/[^\\/]+(?=[\\/]?$)/) ?? ""; // "dir1/di2/" => "dir2"
+      path.match(/[^\\/]+(?=[\\/]?$)/)?.[0] ?? ""; // "dir1/di2/" => "dir2"
     if (typeof i === "string") {
-      return <StyledTreeItem label={getFileName(i)} nodeId={i} key={i} />;
+      return (
+        <TreeItemWithInfo
+          label={getFileName(i)}
+          info="50%"
+          nodeId={i}
+          key={i}
+        />
+      );
     }
     return (
-      <StyledTreeItem label={getFileName(i[0])} nodeId={i[0]} key={i[0]}>
+      <TreeItemWithInfo label={getFileName(i[0])} nodeId={i[0]} key={i[0]}>
         {getTreeItems(i[1])}
-      </StyledTreeItem>
+      </TreeItemWithInfo>
     );
   });
 
