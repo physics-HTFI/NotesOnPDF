@@ -33,6 +33,7 @@ function App() {
           setOpen(false);
         }}
       >
+        {/* TODO ツリービューが2度目に開かれたときに、開閉状態を保存する */}
         {pdfsInfo && (
           <FileTreeView
             model={model}
@@ -52,6 +53,7 @@ function App() {
           background: "whitesmoke",
           minWidth: 300,
           position: "relative",
+          height: "100vh",
         }}
       >
         <IconButton

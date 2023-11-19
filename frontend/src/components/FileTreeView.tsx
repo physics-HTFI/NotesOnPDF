@@ -56,6 +56,7 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, pdfsInfo }) => {
         overflowX: "hidden",
         minWidth: 300,
         color: "dimgray",
+        mt: 1,
       }}
     >
       {getTreeItems(fileTree, pdfsInfo)}
