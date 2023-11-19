@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Drawer, IconButton } from "@mui/material";
-import FileOpenIcon from "@mui/icons-material/FileOpen";
+import { Box, Drawer } from "@mui/material";
 import FileTreeView from "./components/FileTreeView";
 import ModelMock from "./model/Model.Mock";
 import { PDFsInfo } from "./types/PDFsInfo";
 import PDFView from "./components/PDFView";
+import TOCControl from "./components/TOCControl";
 
 function App() {
   const [open, setOpen] = useState(true);
@@ -56,20 +56,11 @@ function App() {
           height: "100vh",
         }}
       >
-        <IconButton
-          sx={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            "&:focus": { outline: "none" },
-          }}
-          color="primary"
-          onClick={() => {
+        <TOCControl
+          onOpenFileTree={() => {
             setOpen(true);
           }}
-        >
-          <FileOpenIcon />
-        </IconButton>
+        />
       </Box>
 
       {/* PDFビュー */}
