@@ -17,13 +17,14 @@ const options = {
  */
 interface Props {
   file?: string;
+  onLoadError?: () => void;
   onLoadSuccess?: (pdfPath: string, numPages: number) => void;
 }
 
 /**
  * PDFを表示するコンポーネント
  */
-const PDFView: React.FC<Props> = ({ file, onLoadSuccess }) => {
+const PDFView: React.FC<Props> = ({ file, onLoadError, onLoadSuccess }) => {
   const [numPages, setNumPages] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(-1);
   const path = useMemo(() => `/PDFs/${file}`, [file]);
@@ -37,6 +38,7 @@ const PDFView: React.FC<Props> = ({ file, onLoadSuccess }) => {
         onLoadSuccess?.(file, numPages);
         setCurrentPage(0);
       }}
+      onLoadError={onLoadError}
       options={options}
       error={""}
       loading={""}

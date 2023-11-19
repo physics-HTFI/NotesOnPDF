@@ -5,6 +5,7 @@ import ModelMock from "./model/Model.Mock";
 import { PDFsInfo } from "./types/PDFsInfo";
 import PDFView from "./components/PDFView";
 import TOCControl from "./components/TOCControl";
+import Waiting from "./components/Waiting";
 
 function App() {
   const [open, setOpen] = useState(true);
@@ -12,14 +13,19 @@ function App() {
   const [pdfsInfo, setPDFsInfo] = useState<PDFsInfo>();
   const [selectedPDF, setSelectedPDF] = useState<string>();
   const [targetPDF, setTargetPDF] = useState<string>();
+  const [isWaiting, setIsWaiting] = useState(false);
 
   useEffect(() => {
+    setIsWaiting(true);
     model
       .getPDFsInfo()
       .then((pdfsInfo) => {
         setPDFsInfo(pdfsInfo);
       })
-      .catch(() => undefined);
+      .catch(() => undefined)
+      .finally(() => {
+        setIsWaiting(false);
+      });
   }, [model]);
 
   return (
@@ -39,8 +45,10 @@ function App() {
             model={model}
             pdfsInfo={pdfsInfo}
             onSelect={(pdfPath) => {
-              setSelectedPDF(pdfPath);
               setOpen(false);
+              if (selectedPDF === pdfPath) return;
+              setSelectedPDF(pdfPath);
+              setIsWaiting(true);
             }}
           />
         )}
@@ -67,12 +75,18 @@ function App() {
       <Box sx={{ flexGrow: 1 }}>
         <PDFView
           file={selectedPDF}
+          onLoadError={() => {
+            setIsWaiting(false);
+          }}
           onLoadSuccess={(pdfPath) => {
             setTargetPDF(pdfPath);
             setOpen(false);
+            setIsWaiting(false);
           }}
         />
       </Box>
+
+      <Waiting isWaiting={isWaiting} />
     </Box>
   );
 }
