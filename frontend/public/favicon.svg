@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="20"
+   viewBox="0 -960 800 800"
+   width="20"
+   version="1.1"
+   id="svg4"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8">
+    <linearGradient
+       id="linearGradient1692">
+      <stop
+         style="stop-color:#15d4a5;stop-opacity:1;"
+         offset="0"
+         id="stop1688" />
+      <stop
+         style="stop-color:#e063d8;stop-opacity:1;"
+         offset="1"
+         id="stop1690" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient1692"
+       id="linearGradient1694"
+       x1="370.60959"
+       y1="-736.37524"
+       x2="847.11865"
+       y2="-232.03391"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-80,-80)" />
+  </defs>
+  <path
+     d="m 240,-880 v 480 z"
+     id="path249" />
+  <path
+     d="M 240,-400 H 720 V -880 H 240 Z"
+     id="path245" />
+  <path
+     id="path243"
+     style="fill:url(#linearGradient1694);fill-opacity:1"
+     d="m 240,-320 q -33,0 -56.5,-23.5 Q 160,-367 160,-400 v -480 q 0,-33 23.5,-56.5 Q 207,-960 240,-960 h 480 q 33,0 56.5,23.5 23.5,23.5 23.5,56.5 v 480 q 0,33 -23.5,56.5 Q 753,-320 720,-320 Z M 80,-160 Q 47,-160 23.5,-183.5 0,-207 0,-240 v -560 h 80 v 560 h 560 v 80 z" />
+  <path
+     id="path2"
+     d="m 280,-540 h 40 v -80 h 40 q 17,0 28.5,-11.5 Q 400,-643 400,-660 v -40 q 0,-17 -11.5,-28.5 Q 377,-740 360,-740 h -80 z m 40,-120 v -40 h 40 v 40 z m 120,120 h 80 q 17,0 28.5,-11.5 Q 560,-563 560,-580 v -120 q 0,-17 -11.5,-28.5 Q 537,-740 520,-740 h -80 z m 40,-40 v -120 h 40 v 120 z m 120,40 h 40 v -80 h 40 v -40 h -40 v -40 h 40 v -40 h -80 z"
+     style="fill:#ffffff;fill-opacity:1" />
+</svg>
