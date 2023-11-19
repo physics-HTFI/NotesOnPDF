@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
@@ -12,15 +12,28 @@ const options = {
   cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
 };
 
-const PDFView: React.FC = () => {
+/**
+ * `PDFView`の引数
+ */
+interface Props {
+  file?: string;
+  onLoadSuccess?: (pdfPath: string, numPages: number) => void;
+}
+
+/**
+ * PDFを表示するコンポーネント
+ */
+const PDFView: React.FC<Props> = ({ file, onLoadSuccess }) => {
   const [numPages, setNumPages] = useState<number>();
-  const [file] = useState<string>("/PDFs//文書1.pdf");
+  const path = useMemo(() => `/PDFs/${file}`, [file]);
 
   return (
     <Document
-      file={file}
+      file={path}
       onLoadSuccess={({ numPages }) => {
         setNumPages(numPages);
+        if (!file) return;
+        onLoadSuccess?.(file, numPages);
       }}
       options={options}
     >

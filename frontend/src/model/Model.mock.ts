@@ -7,7 +7,7 @@ export default class ModelMock implements IModel {
 
   public getFileTree = async (): Promise<FileTree> => {
     await this.wait();
-    return ["文書1.pdf", ["フォルダ", ["文書2.pdf"]]];
+    return ["文書1.pdf", ["フォルダ/", ["フォルダ/文書2.pdf"]]];
     /*
     return [
       [
