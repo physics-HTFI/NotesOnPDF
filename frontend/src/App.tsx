@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import "./App.css";
 import { Drawer } from "@mui/material";
 import FileTreeView from "./components/FileTreeView";
 import ModelMock from "./model/Model.Mock";
