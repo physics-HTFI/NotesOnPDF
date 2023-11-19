@@ -25,6 +25,7 @@ interface Props {
  */
 const PDFView: React.FC<Props> = ({ file, onLoadSuccess }) => {
   const [numPages, setNumPages] = useState<number>();
+  const [currentPage, setCurrentPage] = useState<number>(-1);
   const path = useMemo(() => `/PDFs/${file}`, [file]);
 
   return (
@@ -34,12 +35,25 @@ const PDFView: React.FC<Props> = ({ file, onLoadSuccess }) => {
         setNumPages(numPages);
         if (!file) return;
         onLoadSuccess?.(file, numPages);
+        setCurrentPage(0);
       }}
       options={options}
+      error={""}
+      loading={""}
+      noData={""}
+      onWheel={(e: WheelEvent) => {
+        if (numPages === undefined) return;
+        const next = currentPage + (e.deltaY < 0 ? -1 : 1);
+        setCurrentPage(Math.max(0, Math.min(numPages - 1, next)));
+      }}
     >
-      {Array.from(new Array(numPages), (_, index) => (
-        <Page key={`page_${index + 1}`} pageNumber={index + 1} width={800} />
-      ))}
+      <Page
+        pageIndex={currentPage}
+        width={400}
+        error={""}
+        loading={""}
+        noData={""}
+      />
     </Document>
   );
 };
