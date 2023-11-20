@@ -4,8 +4,8 @@ import FileTreeView from "./components/FileTreeView";
 import ModelMock from "./model/Model.Mock";
 import { PDFsInfo } from "./types/PDFsInfo";
 import PDFView from "./components/PDFView";
-import TOCControl from "./components/TOCControl";
 import Waiting from "./components/Waiting";
+import TOC from "./components/TOC";
 
 function App() {
   const [open, setOpen] = useState(true);
@@ -55,21 +55,11 @@ function App() {
       </Drawer>
 
       {/* 目次 */}
-      <Box
-        sx={{
-          width: 300,
-          background: "whitesmoke",
-          minWidth: 300,
-          position: "relative",
-          height: "100vh",
+      <TOC
+        onOpenFileTree={() => {
+          setOpen(true);
         }}
-      >
-        <TOCControl
-          onOpenFileTree={() => {
-            setOpen(true);
-          }}
-        />
-      </Box>
+      />
 
       {/* PDFビュー */}
       <PDFView
