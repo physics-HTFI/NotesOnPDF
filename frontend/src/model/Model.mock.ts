@@ -7,6 +7,8 @@ export default class ModelMock implements IModel {
 
   public getFileTree = async (): Promise<FileTree> => {
     await this.wait();
+    return ["文書1.pdf", ["フォルダ/", ["フォルダ/文書2.pdf"]]];
+    /*
     return [
       [
         "dir1/",
@@ -22,10 +24,16 @@ export default class ModelMock implements IModel {
       "file1",
       "file2",
     ];
+    */
   };
 
   public getPDFsInfo = async (): Promise<PDFsInfo> => {
     await this.wait();
+    return {
+      recentPath: "文書1.pdf",
+      PDFs: {},
+    };
+    /*
     return {
       recentPath: "dir1/file12",
       PDFs: {
@@ -61,5 +69,6 @@ export default class ModelMock implements IModel {
         },
       },
     };
+    */
   };
 }

@@ -44,7 +44,7 @@ const TreeItemWithInfo: React.FC<Props> = (props: Props) => {
               pr: 0,
             }}
           >
-            <Typography variant="body2" sx={{ flexGrow: 1 }}>
+            <Typography variant="body2" sx={{ flexGrow: 1, fontSize: "80%" }}>
               {label}
             </Typography>
             <Box
