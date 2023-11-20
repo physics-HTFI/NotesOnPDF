@@ -15,7 +15,7 @@ interface Props {
 const TOCControl: React.FC<Props> = ({ onOpenFileTree }) => {
   return (
     <Box>
-      <Tooltip title="ファイル選択画面を開きます">
+      <Tooltip title="PDFファイルを選択">
         <IconButton
           sx={{
             position: "absolute",

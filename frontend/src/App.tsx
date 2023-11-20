@@ -72,20 +72,20 @@ function App() {
       </Box>
 
       {/* PDFビュー */}
-      <Box sx={{ flexGrow: 1 }}>
-        <PDFView
-          file={selectedPDF}
-          onLoadError={() => {
-            setIsWaiting(false);
-          }}
-          onLoadSuccess={(pdfPath) => {
-            setTargetPDF(pdfPath);
-            setOpen(false);
-            setIsWaiting(false);
-          }}
-        />
-      </Box>
+      <PDFView
+        sx={{ flexGrow: 1 }}
+        file={selectedPDF}
+        onLoadError={() => {
+          setIsWaiting(false);
+        }}
+        onLoadSuccess={(pdfPath) => {
+          setTargetPDF(pdfPath);
+          setOpen(false);
+          setIsWaiting(false);
+        }}
+      />
 
+      {/* 処理中プログレス表示 */}
       <Waiting isWaiting={isWaiting} />
     </Box>
   );
