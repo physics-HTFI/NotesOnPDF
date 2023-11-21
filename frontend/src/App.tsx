@@ -38,6 +38,7 @@ function App() {
           if (!targetPDF) return;
           setOpen(false);
         }}
+        PaperProps={{ square: false, sx: { borderRadius: "0 10px 10px 0" } }}
       >
         {/* TODO ツリービューが2度目に開かれたときに、開閉状態を保存する */}
         {pdfsInfo && (

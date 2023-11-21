@@ -7,7 +7,8 @@ export interface Page {
   chapter?: string;
   sectionStart: boolean;
   sectionStartMiddle: boolean;
-  disabled: boolean;
+  pageNumberRestart?: number;
+  excluded: boolean;
   // badge     texts  footnotes
   // polygons         markers
   // links     lines  rectangles
@@ -32,7 +33,23 @@ export interface Settings {
  * 1つのPDFファイルに追加された全ての情報
  */
 export interface PDF {
+  numPages: number;
   currentPage: number;
   settings: Settings;
-  pages: Page[];
+  pages: Record<number, Page>;
 }
+
+export const createPDF = (title: string, numPages: number): PDF => ({
+  numPages,
+  currentPage: 0,
+  settings: { offsetTop: 0, offsetBottom: 0, offsetLeft: 0, offsetRight: 0 },
+  pages: {
+    0: {
+      pageNumberRestart: 1,
+      book: title,
+      sectionStart: false,
+      sectionStartMiddle: false,
+      excluded: true,
+    },
+  },
+});

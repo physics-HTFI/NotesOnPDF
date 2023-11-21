@@ -3,7 +3,7 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 
 /**
- * `TOCControl`の引数
+ * `Control`の引数
  */
 interface Props {
   onOpenFileTree?: () => void;
@@ -12,7 +12,7 @@ interface Props {
 /**
  * 目次の右上に表示されるボタンコントロール
  */
-const TOCControl: React.FC<Props> = ({ onOpenFileTree }) => {
+const Control: React.FC<Props> = ({ onOpenFileTree }) => {
   return (
     <Box>
       <Tooltip title="PDFファイルを選択">
@@ -33,4 +33,4 @@ const TOCControl: React.FC<Props> = ({ onOpenFileTree }) => {
   );
 };
 
-export default TOCControl;
+export default Control;
