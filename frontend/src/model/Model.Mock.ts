@@ -95,16 +95,16 @@ export default class ModelMock implements IModel {
           excluded: true,
         },
         5: {
-          sectionStart: "top",
+          sectionBreak: "top",
         },
         6: {
           chapter: "第2章",
         },
         8: {
-          sectionStart: "top-middle",
+          sectionBreak: "top-middle",
         },
         10: {
-          sectionStart: "middle",
+          sectionBreak: "middle",
         },
       },
     };
