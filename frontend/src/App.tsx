@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Box, Drawer } from "@mui/material";
 import FileTreeView from "./components/FileTreeView";
 import ModelMock from "./model/Model.Mock";
-import { PDFsInfo } from "./types/PDFsInfo";
+import { Progresses } from "./types/Progresses";
 import PDFView from "./components/PDFView";
 import Waiting from "./components/Waiting";
 import TOC from "./components/TOC";
@@ -10,7 +10,7 @@ import TOC from "./components/TOC";
 function App() {
   const [open, setOpen] = useState(true);
   const model = useMemo(() => new ModelMock(), []);
-  const [pdfsInfo, setPDFsInfo] = useState<PDFsInfo>();
+  const [Progresses, setProgresses] = useState<Progresses>();
   const [selectedPDF, setSelectedPDF] = useState<string>();
   const [targetPDF, setTargetPDF] = useState<string>();
   const [isWaiting, setIsWaiting] = useState(false);
@@ -18,9 +18,9 @@ function App() {
   useEffect(() => {
     setIsWaiting(true);
     model
-      .getPDFsInfo()
-      .then((pdfsInfo) => {
-        setPDFsInfo(pdfsInfo);
+      .getProgresses()
+      .then((Progresses) => {
+        setProgresses(Progresses);
       })
       .catch(() => undefined)
       .finally(() => {
@@ -41,10 +41,10 @@ function App() {
         PaperProps={{ square: false, sx: { borderRadius: "0 10px 10px 0" } }}
       >
         {/* TODO ツリービューが2度目に開かれたときに、開閉状態を保存する */}
-        {pdfsInfo && (
+        {Progresses && (
           <FileTreeView
             model={model}
-            pdfsInfo={pdfsInfo}
+            Progresses={Progresses}
             onSelect={(pdfPath) => {
               setOpen(false);
               if (selectedPDF === pdfPath) return;

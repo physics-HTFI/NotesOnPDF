@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { FileTree } from "../types/FileTree";
 import getTreeItems from "./FileTreeView/getTreeItems";
-import { PDFsInfo } from "../types/PDFsInfo";
+import { Progresses } from "../types/Progresses";
 import IModel from "../model/IModel";
 
 /**
@@ -13,14 +13,14 @@ import IModel from "../model/IModel";
  */
 interface Props {
   onSelect: (pdfPath: string) => void;
-  pdfsInfo: PDFsInfo;
+  Progresses: Progresses;
   model: IModel;
 }
 
 /**
  * ファイル一覧を表示するツリービュー
  */
-const FileTreeView: React.FC<Props> = ({ model, onSelect, pdfsInfo }) => {
+const FileTreeView: React.FC<Props> = ({ model, onSelect, Progresses }) => {
   const [fileTree, setFileTree] = useState<FileTree>([]);
 
   useEffect(() => {
@@ -34,11 +34,11 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, pdfsInfo }) => {
       });
   }, [model]);
 
-  const expanded = pdfsInfo.recentPath
-    ? [...pdfsInfo.recentPath]
+  const expanded = Progresses.recentPath
+    ? [...Progresses.recentPath]
         .map<[string, number]>((c, i) => [c, i])
         .filter((ci) => ci[0].match(/[\\/]/))
-        .map((ci) => pdfsInfo.recentPath?.substring(0, ci[1] + 1) ?? "")
+        .map((ci) => Progresses.recentPath?.substring(0, ci[1] + 1) ?? "")
     : [];
 
   return (
@@ -47,7 +47,7 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, pdfsInfo }) => {
       defaultEndIcon={<FontAwesomeIcon icon={faFilePdf} />}
       defaultExpanded={expanded}
       defaultExpandIcon={<ChevronRight />}
-      defaultSelected={pdfsInfo.recentPath}
+      defaultSelected={Progresses.recentPath}
       onNodeSelect={(_, nodeIds) => {
         if (nodeIds.match(/[\\/]$/)) return; // フォルダの時は何もしない
         onSelect(nodeIds);
@@ -59,7 +59,7 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, pdfsInfo }) => {
         mt: 1,
       }}
     >
-      {getTreeItems(fileTree, pdfsInfo)}
+      {getTreeItems(fileTree, Progresses)}
     </TreeView>
   );
 };

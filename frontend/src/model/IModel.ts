@@ -1,7 +1,9 @@
 import { FileTree } from "../types/FileTree";
-import { PDFsInfo } from "../types/PDFsInfo";
+import { Progresses } from "../types/Progresses";
+import { PDF } from "../types/PDF";
 
 export default interface IModel {
   getFileTree(): Promise<FileTree>;
-  getPDFsInfo(): Promise<PDFsInfo>;
+  getProgresses(): Promise<Progresses>;
+  getPDF(path: string, numPages: number): Promise<PDF>;
 }

@@ -5,10 +5,9 @@ export interface Page {
   book?: string;
   part?: string;
   chapter?: string;
-  sectionStart: boolean;
-  sectionStartMiddle: boolean;
+  sectionStart?: "top" | "middle" | "top-middle";
   pageNumberRestart?: number;
-  excluded: boolean;
+  excluded?: boolean;
   // badge     texts  footnotes
   // polygons         markers
   // links     lines  rectangles
