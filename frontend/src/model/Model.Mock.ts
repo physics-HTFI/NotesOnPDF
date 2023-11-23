@@ -1,5 +1,5 @@
 import { FileTree } from "../types/FileTree";
-import { PDF } from "../types/PDF";
+import { Notes } from "../types/Notes";
 import { Progresses } from "../types/Progresses";
 import IModel from "./IModel";
 
@@ -73,7 +73,7 @@ export default class ModelMock implements IModel {
     */
   };
 
-  getPDF = async (): Promise<PDF> => {
+  getNotes = async (): Promise<Notes> => {
     await this.wait();
     return {
       numPages: 15,
@@ -94,7 +94,7 @@ export default class ModelMock implements IModel {
           pageNumberRestart: 10,
           excluded: true,
         },
-        5: {
+        3: {
           sectionBreak: "top",
         },
         6: {

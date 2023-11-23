@@ -5,79 +5,117 @@ import ModelMock from "./model/Model.Mock";
 import { Progresses } from "./types/Progresses";
 import PDFView from "./components/PDFView";
 import Waiting from "./components/Waiting";
-import TOC from "./components/TOC";
+import TOCView from "./components/TOCView";
+import { Notes, createNewNotes } from "./types/Notes";
+import IModel from "./model/IModel";
 
 function App() {
-  const [open, setOpen] = useState(true);
-  const model = useMemo(() => new ModelMock(), []);
-  const [Progresses, setProgresses] = useState<Progresses>();
+  const model: IModel = useMemo(() => new ModelMock(), []);
+  const [progresses, setProgresses] = useState<Progresses>();
   const [selectedPDF, setSelectedPDF] = useState<string>();
   const [targetPDF, setTargetPDF] = useState<string>();
-  const [isWaiting, setIsWaiting] = useState(false);
+  const [notes, setNotes] = useState<Notes | null>(); // 読み込み失敗時にnull
+  const [numPages, setNumPages] = useState<number>();
 
+  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [isWaitingInit, setIsWaitingInit] = useState(false);
+  const [isWaitingRead, setIsWaitingRead] = useState(false);
+  const [isWaitingNotes, setIsWaitingNotes] = useState(false);
+
+  // ファイルツリーに表示する進捗情報の取得
   useEffect(() => {
-    setIsWaiting(true);
+    setIsWaitingInit(true);
     model
       .getProgresses()
-      .then((Progresses) => {
-        setProgresses(Progresses);
+      .then((progresses) => {
+        setProgresses(progresses);
       })
       .catch(() => undefined)
       .finally(() => {
-        setIsWaiting(false);
+        setIsWaitingInit(false);
       });
   }, [model]);
+
+  // 始めて読み込むPDFの場合、`Notes`を生成する
+  useEffect(() => {
+    if (
+      !isWaitingRead &&
+      !isWaitingNotes &&
+      numPages &&
+      targetPDF &&
+      notes === null
+    ) {
+      setNotes(createNewNotes(targetPDF, numPages));
+    }
+  }, [isWaitingRead, isWaitingNotes, numPages, notes, targetPDF]);
 
   return (
     <Box sx={{ display: "flex" }}>
       {/* ファイルツリー */}
       <Drawer
         anchor={"left"}
-        open={open}
+        open={drawerOpen}
         onClose={() => {
           if (!targetPDF) return;
-          setOpen(false);
+          setDrawerOpen(false);
         }}
         PaperProps={{ square: false, sx: { borderRadius: "0 10px 10px 0" } }}
       >
         {/* TODO ツリービューが2度目に開かれたときに、開閉状態を保存する */}
-        {Progresses && (
+        {progresses && (
           <FileTreeView
             model={model}
-            Progresses={Progresses}
+            Progresses={progresses}
             onSelect={(pdfPath) => {
-              setOpen(false);
+              setDrawerOpen(false);
               if (selectedPDF === pdfPath) return;
+
+              setIsWaitingRead(true);
+              setTargetPDF(undefined);
+              setNumPages(undefined);
               setSelectedPDF(pdfPath);
-              setIsWaiting(true);
+
+              setIsWaitingNotes(true);
+              setNotes(undefined);
+              model
+                .getNotes(pdfPath)
+                .then((notes) => {
+                  setNotes(notes);
+                })
+                .catch(() => {
+                  setNotes(null);
+                })
+                .finally(() => {
+                  setIsWaitingNotes(false);
+                });
             }}
           />
         )}
       </Drawer>
-
       {/* 目次 */}
-      <TOC
+      <TOCView
+        notes={notes ?? undefined}
         onOpenFileTree={() => {
-          setOpen(true);
+          setDrawerOpen(true);
         }}
       />
-
       {/* PDFビュー */}
       <PDFView
         sx={{ flexGrow: 1 }}
         file={selectedPDF}
         onLoadError={() => {
-          setIsWaiting(false);
+          setIsWaitingRead(false);
+          setDrawerOpen(true);
         }}
-        onLoadSuccess={(pdfPath) => {
+        onLoadSuccess={(pdfPath, numPages) => {
           setTargetPDF(pdfPath);
-          setOpen(false);
-          setIsWaiting(false);
+          setNumPages(numPages);
+          setIsWaitingRead(false);
+          setDrawerOpen(false);
         }}
       />
-
       {/* 処理中プログレス表示 */}
-      <Waiting isWaiting={isWaiting} />
+      <Waiting isWaiting={isWaitingInit || isWaitingRead || isWaitingNotes} />
     </Box>
   );
 }

@@ -31,20 +31,20 @@ export interface Settings {
 /**
  * 1つのPDFファイルに追加された全ての情報
  */
-export interface PDF {
+export interface Notes {
   numPages: number;
   currentPage: number;
   settings: Settings;
   pages: Record<number, Page>;
 }
 
-export const createPDF = (title: string, numPages: number): PDF => ({
+export const createNewNotes = (title: string, numPages: number): Notes => ({
   numPages,
   currentPage: 0,
   settings: { offsetTop: 0, offsetBottom: 0, offsetLeft: 0, offsetRight: 0 },
   pages: {
     0: {
-      book: title,
+      book: title.match(/[^\\/]+$/)?.[0] ?? undefined,
       pageNumberRestart: 1,
     },
   },

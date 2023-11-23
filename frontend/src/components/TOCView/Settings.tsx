@@ -7,19 +7,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Page } from "../../types/PDF";
+import { Page } from "../../types/Notes";
 import CheckboxText from "./Settings/CheckboxText";
 
 /**
  * `Settings`の引数
  */
 interface Props {
-  preferredBook: string;
-  preferredPart: string;
-  preferredChapter: string;
-  preferredPageNum: number;
-  page: Page;
-  onChange: (p: Page) => void;
+  preferredBook?: string;
+  preferredPart?: string;
+  preferredChapter?: string;
+  preferredPageNum?: number;
+  page?: Page;
+  onChange?: (p: Page) => void;
 }
 
 /**
@@ -46,16 +46,17 @@ const Settings: React.FC<Props> = ({
   const [excluded, setExcluded] = useState(false);
 
   useEffect(() => {
-    setBookChecked(page.book !== undefined);
-    setBookText(page.book ?? preferredBook);
-    setPartChecked(page.part !== undefined);
-    setPartText(page.part ?? preferredPart);
-    setChapterChecked(page.chapter !== undefined);
-    setChapterText(page.chapter ?? preferredChapter);
-    setSectionBreakMiddle(page.sectionBreak?.includes("middle") ?? false);
-    setPageNumChecked(page.pageNumberRestart === undefined);
-    setPageNumRestart(page.pageNumberRestart ?? preferredPageNum);
-    setExcluded(page.excluded === true);
+    setBookChecked(page?.book !== undefined);
+    setBookText(page?.book ?? preferredBook ?? "");
+    setPartChecked(page?.part !== undefined);
+    setPartText(page?.part ?? preferredPart ?? "");
+    setChapterChecked(page?.chapter !== undefined);
+    setChapterText(page?.chapter ?? preferredChapter ?? "");
+    setSectionBreakTop(page?.sectionBreak?.includes("top") ?? false);
+    setSectionBreakMiddle(page?.sectionBreak?.includes("middle") ?? false);
+    setPageNumChecked(page?.pageNumberRestart === undefined);
+    setPageNumRestart(page?.pageNumberRestart ?? preferredPageNum ?? 1);
+    setExcluded(page?.excluded === true);
   }, [page, preferredBook, preferredPart, preferredChapter, preferredPageNum]);
 
   //|
@@ -71,7 +72,7 @@ const Settings: React.FC<Props> = ({
     } else if (sectionBreakMiddle) page.sectionBreak = "middle";
     if (!pageNumChecked) page.pageNumberRestart = pageNumRestart;
     if (excluded) page.excluded = excluded;
-    onChange(page);
+    onChange?.(page);
   }, [
     bookChecked,
     bookText,

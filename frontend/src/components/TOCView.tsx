@@ -1,21 +1,28 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Drawer, Typography } from "@mui/material";
-import Control from "./TOC/Control";
-import Settings from "./TOC/Settings";
-import { PDF } from "../types/PDF";
+import Control from "./TOCView/Control";
+import Settings from "./TOCView/Settings";
+import { Notes } from "../types/Notes";
 
 /**
- * `TOC`の引数
+ * `TOCView`の引数
  */
 interface Props {
-  pdf?: PDF;
+  notes?: Notes;
+  pageNum?: number;
+  onChanged?: (pageNum: number) => void;
   onOpenFileTree?: () => void;
 }
 
 /**
  * 目次を表示するコンポーネント
  */
-const TOC: React.FC<Props> = ({ pdf, onOpenFileTree }) => {
+const TOCView: React.FC<Props> = ({
+  notes,
+  pageNum,
+  onChanged,
+  onOpenFileTree,
+}) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -37,7 +44,7 @@ const TOC: React.FC<Props> = ({ pdf, onOpenFileTree }) => {
           setOpen(!open);
         }}
       />
-      {!pdf && (
+      {notes && (
         <Box sx={{ p: 0.5 }}>
           <Typography variant="body1" gutterBottom>
             タイトル
@@ -76,19 +83,20 @@ const TOC: React.FC<Props> = ({ pdf, onOpenFileTree }) => {
         }}
       >
         <Settings
-          page={{
-            book: "タイトル",
-            part: "第1部",
-          }}
+          page={notes ? notes.pages[notes.currentPage] ?? {} : {}}
           preferredBook=""
           preferredPart=""
           preferredChapter=""
           preferredPageNum={10}
-          onChange={() => undefined}
+          onChange={(page) => {
+            if (!notes) return;
+            notes.pages[notes.currentPage] = page;
+            // TODO pdfが変更されたという情報を上に上げる
+          }}
         />
       </Drawer>
     </Box>
   );
 };
 
-export default TOC;
+export default TOCView;

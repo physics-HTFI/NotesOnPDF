@@ -11,6 +11,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 const options = {
   cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+  // cMapUrl: `./node_modules/pdfjs-dist/cmaps/`,
+  // これだとbuild時にこれをコピーする必要がある
 };
 
 const preferredWidth = (
