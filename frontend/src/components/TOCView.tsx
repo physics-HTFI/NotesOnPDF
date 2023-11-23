@@ -9,20 +9,14 @@ import { Notes } from "../types/Notes";
  */
 interface Props {
   notes?: Notes;
-  pageNum?: number;
-  onChanged?: (pageNum: number) => void;
-  onOpenFileTree?: () => void;
+  onChanged: (notes: Notes) => void;
+  onOpenFileTree: () => void;
 }
 
 /**
  * 目次を表示するコンポーネント
  */
-const TOCView: React.FC<Props> = ({
-  notes,
-  pageNum,
-  onChanged,
-  onOpenFileTree,
-}) => {
+const TOCView: React.FC<Props> = ({ notes, onChanged, onOpenFileTree }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -83,15 +77,18 @@ const TOCView: React.FC<Props> = ({
         }}
       >
         <Settings
-          page={notes ? notes.pages[notes.currentPage] ?? {} : {}}
+          page={notes?.pages[notes.currentPage] ?? {}}
           preferredBook=""
           preferredPart=""
           preferredChapter=""
           preferredPageNum={10}
           onChange={(page) => {
             if (!notes) return;
-            notes.pages[notes.currentPage] = page;
-            // TODO pdfが変更されたという情報を上に上げる
+            notes.pages[notes.currentPage] = {
+              ...notes.pages[notes.currentPage],
+              ...page,
+            };
+            onChanged(notes);
           }}
         />
       </Drawer>

@@ -49,3 +49,21 @@ export const createNewNotes = (title: string, numPages: number): Notes => ({
     },
   },
 });
+
+/**
+ * @returns `notes.currentPage`または`pageNumber`の表示上のページ数
+ */
+export const getPageLabel = (notes: Notes, pageNumber?: number): string => {
+  pageNumber ??= notes.currentPage;
+  let retval = 0;
+  for (let i = pageNumber; 0 <= i; i--) {
+    const restart = notes.pages[i]?.pageNumberRestart;
+    if (restart === undefined) {
+      ++retval;
+    } else {
+      retval += restart;
+      break;
+    }
+  }
+  return `p. ${retval}`;
+};

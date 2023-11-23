@@ -6,7 +6,7 @@ import { Progresses } from "./types/Progresses";
 import PDFView from "./components/PDFView";
 import Waiting from "./components/Waiting";
 import TOCView from "./components/TOCView";
-import { Notes, createNewNotes } from "./types/Notes";
+import { Notes, createNewNotes, getPageLabel } from "./types/Notes";
 import IModel from "./model/IModel";
 
 function App() {
@@ -98,11 +98,23 @@ function App() {
         onOpenFileTree={() => {
           setDrawerOpen(true);
         }}
+        onChanged={(notes) => {
+          setNotes({ ...notes });
+        }}
       />
       {/* PDFビュー */}
       <PDFView
         sx={{ flexGrow: 1 }}
         file={selectedPDF}
+        currentPage={notes?.currentPage}
+        pageLabel={notes ? getPageLabel(notes) : undefined}
+        onPageChanged={(pageNum) => {
+          if (!notes) return;
+          const newPage = Math.max(0, Math.min(notes.numPages - 1, pageNum));
+          if (notes.currentPage === newPage) return;
+          notes.currentPage = newPage;
+          setNotes({ ...notes });
+        }}
         onLoadError={() => {
           setIsWaitingRead(false);
           setDrawerOpen(true);

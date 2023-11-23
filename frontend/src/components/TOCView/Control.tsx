@@ -7,8 +7,8 @@ import { Settings } from "@mui/icons-material";
  * `Control`の引数
  */
 interface Props {
-  onOpenFileTree?: () => void;
-  onOpenSettings?: () => void;
+  onOpenFileTree: () => void;
+  onOpenSettings: () => void;
 }
 
 /**

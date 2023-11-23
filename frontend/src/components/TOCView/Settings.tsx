@@ -19,7 +19,7 @@ interface Props {
   preferredChapter?: string;
   preferredPageNum?: number;
   page?: Page;
-  onChange?: (p: Page) => void;
+  onChange: (p: Page) => void;
 }
 
 /**
@@ -62,31 +62,15 @@ const Settings: React.FC<Props> = ({
   //|
   //| 更新されたパラメータを親コンポーネントに送る
   //|
-  useEffect(() => {
-    const page: Page = {};
-    if (bookChecked) page.book = bookText;
-    if (partChecked) page.part = partText;
-    if (chapterChecked) page.chapter = chapterText;
-    if (sectionBreakTop) {
-      page.sectionBreak = sectionBreakMiddle ? "top-middle" : "top";
-    } else if (sectionBreakMiddle) page.sectionBreak = "middle";
-    if (!pageNumChecked) page.pageNumberRestart = pageNumRestart;
-    if (excluded) page.excluded = excluded;
-    onChange?.(page);
-  }, [
-    bookChecked,
-    bookText,
-    partChecked,
-    partText,
-    chapterChecked,
-    chapterText,
-    sectionBreakTop,
-    sectionBreakMiddle,
-    pageNumChecked,
-    pageNumRestart,
-    excluded,
-    onChange,
-  ]);
+  const getSectionBreak = (
+    top: boolean,
+    middle: boolean
+  ): "top" | "middle" | "top-middle" | undefined => {
+    if (top) {
+      return middle ? "top-middle" : "top";
+    } else if (middle) return "middle";
+    return undefined;
+  };
 
   return (
     <Box
@@ -96,27 +80,30 @@ const Settings: React.FC<Props> = ({
       <CheckboxText
         label="題区切り"
         checked={bookChecked}
-        setChecked={setBookChecked}
         text={bookText}
-        setText={setBookText}
+        onChange={(checked, text) => {
+          onChange({ book: checked ? text : undefined });
+        }}
       />
 
       {/* 部区切り */}
       <CheckboxText
         label="部区切り"
         checked={partChecked}
-        setChecked={setPartChecked}
         text={partText}
-        setText={setPartText}
+        onChange={(checked, text) => {
+          onChange({ part: checked ? text : undefined });
+        }}
       />
 
       {/* 章区切り */}
       <CheckboxText
         label="章区切り"
         checked={chapterChecked}
-        setChecked={setChapterChecked}
         text={chapterText}
-        setText={setChapterText}
+        onChange={(checked, text) => {
+          onChange({ chapter: checked ? text : undefined });
+        }}
       />
 
       {/* 節区切り */}
@@ -126,7 +113,11 @@ const Settings: React.FC<Props> = ({
             size="small"
             checked={sectionBreakTop}
             onChange={(e) => {
-              setSectionBreakTop(e.target.checked);
+              const newVal = e.target.checked;
+              setSectionBreakTop(newVal);
+              onChange({
+                sectionBreak: getSectionBreak(newVal, sectionBreakMiddle),
+              });
             }}
           />
         }
@@ -138,7 +129,11 @@ const Settings: React.FC<Props> = ({
             size="small"
             checked={sectionBreakMiddle}
             onChange={(e) => {
-              setSectionBreakMiddle(e.target.checked);
+              const newVal = e.target.checked;
+              setSectionBreakMiddle(newVal);
+              onChange({
+                sectionBreak: getSectionBreak(sectionBreakTop, newVal),
+              });
             }}
           />
         }
@@ -153,7 +148,11 @@ const Settings: React.FC<Props> = ({
             size="small"
             checked={pageNumChecked}
             onChange={(e) => {
-              setPageNumChecked(e.target.checked);
+              const newVal = e.target.checked;
+              setPageNumChecked(newVal);
+              onChange({
+                pageNumberRestart: newVal ? undefined : pageNumRestart,
+              });
             }}
           />
         }
@@ -185,7 +184,11 @@ const Settings: React.FC<Props> = ({
         value={pageNumRestart}
         onChange={(e) => {
           const num = Number(e.target.value);
-          setPageNumRestart(Math.min(999999, Math.max(1, num)));
+          const numValidated = Math.min(999999, Math.max(1, num));
+          setPageNumRestart(numValidated);
+          onChange({
+            pageNumberRestart: pageNumChecked ? undefined : numValidated,
+          });
         }}
         InputProps={{ sx: { fontSize: "140%", pl: 1 } }}
         type="number"
@@ -203,7 +206,9 @@ const Settings: React.FC<Props> = ({
             size="small"
             checked={excluded}
             onChange={(e) => {
-              setExcluded(e.target.checked);
+              const newVal = e.target.checked;
+              setExcluded(newVal);
+              onChange({ excluded: newVal ? newVal : undefined });
             }}
           />
         }
