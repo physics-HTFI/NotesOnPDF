@@ -49,7 +49,7 @@ const PageNumberRestart: React.FC<Props> = ({
         sx={{ pt: 1 }}
       />
 
-      {/* 左側にスペースを空ける */}
+      {/* ダミー（左側にスペースを空ける） */}
       <FormControlLabel
         control={<Switch size="small" />}
         label=""

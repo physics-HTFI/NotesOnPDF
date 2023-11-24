@@ -93,7 +93,19 @@ const PDFView: React.FC<Props> = ({
       }}
       ref={outer}
     >
-      <Box sx={{ position: "absolute", left: 5, bottom: 0 }} fontSize={14}>
+      <Box
+        sx={{
+          position: "absolute",
+          left: 3,
+          bottom: 2,
+          background: "teal",
+          borderRadius: 3,
+          color: "white",
+          pr: 1,
+          pl: 1,
+        }}
+        fontSize={14}
+      >
         {pageLabel}
       </Box>
       <Container

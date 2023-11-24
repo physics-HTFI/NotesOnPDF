@@ -8,6 +8,7 @@ import { Notes } from "../types/Notes";
  * `TOCView`の引数
  */
 interface Props {
+  pdfPath?: string;
   notes?: Notes;
   onChanged: (notes: Notes) => void;
   onOpenFileTree: () => void;
@@ -16,8 +17,27 @@ interface Props {
 /**
  * 目次を表示するコンポーネント
  */
-const TOCView: React.FC<Props> = ({ notes, onChanged, onOpenFileTree }) => {
+const TOCView: React.FC<Props> = ({
+  pdfPath,
+  notes,
+  onChanged,
+  onOpenFileTree,
+}) => {
   const [open, setOpen] = useState(false);
+
+  let partNum = 1;
+  let chapterNum = 1;
+  let pageNum = 1;
+  for (let i = 0; i < (notes?.currentPage ?? 0); i++) {
+    ++pageNum;
+    const page = notes?.pages[i];
+    if (!page) continue;
+    if (page.part !== undefined) ++partNum;
+    if (page.chapter !== undefined) ++chapterNum;
+    if (page.pageNumberRestart) {
+      pageNum = 1 + page.pageNumberRestart;
+    }
+  }
 
   return (
     <Box
@@ -78,10 +98,10 @@ const TOCView: React.FC<Props> = ({ notes, onChanged, onOpenFileTree }) => {
       >
         <Settings
           page={notes?.pages[notes.currentPage] ?? {}}
-          preferredBook=""
-          preferredPart=""
-          preferredChapter=""
-          preferredPageNum={10}
+          preferredBook={pdfPath?.match(/[^\\/]+(?=\.[^.]+$)/)?.[0]}
+          preferredPart={`第${partNum}部`}
+          preferredChapter={`第${chapterNum}章`}
+          preferredPageNumber={pageNum}
           onChange={(page) => {
             if (!notes) return;
             notes.pages[notes.currentPage] = {

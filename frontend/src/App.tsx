@@ -94,6 +94,7 @@ function App() {
       </Drawer>
       {/* 目次 */}
       <TOCView
+        pdfPath={targetPDF}
         notes={notes ?? undefined}
         onOpenFileTree={() => {
           setDrawerOpen(true);
