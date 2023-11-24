@@ -6,23 +6,28 @@ import { FormControlLabel, Switch, TextField, Typography } from "@mui/material";
  */
 interface Props {
   label: string;
-  checked: boolean;
-  text: string;
-  onChange: (checked: boolean, text: string) => void;
+  text?: string;
+  preferredText?: string;
+  onChange: (text?: string) => void;
 }
 
 /**
  * ☑ラベル ________
  * という形のコンポーネント
  */
-const CheckboxText: React.FC<Props> = ({ label, checked, text, onChange }) => {
+const CheckboxText: React.FC<Props> = ({
+  label,
+  text,
+  preferredText,
+  onChange,
+}) => {
   const [textLocal, setTextLocal] = useState("");
   const [checkedLocal, setCheckedLocal] = useState(false);
 
   useEffect(() => {
-    setTextLocal(text);
-    setCheckedLocal(checked);
-  }, [text, checked]);
+    setCheckedLocal(text !== undefined);
+    setTextLocal(text ?? preferredText ?? "");
+  }, [text, preferredText]);
 
   return (
     <>
@@ -34,7 +39,7 @@ const CheckboxText: React.FC<Props> = ({ label, checked, text, onChange }) => {
             onChange={(e) => {
               const newVal = e.target.checked;
               setCheckedLocal(newVal);
-              onChange(newVal, textLocal);
+              onChange(newVal ? textLocal : undefined);
             }}
           />
         }
@@ -54,7 +59,7 @@ const CheckboxText: React.FC<Props> = ({ label, checked, text, onChange }) => {
         onChange={(e) => {
           const newVal = e.target.value;
           setTextLocal(newVal);
-          onChange(checkedLocal, newVal);
+          onChange(checkedLocal ? newVal : undefined);
         }}
         sx={{ flexGrow: 1, pb: 0.5, pt: 1 }}
       />
