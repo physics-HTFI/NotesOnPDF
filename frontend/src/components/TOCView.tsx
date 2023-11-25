@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Box, Drawer, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Drawer } from "@mui/material";
 import Control from "./TOCView/Control";
 import Settings from "./TOCView/Settings";
 import { Notes } from "../types/Notes";
+import getTOCData from "./TOCView/getTOCData";
 
 /**
  * `TOCView`の引数
@@ -58,31 +59,7 @@ const TOCView: React.FC<Props> = ({
           setOpen(!open);
         }}
       />
-      {notes && (
-        <Box sx={{ p: 0.5 }}>
-          <Typography variant="body1" gutterBottom>
-            タイトル
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-            第1部
-          </Typography>
-          <Typography variant="caption" sx={{ display: "block" }}>
-            第1章
-          </Typography>
-          <span>■■■■■■■■■■■ ■■■■■■■■■■■■■■</span>
-          <Typography variant="caption" sx={{ display: "block" }}>
-            第2章
-          </Typography>
-          <span>
-            ■■■■■■■■■■■■■■■■■■■■ ■■■■■ ■■■■■■■■■■■■■■■■■■■■ ■■■■■
-            ■■■■■■■■■■■■■■■■■■■■ ■■■■■ ■■■■■■■■■■■■■■■■■■■■ ■■■■■
-            ■■■■■■■■■■■■■■■■■■■■ ■■■■■ ■■■■■■■■■■■■■■■■■■■■ ■■■■■
-            ■■■■■■■■■■■■■■■■■■■■ ■■■■■ ■■■■■■■■■■■■■■■■■■■■ ■■■■■
-            ■■■■■■■■■■■■■■■■■■■■ ■■■■■ ■■■■■■■■■■■■■■■■■■■■ ■■■■■
-            ■■■■■■■■■■■■■■■■■■■■ ■■■■■
-          </span>
-        </Box>
-      )}
+      <Box sx={{ p: 0.5 }}>{getTOCData(notes)}</Box>
 
       <Drawer
         variant="persistent"
