@@ -76,7 +76,7 @@ const getTOCData = (notes?: Notes): JSX.Element[] => {
         page?.book !== undefined ||
         page?.part !== undefined ||
         page?.chapter !== undefined ||
-        page?.sectionBreak?.includes("top")
+        page?.sectionBreak
       ) {
         toc.push(getSection(`section-${i}`, section));
         section = [];

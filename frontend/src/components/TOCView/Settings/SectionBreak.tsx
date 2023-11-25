@@ -1,60 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import {
-  getSectionBreak,
-  SectionBreak as SectionBreakType,
-} from "../../../types/Notes";
+  Box,
+  FormControlLabel,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 
 /**
  * `SctionBreak`の引数
  */
 interface Props {
-  sectionBreak?: SectionBreakType;
-  onChange: (sectionBreak: SectionBreakType) => void;
+  sectionBreak?: boolean;
+  onChange: (sectionBreak?: boolean) => void;
 }
 
 /**
  * 節区切りを設定するコンポーネント
  */
 const SectionBreak: React.FC<Props> = ({ sectionBreak, onChange }) => {
-  const [top, setTop] = useState(false);
-  const [middle, setMiddle] = useState(false);
+  const [sectionBreakLocal, setSectionBreakLocal] = useState(false);
 
   useEffect(() => {
-    setTop(sectionBreak?.includes("top") ?? false);
-    setMiddle(sectionBreak?.includes("middle") ?? false);
+    setSectionBreakLocal(sectionBreak ?? false);
   }, [sectionBreak]);
-
   return (
     <>
-      <FormControlLabel
-        control={
-          <Checkbox
-            size="small"
-            checked={top}
-            onChange={(e) => {
-              const newVal = e.target.checked;
-              setTop(newVal);
-              onChange(getSectionBreak(newVal, middle));
-            }}
-          />
-        }
-        label={<Typography variant="button">節区切り</Typography>}
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            size="small"
-            checked={middle}
-            onChange={(e) => {
-              const newVal = e.target.checked;
-              setMiddle(newVal);
-              onChange(getSectionBreak(top, newVal));
-            }}
-          />
-        }
-        label={<Typography variant="button">ページ途中</Typography>}
-      />
+      <Tooltip title="このページの前に空白を入れます" disableInteractive>
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={sectionBreakLocal}
+              onChange={(e) => {
+                const newVal = e.target.checked;
+                setSectionBreakLocal(newVal);
+                onChange(newVal ? true : undefined);
+              }}
+            />
+          }
+          label={<Typography variant="button">節区切り</Typography>}
+        />
+      </Tooltip>
       <Box sx={{ width: "100%" }} />
     </>
   );
