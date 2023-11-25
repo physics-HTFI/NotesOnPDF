@@ -10,9 +10,9 @@ import PageNumberRestart from "./Settings/PageNumberRestart";
  * `Settings`の引数
  */
 interface Props {
-  preferredBook?: string;
-  preferredPart?: string;
-  preferredChapter?: string;
+  preferredBook: string;
+  preferredPart: string;
+  preferredChapter: string;
   preferredPageNumber?: number;
   page?: Page;
   onChange: (p: Page) => void;
@@ -36,6 +36,7 @@ const Settings: React.FC<Props> = ({
       {/* 題区切り */}
       <CheckboxText
         label="題区切り"
+        tooltip="このページの前に題名を追加します"
         text={page?.book}
         preferredText={preferredBook}
         onChange={(text) => {
@@ -46,6 +47,7 @@ const Settings: React.FC<Props> = ({
       {/* 部区切り */}
       <CheckboxText
         label="部区切り"
+        tooltip="このページの前に部名を追加します"
         text={page?.part}
         preferredText={preferredPart}
         onChange={(text) => {
@@ -56,6 +58,7 @@ const Settings: React.FC<Props> = ({
       {/* 章区切り */}
       <CheckboxText
         label="章区切り"
+        tooltip="このページの前に章名を追加します"
         text={page?.chapter}
         preferredText={preferredChapter}
         onChange={(text) => {

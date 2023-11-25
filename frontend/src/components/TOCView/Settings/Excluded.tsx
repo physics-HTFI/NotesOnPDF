@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FormControlLabel, Switch, Typography } from "@mui/material";
+import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
 
 /**
  * `Excluded`の引数
@@ -20,21 +20,23 @@ const Excluded: React.FC<Props> = ({ excluded, onChange }) => {
   }, [excluded]);
 
   return (
-    <FormControlLabel
-      control={
-        <Switch
-          size="small"
-          checked={excludedLocal}
-          onChange={(e) => {
-            const newVal = e.target.checked;
-            setExcludedLocal(newVal);
-            onChange(newVal);
-          }}
-        />
-      }
-      label={<Typography variant="button">このページを除外する</Typography>}
-      sx={{ pt: 1 }}
-    />
+    <Tooltip title="このページを灰色にします" disableInteractive>
+      <FormControlLabel
+        control={
+          <Switch
+            size="small"
+            checked={excludedLocal}
+            onChange={(e) => {
+              const newVal = e.target.checked;
+              setExcludedLocal(newVal);
+              onChange(newVal ? true : undefined);
+            }}
+          />
+        }
+        label={<Typography variant="button">このページを除外する</Typography>}
+        sx={{ pt: 1 }}
+      />
+    </Tooltip>
   );
 };
 

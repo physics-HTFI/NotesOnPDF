@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { FormControlLabel, Switch, TextField, Typography } from "@mui/material";
+import {
+  FormControlLabel,
+  Switch,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 
 /**
  * `CheckboxText`の`Props`
  */
 interface Props {
   label: string;
+  tooltip: string;
   text?: string;
-  preferredText?: string;
+  preferredText: string;
   onChange: (text?: string) => void;
 }
 
@@ -17,6 +24,7 @@ interface Props {
  */
 const CheckboxText: React.FC<Props> = ({
   label,
+  tooltip,
   text,
   preferredText,
   onChange,
@@ -26,25 +34,27 @@ const CheckboxText: React.FC<Props> = ({
 
   useEffect(() => {
     setCheckedLocal(text !== undefined);
-    setTextLocal(text ?? preferredText ?? "");
+    setTextLocal(text ?? preferredText);
   }, [text, preferredText]);
 
   return (
     <>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={checkedLocal}
-            size="small"
-            onChange={(e) => {
-              const newVal = e.target.checked;
-              setCheckedLocal(newVal);
-              onChange(newVal ? textLocal : undefined);
-            }}
-          />
-        }
-        label={<Typography variant="button">{label}</Typography>}
-      />
+      <Tooltip title={tooltip} disableInteractive>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={checkedLocal}
+              size="small"
+              onChange={(e) => {
+                const newVal = e.target.checked;
+                setCheckedLocal(newVal);
+                onChange(newVal ? textLocal : undefined);
+              }}
+            />
+          }
+          label={<Typography variant="button">{label}</Typography>}
+        />
+      </Tooltip>
       <TextField
         hidden={!checkedLocal}
         value={textLocal}

@@ -75,7 +75,7 @@ const TOCView: React.FC<Props> = ({
       >
         <Settings
           page={notes?.pages[notes.currentPage] ?? {}}
-          preferredBook={pdfPath?.match(/[^\\/]+(?=\.[^.]+$)/)?.[0]}
+          preferredBook={pdfPath?.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? ""}
           preferredPart={`第${partNum}部`}
           preferredChapter={`第${chapterNum}章`}
           preferredPageNumber={pageNum}
