@@ -2,7 +2,7 @@ import React from "react";
 import { Backdrop, CircularProgress } from "@mui/material";
 
 /**
- * `TOCControl`の引数
+ * `Control`の引数
  */
 interface Props {
   isWaiting: boolean;

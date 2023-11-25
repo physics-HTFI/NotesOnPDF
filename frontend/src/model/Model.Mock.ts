@@ -1,5 +1,6 @@
 import { FileTree } from "../types/FileTree";
-import { PDFsInfo } from "../types/PDFsInfo";
+import { Notes } from "../types/Notes";
+import { Progresses } from "../types/Progresses";
 import IModel from "./IModel";
 
 export default class ModelMock implements IModel {
@@ -27,7 +28,7 @@ export default class ModelMock implements IModel {
     */
   };
 
-  public getPDFsInfo = async (): Promise<PDFsInfo> => {
+  public getProgresses = async (): Promise<Progresses> => {
     await this.wait();
     return {
       recentPath: "文書1.pdf",
@@ -70,5 +71,39 @@ export default class ModelMock implements IModel {
       },
     };
     */
+  };
+
+  getNotes = async (): Promise<Notes> => {
+    await this.wait();
+    return {
+      numPages: 15,
+      currentPage: 3,
+      settings: {
+        offsetTop: 0,
+        offsetBottom: 0,
+        offsetLeft: 0,
+        offsetRight: 0,
+      },
+      pages: {
+        0: {
+          book: "タイトル",
+          part: "第1部",
+        },
+        1: {
+          chapter: "第1章",
+          pageNumberRestart: 10,
+          excluded: true,
+        },
+        3: {
+          sectionBreak: true,
+        },
+        6: {
+          chapter: "第2章",
+        },
+        8: {
+          sectionBreak: true,
+        },
+      },
+    };
   };
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import { Box, BoxProps, Container } from "@mui/material";
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -11,6 +11,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 const options = {
   cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+  // cMapUrl: `./node_modules/pdfjs-dist/cmaps/`,
+  // これだとbuild時にこれをコピーする必要がある
+  cMapPacked: true,
 };
 
 const preferredWidth = (
@@ -30,6 +33,9 @@ const preferredWidth = (
  */
 interface Props extends BoxProps {
   file?: string;
+  currentPage?: number;
+  pageLabel?: string;
+  onPageChanged?: (pageNum: number) => void;
   onLoadError?: () => void;
   onLoadSuccess?: (pdfPath: string, numPages: number) => void;
 }
@@ -37,34 +43,45 @@ interface Props extends BoxProps {
 /**
  * PDFを表示するコンポーネント
  */
-const PDFView: React.FC<Props> = ({ file, onLoadError, onLoadSuccess, sx }) => {
-  const [numPages, setNumPages] = useState<number>();
-  const [currentPage, setCurrentPage] = useState<number>(-1);
+const PDFView: React.FC<Props> = ({
+  file,
+  currentPage,
+  pageLabel,
+  onPageChanged,
+  onLoadError,
+  onLoadSuccess,
+  sx,
+}) => {
   const path = useMemo(() => `/PDFs/${file}`, [file]);
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
 
   if (outer.current) {
     outer.current.onwheel = (e) => {
-      if (numPages === undefined) return;
-      const next = currentPage + (e.deltaY < 0 ? -1 : 1);
-      setCurrentPage(Math.max(0, Math.min(numPages - 1, next)));
+      if (currentPage === undefined) return;
+      onPageChanged?.(currentPage + (e.deltaY < 0 ? -1 : 1));
     };
   }
 
-  const [width, height] = preferredWidth(
-    sizes.current?.[currentPage]?.width,
-    sizes.current?.[currentPage]?.height,
-    outer.current?.clientWidth,
-    outer.current?.clientHeight
-  );
+  const [width, height] =
+    currentPage === undefined
+      ? [undefined, undefined]
+      : preferredWidth(
+          sizes.current?.[currentPage]?.width,
+          sizes.current?.[currentPage]?.height,
+          outer.current?.clientWidth,
+          outer.current?.clientHeight
+        );
+
   const deltaX = 0;
   const deltaY = 0;
 
+  /*
   useEffect(() => {
     // これがないと（同じサイズのPDFの場合に）ビューがリサイズされない
-    setCurrentPage(-1);
-  }, [file]);
+    onPageChanged?.(-1); // TODO リファクタリングで動かなくなっているので要確認
+  }, [onPageChanged]);
+  */
 
   return (
     <Box
@@ -77,6 +94,21 @@ const PDFView: React.FC<Props> = ({ file, onLoadError, onLoadSuccess, sx }) => {
       }}
       ref={outer}
     >
+      <Box
+        sx={{
+          position: "absolute",
+          left: 3,
+          bottom: 2,
+          background: "teal",
+          borderRadius: 3,
+          color: "white",
+          pr: 1,
+          pl: 1,
+        }}
+        fontSize={14}
+      >
+        {pageLabel}
+      </Box>
       <Container
         sx={{
           width,
@@ -94,7 +126,6 @@ const PDFView: React.FC<Props> = ({ file, onLoadError, onLoadSuccess, sx }) => {
         <Document
           file={path}
           onLoadSuccess={(doc) => {
-            setNumPages(doc.numPages);
             if (!file) return;
             onLoadSuccess?.(file, doc.numPages);
             const getsizes = async () => {
@@ -104,7 +135,6 @@ const PDFView: React.FC<Props> = ({ file, onLoadError, onLoadSuccess, sx }) => {
                 const [width, height] = [page.view[2] ?? 0, page.view[3] ?? 0];
                 sizes.current.push({ width, height });
               }
-              setCurrentPage(0);
             };
             getsizes().catch(() => undefined);
           }}
