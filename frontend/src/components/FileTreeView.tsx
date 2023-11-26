@@ -14,7 +14,7 @@ import IModel from "../model/IModel";
 interface Props {
   onSelect: (pdfPath: string) => void;
   Progresses: Progresses;
-  model: IModel;
+  model?: IModel;
 }
 
 /**
@@ -25,7 +25,7 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, Progresses }) => {
 
   useEffect(() => {
     model
-      .getFileTree()
+      ?.getFileTree()
       .then((files) => {
         setFileTree(files);
       })

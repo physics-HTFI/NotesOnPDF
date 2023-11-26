@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Drawer } from "@mui/material";
 import FileTreeView from "./components/FileTreeView";
 import ModelMock from "./model/Model.Mock";
@@ -9,8 +9,10 @@ import TOCView from "./components/TOCView";
 import { Notes, createNewNotes, getPageLabel } from "./types/Notes";
 import IModel from "./model/IModel";
 
+const model: IModel | undefined =
+  import.meta.env.VITE_IS_MOCK === "true" ? new ModelMock() : undefined;
+
 function App() {
-  const model: IModel = useMemo(() => new ModelMock(), []);
   const [progresses, setProgresses] = useState<Progresses>();
   const [selectedPDF, setSelectedPDF] = useState<string>();
   const [targetPDF, setTargetPDF] = useState<string>();
@@ -26,7 +28,7 @@ function App() {
   useEffect(() => {
     setIsWaitingInit(true);
     model
-      .getProgresses()
+      ?.getProgresses()
       .then((progresses) => {
         setProgresses(progresses);
       })
@@ -34,7 +36,7 @@ function App() {
       .finally(() => {
         setIsWaitingInit(false);
       });
-  }, [model]);
+  }, []);
 
   // 始めて読み込むPDFの場合、`Notes`を生成する
   useEffect(() => {
@@ -78,7 +80,7 @@ function App() {
               setIsWaitingNotes(true);
               setNotes(undefined);
               model
-                .getNotes(pdfPath)
+                ?.getNotes(pdfPath)
                 .then((notes) => {
                   setNotes(notes);
                 })
