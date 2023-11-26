@@ -52,7 +52,8 @@ const PDFView: React.FC<Props> = ({
   onLoadSuccess,
   sx,
 }) => {
-  const path = useMemo(() => `/PDFs/${file}`, [file]);
+  // TODO `/NotesOnPDF/PDFs/`を設定ファイルに定義する
+  const path = useMemo(() => `/NotesOnPDF/PDFs/${file}`, [file]);
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
 
