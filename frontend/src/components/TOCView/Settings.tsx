@@ -1,6 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { Page } from "../../types/Notes";
+import { Page } from "@/types/Notes";
 import CheckboxText from "./Settings/CheckboxText";
 import SectionBreak from "./Settings/SectionBreak";
 import Excluded from "./Settings/Excluded";

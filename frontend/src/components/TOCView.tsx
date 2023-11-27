@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Box, Drawer } from "@mui/material";
+import { Notes } from "@/types/Notes";
 import Control from "./TOCView/Control";
 import Settings from "./TOCView/Settings";
-import { Notes } from "../types/Notes";
 import getTOCData from "./TOCView/getTOCData";
 
 /**

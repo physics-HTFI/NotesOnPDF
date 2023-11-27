@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { Notes, Page } from "../../types/Notes";
+import { Notes, Page } from "@/types/Notes";
 
 /**
  * 題名を返す

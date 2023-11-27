@@ -3,10 +3,10 @@ import { ExpandMore, ChevronRight } from "@mui/icons-material";
 import { TreeView } from "@mui/x-tree-view";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
-import { FileTree } from "../types/FileTree";
+import { FileTree } from "@/types/FileTree";
+import { Progresses } from "@/types/Progresses";
+import IModel from "@/model/IModel";
 import getTreeItems from "./FileTreeView/getTreeItems";
-import { Progresses } from "../types/Progresses";
-import IModel from "../model/IModel";
 
 /**
  * `FileTreeView`の引数
