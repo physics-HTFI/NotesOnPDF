@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Box, Drawer } from "@mui/material";
+import { Box, Drawer, IconButton } from "@mui/material";
 import { Notes } from "@/types/Notes";
 import Control from "./TOCView/Control";
 import Settings from "./TOCView/Settings";
 import getTOCData from "./TOCView/getTOCData";
+import { ExpandMore } from "@mui/icons-material";
 
 /**
  * `TOCView`の引数
@@ -70,6 +71,7 @@ const TOCView: React.FC<Props> = ({
           sx: {
             position: "absolute",
             borderRadius: "10px 10px 0 0",
+            overflow: "visible",
           },
         }}
       >
@@ -88,6 +90,19 @@ const TOCView: React.FC<Props> = ({
             onChanged(notes);
           }}
         />
+        <IconButton
+          sx={{
+            position: "absolute",
+            right: 0,
+            top: "-35px",
+          }}
+          onClick={() => {
+            setOpen(!open);
+          }}
+          size="small"
+        >
+          <ExpandMore />
+        </IconButton>
       </Drawer>
     </Box>
   );
