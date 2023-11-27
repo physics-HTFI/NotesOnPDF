@@ -25,7 +25,8 @@ const TOCView: React.FC<Props> = ({
   onChanged,
   onOpenFileTree,
 }) => {
-  const [open, setOpen] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [showControl, setShowControl] = useState(false);
 
   let partNum = 1;
   let chapterNum = 1;
@@ -43,6 +44,12 @@ const TOCView: React.FC<Props> = ({
 
   return (
     <Box
+      onMouseEnter={() => {
+        setShowControl(true);
+      }}
+      onMouseLeave={() => {
+        setShowControl(false);
+      }}
       sx={{
         width: 300,
         background: "whitesmoke",
@@ -55,9 +62,10 @@ const TOCView: React.FC<Props> = ({
       }}
     >
       <Control
+        shown={showControl}
         onOpenFileTree={onOpenFileTree}
         onOpenSettings={() => {
-          setOpen(!open);
+          setOpenDrawer(!openDrawer);
         }}
       />
       <Box sx={{ p: 0.5 }}>{getTOCData(notes, onChanged)}</Box>
@@ -65,7 +73,7 @@ const TOCView: React.FC<Props> = ({
       <Drawer
         variant="persistent"
         anchor="bottom"
-        open={open}
+        open={openDrawer}
         PaperProps={{
           square: false,
           sx: {
@@ -97,7 +105,7 @@ const TOCView: React.FC<Props> = ({
             top: "-35px",
           }}
           onClick={() => {
-            setOpen(!open);
+            setOpenDrawer(!openDrawer);
           }}
           size="small"
         >
