@@ -8,9 +8,10 @@ import Waiting from "@/components/Waiting";
 import TOCView from "@/components/TOCView";
 import { Notes, createNewNotes, getPageLabel } from "@/types/Notes";
 import IModel from "@/models/IModel";
+import SnackbarsMock from "./components/SnackbarMock";
 
-const model: IModel | undefined =
-  import.meta.env.VITE_IS_MOCK === "true" ? new ModelMock() : undefined;
+const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
+const model: IModel | undefined = IS_MOCK ? new ModelMock() : undefined;
 
 function App() {
   const [progresses, setProgresses] = useState<Progresses>();
@@ -131,6 +132,9 @@ function App() {
       />
       {/* 処理中プログレス表示 */}
       <Waiting isWaiting={isWaitingInit || isWaitingRead || isWaitingNotes} />
+
+      {/* モックモデルを使用していることを示すポップアップ表示 */}
+      {IS_MOCK && <SnackbarsMock open />}
     </Box>
   );
 }
