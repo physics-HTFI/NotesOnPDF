@@ -1,6 +1,6 @@
-import { FileTree } from "../types/FileTree";
-import { Progresses } from "../types/Progresses";
-import { Notes } from "../types/Notes";
+import { FileTree } from "@/types/FileTree";
+import { Progresses } from "@/types/Progresses";
+import { Notes } from "@/types/Notes";
 
 export default interface IModel {
   getFileTree(): Promise<FileTree>;
