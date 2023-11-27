@@ -6,9 +6,13 @@ on:
   # デフォルトブランチを対象としたプッシュ時にで実行されます
   push:
     branches: ["main"]
-
   # Actions タブから手動でワークフローを実行できるようにします
   workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./frontend
 
 # GITHUB_TOKEN のパーミッションを設定し、GitHub Pages へのデプロイを許可します
 permissions:
@@ -31,13 +35,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Change Dir
-        run: cd frontend
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: "npm"
+          cache-dependency-path: ./frontend/yarn.lock
       - name: Install dependencies
         run: npm install
       - name: Build
