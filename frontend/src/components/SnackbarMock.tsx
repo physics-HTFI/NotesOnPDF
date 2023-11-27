@@ -25,7 +25,7 @@ const SnackbarsMock: React.FC<Props> = ({ open }) => {
         elevation={6}
         variant="filled"
         onClose={handleClose}
-        severity="warning"
+        severity="info"
         sx={{ width: "100%" }}
       >
         これはデモページです。
