@@ -60,7 +60,7 @@ const TOCView: React.FC<Props> = ({
           setOpen(!open);
         }}
       />
-      <Box sx={{ p: 0.5 }}>{getTOCData(notes)}</Box>
+      <Box sx={{ p: 0.5 }}>{getTOCData(notes, onChanged)}</Box>
 
       <Drawer
         variant="persistent"

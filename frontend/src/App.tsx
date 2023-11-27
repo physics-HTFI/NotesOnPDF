@@ -25,6 +25,14 @@ function App() {
   const [isWaitingRead, setIsWaitingRead] = useState(false);
   const [isWaitingNotes, setIsWaitingNotes] = useState(false);
 
+  // ページの遷移
+  const handlePageChange = (pageNum: number) => {
+    if (!notes) return;
+    const newPage = Math.max(0, Math.min(notes.numPages - 1, pageNum));
+    if (notes.currentPage === newPage) return;
+    setNotes({ ...notes, currentPage: newPage });
+  };
+
   // ファイルツリーに表示する進捗情報の取得
   useEffect(() => {
     setIsWaitingInit(true);
@@ -112,13 +120,7 @@ function App() {
         file={selectedPDF}
         currentPage={notes?.currentPage}
         pageLabel={notes ? getPageLabel(notes) : undefined}
-        onPageChanged={(pageNum) => {
-          if (!notes) return;
-          const newPage = Math.max(0, Math.min(notes.numPages - 1, pageNum));
-          if (notes.currentPage === newPage) return;
-          notes.currentPage = newPage;
-          setNotes({ ...notes });
-        }}
+        onPageChange={handlePageChange}
         onLoadError={() => {
           setIsWaitingRead(false);
           setDrawerOpen(true);

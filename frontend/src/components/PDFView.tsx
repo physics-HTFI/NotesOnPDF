@@ -29,7 +29,7 @@ interface Props extends BoxProps {
   file?: string;
   currentPage?: number;
   pageLabel?: string;
-  onPageChanged?: (pageNum: number) => void;
+  onPageChange?: (pageNum: number) => void;
   onLoadError?: () => void;
   onLoadSuccess?: (pdfPath: string, numPages: number) => void;
 }
@@ -41,7 +41,7 @@ const PDFView: React.FC<Props> = ({
   file,
   currentPage,
   pageLabel,
-  onPageChanged,
+  onPageChange,
   onLoadError,
   onLoadSuccess,
   sx,
@@ -56,7 +56,7 @@ const PDFView: React.FC<Props> = ({
   if (outer.current) {
     outer.current.onwheel = (e) => {
       if (currentPage === undefined) return;
-      onPageChanged?.(currentPage + (e.deltaY < 0 ? -1 : 1));
+      onPageChange?.(currentPage + (e.deltaY < 0 ? -1 : 1));
     };
   }
 
@@ -76,8 +76,8 @@ const PDFView: React.FC<Props> = ({
   /*
   useEffect(() => {
     // これがないと（同じサイズのPDFの場合に）ビューがリサイズされない
-    onPageChanged?.(-1); // TODO リファクタリングで動かなくなっているので要確認
-  }, [onPageChanged]);
+    onPageChange?.(-1); // TODO リファクタリングで動かなくなっているので要確認
+  }, [onPageChange]);
   */
 
   return (

@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import { Notes, Page } from "@/types/Notes";
 
 /**
@@ -63,9 +63,13 @@ const getPageColor = (i: number, currentPage: number, page?: Page) => {
  * TODO 節が長いと途中で改行されて、新規の節と紛らわしい。ハイフンなどがつけられれば良いが。
  * @returns 目次の内容
  */
-const getTOCData = (notes?: Notes): JSX.Element[] => {
+const getTOCData = (
+  notes?: Notes,
+  onChanged?: (notes: Notes) => void
+): JSX.Element[] => {
   if (!notes) return [];
   const toc: JSX.Element[] = [];
+  let pageNum = 1;
   let section: JSX.Element[] = [];
   for (let i = 0; i < notes.numPages; i++) {
     const page = notes.pages[i];
@@ -95,18 +99,31 @@ const getTOCData = (notes?: Notes): JSX.Element[] => {
       toc.push(getChapter(`chapter-${i}`, page.chapter));
     }
     // 節にページを追加
+    pageNum = page?.pageNumberRestart ?? pageNum;
     section.push(
-      <span
-        key={`page-${i}`}
-        style={{
-          display: "inline-block",
-          width: 8,
-          height: 8,
-          background: getPageColor(i, notes.currentPage, page),
-          marginRight: 2,
-        }}
-      />
+      <Tooltip
+        title={`p. ${pageNum}`}
+        disableInteractive
+        enterDelay={0}
+        leaveDelay={0}
+      >
+        <span
+          key={`page-${i}`}
+          style={{
+            display: "inline-block",
+            width: 8,
+            height: 8,
+            background: getPageColor(i, notes.currentPage, page),
+            marginRight: 2,
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            onChanged?.({ ...notes, currentPage: i });
+          }}
+        />
+      </Tooltip>
     );
+    ++pageNum;
   }
   toc.push(getSection(`section-last`, section));
   return toc;
