@@ -3,10 +3,10 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "dev-mock",
+      "script": "dev",
       "path": "frontend",
       "problemMatcher": [],
-      "label": "npm: dev-mock - frontend",
+      "label": "npm: dev - frontend",
       "detail": "vite",
       "runOptions": {
         "runOn": "folderOpen"

@@ -1,6 +1,6 @@
-import { FileTree } from "@/types/FileTree";
-import TreeItemWithInfo from "../FileTreeView/TreeItemWithInfo";
-import { Progresses } from "@/types/Progresses";
+import { FileTree } from "../../types/FileTree";
+import TreeItemWithInfo from "./../FileTreeView/TreeItemWithInfo";
+import { Progresses } from "../../types/Progresses";
 
 /**
  * `<TreeView>`の中身を取得する。

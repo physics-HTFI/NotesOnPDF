@@ -1,6 +1,6 @@
-import { FileTree } from "@/types/FileTree";
-import { Notes } from "@/types/Notes";
-import { Progresses } from "@/types/Progresses";
+import { FileTree } from "../types/FileTree";
+import { Notes } from "../types/Notes";
+import { Progresses } from "../types/Progresses";
 import IModel from "./IModel";
 
 export default class ModelMock implements IModel {

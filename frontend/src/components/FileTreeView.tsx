@@ -3,10 +3,10 @@ import { ExpandMore, ChevronRight } from "@mui/icons-material";
 import { TreeView } from "@mui/x-tree-view";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
-import { FileTree } from "@/types/FileTree";
-import { Progresses } from "@/types/Progresses";
-import IModel from "@/models/IModel";
+import { FileTree } from "../types/FileTree";
 import getTreeItems from "./FileTreeView/getTreeItems";
+import { Progresses } from "../types/Progresses";
+import IModel from "../model/IModel";
 
 /**
  * `FileTreeView`の引数
@@ -14,7 +14,7 @@ import getTreeItems from "./FileTreeView/getTreeItems";
 interface Props {
   onSelect: (pdfPath: string) => void;
   Progresses: Progresses;
-  model?: IModel;
+  model: IModel;
 }
 
 /**
@@ -25,7 +25,7 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, Progresses }) => {
 
   useEffect(() => {
     model
-      ?.getFileTree()
+      .getFileTree()
       .then((files) => {
         setFileTree(files);
       })
