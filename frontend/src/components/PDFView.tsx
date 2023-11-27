@@ -4,16 +4,11 @@ import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.js",
-  import.meta.url
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const options = {
   cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-  // cMapUrl: `./node_modules/pdfjs-dist/cmaps/`,
-  // これだとbuild時にこれをコピーする必要がある
-  cMapPacked: true,
+  standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts`,
 };
 
 const preferredWidth = (
@@ -52,8 +47,10 @@ const PDFView: React.FC<Props> = ({
   onLoadSuccess,
   sx,
 }) => {
-  // TODO `/NotesOnPDF/PDFs/`を設定ファイルに定義する
-  const path = useMemo(() => `/NotesOnPDF/PDFs/${file}`, [file]);
+  const path = useMemo(
+    () => (file ? `${import.meta.env.VITE_PDF_ROOT}${file}` : undefined),
+    [file]
+  );
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
 
