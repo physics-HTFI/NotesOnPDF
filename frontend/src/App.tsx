@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Box, Drawer } from "@mui/material";
-import FileTreeView from "./components/FileTreeView";
-import ModelMock from "./model/Model.Mock";
-import { Progresses } from "./types/Progresses";
-import PDFView from "./components/PDFView";
-import Waiting from "./components/Waiting";
-import TOCView from "./components/TOCView";
-import { Notes, createNewNotes, getPageLabel } from "./types/Notes";
-import IModel from "./model/IModel";
+import FileTreeView from "@/components/FileTreeView";
+import ModelMock from "@/models/Model.Mock";
+import { Progresses } from "@/types/Progresses";
+import PDFView from "@/components/PDFView";
+import Waiting from "@/components/Waiting";
+import TOCView from "@/components/TOCView";
+import { Notes, createNewNotes, getPageLabel } from "@/types/Notes";
+import IModel from "@/models/IModel";
 
 const model: IModel | undefined =
   import.meta.env.VITE_IS_MOCK === "true" ? new ModelMock() : undefined;

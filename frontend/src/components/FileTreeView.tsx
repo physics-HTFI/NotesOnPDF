@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { FileTree } from "@/types/FileTree";
 import { Progresses } from "@/types/Progresses";
-import IModel from "@/model/IModel";
+import IModel from "@/models/IModel";
 import getTreeItems from "./FileTreeView/getTreeItems";
 
 /**
