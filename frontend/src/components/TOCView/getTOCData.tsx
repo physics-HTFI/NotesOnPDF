@@ -5,7 +5,7 @@ import { Notes, Page } from "@/types/Notes";
  * 題名を返す
  */
 const getBook = (key: string, title: string) => (
-  <Typography key={key} variant="body1" gutterBottom>
+  <Typography key={key} variant="body1" sx={{ height: 23 }}>
     {title}
   </Typography>
 );
@@ -14,7 +14,7 @@ const getBook = (key: string, title: string) => (
  * 部名を返す
  */
 const getPart = (key: string, title: string) => (
-  <Typography key={key} variant="body2" gutterBottom>
+  <Typography key={key} variant="body2" sx={{ height: 18 }}>
     {title}
   </Typography>
 );
@@ -23,7 +23,7 @@ const getPart = (key: string, title: string) => (
  * 章名を返す
  */
 const getChapter = (key: string, title: string) => (
-  <Typography key={key} variant="body2" gutterBottom>
+  <Typography key={key} variant="body2" sx={{ fontSize: "110%", height: 15 }}>
     {title}
   </Typography>
 );
@@ -102,13 +102,13 @@ const getTOCData = (
     pageNum = page?.pageNumberRestart ?? pageNum;
     section.push(
       <Tooltip
+        key={`page-${i}`}
         title={`p. ${pageNum}`}
         disableInteractive
         enterDelay={0}
         leaveDelay={0}
       >
         <span
-          key={`page-${i}`}
           style={{
             display: "inline-block",
             width: 8,
