@@ -14,7 +14,7 @@ const getBook = (key: string, title: string) => (
  * 部名を返す
  */
 const getPart = (key: string, title: string) => (
-  <Typography key={key} variant="body2" sx={{ height: 18 }}>
+  <Typography key={key} variant="body2" sx={{ height: 20 }}>
     {title}
   </Typography>
 );
