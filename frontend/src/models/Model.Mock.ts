@@ -55,7 +55,7 @@ export default class ModelMock implements IModel {
         "文書1.pdf": {
           allPages: 29,
           enabledPages: 23,
-          notedPages: 0,
+          notedPages: 17,
         },
       },
     };
