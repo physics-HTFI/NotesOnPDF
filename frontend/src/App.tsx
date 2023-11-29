@@ -91,6 +91,9 @@ function App() {
               model
                 ?.getNotes(pdfPath)
                 .then((notes) => {
+                  if (notes && numPages) {
+                    notes.numPages = numPages;
+                  }
                   setNotes(notes);
                 })
                 .catch(() => {

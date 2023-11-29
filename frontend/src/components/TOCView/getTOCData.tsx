@@ -23,7 +23,11 @@ const getPart = (key: string, title: string) => (
  * 章名を返す
  */
 const getChapter = (key: string, title: string) => (
-  <Typography key={key} variant="body2" sx={{ fontSize: "110%", height: 15 }}>
+  <Typography
+    key={key}
+    variant="body2"
+    sx={{ fontSize: "110%", height: title ? 15 : 5, color: "gray" }}
+  >
     {title}
   </Typography>
 );
