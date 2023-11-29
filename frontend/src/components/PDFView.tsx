@@ -53,13 +53,6 @@ const PDFView: React.FC<Props> = ({
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
 
-  if (outer.current) {
-    outer.current.onwheel = (e) => {
-      if (currentPage === undefined) return;
-      onPageChange?.(currentPage + (e.deltaY < 0 ? -1 : 1));
-    };
-  }
-
   const [width, height] =
     currentPage === undefined
       ? [undefined, undefined]
@@ -90,6 +83,10 @@ const PDFView: React.FC<Props> = ({
         position: "relative",
       }}
       ref={outer}
+      onWheel={(e) => {
+        if (currentPage === undefined) return;
+        onPageChange?.(currentPage + (e.deltaY < 0 ? -1 : 1));
+      }}
     >
       <Box
         sx={{

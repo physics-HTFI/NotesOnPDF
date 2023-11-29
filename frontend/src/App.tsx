@@ -116,6 +116,7 @@ function App() {
         onChanged={(notes) => {
           setNotes({ ...notes });
         }}
+        onPageChange={handlePageChange}
       />
       {/* PDFビュー */}
       <PDFView

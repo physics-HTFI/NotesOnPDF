@@ -14,6 +14,7 @@ interface Props {
   notes?: Notes;
   onChanged: (notes: Notes) => void;
   onOpenFileTree: () => void;
+  onPageChange: (pageNum: number) => void;
 }
 
 /**
@@ -24,6 +25,7 @@ const TOCView: React.FC<Props> = ({
   notes,
   onChanged,
   onOpenFileTree,
+  onPageChange,
 }) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [showControl, setShowControl] = useState(false);
@@ -49,6 +51,10 @@ const TOCView: React.FC<Props> = ({
       }}
       onMouseLeave={() => {
         setShowControl(false);
+      }}
+      onWheel={(e) => {
+        if (!notes) return;
+        onPageChange(notes.currentPage + (e.deltaY < 0 ? -1 : 1));
       }}
       sx={{
         width: 300,
@@ -81,6 +87,9 @@ const TOCView: React.FC<Props> = ({
             borderRadius: "10px 10px 0 0",
             overflow: "visible",
           },
+        }}
+        onWheel={(e) => {
+          e.stopPropagation();
         }}
       >
         <Settings
