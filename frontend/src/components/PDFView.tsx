@@ -3,6 +3,7 @@ import { Box, BoxProps, Container } from "@mui/material";
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import PageLabel from "./PDFView/PageLabel";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -88,21 +89,7 @@ const PDFView: React.FC<Props> = ({
         onPageChange?.(currentPage + (e.deltaY < 0 ? -1 : 1));
       }}
     >
-      <Box
-        sx={{
-          position: "absolute",
-          left: 3,
-          bottom: 2,
-          background: "teal",
-          borderRadius: 3,
-          color: "white",
-          pr: 1,
-          pl: 1,
-        }}
-        fontSize={14}
-      >
-        {pageLabel}
-      </Box>
+      <PageLabel label={pageLabel} />
       <Container
         sx={{
           width,
