@@ -49,14 +49,15 @@ function App() {
 
   // 始めて読み込むPDFの場合、`Notes`を生成する
   useEffect(() => {
-    if (
-      !isWaitingRead &&
-      !isWaitingNotes &&
-      numPages &&
-      targetPDF &&
-      notes === null
-    ) {
+    if (isWaitingRead || isWaitingNotes) return;
+    if (!numPages || !targetPDF) return;
+    if (notes === undefined) return;
+
+    if (notes === null) {
       setNotes(createNewNotes(targetPDF, numPages));
+    } else if (notes.numPages !== numPages) {
+      // 同じPDFでページ数が異なっている場合に対応する
+      setNotes({ ...notes, numPages });
     }
   }, [isWaitingRead, isWaitingNotes, numPages, notes, targetPDF]);
 
@@ -91,9 +92,6 @@ function App() {
               model
                 ?.getNotes(pdfPath)
                 .then((notes) => {
-                  if (notes && numPages) {
-                    notes.numPages = numPages;
-                  }
                   setNotes(notes);
                 })
                 .catch(() => {
