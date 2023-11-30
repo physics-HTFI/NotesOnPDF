@@ -1,20 +1,20 @@
 /**
  * @example
  * [
- *   [ dir,
+ *   [ dir1,
  *     [
- *       [ dir,
+ *       [ dir1/dir2,
  *         [
- *           file,
- *           file,
+ *           dir1/dir2/file1,
+ *           dir1/dir2/file2,
  *         ],
  *       ],
- *       file,
- *       file,
+ *       dir1/file1,
+ *       dir1/file2,
  *     ],
  *   ],
- *   file,
- *   file,
+ *   file1,
+ *   file2,
  * ]
  */
 export type FileTree = (string | [string, FileTree])[];
