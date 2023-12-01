@@ -57,9 +57,7 @@ const TOCView: React.FC<Props> = ({
         onPageChange(notes.currentPage + (e.deltaY < 0 ? -1 : 1));
       }}
       sx={{
-        width: 300,
         background: "whitesmoke",
-        minWidth: 300,
         position: "relative",
         height: "100vh",
         overflowWrap: "break-word",

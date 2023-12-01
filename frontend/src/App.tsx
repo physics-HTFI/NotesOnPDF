@@ -9,6 +9,7 @@ import TOCView from "@/components/TOCView";
 import { Notes, createNewNotes, getPageLabel } from "@/types/Notes";
 import IModel from "@/models/IModel";
 import SnackbarsMock from "./components/SnackbarMock";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 const model: IModel | undefined = IS_MOCK ? new ModelMock() : undefined;
@@ -104,36 +105,46 @@ function App() {
           />
         )}
       </Drawer>
-      {/* 目次 */}
-      <TOCView
-        pdfPath={targetPDF}
-        notes={notes ?? undefined}
-        onOpenFileTree={() => {
-          setDrawerOpen(true);
-        }}
-        onChanged={(notes) => {
-          setNotes({ ...notes });
-        }}
-        onPageChange={handlePageChange}
-      />
-      {/* PDFビュー */}
-      <PDFView
-        sx={{ flexGrow: 1 }}
-        file={selectedPDF}
-        currentPage={notes?.currentPage}
-        pageLabel={notes ? getPageLabel(notes) : undefined}
-        onPageChange={handlePageChange}
-        onLoadError={() => {
-          setIsWaitingRead(false);
-          setDrawerOpen(true);
-        }}
-        onLoadSuccess={(pdfPath, numPages) => {
-          setTargetPDF(pdfPath);
-          setNumPages(numPages);
-          setIsWaitingRead(false);
-          setDrawerOpen(false);
-        }}
-      />
+      <PanelGroup direction="horizontal">
+        {/* 目次 */}
+        <Panel defaultSizePercentage={30} minSizePercentage={20}>
+          <TOCView
+            pdfPath={targetPDF}
+            notes={notes ?? undefined}
+            onOpenFileTree={() => {
+              setDrawerOpen(true);
+            }}
+            onChanged={(notes) => {
+              setNotes({ ...notes });
+            }}
+            onPageChange={handlePageChange}
+          />
+        </Panel>
+        {/* リサイズハンドル */}
+        <PanelResizeHandle>
+          <Box sx={{ width: 5, height: "100vh", background: "silver" }} />
+        </PanelResizeHandle>
+        {/* PDFビュー */}
+        <Panel defaultSizePercentage={70} minSizePercentage={50}>
+          <PDFView
+            sx={{ flexGrow: 1 }}
+            file={selectedPDF}
+            currentPage={notes?.currentPage}
+            pageLabel={notes ? getPageLabel(notes) : undefined}
+            onPageChange={handlePageChange}
+            onLoadError={() => {
+              setIsWaitingRead(false);
+              setDrawerOpen(true);
+            }}
+            onLoadSuccess={(pdfPath, numPages) => {
+              setTargetPDF(pdfPath);
+              setNumPages(numPages);
+              setIsWaitingRead(false);
+              setDrawerOpen(false);
+            }}
+          />
+        </Panel>
+      </PanelGroup>
       {/* 処理中プログレス表示 */}
       <Waiting isWaiting={isWaitingInit || isWaitingRead || isWaitingNotes} />
 
