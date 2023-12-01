@@ -1,9 +1,10 @@
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Box, BoxProps, Container } from "@mui/material";
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
-import PageLabel from "./PDFView/PageLabel";
+import PageLabelSmall from "./PDFView/PageLabelSmall";
+import PageLabelLarge from "./PDFView/PageLabelLarge";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -47,6 +48,7 @@ const PDFView: React.FC<Props> = ({
   onLoadSuccess,
   sx,
 }) => {
+  const [reading, setReading] = useState(true);
   const path = useMemo(
     () => (file ? `${import.meta.env.VITE_PDF_ROOT}${file}` : undefined),
     [file]
@@ -66,6 +68,10 @@ const PDFView: React.FC<Props> = ({
 
   const deltaX = 0;
   const deltaY = 0;
+
+  useEffect(() => {
+    setReading(true);
+  }, [currentPage]);
 
   /*
   useEffect(() => {
@@ -89,7 +95,7 @@ const PDFView: React.FC<Props> = ({
         onPageChange?.(currentPage + (e.deltaY < 0 ? -1 : 1));
       }}
     >
-      <PageLabel label={pageLabel} />
+      <PageLabelSmall label={pageLabel} />
       <Container
         sx={{
           width,
@@ -131,8 +137,12 @@ const PDFView: React.FC<Props> = ({
             error={""}
             loading={""}
             noData={""}
+            onLoadSuccess={() => {
+              setReading(false);
+            }}
           />
         </Document>
+        <PageLabelLarge label={pageLabel} shown={reading} />
       </Container>
     </Box>
   );

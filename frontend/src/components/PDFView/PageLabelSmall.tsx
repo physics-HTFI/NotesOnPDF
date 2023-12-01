@@ -2,22 +2,22 @@ import React from "react";
 import { Box } from "@mui/material";
 
 /**
- * `PageLabel`の引数
+ * `PageLabelSmall`の引数
  */
 interface Props {
   label?: string;
 }
 
 /**
- * ページ数表示コンポーネント
+ * 画面橋のページ数表示コンポーネント
  */
-const PageLabel: React.FC<Props> = ({ label }) => (
+const PageLabelSmall: React.FC<Props> = ({ label }) => (
   <Box
     sx={{
       position: "absolute",
       left: 3,
       bottom: 2,
-      background: "teal",
+      background: "darkseagreen",
       borderRadius: 3,
       color: "white",
       pr: 1,
@@ -29,4 +29,4 @@ const PageLabel: React.FC<Props> = ({ label }) => (
   </Box>
 );
 
-export default PageLabel;
+export default PageLabelSmall;

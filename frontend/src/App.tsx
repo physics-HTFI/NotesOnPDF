@@ -6,7 +6,7 @@ import { Progresses } from "@/types/Progresses";
 import PDFView from "@/components/PDFView";
 import Waiting from "@/components/Waiting";
 import TOCView from "@/components/TOCView";
-import { Notes, createNewNotes, getPageLabel } from "@/types/Notes";
+import { Notes, createNewNotes, getPageLabelSmall } from "@/types/Notes";
 import IModel from "@/models/IModel";
 import SnackbarsMock from "./components/SnackbarMock";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
@@ -130,7 +130,7 @@ function App() {
             sx={{ flexGrow: 1 }}
             file={selectedPDF}
             currentPage={notes?.currentPage}
-            pageLabel={notes ? getPageLabel(notes) : undefined}
+            pageLabel={notes ? getPageLabelSmall(notes) : undefined}
             onPageChange={handlePageChange}
             onLoadError={() => {
               setIsWaitingRead(false);
