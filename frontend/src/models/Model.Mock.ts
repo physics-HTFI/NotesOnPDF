@@ -57,6 +57,21 @@ export default class ModelMock implements IModel {
           enabledPages: 23,
           notedPages: 17,
         },
+        "dummy1/dummy1A.pdf": {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 20,
+        },
+        "dummy1/dummy1B.pdf": {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 50,
+        },
+        "dummy1/dummy1C.pdf": {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 100,
+        },
       },
     };
     /*
