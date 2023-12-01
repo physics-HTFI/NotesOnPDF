@@ -67,6 +67,7 @@ const TOCView: React.FC<Props> = ({
     >
       <Control
         shown={showControl}
+        openSettings={!openDrawer}
         onOpenFileTree={onOpenFileTree}
         onOpenSettings={() => {
           setOpenDrawer(!openDrawer);

@@ -1,13 +1,17 @@
 import React from "react";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import FileOpenIcon from "@mui/icons-material/FileOpen";
-import { AppRegistration } from "@mui/icons-material";
+import {
+  KeyboardArrowDown,
+  KeyboardArrowRight,
+  KeyboardArrowUp,
+} from "@mui/icons-material";
 
 /**
  * `Control`の引数
  */
 interface Props {
   shown: boolean;
+  openSettings: boolean;
   onOpenFileTree: () => void;
   onOpenSettings: () => void;
 }
@@ -17,6 +21,7 @@ interface Props {
  */
 const Control: React.FC<Props> = ({
   shown,
+  openSettings,
   onOpenFileTree,
   onOpenSettings,
 }) => {
@@ -38,7 +43,7 @@ const Control: React.FC<Props> = ({
             }}
             onClick={onOpenFileTree}
           >
-            <FileOpenIcon />
+            <KeyboardArrowRight />
           </IconButton>
         </Tooltip>
         <Tooltip title="設定パネルを開く／閉じる">
@@ -49,7 +54,7 @@ const Control: React.FC<Props> = ({
             }}
             onClick={onOpenSettings}
           >
-            <AppRegistration />
+            {openSettings ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </Tooltip>
       </Box>

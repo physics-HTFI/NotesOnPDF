@@ -48,7 +48,7 @@ const PDFView: React.FC<Props> = ({
   onLoadSuccess,
   sx,
 }) => {
-  const [reading, setReading] = useState(true);
+  const [reading, setReading] = useState(false);
   const path = useMemo(
     () => (file ? `${import.meta.env.VITE_PDF_ROOT}${file}` : undefined),
     [file]
@@ -70,6 +70,7 @@ const PDFView: React.FC<Props> = ({
   const deltaY = 0;
 
   useEffect(() => {
+    if (currentPage === undefined) return;
     setReading(true);
   }, [currentPage]);
 
@@ -110,6 +111,7 @@ const PDFView: React.FC<Props> = ({
         }}
         disableGutters
       >
+        <PageLabelLarge label={pageLabel} shown={reading} />
         <Document
           file={path}
           onLoadSuccess={(doc) => {
@@ -142,7 +144,6 @@ const PDFView: React.FC<Props> = ({
             }}
           />
         </Document>
-        <PageLabelLarge label={pageLabel} shown={reading} />
       </Container>
     </Box>
   );
