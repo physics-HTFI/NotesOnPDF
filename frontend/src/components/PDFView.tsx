@@ -31,7 +31,6 @@ interface Props extends BoxProps {
   file?: string;
   currentPage?: number;
   pageLabel?: string;
-  onPageChange?: (pageNum: number) => void;
   onLoadError?: () => void;
   onLoadSuccess?: (pdfPath: string, numPages: number) => void;
 }
@@ -43,7 +42,6 @@ const PDFView: React.FC<Props> = ({
   file,
   currentPage,
   pageLabel,
-  onPageChange,
   onLoadError,
   onLoadSuccess,
   sx,
@@ -91,10 +89,6 @@ const PDFView: React.FC<Props> = ({
         position: "relative",
       }}
       ref={outer}
-      onWheel={(e) => {
-        if (currentPage === undefined) return;
-        onPageChange?.(currentPage + (e.deltaY < 0 ? -1 : 1));
-      }}
     >
       <PageLabelSmall label={pageLabel} />
       <Container

@@ -27,9 +27,12 @@ function App() {
   const [isWaitingNotes, setIsWaitingNotes] = useState(false);
 
   // ページの遷移
-  const handlePageChange = (pageNum: number) => {
+  const handlePageChange = (delta: number) => {
     if (!notes) return;
-    const newPage = Math.max(0, Math.min(notes.numPages - 1, pageNum));
+    const newPage = Math.max(
+      0,
+      Math.min(notes.numPages - 1, notes.currentPage + delta)
+    );
     if (notes.currentPage === newPage) return;
     setNotes({ ...notes, currentPage: newPage });
   };
@@ -63,7 +66,12 @@ function App() {
   }, [isWaitingRead, isWaitingNotes, numPages, notes, targetPDF]);
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{ display: "flex" }}
+      onWheel={(e) => {
+        handlePageChange(e.deltaY < 0 ? -1 : 1);
+      }}
+    >
       {/* ファイルツリー */}
       <Drawer
         anchor={"left"}
@@ -73,6 +81,9 @@ function App() {
           setDrawerOpen(false);
         }}
         PaperProps={{ square: false, sx: { borderRadius: "0 5px 5px 0" } }}
+        onWheel={(e) => {
+          e.stopPropagation();
+        }}
       >
         {/* TODO ツリービューが2度目に開かれたときに、開閉状態を保存する */}
         {progresses && (
@@ -117,7 +128,6 @@ function App() {
             onChanged={(notes) => {
               setNotes({ ...notes });
             }}
-            onPageChange={handlePageChange}
           />
         </Panel>
         {/* リサイズハンドル */}
@@ -131,7 +141,6 @@ function App() {
             file={selectedPDF}
             currentPage={notes?.currentPage}
             pageLabel={notes ? getPageLabelSmall(notes) : undefined}
-            onPageChange={handlePageChange}
             onLoadError={() => {
               setIsWaitingRead(false);
               setDrawerOpen(true);
