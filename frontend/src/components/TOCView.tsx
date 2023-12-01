@@ -63,6 +63,7 @@ const TOCView: React.FC<Props> = ({
         overflowWrap: "break-word",
         overflow: "hidden",
         fontSize: "70%",
+        pt: 0.5,
       }}
     >
       <Control

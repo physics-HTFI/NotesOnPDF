@@ -5,7 +5,11 @@ import { Notes, Page } from "@/types/Notes";
  * 題名を返す
  */
 const getBook = (key: string, title: string) => (
-  <Typography key={key} variant="body1" sx={{ height: 23 }}>
+  <Typography
+    key={key}
+    variant="body1"
+    sx={{ lineHeight: 1, whiteSpace: "nowrap" }}
+  >
     {title}
   </Typography>
 );
@@ -14,7 +18,11 @@ const getBook = (key: string, title: string) => (
  * 部名を返す
  */
 const getPart = (key: string, title: string) => (
-  <Typography key={key} variant="body2" sx={{ height: 20 }}>
+  <Typography
+    key={key}
+    variant="body2"
+    sx={{ lineHeight: 1, whiteSpace: "nowrap" }}
+  >
     {title}
   </Typography>
 );
@@ -26,7 +34,12 @@ const getChapter = (key: string, title: string) => (
   <Typography
     key={key}
     variant="body2"
-    sx={{ fontSize: "110%", height: title ? 15 : 5, color: "gray" }}
+    sx={{
+      fontSize: "110%",
+      lineHeight: title ? 1 : 0.5,
+      color: "gray",
+      whiteSpace: "nowrap",
+    }}
   >
     {title}
   </Typography>

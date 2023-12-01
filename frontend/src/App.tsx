@@ -107,7 +107,7 @@ function App() {
       </Drawer>
       <PanelGroup direction="horizontal">
         {/* 目次 */}
-        <Panel defaultSizePercentage={30} minSizePercentage={20}>
+        <Panel defaultSizePixels={270} minSizePixels={220}>
           <TOCView
             pdfPath={targetPDF}
             notes={notes ?? undefined}
@@ -125,7 +125,7 @@ function App() {
           <Box sx={{ width: 5, height: "100vh", background: "silver" }} />
         </PanelResizeHandle>
         {/* PDFビュー */}
-        <Panel defaultSizePercentage={70} minSizePercentage={50}>
+        <Panel minSizePixels={300}>
           <PDFView
             sx={{ flexGrow: 1 }}
             file={selectedPDF}

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
-import { Settings } from "@mui/icons-material";
+import { AppRegistration } from "@mui/icons-material";
 
 /**
  * `Control`の引数
@@ -27,14 +27,15 @@ const Control: React.FC<Props> = ({
           position: "absolute",
           top: 0,
           right: 0,
+          background: "whitesmoke",
         }}
       >
-        <Tooltip title="PDFファイル選択パネルを表示">
+        <Tooltip title="PDFファイル選択パネルを表示する">
           <IconButton
             sx={{
               "&:focus": { outline: "none" },
+              color: "slategray",
             }}
-            color="primary"
             onClick={onOpenFileTree}
           >
             <FileOpenIcon />
@@ -44,11 +45,11 @@ const Control: React.FC<Props> = ({
           <IconButton
             sx={{
               "&:focus": { outline: "none" },
+              color: "slategray",
             }}
-            color="primary"
             onClick={onOpenSettings}
           >
-            <Settings />
+            <AppRegistration />
           </IconButton>
         </Tooltip>
       </Box>
