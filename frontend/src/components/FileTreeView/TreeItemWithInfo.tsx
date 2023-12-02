@@ -6,11 +6,6 @@ import { TreeItem, TreeItemProps, treeItemClasses } from "@mui/x-tree-view";
  * `TreeItem`を「開閉アイコンの下に鉛直線が入る」様にしたもの
  */
 const StyledTreeItem = styled(TreeItem)(({ theme }) => ({
-  [`& .${treeItemClasses.iconContainer}`]: {
-    "& .close": {
-      opacity: 0.3,
-    },
-  },
   [`& .${treeItemClasses.group}`]: {
     marginLeft: 15,
     paddingLeft: 18,
