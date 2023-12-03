@@ -1,5 +1,5 @@
 import { FileTree } from "@/types/FileTree";
-import TreeItemWithInfo from "../FileTreeView/TreeItemWithInfo";
+import TreeItemWithInfo from "./TreeItemWithInfo";
 import { Progresses } from "@/types/Progresses";
 
 /**

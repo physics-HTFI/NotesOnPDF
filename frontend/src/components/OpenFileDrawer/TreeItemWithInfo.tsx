@@ -23,11 +23,12 @@ interface Props extends TreeItemProps {
 }
 
 /**
- * `TreeItem`の右端にインフォを表示できるようにしたもの
+ * `TreeItem`の右端に進捗バーとツールチップを表示できるようにしたもの
  */
 const TreeItemWithInfo: React.FC<Props> = (props: Props) => {
   const { label, progress, ...other } = props;
 
+  // 進捗
   const percent =
     progress &&
     Math.min(
@@ -40,6 +41,7 @@ const TreeItemWithInfo: React.FC<Props> = (props: Props) => {
       )
     );
 
+  // ツールチップ
   const tooltip = progress ? (
     <>
       <div>総ページ： {`${progress.allPages}`} ページ</div>
@@ -63,9 +65,12 @@ const TreeItemWithInfo: React.FC<Props> = (props: Props) => {
               pr: 0,
             }}
           >
+            {/* ファイル／フォルダ名 */}
             <Typography variant="body2" sx={{ flexGrow: 1, fontSize: "80%" }}>
               {label}
             </Typography>
+
+            {/* 進捗 */}
             {percent !== undefined && (
               <Box
                 sx={{

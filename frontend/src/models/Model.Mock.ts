@@ -14,7 +14,7 @@ export default class ModelMock implements IModel {
         "dummy1/",
         [
           [
-            "dummy11/",
+            "dummy1/dummy11/",
             [
               "dummy1/dummy11/dummy11A.pdf",
               "dummy1/dummy11/dummy11B.pdf",
@@ -50,7 +50,7 @@ export default class ModelMock implements IModel {
   public getProgresses = async (): Promise<Progresses> => {
     await this.wait();
     return {
-      recentPath: "dummy1/dummy11/dummy11B.pdf",
+      recentPath: "文書1.pdf",
       PDFs: {
         "文書1.pdf": {
           allPages: 29,

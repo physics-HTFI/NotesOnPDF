@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Drawer } from "@mui/material";
-import FileTreeView from "@/components/FileTreeView";
+import { Box } from "@mui/material";
 import ModelMock from "@/models/Model.Mock";
 import { Progresses } from "@/types/Progresses";
 import PDFView from "@/components/PDFView";
@@ -11,6 +10,7 @@ import IModel from "@/models/IModel";
 import SnackbarsMock from "./components/SnackbarMock";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import Model from "./models/Model";
+import OpenFileDrawer from "./components/OpenFileDrawer";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 const model: IModel = IS_MOCK ? new ModelMock() : new Model();
@@ -23,7 +23,6 @@ function App() {
   const [numPages, setNumPages] = useState<number>();
 
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [isWaitingInit, setIsWaitingInit] = useState(false);
   const [isWaitingRead, setIsWaitingRead] = useState(false);
   const [isWaitingNotes, setIsWaitingNotes] = useState(false);
 
@@ -40,16 +39,12 @@ function App() {
 
   // ファイルツリーに表示する進捗情報の取得
   useEffect(() => {
-    setIsWaitingInit(true);
     model
       .getProgresses()
       .then((progresses) => {
         setProgresses(progresses);
       })
-      .catch(() => undefined)
-      .finally(() => {
-        setIsWaitingInit(false);
-      });
+      .catch(() => undefined);
   }, []);
 
   // 始めて読み込むPDFの場合、`Notes`を生成する
@@ -74,47 +69,39 @@ function App() {
       }}
     >
       {/* ファイルツリー */}
-      <Drawer
-        anchor={"left"}
+      <OpenFileDrawer
+        model={model}
+        progresses={progresses}
         open={drawerOpen}
         onClose={() => {
           if (!targetPDF) return;
           setDrawerOpen(false);
         }}
-        PaperProps={{ square: false, sx: { borderRadius: "0 5px 5px 0" } }}
-        onWheel={(e) => {
-          e.stopPropagation();
+        onSelect={(pdfPath) => {
+          setDrawerOpen(false);
+          if (selectedPDF === pdfPath) return;
+
+          setIsWaitingRead(true);
+          setTargetPDF(undefined);
+          setNumPages(undefined);
+          setSelectedPDF(pdfPath);
+
+          setIsWaitingNotes(true);
+          setNotes(undefined);
+          model
+            .getNotes(pdfPath)
+            .then((notes) => {
+              setNotes(notes);
+            })
+            .catch(() => {
+              setNotes(null);
+            })
+            .finally(() => {
+              setIsWaitingNotes(false);
+            });
         }}
-      >
-        {/* TODO ツリービューが2度目に開かれたときに、開閉状態を保存する */}
-        <FileTreeView
-          model={model}
-          Progresses={progresses}
-          onSelect={(pdfPath) => {
-            setDrawerOpen(false);
-            if (selectedPDF === pdfPath) return;
+      />
 
-            setIsWaitingRead(true);
-            setTargetPDF(undefined);
-            setNumPages(undefined);
-            setSelectedPDF(pdfPath);
-
-            setIsWaitingNotes(true);
-            setNotes(undefined);
-            model
-              .getNotes(pdfPath)
-              .then((notes) => {
-                setNotes(notes);
-              })
-              .catch(() => {
-                setNotes(null);
-              })
-              .finally(() => {
-                setIsWaitingNotes(false);
-              });
-          }}
-        />
-      </Drawer>
       <PanelGroup direction="horizontal">
         {/* 目次 */}
         <Panel defaultSizePixels={270} minSizePixels={220}>
@@ -154,7 +141,7 @@ function App() {
         </Panel>
       </PanelGroup>
       {/* 処理中プログレス表示 */}
-      <Waiting isWaiting={isWaitingInit || isWaitingRead || isWaitingNotes} />
+      <Waiting isWaiting={isWaitingRead || isWaitingNotes} />
 
       {/* モックモデルを使用していることを示すポップアップ表示 */}
       {IS_MOCK && <SnackbarsMock open />}
