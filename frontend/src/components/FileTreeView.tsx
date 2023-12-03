@@ -14,7 +14,7 @@ import getTreeItems from "./FileTreeView/getTreeItems";
 interface Props {
   onSelect: (pdfPath: string) => void;
   Progresses?: Progresses;
-  model?: IModel;
+  model: IModel;
 }
 
 /**
@@ -25,7 +25,7 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, Progresses }) => {
 
   useEffect(() => {
     model
-      ?.getFileTree()
+      .getFileTree()
       .then((files) => {
         setFileTree(files);
       })
@@ -41,13 +41,13 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, Progresses }) => {
         .map((ci) => Progresses.recentPath?.substring(0, ci[1] + 1) ?? "")
     : [];
 
-  return Progresses ? (
+  return (
     <TreeView
       defaultCollapseIcon={<KeyboardArrowDown />}
       defaultEndIcon={<FontAwesomeIcon icon={faFilePdf} />}
       defaultExpanded={expanded}
       defaultExpandIcon={<KeyboardArrowRight />}
-      defaultSelected={Progresses.recentPath}
+      defaultSelected={Progresses?.recentPath}
       onNodeSelect={(_, nodeIds) => {
         if (nodeIds.match(/[\\/]$/)) return; // フォルダの時は何もしない
         onSelect(nodeIds);
@@ -61,8 +61,6 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, Progresses }) => {
     >
       {getTreeItems(fileTree, Progresses)}
     </TreeView>
-  ) : (
-    <></>
   );
 };
 

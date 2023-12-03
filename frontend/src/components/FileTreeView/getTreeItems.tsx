@@ -7,7 +7,7 @@ import { Progresses } from "@/types/Progresses";
  * @example
  * <TreeView> {getTreeItems(fileTree)} </TreeView>
  */
-const getTreeItems = (fileTree: FileTree, Progresses: Progresses) =>
+const getTreeItems = (fileTree: FileTree, Progresses?: Progresses) =>
   fileTree.map((i) => {
     const getFileName = (path: string) =>
       path.match(/[^\\/]+(?=[\\/]?$)/)?.[0] ?? ""; // "dir/file" => "file", "dir/subdir/" => "subdir"
@@ -15,7 +15,7 @@ const getTreeItems = (fileTree: FileTree, Progresses: Progresses) =>
       return (
         <TreeItemWithInfo
           label={getFileName(i)}
-          progress={Progresses.PDFs[i]}
+          progress={Progresses?.PDFs[i]}
           nodeId={i}
           key={i}
         />

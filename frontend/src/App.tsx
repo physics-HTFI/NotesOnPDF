@@ -10,9 +10,10 @@ import { Notes, createNewNotes, getPageLabelSmall } from "@/types/Notes";
 import IModel from "@/models/IModel";
 import SnackbarsMock from "./components/SnackbarMock";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import Model from "./models/Model";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
-const model: IModel | undefined = IS_MOCK ? new ModelMock() : undefined;
+const model: IModel = IS_MOCK ? new ModelMock() : new Model();
 
 function App() {
   const [progresses, setProgresses] = useState<Progresses>();
@@ -41,7 +42,7 @@ function App() {
   useEffect(() => {
     setIsWaitingInit(true);
     model
-      ?.getProgresses()
+      .getProgresses()
       .then((progresses) => {
         setProgresses(progresses);
       })
@@ -101,7 +102,7 @@ function App() {
             setIsWaitingNotes(true);
             setNotes(undefined);
             model
-              ?.getNotes(pdfPath)
+              .getNotes(pdfPath)
               .then((notes) => {
                 setNotes(notes);
               })
