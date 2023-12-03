@@ -21,7 +21,8 @@ function App() {
   const [notes, setNotes] = useState<Notes | null>(); // 読み込み失敗時にnull
   const [numPages, setNumPages] = useState<number>();
 
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
+  const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
   const [isWaitingPDF, setIsWaitingPDF] = useState(false);
   const [isWaitingNotes, setIsWaitingNotes] = useState(false);
 
@@ -71,13 +72,13 @@ function App() {
       <OpenFileDrawer
         model={model}
         progresses={progresses}
-        open={drawerOpen}
+        open={openLeftDrawer}
         onClose={() => {
           if (!targetPDF) return;
-          setDrawerOpen(false);
+          setOpenLeftDrawer(false);
         }}
         onSelect={(pdfPath) => {
-          setDrawerOpen(false);
+          setOpenLeftDrawer(false);
           if (targetPDF === pdfPath) return;
           setIsWaitingPDF(true);
           setIsWaitingNotes(true);
@@ -102,10 +103,8 @@ function App() {
         <Panel defaultSizePixels={270} minSizePixels={220}>
           <TOCView
             pdfPath={targetPDF}
+            openDrawer={openBottomDrawer}
             notes={notes ?? undefined}
-            onOpenFileTree={() => {
-              setDrawerOpen(true);
-            }}
             onChanged={(notes) => {
               setNotes({ ...notes });
             }}
@@ -124,16 +123,23 @@ function App() {
             file={targetPDF}
             currentPage={notes?.currentPage}
             pageLabel={notes ? getPageLabelSmall(notes) : undefined}
+            openDrawer={openBottomDrawer}
+            onOpenFileTree={() => {
+              setOpenLeftDrawer(true);
+            }}
+            onOpenDrawer={() => {
+              setOpenBottomDrawer(!openBottomDrawer);
+            }}
             onLoadError={() => {
               setTargetPDF(undefined);
               setNumPages(undefined);
               setIsWaitingPDF(false);
-              setDrawerOpen(true);
+              setOpenLeftDrawer(true);
             }}
             onLoadSuccess={(numPages) => {
               setNumPages(numPages);
               setIsWaitingPDF(false);
-              setDrawerOpen(false);
+              setOpenLeftDrawer(false);
             }}
           />
         </Panel>

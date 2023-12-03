@@ -1,10 +1,8 @@
-import React, { useState } from "react";
-import { Box, Drawer, IconButton } from "@mui/material";
+import React from "react";
+import { Box, Drawer } from "@mui/material";
 import { Notes } from "@/types/Notes";
-import Control from "./TOCView/Control";
 import Settings from "./TOCView/Settings";
 import getTOCData from "./TOCView/getTOCData";
-import { ExpandMore } from "@mui/icons-material";
 
 /**
  * `TOCView`の引数
@@ -12,8 +10,8 @@ import { ExpandMore } from "@mui/icons-material";
 interface Props {
   pdfPath?: string;
   notes?: Notes;
+  openDrawer: boolean;
   onChanged: (notes: Notes) => void;
-  onOpenFileTree: () => void;
 }
 
 /**
@@ -21,13 +19,10 @@ interface Props {
  */
 const TOCView: React.FC<Props> = ({
   pdfPath,
+  openDrawer,
   notes,
   onChanged,
-  onOpenFileTree,
 }) => {
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const [showControl, setShowControl] = useState(false);
-
   let partNum = 1;
   let chapterNum = 1;
   let pageNum = 1;
@@ -44,12 +39,6 @@ const TOCView: React.FC<Props> = ({
 
   return (
     <Box
-      onMouseEnter={() => {
-        setShowControl(true);
-      }}
-      onMouseLeave={() => {
-        setShowControl(false);
-      }}
       sx={{
         background: "whitesmoke",
         position: "relative",
@@ -59,14 +48,6 @@ const TOCView: React.FC<Props> = ({
         fontSize: "70%",
       }}
     >
-      <Control
-        shown={showControl}
-        openSettings={!openDrawer}
-        onOpenFileTree={onOpenFileTree}
-        onOpenSettings={() => {
-          setOpenDrawer(!openDrawer);
-        }}
-      />
       <Box sx={{ p: 0.5 }}>{getTOCData(notes, onChanged)}</Box>
 
       <Drawer
@@ -100,19 +81,6 @@ const TOCView: React.FC<Props> = ({
             onChanged(notes);
           }}
         />
-        <IconButton
-          sx={{
-            position: "absolute",
-            right: 0,
-            top: "-35px",
-          }}
-          onClick={() => {
-            setOpenDrawer(!openDrawer);
-          }}
-          size="small"
-        >
-          <ExpandMore />
-        </IconButton>
       </Drawer>
     </Box>
   );

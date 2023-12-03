@@ -5,6 +5,7 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
+import Control from "./PDFView/Control";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -31,8 +32,11 @@ interface Props extends BoxProps {
   file?: string;
   currentPage?: number;
   pageLabel?: string;
+  openDrawer: boolean;
   onLoadError?: () => void;
   onLoadSuccess?: (numPages: number) => void;
+  onOpenFileTree: () => void;
+  onOpenDrawer: () => void;
 }
 
 /**
@@ -44,6 +48,8 @@ const PDFView: React.FC<Props> = ({
   pageLabel,
   onLoadError,
   onLoadSuccess,
+  onOpenFileTree,
+  onOpenDrawer,
   sx,
 }) => {
   const [reading, setReading] = useState(false);
@@ -91,6 +97,7 @@ const PDFView: React.FC<Props> = ({
       ref={outer}
     >
       <PageLabelSmall label={pageLabel} />
+      <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />
       <Container
         sx={{
           width,
