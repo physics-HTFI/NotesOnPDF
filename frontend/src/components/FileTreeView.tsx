@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ExpandMore, ChevronRight } from "@mui/icons-material";
+import { KeyboardArrowRight, KeyboardArrowDown } from "@mui/icons-material";
 import { TreeView } from "@mui/x-tree-view";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
@@ -13,7 +13,7 @@ import getTreeItems from "./FileTreeView/getTreeItems";
  */
 interface Props {
   onSelect: (pdfPath: string) => void;
-  Progresses: Progresses;
+  Progresses?: Progresses;
   model?: IModel;
 }
 
@@ -34,19 +34,19 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, Progresses }) => {
       });
   }, [model]);
 
-  const expanded = Progresses.recentPath
+  const expanded = Progresses?.recentPath
     ? [...Progresses.recentPath]
         .map<[string, number]>((c, i) => [c, i])
         .filter((ci) => ci[0].match(/[\\/]/))
         .map((ci) => Progresses.recentPath?.substring(0, ci[1] + 1) ?? "")
     : [];
 
-  return (
+  return Progresses ? (
     <TreeView
-      defaultCollapseIcon={<ExpandMore />}
+      defaultCollapseIcon={<KeyboardArrowDown />}
       defaultEndIcon={<FontAwesomeIcon icon={faFilePdf} />}
       defaultExpanded={expanded}
-      defaultExpandIcon={<ChevronRight />}
+      defaultExpandIcon={<KeyboardArrowRight />}
       defaultSelected={Progresses.recentPath}
       onNodeSelect={(_, nodeIds) => {
         if (nodeIds.match(/[\\/]$/)) return; // フォルダの時は何もしない
@@ -61,6 +61,8 @@ const FileTreeView: React.FC<Props> = ({ model, onSelect, Progresses }) => {
     >
       {getTreeItems(fileTree, Progresses)}
     </TreeView>
+  ) : (
+    <></>
   );
 };
 

@@ -86,35 +86,33 @@ function App() {
         }}
       >
         {/* TODO ツリービューが2度目に開かれたときに、開閉状態を保存する */}
-        {progresses && (
-          <FileTreeView
-            model={model}
-            Progresses={progresses}
-            onSelect={(pdfPath) => {
-              setDrawerOpen(false);
-              if (selectedPDF === pdfPath) return;
+        <FileTreeView
+          model={model}
+          Progresses={progresses}
+          onSelect={(pdfPath) => {
+            setDrawerOpen(false);
+            if (selectedPDF === pdfPath) return;
 
-              setIsWaitingRead(true);
-              setTargetPDF(undefined);
-              setNumPages(undefined);
-              setSelectedPDF(pdfPath);
+            setIsWaitingRead(true);
+            setTargetPDF(undefined);
+            setNumPages(undefined);
+            setSelectedPDF(pdfPath);
 
-              setIsWaitingNotes(true);
-              setNotes(undefined);
-              model
-                ?.getNotes(pdfPath)
-                .then((notes) => {
-                  setNotes(notes);
-                })
-                .catch(() => {
-                  setNotes(null);
-                })
-                .finally(() => {
-                  setIsWaitingNotes(false);
-                });
-            }}
-          />
-        )}
+            setIsWaitingNotes(true);
+            setNotes(undefined);
+            model
+              ?.getNotes(pdfPath)
+              .then((notes) => {
+                setNotes(notes);
+              })
+              .catch(() => {
+                setNotes(null);
+              })
+              .finally(() => {
+                setIsWaitingNotes(false);
+              });
+          }}
+        />
       </Drawer>
       <PanelGroup direction="horizontal">
         {/* 目次 */}

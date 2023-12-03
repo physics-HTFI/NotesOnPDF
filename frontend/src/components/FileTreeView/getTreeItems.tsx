@@ -12,32 +12,10 @@ const getTreeItems = (fileTree: FileTree, Progresses: Progresses) =>
     const getFileName = (path: string) =>
       path.match(/[^\\/]+(?=[\\/]?$)/)?.[0] ?? ""; // "dir/file" => "file", "dir/subdir/" => "subdir"
     if (typeof i === "string") {
-      const pdf = Progresses.PDFs[i];
-      const progress =
-        pdf &&
-        Math.min(
-          100,
-          Math.max(
-            0,
-            Math.round((100 * pdf.notedPages) / Math.max(1, pdf.enabledPages))
-          )
-        );
       return (
         <TreeItemWithInfo
           label={getFileName(i)}
-          progress={progress}
-          tooltip={
-            pdf ? (
-              <>
-                <div>総ページ： {`${pdf.allPages}`} ページ</div>
-                {pdf.allPages === pdf.enabledPages ? undefined : (
-                  <div>有効ページ： {`${pdf.enabledPages}`} ページ</div>
-                )}
-                <div>ノート付き： {`${pdf.notedPages}`} ページ</div>
-                <div>ノート率： {`${progress}`}%</div>
-              </>
-            ) : undefined
-          }
+          progress={Progresses.PDFs[i]}
           nodeId={i}
           key={i}
         />
