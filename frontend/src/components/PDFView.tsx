@@ -32,7 +32,7 @@ interface Props extends BoxProps {
   currentPage?: number;
   pageLabel?: string;
   onLoadError?: () => void;
-  onLoadSuccess?: (pdfPath: string, numPages: number) => void;
+  onLoadSuccess?: (numPages: number) => void;
 }
 
 /**
@@ -110,7 +110,7 @@ const PDFView: React.FC<Props> = ({
           file={path}
           onLoadSuccess={(doc) => {
             if (!file) return;
-            onLoadSuccess?.(file, doc.numPages);
+            onLoadSuccess?.(doc.numPages);
             const getsizes = async () => {
               sizes.current = [];
               for (let i = 0; i < doc.numPages; i++) {

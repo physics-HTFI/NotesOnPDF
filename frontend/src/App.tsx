@@ -17,13 +17,12 @@ const model: IModel = IS_MOCK ? new ModelMock() : new Model();
 
 function App() {
   const [progresses, setProgresses] = useState<Progresses>();
-  const [selectedPDF, setSelectedPDF] = useState<string>();
   const [targetPDF, setTargetPDF] = useState<string>();
   const [notes, setNotes] = useState<Notes | null>(); // 読み込み失敗時にnull
   const [numPages, setNumPages] = useState<number>();
 
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [isWaitingRead, setIsWaitingRead] = useState(false);
+  const [isWaitingPDF, setIsWaitingPDF] = useState(false);
   const [isWaitingNotes, setIsWaitingNotes] = useState(false);
 
   // ページの遷移
@@ -49,7 +48,7 @@ function App() {
 
   // 始めて読み込むPDFの場合、`Notes`を生成する
   useEffect(() => {
-    if (isWaitingRead || isWaitingNotes) return;
+    if (isWaitingPDF || isWaitingNotes) return;
     if (!numPages || !targetPDF) return;
     if (notes === undefined) return;
 
@@ -59,7 +58,7 @@ function App() {
       // 同じPDFでページ数が異なっている場合に対応する
       setNotes({ ...notes, numPages });
     }
-  }, [isWaitingRead, isWaitingNotes, numPages, notes, targetPDF]);
+  }, [isWaitingPDF, isWaitingNotes, numPages, notes, targetPDF]);
 
   return (
     <Box
@@ -79,15 +78,11 @@ function App() {
         }}
         onSelect={(pdfPath) => {
           setDrawerOpen(false);
-          if (selectedPDF === pdfPath) return;
-
-          setIsWaitingRead(true);
-          setTargetPDF(undefined);
-          setNumPages(undefined);
-          setSelectedPDF(pdfPath);
-
+          if (targetPDF === pdfPath) return;
+          setIsWaitingPDF(true);
           setIsWaitingNotes(true);
           setNotes(undefined);
+          setTargetPDF(pdfPath);
           model
             .getNotes(pdfPath)
             .then((notes) => {
@@ -116,32 +111,36 @@ function App() {
             }}
           />
         </Panel>
+
         {/* リサイズハンドル */}
         <PanelResizeHandle>
           <Box sx={{ width: 5, height: "100vh", background: "silver" }} />
         </PanelResizeHandle>
+
         {/* PDFビュー */}
         <Panel minSizePixels={300}>
           <PDFView
             sx={{ flexGrow: 1 }}
-            file={selectedPDF}
+            file={targetPDF}
             currentPage={notes?.currentPage}
             pageLabel={notes ? getPageLabelSmall(notes) : undefined}
             onLoadError={() => {
-              setIsWaitingRead(false);
+              setTargetPDF(undefined);
+              setNumPages(undefined);
+              setIsWaitingPDF(false);
               setDrawerOpen(true);
             }}
-            onLoadSuccess={(pdfPath, numPages) => {
-              setTargetPDF(pdfPath);
+            onLoadSuccess={(numPages) => {
               setNumPages(numPages);
-              setIsWaitingRead(false);
+              setIsWaitingPDF(false);
               setDrawerOpen(false);
             }}
           />
         </Panel>
       </PanelGroup>
+
       {/* 処理中プログレス表示 */}
-      <Waiting isWaiting={isWaitingRead || isWaitingNotes} />
+      <Waiting isWaiting={isWaitingPDF || isWaitingNotes} />
 
       {/* モックモデルを使用していることを示すポップアップ表示 */}
       {IS_MOCK && <SnackbarsMock open />}
