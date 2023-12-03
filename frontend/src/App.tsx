@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import IModel from "@/models/IModel";
+import Model from "./models/Model";
 import ModelMock from "@/models/Model.Mock";
 import { Progresses } from "@/types/Progresses";
-import PDFView from "@/components/PDFView";
-import Waiting from "@/components/Waiting";
-import TOCView from "@/components/TOCView";
 import { Notes, createNewNotes, getPageLabelSmall } from "@/types/Notes";
-import IModel from "@/models/IModel";
-import SnackbarsMock from "./components/SnackbarMock";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import Model from "./models/Model";
+import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "./components/OpenFileDrawer";
+import PDFView from "@/components/PDFView";
+import Waiting from "@/components/Fullscreen/Waiting";
+import TOCView from "@/components/TOCView";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 const model: IModel = IS_MOCK ? new ModelMock() : new Model();

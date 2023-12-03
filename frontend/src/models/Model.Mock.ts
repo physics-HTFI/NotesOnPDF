@@ -113,8 +113,9 @@ export default class ModelMock implements IModel {
     */
   };
 
-  getNotes = async (): Promise<Notes> => {
+  getNotes = async (path: string): Promise<Notes> => {
     await this.wait();
+    if (path !== "文書1.pdf") throw new Error();
     return {
       numPages: 29,
       currentPage: 0,
