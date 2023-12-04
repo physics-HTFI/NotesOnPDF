@@ -9,7 +9,6 @@ export default class ModelMock implements IModel {
   public getFileTree = async (): Promise<FileTree> => {
     await this.wait();
     return [
-      "文書1.pdf",
       [
         "dummy1/",
         [
@@ -27,6 +26,7 @@ export default class ModelMock implements IModel {
         ],
       ],
       ["dummy2/", ["dummy2/dummy2A.pdf", "dummy1/dummy2B.pdf"]],
+      "文書1.pdf",
     ];
     /*
     return [
@@ -115,7 +115,7 @@ export default class ModelMock implements IModel {
 
   getNotes = async (path: string): Promise<Notes> => {
     await this.wait();
-    if (path === "文書1.pdf") throw new Error();
+    if (path !== "文書1.pdf") throw new Error();
     return {
       numPages: 29,
       currentPage: 0,
