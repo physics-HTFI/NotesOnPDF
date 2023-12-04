@@ -12,11 +12,17 @@ export interface Notes {
  * 1つのページに追加された全ての情報
  */
 export interface Page {
+  /** 本のタイトル */
   book?: string;
+  /** 部のタイトル */
   part?: string;
+  /** 章のタイトル */
   chapter?: string;
+  /** このページで節が変わる場合`true` */
   sectionBreak?: boolean;
+  /** 新たにページ番号を振りなおす場合に数値を指定する */
   pageNumberRestart?: number;
+  /** 無効なページの場合に`true` */
   excluded?: boolean;
   // badge     texts  footnotes
   // polygons         markers
@@ -47,16 +53,20 @@ export const createNewNotes = (title: string, numPages: number): Notes => ({
   settings: { offsetTop: 0, offsetBottom: 0, offsetLeft: 0, offsetRight: 0 },
   pages: {
     0: {
-      book: title.match(/[^\\/]+$/)?.[0] ?? undefined,
+      book: title.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined,
       pageNumberRestart: 1,
     },
   },
 });
 
 /**
- * @returns `notes.currentPage`または`pageNumber`の表示上のページ数
+ * `pageNumber`の表示上のページ数を返す。
+ * `pageNumber`が省略されている場合は`notes.currentPage`を対象とする。
  */
-export const getPageLabel = (notes: Notes, pageNumber?: number): string => {
+export const getPageLabelSmall = (
+  notes: Notes,
+  pageNumber?: number
+): string => {
   pageNumber ??= notes.currentPage;
   let retval = 0;
   for (let i = pageNumber; 0 <= i; i--) {

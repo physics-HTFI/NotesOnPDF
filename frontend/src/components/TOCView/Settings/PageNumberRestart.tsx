@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FormControlLabel, Switch, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  FormControlLabel,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 /**
  * `PageNumberRestart`の引数
@@ -27,7 +33,7 @@ const PageNumberRestart: React.FC<Props> = ({
   }, [pageNumberRestart, preferredPageNumber]);
 
   return (
-    <>
+    <Box sx={{ whiteSpace: "nowrap" }}>
       {/* ページ番号を前ページから決める */}
       <FormControlLabel
         control={
@@ -48,18 +54,13 @@ const PageNumberRestart: React.FC<Props> = ({
         }
         sx={{ pt: 1 }}
       />
-
-      {/* ダミー（左側にスペースを空ける） */}
-      <FormControlLabel
-        control={<Switch size="small" />}
-        label=""
-        sx={{ visibility: "hidden", mr: 0 }}
-      />
+      <br />
 
       {/* 新しく始める */}
       <Typography
         variant="button"
         sx={{
+          pl: 3.6,
           visibility: checked ? "hidden" : "visible",
         }}
       >
@@ -82,7 +83,7 @@ const PageNumberRestart: React.FC<Props> = ({
           visibility: checked ? "hidden" : "visible",
         }}
       />
-    </>
+    </Box>
   );
 };
 

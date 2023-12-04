@@ -1,8 +1,11 @@
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Box, BoxProps, Container } from "@mui/material";
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import PageLabelSmall from "./PDFView/PageLabelSmall";
+import PageLabelLarge from "./PDFView/PageLabelLarge";
+import Control from "./PDFView/Control";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -29,9 +32,11 @@ interface Props extends BoxProps {
   file?: string;
   currentPage?: number;
   pageLabel?: string;
-  onPageChange?: (pageNum: number) => void;
+  openDrawer: boolean;
   onLoadError?: () => void;
-  onLoadSuccess?: (pdfPath: string, numPages: number) => void;
+  onLoadSuccess?: (numPages: number) => void;
+  onOpenFileTree: () => void;
+  onOpenDrawer: () => void;
 }
 
 /**
@@ -41,24 +46,19 @@ const PDFView: React.FC<Props> = ({
   file,
   currentPage,
   pageLabel,
-  onPageChange,
   onLoadError,
   onLoadSuccess,
+  onOpenFileTree,
+  onOpenDrawer,
   sx,
 }) => {
+  const [reading, setReading] = useState(false);
   const path = useMemo(
     () => (file ? `${import.meta.env.VITE_PDF_ROOT}${file}` : undefined),
     [file]
   );
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
-
-  if (outer.current) {
-    outer.current.onwheel = (e) => {
-      if (currentPage === undefined) return;
-      onPageChange?.(currentPage + (e.deltaY < 0 ? -1 : 1));
-    };
-  }
 
   const [width, height] =
     currentPage === undefined
@@ -73,12 +73,10 @@ const PDFView: React.FC<Props> = ({
   const deltaX = 0;
   const deltaY = 0;
 
-  /*
   useEffect(() => {
-    // これがないと（同じサイズのPDFの場合に）ビューがリサイズされない
-    onPageChange?.(-1); // TODO リファクタリングで動かなくなっているので要確認
-  }, [onPageChange]);
-  */
+    if (currentPage === undefined) return;
+    setReading(true);
+  }, [currentPage]);
 
   return (
     <Box
@@ -91,21 +89,8 @@ const PDFView: React.FC<Props> = ({
       }}
       ref={outer}
     >
-      <Box
-        sx={{
-          position: "absolute",
-          left: 3,
-          bottom: 2,
-          background: "teal",
-          borderRadius: 3,
-          color: "white",
-          pr: 1,
-          pl: 1,
-        }}
-        fontSize={14}
-      >
-        {pageLabel}
-      </Box>
+      <PageLabelSmall label={pageLabel} />
+      <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />
       <Container
         sx={{
           width,
@@ -120,11 +105,12 @@ const PDFView: React.FC<Props> = ({
         }}
         disableGutters
       >
+        <PageLabelLarge label={pageLabel} shown={reading} />
         <Document
           file={path}
           onLoadSuccess={(doc) => {
             if (!file) return;
-            onLoadSuccess?.(file, doc.numPages);
+            onLoadSuccess?.(doc.numPages);
             const getsizes = async () => {
               sizes.current = [];
               for (let i = 0; i < doc.numPages; i++) {
@@ -147,6 +133,9 @@ const PDFView: React.FC<Props> = ({
             error={""}
             loading={""}
             noData={""}
+            onLoadSuccess={() => {
+              setReading(false);
+            }}
           />
         </Document>
       </Container>

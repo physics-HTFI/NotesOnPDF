@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Box,
   FormControlLabel,
   Switch,
   TextField,
@@ -38,7 +39,7 @@ const CheckboxText: React.FC<Props> = ({
   }, [text, preferredText]);
 
   return (
-    <>
+    <Box sx={{ whiteSpace: "nowrap", width: "100%", display: "flex" }}>
       <Tooltip title={tooltip} disableInteractive>
         <FormControlLabel
           control={
@@ -64,6 +65,8 @@ const CheckboxText: React.FC<Props> = ({
             fontSize: "140%",
             visibility: checkedLocal ? "visible" : "hidden",
             height: 30,
+            width: "auto",
+            flexGrow: 1,
           },
         }}
         onChange={(e) => {
@@ -73,7 +76,7 @@ const CheckboxText: React.FC<Props> = ({
         }}
         sx={{ flexGrow: 1, pb: 0.5, pt: 1 }}
       />
-    </>
+    </Box>
   );
 };
 

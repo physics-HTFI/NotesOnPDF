@@ -34,7 +34,7 @@ const Excluded: React.FC<Props> = ({ excluded, onChange }) => {
           />
         }
         label={<Typography variant="button">このページを除外する</Typography>}
-        sx={{ pt: 1 }}
+        sx={{ pt: 1, width: "100%", whiteSpace: "nowrap" }}
       />
     </Tooltip>
   );

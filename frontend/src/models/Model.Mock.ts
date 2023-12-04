@@ -8,7 +8,26 @@ export default class ModelMock implements IModel {
 
   public getFileTree = async (): Promise<FileTree> => {
     await this.wait();
-    return ["文書1.pdf", ["フォルダ/", ["フォルダ/文書2.pdf"]]];
+    return [
+      "文書1.pdf",
+      [
+        "dummy1/",
+        [
+          [
+            "dummy1/dummy11/",
+            [
+              "dummy1/dummy11/dummy11A.pdf",
+              "dummy1/dummy11/dummy11B.pdf",
+              "dummy1/dummy11/dummy11C.pdf",
+            ],
+          ],
+          "dummy1/dummy1A.pdf",
+          "dummy1/dummy1B.pdf",
+          "dummy1/dummy1C.pdf",
+        ],
+      ],
+      ["dummy2/", ["dummy2/dummy2A.pdf", "dummy1/dummy2B.pdf"]],
+    ];
     /*
     return [
       [
@@ -32,7 +51,28 @@ export default class ModelMock implements IModel {
     await this.wait();
     return {
       recentPath: "文書1.pdf",
-      PDFs: {},
+      PDFs: {
+        "文書1.pdf": {
+          allPages: 29,
+          enabledPages: 23,
+          notedPages: 0,
+        },
+        "dummy1/dummy1A.pdf": {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 20,
+        },
+        "dummy1/dummy1B.pdf": {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 50,
+        },
+        "dummy1/dummy1C.pdf": {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 100,
+        },
+      },
     };
     /*
     return {
@@ -73,11 +113,12 @@ export default class ModelMock implements IModel {
     */
   };
 
-  getNotes = async (): Promise<Notes> => {
+  getNotes = async (path: string): Promise<Notes> => {
     await this.wait();
+    if (path === "文書1.pdf") throw new Error();
     return {
-      numPages: 15,
-      currentPage: 3,
+      numPages: 29,
+      currentPage: 0,
       settings: {
         offsetTop: 0,
         offsetBottom: 0,
@@ -85,24 +126,21 @@ export default class ModelMock implements IModel {
         offsetRight: 0,
       },
       pages: {
-        0: {
-          book: "タイトル",
-          part: "第1部",
-        },
-        1: {
-          chapter: "第1章",
-          pageNumberRestart: 10,
-          excluded: true,
-        },
-        3: {
-          sectionBreak: true,
-        },
-        6: {
-          chapter: "第2章",
-        },
-        8: {
-          sectionBreak: true,
-        },
+        "0": { book: "タイトル", excluded: true },
+        "1": { excluded: true },
+        "2": { excluded: true },
+        "3": { part: "第1部" },
+        "4": { chapter: "第1章" },
+        "7": { sectionBreak: true },
+        "10": { chapter: "第2章" },
+        "11": { sectionBreak: true },
+        "17": { chapter: "第3章" },
+        "18": { sectionBreak: true },
+        "22": { part: "第2部", excluded: true },
+        "23": { chapter: "第4章" },
+        "25": { chapter: "第5章" },
+        "27": { chapter: "", excluded: true },
+        "28": { excluded: true },
       },
     };
   };
