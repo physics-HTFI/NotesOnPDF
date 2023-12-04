@@ -78,7 +78,7 @@ const TOCView: React.FC<Props> = ({
               ...notes.pages[notes.currentPage],
               ...page,
             };
-            onChanged(notes);
+            onChanged({ ...notes });
           }}
         />
       </Drawer>

@@ -106,7 +106,7 @@ function App() {
             openDrawer={openBottomDrawer}
             notes={notes ?? undefined}
             onChanged={(notes) => {
-              setNotes({ ...notes });
+              setNotes(notes);
             }}
           />
         </Panel>

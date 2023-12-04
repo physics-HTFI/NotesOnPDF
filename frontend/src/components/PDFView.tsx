@@ -78,13 +78,6 @@ const PDFView: React.FC<Props> = ({
     setReading(true);
   }, [currentPage]);
 
-  /*
-  useEffect(() => {
-    // これがないと（同じサイズのPDFの場合に）ビューがリサイズされない
-    onPageChange?.(-1); // TODO リファクタリングで動かなくなっているので要確認
-  }, [onPageChange]);
-  */
-
   return (
     <Box
       sx={{

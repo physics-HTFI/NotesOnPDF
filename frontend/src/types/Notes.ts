@@ -53,7 +53,7 @@ export const createNewNotes = (title: string, numPages: number): Notes => ({
   settings: { offsetTop: 0, offsetBottom: 0, offsetLeft: 0, offsetRight: 0 },
   pages: {
     0: {
-      book: title.match(/[^\\/]+$/)?.[0] ?? undefined,
+      book: title.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined,
       pageNumberRestart: 1,
     },
   },
