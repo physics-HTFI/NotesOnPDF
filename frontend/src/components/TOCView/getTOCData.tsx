@@ -8,7 +8,11 @@ const getBook = (key: string, title: string) => (
   <Typography
     key={key}
     variant="body1"
-    sx={{ whiteSpace: "nowrap", color: "gray" }}
+    sx={{
+      whiteSpace: "nowrap",
+      color: "gray",
+      "&:not(:first-of-type)": { pt: 1 },
+    }}
   >
     {title}
   </Typography>

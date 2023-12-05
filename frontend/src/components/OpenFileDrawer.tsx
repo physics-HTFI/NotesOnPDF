@@ -8,6 +8,7 @@ import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "./OpenFileDrawer/getTreeItems";
+import IconButtons from "./OpenFileDrawer/IconButtons";
 
 /**
  * `OpenFileDrawer`の引数
@@ -17,7 +18,7 @@ interface Props {
   progresses?: Progresses;
   model: IModel;
   onClose: () => void;
-  onSelect: (pdfPath: string) => void;
+  onSelect: (pdf: string | File) => void;
 }
 
 /**
@@ -69,13 +70,17 @@ const OpenFileDrawer: React.FC<Props> = ({
           maxWidth: 500,
           minWidth: 280,
           overflowX: "hidden",
-          pt: 1,
         },
       }}
       onWheel={(e) => {
         e.stopPropagation();
       }}
     >
+      <IconButtons
+        onOpenFile={(file) => {
+          onSelect(file);
+        }}
+      />
       <TreeView
         expanded={expanded}
         selected={selected}

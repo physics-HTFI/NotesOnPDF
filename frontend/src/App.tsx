@@ -17,9 +17,10 @@ const model: IModel = IS_MOCK ? new ModelMock() : new Model();
 
 function App() {
   const [progresses, setProgresses] = useState<Progresses>();
-  const [targetPDF, setTargetPDF] = useState<string>();
+  const [pdf, setPDF] = useState<string | File>();
   const [notes, setNotes] = useState<Notes | null>(); // 読み込み失敗時にnull
   const [numPages, setNumPages] = useState<number>();
+  const pdfPath = pdf && (pdf instanceof File ? pdf.name : pdf);
 
   const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
   const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
@@ -50,16 +51,16 @@ function App() {
   // 始めて読み込むPDFの場合、`Notes`を生成する
   useEffect(() => {
     if (isWaitingPDF || isWaitingNotes) return;
-    if (!numPages || !targetPDF) return;
+    if (!numPages || !pdf || !pdfPath) return;
     if (notes === undefined) return;
 
     if (notes === null) {
-      setNotes(createNewNotes(targetPDF, numPages));
+      setNotes(createNewNotes(pdfPath, numPages));
     } else if (notes.numPages !== numPages) {
       // 同じPDFでページ数が異なっている場合に対応する
       setNotes({ ...notes, numPages });
     }
-  }, [isWaitingPDF, isWaitingNotes, numPages, notes, targetPDF]);
+  }, [isWaitingPDF, isWaitingNotes, numPages, notes, pdfPath, pdf]);
 
   return (
     <Box
@@ -74,18 +75,19 @@ function App() {
         progresses={progresses}
         open={openLeftDrawer}
         onClose={() => {
-          if (!targetPDF) return;
+          if (!pdf) return;
           setOpenLeftDrawer(false);
         }}
-        onSelect={(pdfPath) => {
+        onSelect={(pdf) => {
           setOpenLeftDrawer(false);
-          if (targetPDF === pdfPath) return;
+          const pdfPathNew = pdf instanceof File ? pdf.name : pdf;
+          if (pdfPath === pdfPathNew || !pdfPathNew) return;
           setIsWaitingPDF(true);
           setIsWaitingNotes(true);
           setNotes(undefined);
-          setTargetPDF(pdfPath);
+          setPDF(pdf);
           model
-            .getNotes(pdfPath)
+            .getNotes(pdfPathNew)
             .then((notes) => {
               setNotes(notes);
             })
@@ -102,7 +104,7 @@ function App() {
         {/* 目次 */}
         <Panel defaultSizePixels={270} minSizePixels={220}>
           <TOCView
-            pdfPath={targetPDF}
+            pdfPath={pdfPath}
             openDrawer={openBottomDrawer}
             notes={notes ?? undefined}
             onChanged={(notes) => {
@@ -120,7 +122,7 @@ function App() {
         <Panel minSizePixels={300}>
           <PDFView
             sx={{ flexGrow: 1 }}
-            file={targetPDF}
+            file={pdf}
             currentPage={notes?.currentPage}
             pageLabel={notes ? getPageLabelSmall(notes) : undefined}
             openDrawer={openBottomDrawer}
@@ -131,7 +133,7 @@ function App() {
               setOpenBottomDrawer(!openBottomDrawer);
             }}
             onLoadError={() => {
-              setTargetPDF(undefined);
+              setPDF(undefined);
               setNumPages(undefined);
               setIsWaitingPDF(false);
               setOpenLeftDrawer(true);

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, BoxProps, Container } from "@mui/material";
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -29,7 +29,7 @@ const preferredWidth = (
  * `PDFView`の引数
  */
 interface Props extends BoxProps {
-  file?: string;
+  file?: string | File;
   currentPage?: number;
   pageLabel?: string;
   openDrawer: boolean;
@@ -53,13 +53,8 @@ const PDFView: React.FC<Props> = ({
   sx,
 }) => {
   const [reading, setReading] = useState(false);
-  const path = useMemo(
-    () => (file ? `${import.meta.env.VITE_PDF_ROOT}${file}` : undefined),
-    [file]
-  );
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
-
   const [width, height] =
     currentPage === undefined
       ? [undefined, undefined]
@@ -105,9 +100,12 @@ const PDFView: React.FC<Props> = ({
         }}
         disableGutters
       >
-        <PageLabelLarge label={pageLabel} shown={reading} />
         <Document
-          file={path}
+          file={
+            file instanceof File
+              ? file
+              : `${import.meta.env.VITE_PDF_ROOT}${file}`
+          }
           onLoadSuccess={(doc) => {
             if (!file) return;
             onLoadSuccess?.(doc.numPages);
@@ -133,11 +131,12 @@ const PDFView: React.FC<Props> = ({
             error={""}
             loading={""}
             noData={""}
-            onLoadSuccess={() => {
+            onRenderSuccess={() => {
               setReading(false);
             }}
           />
         </Document>
+        <PageLabelLarge label={pageLabel} shown={reading} />
       </Container>
     </Box>
   );

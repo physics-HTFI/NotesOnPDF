@@ -24,8 +24,9 @@ const PageLabelLarge: React.FC<Props> = ({ label, shown }) => (
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      fontSize: "1.5em",
-      visibility: shown ? "visible" : "collapse",
+      fontSize: "2em",
+      zIndex: shown ? 100 : -1,
+      background: "white",
     }}
   >
     {label}

@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { KeyboardArrowRight, KeyboardArrowUp } from "@mui/icons-material";
+import {
+  KeyboardArrowDown,
+  KeyboardArrowRight,
+  KeyboardArrowUp,
+} from "@mui/icons-material";
 
 /**
  * `Control`の引数
@@ -14,6 +18,7 @@ interface Props {
  * 目次の右上に表示されるボタンコントロール
  */
 const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
+  const [upward, setUpward] = useState(true);
   return (
     <Box
       sx={{
@@ -40,9 +45,12 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
             "&:focus": { outline: "none" },
             color: "slategray",
           }}
-          onClick={onOpenSettings}
+          onClick={() => {
+            setUpward(!upward);
+            onOpenSettings();
+          }}
         >
-          <KeyboardArrowUp />
+          {upward ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
         </IconButton>
       </Tooltip>
     </Box>
