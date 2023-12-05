@@ -18,7 +18,7 @@ interface Props {
   progresses?: Progresses;
   model: IModel;
   onClose: () => void;
-  onSelect: (pdfPath: string) => void;
+  onSelect: (pdf: string | File) => void;
 }
 
 /**
@@ -78,10 +78,7 @@ const OpenFileDrawer: React.FC<Props> = ({
     >
       <IconButtons
         onOpenFile={(file) => {
-          console.log(file?.name);
-        }}
-        onOpenURL={(url) => {
-          console.log(url);
+          onSelect(file);
         }}
       />
       <TreeView

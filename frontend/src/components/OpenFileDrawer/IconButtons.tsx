@@ -1,27 +1,26 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { FolderOpen, Language } from "@mui/icons-material";
-import OpenURLDialog from "./OpenURLDialog";
+import { FolderOpen } from "@mui/icons-material";
 
 /**
  * `IconButtons`の引数
  */
 interface Props {
-  onOpenFile: (file?: File) => void;
-  onOpenURL: (url?: string) => void;
+  onOpenFile: (file: File) => void;
 }
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
-const IconButtons: React.FC<Props> = ({ onOpenFile, onOpenURL }) => {
-  const [openURLDialog, setOpenURLDialog] = useState(false);
+const IconButtons: React.FC<Props> = ({ onOpenFile }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Box sx={{ mb: 1, borderBottom: "solid 1px gainsboro" }}>
+    <Box
+      sx={{ mb: 0.5, borderBottom: "solid 1px gainsboro", textAlign: "right" }}
+    >
       {/* PC内のPDFファイルを開く */}
-      <Tooltip title="PC内のPDFファイルを開く">
+      <Tooltip title="既定のフォルダ以外のPDFファイルを開く">
         <IconButton
           sx={{
             "&:focus": { outline: "none" },
@@ -38,35 +37,13 @@ const IconButtons: React.FC<Props> = ({ onOpenFile, onOpenURL }) => {
             style={{ display: "none" }}
             ref={inputRef}
             onChange={(e) => {
-              onOpenFile(e.target.files?.[0]);
+              const file = e.target.files?.[0];
+              if (!file) return;
+              onOpenFile(file);
             }}
           />
         </IconButton>
       </Tooltip>
-
-      {/* URLから開く */}
-      <Tooltip title="URLからPDFファイルを開く">
-        <IconButton
-          sx={{
-            "&:focus": { outline: "none" },
-            color: "slategray",
-          }}
-          onClick={() => {
-            setOpenURLDialog(true);
-          }}
-          size="small"
-        >
-          <Language />
-        </IconButton>
-      </Tooltip>
-      <OpenURLDialog
-        open={openURLDialog}
-        onClose={(url) => {
-          setOpenURLDialog(false);
-          if (!url) return;
-          onOpenURL(url);
-        }}
-      />
     </Box>
   );
 };
