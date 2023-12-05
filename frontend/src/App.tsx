@@ -85,7 +85,6 @@ function App() {
           setIsWaitingPDF(true);
           setIsWaitingNotes(true);
           setNotes(undefined);
-          console.log(pdf);
           setPDF(pdf);
           model
             .getNotes(pdfPathNew)
