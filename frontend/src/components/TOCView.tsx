@@ -48,7 +48,7 @@ const TOCView: React.FC<Props> = ({
         fontSize: "70%",
       }}
     >
-      <Box sx={{ p: 0.5 }}>{getTOCData(notes, onChanged)}</Box>
+      <Box sx={{ p: 0.5, lineHeight: 1 }}>{getTOCData(notes, onChanged)}</Box>
 
       <Drawer
         variant="persistent"

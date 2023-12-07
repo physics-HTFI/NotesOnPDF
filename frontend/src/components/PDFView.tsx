@@ -41,6 +41,8 @@ interface Props extends BoxProps {
 
 /**
  * PDFを表示するコンポーネント
+ * TODO 除外したページを暗くする
+ * TODO 表示範囲
  */
 const PDFView: React.FC<Props> = ({
   file,

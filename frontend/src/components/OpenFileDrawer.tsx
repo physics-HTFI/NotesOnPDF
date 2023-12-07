@@ -7,8 +7,8 @@ import { TreeView } from "@mui/x-tree-view";
 import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
-import getTreeItems from "./OpenFileDrawer/getTreeItems";
-import IconButtons from "./OpenFileDrawer/IconButtons";
+import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
+import IconButtons from "@/components/OpenFileDrawer/IconButtons";
 
 /**
  * `OpenFileDrawer`の引数

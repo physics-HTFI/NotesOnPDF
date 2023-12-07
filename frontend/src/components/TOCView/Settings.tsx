@@ -20,6 +20,7 @@ interface Props {
 
 /**
  * 設定パネル
+ * TODO 表示範囲
  */
 const Settings: React.FC<Props> = ({
   page,
