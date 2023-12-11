@@ -125,6 +125,7 @@ function App() {
             file={pdf}
             currentPage={notes?.currentPage}
             pageLabel={notes ? getPageLabelSmall(notes) : undefined}
+            settings={notes?.settings}
             openDrawer={openBottomDrawer}
             onOpenFileTree={() => {
               setOpenLeftDrawer(true);
