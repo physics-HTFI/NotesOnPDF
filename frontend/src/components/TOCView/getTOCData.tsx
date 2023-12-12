@@ -39,10 +39,12 @@ const getChapter = (key: string, title: string) => (
     key={key}
     variant="body2"
     sx={{
+      pt: 0.5,
       fontSize: "110%",
-      lineHeight: title ? 1 : 0.5,
+      lineHeight: 1,
       color: "gray",
       whiteSpace: "nowrap",
+      minHeight: 6,
     }}
   >
     {title}
@@ -132,8 +134,8 @@ const getTOCData = (
         <span
           style={{
             display: "inline-block",
-            width: 8,
-            height: 8,
+            width: 7,
+            height: 7,
             background: getPageColor(i, notes.currentPage, page),
             marginRight: 2,
             cursor: "pointer",

@@ -6,6 +6,7 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import Control from "./PDFView/Control";
+import { Settings } from "@/types/Notes";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -13,16 +14,21 @@ const options = {
   standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts`,
 };
 
-const preferredWidth = (
+/** [width, height, deltaY（＝view中心とPDF中心の差）] */
+const preferredSize = (
+  top: number,
+  bottom: number,
   pdfW?: number,
   pdfH?: number,
   viewW?: number,
   viewH?: number
-) => {
-  if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined];
-  return pdfW / pdfH <= viewW / viewH
-    ? [(pdfW * viewH) / pdfH, viewH]
-    : [viewW, (pdfH * viewW) / pdfW];
+): readonly [number | undefined, number | undefined, number] => {
+  if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined, 0];
+  const H = viewH * 0.01 * (100 + top + bottom);
+  const W = (pdfW * H) / pdfH;
+  const deltaY = -0.5 * viewH * 0.01 * (top - bottom);
+  const ratio = Math.min(1, viewW / W);
+  return [ratio * W, ratio * H, ratio * deltaY];
 };
 
 /**
@@ -32,6 +38,7 @@ interface Props extends BoxProps {
   file?: string | File;
   currentPage?: number;
   pageLabel?: string;
+  settings?: Settings;
   openDrawer: boolean;
   onLoadError?: () => void;
   onLoadSuccess?: (numPages: number) => void;
@@ -41,11 +48,13 @@ interface Props extends BoxProps {
 
 /**
  * PDFを表示するコンポーネント
+ * TODO 除外したページを暗くする
  */
 const PDFView: React.FC<Props> = ({
   file,
   currentPage,
   pageLabel,
+  settings,
   onLoadError,
   onLoadSuccess,
   onOpenFileTree,
@@ -55,18 +64,17 @@ const PDFView: React.FC<Props> = ({
   const [reading, setReading] = useState(false);
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
-  const [width, height] =
+  const [width, height, deltaY] =
     currentPage === undefined
       ? [undefined, undefined]
-      : preferredWidth(
+      : preferredSize(
+          settings?.offsetTop ?? 0,
+          settings?.offsetBottom ?? 0,
           sizes.current?.[currentPage]?.width,
           sizes.current?.[currentPage]?.height,
           outer.current?.clientWidth,
           outer.current?.clientHeight
         );
-
-  const deltaX = 0;
-  const deltaY = 0;
 
   useEffect(() => {
     if (currentPage === undefined) return;
@@ -90,7 +98,7 @@ const PDFView: React.FC<Props> = ({
         sx={{
           width,
           height,
-          transform: `translate(${deltaX}, ${deltaY})`,
+          transform: `translate(0, ${deltaY}px)`,
           position: "absolute",
           top: 0,
           bottom: 0,

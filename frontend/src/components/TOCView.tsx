@@ -48,7 +48,7 @@ const TOCView: React.FC<Props> = ({
         fontSize: "70%",
       }}
     >
-      <Box sx={{ p: 0.5 }}>{getTOCData(notes, onChanged)}</Box>
+      <Box sx={{ p: 0.5, lineHeight: 1 }}>{getTOCData(notes, onChanged)}</Box>
 
       <Drawer
         variant="persistent"
@@ -68,17 +68,25 @@ const TOCView: React.FC<Props> = ({
       >
         <Settings
           page={notes?.pages[notes.currentPage] ?? {}}
+          settings={notes?.settings}
           preferredBook={pdfPath?.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? ""}
           preferredPart={`第${partNum}部`}
           preferredChapter={`第${chapterNum}章`}
           preferredPageNumber={pageNum}
-          onChange={(page) => {
+          onChangePage={(page) => {
             if (!notes) return;
             notes.pages[notes.currentPage] = {
               ...notes.pages[notes.currentPage],
               ...page,
             };
             onChanged({ ...notes });
+          }}
+          onChangeSettings={(settings) => {
+            if (!notes) return;
+            onChanged({
+              ...notes,
+              settings: { ...notes.settings, ...settings },
+            });
           }}
         />
       </Drawer>
