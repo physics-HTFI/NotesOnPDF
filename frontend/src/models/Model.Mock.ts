@@ -120,8 +120,8 @@ export default class ModelMock implements IModel {
       numPages: 29,
       currentPage: 0,
       settings: {
-        offsetTop: 0.1,
-        offsetBottom: 0.1,
+        offsetTop: 10,
+        offsetBottom: 10,
       },
       pages: {
         "0": { book: "タイトル", excluded: true },

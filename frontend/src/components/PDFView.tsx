@@ -24,9 +24,9 @@ const preferredSize = (
   viewH?: number
 ): readonly [number | undefined, number | undefined, number] => {
   if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined, 0];
-  const H = viewH * (1 + top + bottom);
+  const H = viewH * 0.01 * (100 + top + bottom);
   const W = (pdfW * H) / pdfH;
-  const deltaY = -0.5 * viewH * (top - bottom);
+  const deltaY = -0.5 * viewH * 0.01 * (top - bottom);
   const ratio = Math.min(1, viewW / W);
   return [ratio * W, ratio * H, ratio * deltaY];
 };

@@ -38,9 +38,9 @@ export interface Settings {
   fontSizeSmall?: number;
   fontSizeMiddle?: number;
   fontSizeLarge?: number;
-  /** PDFの上側がどれだけ見切れるか */
+  /** PDFの上側がどれだけ見切れるか(%) */
   offsetTop: number;
-  /** PDFの下側がどれだけ見切れるか */
+  /** PDFの下側がどれだけ見切れるか(%) */
   offsetBottom: number;
 }
 
