@@ -83,9 +83,9 @@ const getPageColor = (i: number, currentPage: number, page?: Page) => {
 };
 
 /**
- * TODO 節が長いと途中で改行されて、新規の節と紛らわしい。ハイフンなどがつけられれば良いが。
  * @returns 目次の内容
  */
+// TODO 節が長いと途中で改行されて、新規の節と紛らわしい。ハイフンなどがつけられれば良いが。
 const getTOCData = (
   notes?: Notes,
   onChanged?: (notes: Notes) => void

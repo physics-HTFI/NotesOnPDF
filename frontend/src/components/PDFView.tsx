@@ -48,8 +48,8 @@ interface Props extends BoxProps {
 
 /**
  * PDFを表示するコンポーネント
- * TODO 除外したページを暗くする
  */
+// TODO 除外したページを暗くする
 const PDFView: React.FC<Props> = ({
   file,
   currentPage,
@@ -92,8 +92,6 @@ const PDFView: React.FC<Props> = ({
       }}
       ref={outer}
     >
-      <PageLabelSmall label={pageLabel} />
-      <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />
       <Container
         sx={{
           width,
@@ -146,6 +144,8 @@ const PDFView: React.FC<Props> = ({
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
       </Container>
+      <PageLabelSmall label={pageLabel} />
+      <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />
     </Box>
   );
 };
