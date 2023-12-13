@@ -7,6 +7,7 @@ import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import Control from "./PDFView/Control";
 import { Settings } from "@/types/Notes";
+import Palette from "./PDFView/Palette";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -146,6 +147,7 @@ const PDFView: React.FC<Props> = ({
       </Container>
       <PageLabelSmall label={pageLabel} />
       <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />
+      <Palette open={true} x={0} y={0} />
     </Box>
   );
 };
