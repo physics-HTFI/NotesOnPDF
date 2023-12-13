@@ -34,6 +34,7 @@ const IconButtons: React.FC<Props> = ({ onOpenFile }) => {
           <FolderOpen />
           <input
             type="file"
+            accept="application/pdf"
             style={{ display: "none" }}
             ref={inputRef}
             onChange={(e) => {
