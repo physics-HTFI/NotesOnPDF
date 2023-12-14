@@ -71,6 +71,9 @@ const PDFView: React.FC<Props> = ({
   sx,
 }) => {
   const [reading, setReading] = useState(false);
+  const [paretteOpen, setParetteOpen] = useState(false);
+  const [paretteX, setParetteX] = useState(0);
+  const [paretteY, setParetteY] = useState(0);
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
   const [width, height, top, bottom] =
@@ -111,8 +114,19 @@ const PDFView: React.FC<Props> = ({
           left: 0,
           right: 0,
           margin: "auto",
+          containerType: "size",
         }}
         disableGutters
+        onMouseDown={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          setParetteX(e.pageX - rect.left - window.scrollX);
+          setParetteY(e.pageY - rect.top - window.scrollY);
+          setParetteOpen(true);
+          e.preventDefault();
+        }}
+        onMouseUp={() => {
+          setParetteOpen(false);
+        }}
       >
         <Document
           file={
@@ -151,7 +165,11 @@ const PDFView: React.FC<Props> = ({
           />
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
-        <Palette open={true} x={0} y={0} />
+        <Palette
+          open={paretteOpen}
+          x={(100 * paretteX) / (width ?? 1)}
+          y={(100 * paretteY) / (height ?? 1)}
+        />
       </Container>
       <PageLabelSmall label={pageLabel} />
       <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />

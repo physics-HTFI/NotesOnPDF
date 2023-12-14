@@ -25,6 +25,7 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
         position: "absolute",
         top: 0,
         left: 0,
+        zIndex: 100,
       }}
     >
       <Tooltip title="PDFファイル選択パネルを開く">

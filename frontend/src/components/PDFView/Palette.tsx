@@ -5,7 +5,9 @@ import { Box } from "@mui/material";
  * `Palette`の引数
  */
 interface Props {
+  /** 表示位置(%) */
   x: number;
+  /** 表示位置(%) */
   y: number;
   open: boolean;
 }
@@ -33,7 +35,20 @@ const Palette: React.FC<Props> = ({ open, x, y }) => {
 
   return (
     open && (
-      <>
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          width: 100,
+          height: 100,
+          background: "gray",
+          m: "auto",
+          transform: `translate(${-50 + x}cqw, ${-50 + y}cqh)`,
+        }}
+      >
         <Box
           sx={{
             ...props,
@@ -90,7 +105,7 @@ const Palette: React.FC<Props> = ({ open, x, y }) => {
             transform: translate(7),
           }}
         />
-      </>
+      </Box>
     )
   );
 };
