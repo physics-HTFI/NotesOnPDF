@@ -17,23 +17,27 @@ const options = {
 
 /** [width, height, deltaY（＝view中心とPDF中心の差）] */
 const preferredSize = (
-  top: number,
-  bottom: number,
+  offsetTop: number,
+  offsetBottom: number,
   pdfW?: number,
   pdfH?: number,
   viewW?: number,
   viewH?: number
 ): readonly [number | undefined, number | undefined, number, number] => {
   if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined, 0, 0];
-  const H = viewH / 0.01 / (100 - top - bottom);
+  const H = viewH / 0.01 / (100 - offsetTop - offsetBottom);
   const W = (pdfW * H) / pdfH;
   const ratio = Math.min(1, viewW / W);
-  return [
-    ratio * W,
-    ratio * H,
-    -ratio * H * 0.01 * top,
-    -ratio * H * 0.01 * bottom,
-  ];
+  const top = H * 0.01 * offsetTop;
+  const bottom = H * 0.01 * offsetBottom;
+  const calTB = (tb: number) => {
+    if (ratio === 1) return tb;
+    if (top === 0 && bottom === 0) return 0;
+    if (ratio * H < viewH) return 0;
+    // ratio==1の時に tb, ratio*H==viewH(==H-top-bottom) の時に 0 になる
+    return (1 - ((1 - ratio) * H) / (top + bottom)) * tb;
+  };
+  return [ratio * W, ratio * H, -calTB(top), -calTB(bottom)];
 };
 
 /**
@@ -101,7 +105,7 @@ const PDFView: React.FC<Props> = ({
         sx={{
           width,
           height,
-          position: "relative",
+          position: "absolute",
           top,
           bottom,
           left: 0,
@@ -147,10 +151,10 @@ const PDFView: React.FC<Props> = ({
           />
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
+        <Palette open={true} x={0} y={0} />
       </Container>
       <PageLabelSmall label={pageLabel} />
       <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />
-      <Palette open={true} x={0} y={0} />
     </Box>
   );
 };
