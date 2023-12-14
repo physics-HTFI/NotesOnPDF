@@ -23,13 +23,17 @@ const preferredSize = (
   pdfH?: number,
   viewW?: number,
   viewH?: number
-): readonly [number | undefined, number | undefined, number] => {
-  if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined, 0];
-  const H = viewH * 0.01 * (100 + top + bottom);
+): readonly [number | undefined, number | undefined, number, number] => {
+  if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined, 0, 0];
+  const H = viewH / 0.01 / (100 - top - bottom);
   const W = (pdfW * H) / pdfH;
-  const deltaY = -0.5 * viewH * 0.01 * (top - bottom);
   const ratio = Math.min(1, viewW / W);
-  return [ratio * W, ratio * H, ratio * deltaY];
+  return [
+    ratio * W,
+    ratio * H,
+    -ratio * H * 0.01 * top,
+    -ratio * H * 0.01 * bottom,
+  ];
 };
 
 /**
@@ -65,7 +69,7 @@ const PDFView: React.FC<Props> = ({
   const [reading, setReading] = useState(false);
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
-  const [width, height, deltaY] =
+  const [width, height, top, bottom] =
     currentPage === undefined
       ? [undefined, undefined]
       : preferredSize(
@@ -97,10 +101,9 @@ const PDFView: React.FC<Props> = ({
         sx={{
           width,
           height,
-          transform: `translate(0, ${deltaY}px)`,
-          position: "absolute",
-          top: 0,
-          bottom: 0,
+          position: "relative",
+          top,
+          bottom,
           left: 0,
           right: 0,
           margin: "auto",

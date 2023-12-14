@@ -22,7 +22,7 @@ const LabelSlider: React.FC<Props> = ({ label, value, onChange }) => {
       <Slider
         size="small"
         min={0}
-        max={25}
+        max={30}
         step={1}
         value={value}
         sx={{ flexGrow: 1 }}
