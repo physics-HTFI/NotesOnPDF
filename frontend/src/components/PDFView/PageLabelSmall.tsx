@@ -22,8 +22,13 @@ const PageLabelSmall: React.FC<Props> = ({ label }) => (
       color: "white",
       pr: 1,
       pl: 1,
+      cursor: "default",
     }}
     fontSize={14}
+    onMouseDown={(e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    }}
   >
     {label}
   </Box>

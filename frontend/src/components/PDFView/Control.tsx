@@ -27,6 +27,9 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
         left: 0,
         zIndex: 100,
       }}
+      onMouseDown={(e) => {
+        e.stopPropagation();
+      }}
     >
       <Tooltip title="PDFファイル選択パネルを開く">
         <IconButton
