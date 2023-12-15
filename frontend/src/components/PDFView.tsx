@@ -76,6 +76,7 @@ const PDFView: React.FC<Props> = ({
   const [paretteY, setParetteY] = useState(0);
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
+  const inner = useRef<HTMLDivElement>(null);
   const [width, height, top, bottom] =
     currentPage === undefined
       ? [undefined, undefined]
@@ -103,6 +104,20 @@ const PDFView: React.FC<Props> = ({
         position: "relative",
       }}
       ref={outer}
+      onMouseDown={(e) => {
+        if (!inner.current) return;
+        const rect = inner.current.getBoundingClientRect();
+        setParetteX(e.pageX - rect.left - window.scrollX);
+        setParetteY(e.pageY - rect.top - window.scrollY);
+        setParetteOpen(true);
+        e.preventDefault();
+      }}
+      onMouseUp={() => {
+        setParetteOpen(false);
+      }}
+      onMouseLeave={() => {
+        setParetteOpen(false);
+      }}
     >
       <Container
         sx={{
@@ -117,16 +132,7 @@ const PDFView: React.FC<Props> = ({
           containerType: "size",
         }}
         disableGutters
-        onMouseDown={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          setParetteX(e.pageX - rect.left - window.scrollX);
-          setParetteY(e.pageY - rect.top - window.scrollY);
-          setParetteOpen(true);
-          e.preventDefault();
-        }}
-        onMouseUp={() => {
-          setParetteOpen(false);
-        }}
+        ref={inner}
       >
         <Document
           file={

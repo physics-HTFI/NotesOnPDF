@@ -44,7 +44,6 @@ const Palette: React.FC<Props> = ({ open, x, y }) => {
           right: 0,
           width: 100,
           height: 100,
-          background: "gray",
           m: "auto",
           transform: `translate(${-50 + x}cqw, ${-50 + y}cqh)`,
         }}
