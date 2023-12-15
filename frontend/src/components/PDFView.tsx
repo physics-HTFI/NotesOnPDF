@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, BoxProps, Container } from "@mui/material";
 import { pdfjs, Document, Page as ReactPage } from "react-pdf";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import Control from "./PDFView/Control";
 import { Page, Settings } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
+import Overlay from "./PDFView/Overlay";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -60,7 +59,6 @@ interface Props extends BoxProps {
 /**
  * PDFを表示するコンポーネント
  */
-// TODO 除外したページを暗くする
 const PDFView: React.FC<Props> = ({
   file,
   currentPage,
@@ -174,6 +172,7 @@ const PDFView: React.FC<Props> = ({
           />
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
+        <Overlay page={page} />
         <Palette
           open={paretteOpen}
           x={(100 * paretteX) / (width ?? 1)}
