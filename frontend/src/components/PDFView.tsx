@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, BoxProps, Container } from "@mui/material";
-import { pdfjs, Document, Page } from "react-pdf";
+import { pdfjs, Document, Page as ReactPage } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import Control from "./PDFView/Control";
-import { Settings } from "@/types/Notes";
+import { Page, Settings } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
+import Excluded from "./PDFView/Excluded";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -47,6 +48,7 @@ interface Props extends BoxProps {
   file?: string | File;
   currentPage?: number;
   pageLabel?: string;
+  page?: Page;
   settings?: Settings;
   openDrawer: boolean;
   onLoadError?: () => void;
@@ -63,6 +65,7 @@ const PDFView: React.FC<Props> = ({
   file,
   currentPage,
   pageLabel,
+  page,
   settings,
   onLoadError,
   onLoadSuccess,
@@ -159,7 +162,7 @@ const PDFView: React.FC<Props> = ({
           loading={""}
           noData={""}
         >
-          <Page
+          <ReactPage
             pageIndex={currentPage}
             width={width}
             error={""}
@@ -177,6 +180,7 @@ const PDFView: React.FC<Props> = ({
           y={(100 * paretteY) / (height ?? 1)}
         />
       </Container>
+      <Excluded excluded={page?.excluded ?? false} />
       <PageLabelSmall label={pageLabel} />
       <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />
     </Box>

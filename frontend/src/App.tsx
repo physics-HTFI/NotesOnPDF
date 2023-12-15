@@ -124,6 +124,7 @@ function App() {
             sx={{ flexGrow: 1 }}
             file={pdf}
             currentPage={notes?.currentPage}
+            page={notes?.pages[notes.currentPage]}
             pageLabel={notes ? getPageLabelSmall(notes) : undefined}
             settings={notes?.settings}
             openDrawer={openBottomDrawer}
