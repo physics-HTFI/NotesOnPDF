@@ -44,74 +44,65 @@ const Settings: React.FC<Props> = ({
 }) => {
   return (
     <Box sx={{ fontSize: "80%", flexWrap: "wrap" }}>
-      <Accordion
-        sx={{ background: "unset" }}
-        elevation={0}
-        defaultExpanded={true}
-      >
-        <AccordionSummary expandIcon={<ExpandLess />}>
-          <Typography>ページ設定</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {/* 題区切り */}
-          <CheckboxText
-            label="題区切り"
-            tooltip="このページの前に題名を追加します"
-            text={page?.book}
-            preferredText={preferredBook}
-            onChange={(book) => {
-              onChangePage({ book });
-            }}
-          />
+      <Box sx={{ mx: 1.5, mb: 1.5 }}>
+        {/* 題区切り */}
+        <CheckboxText
+          label="題区切り"
+          tooltip="このページの前に題名を追加します"
+          text={page?.book}
+          preferredText={preferredBook}
+          onChange={(book) => {
+            onChangePage({ book });
+          }}
+        />
 
-          {/* 部区切り */}
-          <CheckboxText
-            label="部区切り"
-            tooltip="このページの前に部名を追加します"
-            text={page?.part}
-            preferredText={preferredPart}
-            onChange={(part) => {
-              onChangePage({ part });
-            }}
-          />
+        {/* 部区切り */}
+        <CheckboxText
+          label="部区切り"
+          tooltip="このページの前に部名を追加します"
+          text={page?.part}
+          preferredText={preferredPart}
+          onChange={(part) => {
+            onChangePage({ part });
+          }}
+        />
 
-          {/* 章区切り */}
-          <CheckboxText
-            label="章区切り"
-            tooltip="このページの前に章名を追加します"
-            text={page?.chapter}
-            preferredText={preferredChapter}
-            onChange={(chapter) => {
-              onChangePage({ chapter });
-            }}
-          />
+        {/* 章区切り */}
+        <CheckboxText
+          label="章区切り"
+          tooltip="このページの前に章名を追加します"
+          text={page?.chapter}
+          preferredText={preferredChapter}
+          onChange={(chapter) => {
+            onChangePage({ chapter });
+          }}
+        />
 
-          {/* 節区切り */}
-          <SectionBreak
-            sectionBreak={page?.sectionBreak}
-            onChange={(sectionBreak) => {
-              onChangePage({ sectionBreak });
-            }}
-          />
+        {/* 節区切り */}
+        <SectionBreak
+          sectionBreak={page?.sectionBreak}
+          onChange={(sectionBreak) => {
+            onChangePage({ sectionBreak });
+          }}
+        />
 
-          {/* ページ番号 */}
-          <PageNumberRestart
-            pageNumberRestart={page?.pageNumberRestart}
-            preferredPageNumber={preferredPageNumber}
-            onChange={(pageNumberRestart) => {
-              onChangePage({ pageNumberRestart });
-            }}
-          />
+        {/* ページ番号 */}
+        <PageNumberRestart
+          pageNumberRestart={page?.pageNumberRestart}
+          preferredPageNumber={preferredPageNumber}
+          onChange={(pageNumberRestart) => {
+            onChangePage({ pageNumberRestart });
+          }}
+        />
 
-          {/* ページ除外 */}
-          <Excluded
-            excluded={page?.excluded}
-            onChange={(excluded) => {
-              onChangePage({ excluded });
-            }}
-          />
-        </AccordionDetails>
-      </Accordion>
+        {/* ページ除外 */}
+        <Excluded
+          excluded={page?.excluded}
+          onChange={(excluded) => {
+            onChangePage({ excluded });
+          }}
+        />
+      </Box>
       <Accordion sx={{ background: "unset" }}>
         <AccordionSummary expandIcon={<ExpandLess />}>
           <Typography>PDF設定</Typography>

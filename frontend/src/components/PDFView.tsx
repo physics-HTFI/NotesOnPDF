@@ -7,6 +7,7 @@ import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import Control from "./PDFView/Control";
 import { Settings } from "@/types/Notes";
+import Palette from "./PDFView/Palette";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -16,19 +17,27 @@ const options = {
 
 /** [width, height, deltaY（＝view中心とPDF中心の差）] */
 const preferredSize = (
-  top: number,
-  bottom: number,
+  offsetTop: number,
+  offsetBottom: number,
   pdfW?: number,
   pdfH?: number,
   viewW?: number,
   viewH?: number
-): readonly [number | undefined, number | undefined, number] => {
-  if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined, 0];
-  const H = viewH * 0.01 * (100 + top + bottom);
+): readonly [number | undefined, number | undefined, number, number] => {
+  if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined, 0, 0];
+  const H = viewH / 0.01 / (100 - offsetTop - offsetBottom);
   const W = (pdfW * H) / pdfH;
-  const deltaY = -0.5 * viewH * 0.01 * (top - bottom);
   const ratio = Math.min(1, viewW / W);
-  return [ratio * W, ratio * H, ratio * deltaY];
+  const top = H * 0.01 * offsetTop;
+  const bottom = H * 0.01 * offsetBottom;
+  const calTB = (tb: number) => {
+    if (ratio === 1) return tb;
+    if (top === 0 && bottom === 0) return 0;
+    if (ratio * H < viewH) return 0;
+    // ratio==1の時に tb, ratio*H==viewH(==H-top-bottom) の時に 0 になる
+    return (1 - ((1 - ratio) * H) / (top + bottom)) * tb;
+  };
+  return [ratio * W, ratio * H, -calTB(top), -calTB(bottom)];
 };
 
 /**
@@ -62,9 +71,13 @@ const PDFView: React.FC<Props> = ({
   sx,
 }) => {
   const [reading, setReading] = useState(false);
+  const [paretteOpen, setParetteOpen] = useState(false);
+  const [paretteX, setParetteX] = useState(0);
+  const [paretteY, setParetteY] = useState(0);
   const sizes = useRef<{ width: number; height: number }[]>();
   const outer = useRef<HTMLDivElement>(null);
-  const [width, height, deltaY] =
+  const inner = useRef<HTMLDivElement>(null);
+  const [width, height, top, bottom] =
     currentPage === undefined
       ? [undefined, undefined]
       : preferredSize(
@@ -91,20 +104,35 @@ const PDFView: React.FC<Props> = ({
         position: "relative",
       }}
       ref={outer}
+      onMouseDown={(e) => {
+        if (!inner.current) return;
+        const rect = inner.current.getBoundingClientRect();
+        setParetteX(e.pageX - rect.left - window.scrollX);
+        setParetteY(e.pageY - rect.top - window.scrollY);
+        setParetteOpen(true);
+        e.preventDefault();
+      }}
+      onMouseUp={() => {
+        setParetteOpen(false);
+      }}
+      onMouseLeave={() => {
+        setParetteOpen(false);
+      }}
     >
       <Container
         sx={{
           width,
           height,
-          transform: `translate(0, ${deltaY}px)`,
           position: "absolute",
-          top: 0,
-          bottom: 0,
+          top,
+          bottom,
           left: 0,
           right: 0,
           margin: "auto",
+          containerType: "size",
         }}
         disableGutters
+        ref={inner}
       >
         <Document
           file={
@@ -143,6 +171,11 @@ const PDFView: React.FC<Props> = ({
           />
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
+        <Palette
+          open={paretteOpen}
+          x={(100 * paretteX) / (width ?? 1)}
+          y={(100 * paretteY) / (height ?? 1)}
+        />
       </Container>
       <PageLabelSmall label={pageLabel} />
       <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />
