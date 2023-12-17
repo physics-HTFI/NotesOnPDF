@@ -25,11 +25,11 @@ const preferredSize = (
   viewH?: number
 ): readonly [number | undefined, number | undefined, number, number] => {
   if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined, 0, 0];
-  const H = viewH / 0.01 / (100 - offsetTop - offsetBottom);
+  const H = viewH / (1 - offsetTop - offsetBottom);
   const W = (pdfW * H) / pdfH;
   const ratio = Math.min(1, viewW / W);
-  const top = H * 0.01 * offsetTop;
-  const bottom = H * 0.01 * offsetBottom;
+  const top = H * offsetTop;
+  const bottom = H * offsetBottom;
   const calTB = (tb: number) => {
     if (ratio === 1) return tb;
     if (top === 0 && bottom === 0) return 0;

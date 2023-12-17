@@ -38,9 +38,9 @@ export interface Settings {
   fontSizeSmall?: number;
   fontSizeMiddle?: number;
   fontSizeLarge?: number;
-  /** PDFの上側がどれだけ見切れるか(%) */
+  /** PDFの上側がどれだけ見切れるか[0-1] */
   offsetTop: number;
-  /** PDFの下側がどれだけ見切れるか(%) */
+  /** PDFの下側がどれだけ見切れるか[0-1]*/
   offsetBottom: number;
 }
 
@@ -50,7 +50,7 @@ export interface Settings {
 export const createNewNotes = (title: string, numPages: number): Notes => ({
   numPages,
   currentPage: 0,
-  settings: { offsetTop: 10, offsetBottom: 10 },
+  settings: { offsetTop: 0, offsetBottom: 0 },
   pages: {
     0: {
       book: title.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined,
