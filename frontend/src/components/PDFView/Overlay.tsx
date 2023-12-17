@@ -7,6 +7,7 @@ import Note from "./Overlay/Note";
 import PageLink from "./Overlay/PageLink";
 import Rect from "./Overlay/Rect";
 import Polygon from "./Overlay/Polygon";
+import Svg from "./Overlay/Svg";
 
 /**
  * `Overlay`の引数
@@ -22,47 +23,7 @@ const Overlay: React.FC<Props> = () => {
   const [w, h] = [680, 480];
   return (
     <>
-      <svg
-        viewBox={`0 0 ${w} ${h}`}
-        style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute",
-          left: 0,
-          top: 0,
-          overflow: "visible",
-        }}
-      >
-        <defs>
-          <marker
-            viewBox="0 0 10 8"
-            id="head"
-            orient="auto-start-reverse"
-            markerWidth="8"
-            markerHeight="10"
-            refX="5"
-            refY="5"
-          >
-            <path d="M0,0 V10 L8,5 Z" fill="red" />
-          </marker>
-          <marker
-            viewBox="-2 -1 2 11"
-            id="bracket"
-            orient="auto"
-            markerWidth="4"
-            markerHeight="12"
-            refX="0"
-            refY="10"
-          >
-            <path
-              d="M0,0 V10"
-              stroke="red"
-              strokeWidth="1"
-              strokeLinecap="square"
-            />
-          </marker>
-        </defs>
-
+      <Svg width={w} height={h}>
         <Rect
           x={0.5 * w}
           y={0.5 * h}
@@ -103,7 +64,7 @@ const Overlay: React.FC<Props> = () => {
           y2={0.59 * h}
           onClick={() => undefined}
         />
-      </svg>
+      </Svg>
 
       <Note
         x="12%"
