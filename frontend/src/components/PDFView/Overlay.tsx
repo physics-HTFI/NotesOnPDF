@@ -14,54 +14,56 @@ import Svg from "./Overlay/Svg";
  */
 interface Props {
   page?: Page;
+  width?: number;
+  height?: number;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Overlay: React.FC<Props> = () => {
-  const [w, h] = [680, 480];
+const Overlay: React.FC<Props> = ({ page, width, height }) => {
+  if (!page || !width || !height) return <></>;
   return (
     <>
-      <Svg width={w} height={h}>
+      <Svg width={width} height={height}>
         <Rect
-          x={0.5 * w}
-          y={0.5 * h}
-          width={0.2 * w}
-          height={0.1 * h}
+          x={0.5 * width}
+          y={0.5 * height}
+          width={0.2 * width}
+          height={0.1 * height}
           onClick={() => undefined}
         />
         <Polygon
           points={[
-            [0.3 * w, 0.3 * h],
-            [0.35 * w, 0.3 * h],
-            [0.35 * w, 0.35 * h],
-            [0.25 * w, 0.35 * h],
+            [0.3 * width, 0.3 * height],
+            [0.35 * width, 0.3 * height],
+            [0.35 * width, 0.35 * height],
+            [0.25 * width, 0.35 * height],
           ]}
           onClick={() => undefined}
         />
 
         <Arrow
-          x1={0.4 * w}
-          y1={0.4 * h}
-          x2={0.8 * w}
-          y2={0.8 * h}
+          x1={0.4 * width}
+          y1={0.4 * height}
+          x2={0.8 * width}
+          y2={0.8 * height}
           onClick={() => undefined}
         />
 
         <Bracket
-          x1={0.2 * w}
-          y1={0.8 * h}
-          x2={0.5 * w}
-          y2={0.8 * h}
+          x1={0.2 * width}
+          y1={0.8 * height}
+          x2={0.5 * width}
+          y2={0.8 * height}
           onClick={() => undefined}
         />
 
         <Marker
-          x1={0.2 * w}
-          y1={0.59 * h}
-          x2={0.8 * w}
-          y2={0.59 * h}
+          x1={0.2 * width}
+          y1={0.59 * height}
+          x2={0.8 * width}
+          y2={0.59 * height}
           onClick={() => undefined}
         />
       </Svg>

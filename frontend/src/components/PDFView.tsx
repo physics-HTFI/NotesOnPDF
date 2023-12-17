@@ -172,7 +172,7 @@ const PDFView: React.FC<Props> = ({
           />
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
-        <Overlay page={page} />
+        <Overlay page={page} width={width} height={height} />
         <Palette
           open={paretteOpen}
           x={(100 * paretteX) / (width ?? 1)}
