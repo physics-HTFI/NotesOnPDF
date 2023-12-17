@@ -8,6 +8,22 @@ import PageLink from "./Overlay/PageLink";
 import Rect from "./Overlay/Rect";
 import Polygon from "./Overlay/Polygon";
 import Svg from "./Overlay/Svg";
+import { MathJaxContext } from "better-react-mathjax";
+
+const mathjaxConfig = {
+  loader: { load: ["[tex]/html"] },
+  tex: {
+    packages: { "[+]": ["html"] },
+    inlineMath: [
+      ["$", "$"],
+      ["\\(", "\\)"],
+    ],
+    displayMath: [
+      ["$$", "$$"],
+      ["\\[", "\\]"],
+    ],
+  },
+};
 
 /**
  * `Overlay`の引数
@@ -67,14 +83,15 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
           onClick={() => undefined}
         />
       </Svg>
-
-      <Note
-        x="12%"
-        y="12%"
-        html="<h3>h3</h3>aaaaa<br/>bbb"
-        onClick={() => undefined}
-      />
-      <PageLink x="10%" y="50%" label="p. 100" onClick={() => undefined} />
+      <MathJaxContext version={3} config={mathjaxConfig}>
+        <Note
+          x="1%"
+          y="12%"
+          html={`<h3>h3</h3>あいうえお<br/>かき $x$ くけこ $$\\int e^x dx$$ $10 / 3 \\approx 3.33$`}
+          onClick={() => undefined}
+        />
+        <PageLink x="10%" y="50%" label="p. 100" onClick={() => undefined} />
+      </MathJaxContext>
     </>
   );
 };

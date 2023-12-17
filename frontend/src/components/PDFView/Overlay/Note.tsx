@@ -1,5 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
+import { MathJax } from "better-react-mathjax";
 
 /**
  * `Note`の引数
@@ -16,22 +17,26 @@ interface Props {
  */
 const Note: React.FC<Props> = ({ x, y, html, onClick }) => {
   return (
-    <Box
-      sx={{
-        position: "absolute",
-        left: x,
-        top: y,
-        color: "red",
-        cursor: "pointer",
-        background: "#FFFc",
-      }}
-      dangerouslySetInnerHTML={{ __html: html }}
-      onMouseDown={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        onClick();
-      }}
-    />
+    <MathJax hideUntilTypeset={"first"}>
+      <Box
+        sx={{
+          position: "absolute",
+          left: x,
+          top: y,
+          color: "red",
+          cursor: "pointer",
+          background: "#FFFc",
+          lineHeight: 1.2,
+          fontSize: "90%",
+        }}
+        dangerouslySetInnerHTML={{ __html: html }}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          onClick();
+        }}
+      ></Box>
+    </MathJax>
   );
 };
 
