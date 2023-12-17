@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
-import { Box, IconButton, Tooltip } from "@mui/material";
-import { FolderOpen } from "@mui/icons-material";
+import { Box, Divider, IconButton, Tooltip } from "@mui/material";
+import { FolderOpen, GitHub, Language, MenuBook } from "@mui/icons-material";
+import OpenUrlDialog from "./OpenUrlDialog";
 
 /**
  * `IconButtons`の引数
@@ -17,7 +18,12 @@ const IconButtons: React.FC<Props> = ({ onOpenFile }) => {
 
   return (
     <Box
-      sx={{ mb: 0.5, borderBottom: "solid 1px gainsboro", textAlign: "right" }}
+      sx={{
+        mb: 0.5,
+        borderBottom: "solid 1px gainsboro",
+        display: "flex",
+        justifyContent: "flex-end",
+      }}
     >
       {/* PC内のPDFファイルを開く */}
       <Tooltip title="既定のフォルダ以外のPDFファイルを開く">
@@ -45,6 +51,38 @@ const IconButtons: React.FC<Props> = ({ onOpenFile }) => {
           />
         </IconButton>
       </Tooltip>
+
+      {/* URLから開く */}
+      <Tooltip title="URLからPDFファイルを開く">
+        <IconButton
+          disabled
+          sx={{
+            "&:focus": { outline: "none" },
+            color: "slategray",
+          }}
+          onClick={() => undefined}
+          size="small"
+        >
+          <Language />
+        </IconButton>
+      </Tooltip>
+      <OpenUrlDialog
+        open={false}
+        onClose={(url) => {
+          if (!url) return;
+        }}
+      />
+      <Divider orientation="vertical" variant="middle" flexItem />
+
+      {/* マニュアル */}
+      <IconButton disabled>
+        <MenuBook />
+      </IconButton>
+
+      {/* ソースコード */}
+      <IconButton disabled>
+        <GitHub />
+      </IconButton>
     </Box>
   );
 };
