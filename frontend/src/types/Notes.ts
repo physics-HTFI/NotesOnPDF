@@ -52,8 +52,11 @@ interface PageLink {
   y: number;
   page: number;
 }
-interface Icon {
-  type: "Icon";
+interface Chip {
+  type: "Chip";
+  x: number;
+  y: number;
+  label: string;
 }
 
 /**
@@ -81,7 +84,7 @@ export interface Page {
     | Marker
     | Note
     | PageLink
-    | Icon
+    | Chip
   )[];
 }
 

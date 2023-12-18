@@ -147,6 +147,7 @@ export default class ModelMock implements IModel {
               html: `<h3>h3</h3>あいうえお<br/>かき $x$ くけこ $$\\int e^x dx$$ $10 / 3 \\approx 3.33$`,
             },
             { type: "PageLink", x: 0.1, y: 0.5, page: 100 },
+            { type: "Chip", x: 0.1, y: 0.7, label: "定理" },
           ],
         },
         "1": { excluded: true },
