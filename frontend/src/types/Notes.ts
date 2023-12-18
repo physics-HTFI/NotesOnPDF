@@ -8,6 +8,54 @@ export interface Notes {
   settings: Settings;
 }
 
+interface Rect {
+  type: "Rect";
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+interface Polygon {
+  type: "Polygon";
+  points: [number, number][];
+}
+interface Arrow {
+  type: "Arrow";
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+interface Bracket {
+  type: "Bracket";
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+interface Marker {
+  type: "Marker";
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+interface Note {
+  type: "Note";
+  x: number;
+  y: number;
+  html: string;
+}
+interface PageLink {
+  type: "PageLink";
+  x: number;
+  y: number;
+  page: number;
+}
+interface Icon {
+  type: "Icon";
+}
+
 /**
  * 1つのページに追加された全ての情報
  */
@@ -24,9 +72,17 @@ export interface Page {
   pageNumberRestart?: number;
   /** 無効なページの場合に`true` */
   excluded?: boolean;
-  // badge     texts  footnotes
-  // polygons         markers
-  // links     lines  rectangles
+  /** PDFビューに表示される注釈 */
+  notes?: (
+    | Rect
+    | Polygon
+    | Arrow
+    | Bracket
+    | Marker
+    | Note
+    | PageLink
+    | Icon
+  )[];
 }
 
 /**

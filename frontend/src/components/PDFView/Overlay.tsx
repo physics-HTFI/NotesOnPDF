@@ -37,60 +37,91 @@ interface Props {
 /**
  * PDFビュークリック時に表示されるコントロール
  */
+// TODO ページリンクの数字が正しくない
+// TODO マウスホバー時にカーソルを変えるのではなく、注釈の色を変える
+// TODO Icon注釈を実装する
 const Overlay: React.FC<Props> = ({ page, width, height }) => {
-  if (!page || !width || !height) return <></>;
+  if (!page?.notes || !width || !height) return <></>;
   return (
     <>
       <Svg width={width} height={height}>
-        <Rect
-          x={0.5 * width}
-          y={0.5 * height}
-          width={0.2 * width}
-          height={0.1 * height}
-          onClick={() => undefined}
-        />
-        <Polygon
-          points={[
-            [0.3 * width, 0.3 * height],
-            [0.35 * width, 0.3 * height],
-            [0.35 * width, 0.35 * height],
-            [0.25 * width, 0.35 * height],
-          ]}
-          onClick={() => undefined}
-        />
-
-        <Arrow
-          x1={0.4 * width}
-          y1={0.4 * height}
-          x2={0.8 * width}
-          y2={0.8 * height}
-          onClick={() => undefined}
-        />
-
-        <Bracket
-          x1={0.2 * width}
-          y1={0.8 * height}
-          x2={0.5 * width}
-          y2={0.8 * height}
-          onClick={() => undefined}
-        />
-
-        <Marker
-          x1={0.2 * width}
-          y1={0.59 * height}
-          x2={0.8 * width}
-          y2={0.59 * height}
-          onClick={() => undefined}
-        />
+        {page.notes.map((n) => {
+          switch (n.type) {
+            case "Rect":
+              return (
+                <Rect
+                  x={n.x * width}
+                  y={n.y * height}
+                  width={n.width * width}
+                  height={n.height * height}
+                  onClick={() => undefined}
+                />
+              );
+            case "Polygon":
+              return (
+                <Polygon
+                  points={n.points.map((p) => [p[0] * width, p[1] * height])}
+                  onClick={() => undefined}
+                />
+              );
+            case "Arrow":
+              return (
+                <Arrow
+                  x1={n.x1 * width}
+                  y1={n.y1 * height}
+                  x2={n.x2 * width}
+                  y2={n.y2 * height}
+                  onClick={() => undefined}
+                />
+              );
+            case "Bracket":
+              return (
+                <Bracket
+                  x1={n.x1 * width}
+                  y1={n.y1 * height}
+                  x2={n.x2 * width}
+                  y2={n.y2 * height}
+                  onClick={() => undefined}
+                />
+              );
+            case "Marker":
+              return (
+                <Marker
+                  x1={n.x1 * width}
+                  y1={n.y1 * height}
+                  x2={n.x2 * width}
+                  y2={n.y2 * height}
+                  onClick={() => undefined}
+                />
+              );
+          }
+          return <></>;
+        })}
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
-        <Note
-          x="1%"
-          y="12%"
-          html={`<h3>h3</h3>あいうえお<br/>かき $x$ くけこ $$\\int e^x dx$$ $10 / 3 \\approx 3.33$`}
-          onClick={() => undefined}
-        />
-        <PageLink x="10%" y="50%" label="p. 100" onClick={() => undefined} />
+        {page.notes.map((n) => {
+          switch (n.type) {
+            case "Note":
+              return (
+                <Note
+                  x={`${100 * n.x}%`}
+                  y={`${100 * n.y}%`}
+                  html={n.html}
+                  onClick={() => undefined}
+                />
+              );
+            case "PageLink":
+              return (
+                <PageLink
+                  x={`${100 * n.x}%`}
+                  y={`${100 * n.y}%`}
+                  label={`p. ${n.page}`}
+                  onClick={() => undefined}
+                />
+              );
+          }
+          return <></>;
+        })}
       </MathJaxContext>
     </>
   );

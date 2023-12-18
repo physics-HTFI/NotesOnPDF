@@ -124,7 +124,31 @@ export default class ModelMock implements IModel {
         offsetBottom: 0.1,
       },
       pages: {
-        "0": { book: "タイトル", excluded: true },
+        "0": {
+          book: "タイトル",
+          notes: [
+            { type: "Rect", x: 0.5, y: 0.5, width: 0.2, height: 0.1 },
+            {
+              type: "Polygon",
+              points: [
+                [0.3, 0.3],
+                [0.35, 0.3],
+                [0.35, 0.35],
+                [0.25, 0.35],
+              ],
+            },
+            { type: "Arrow", x1: 0.4, y1: 0.4, x2: 0.8, y2: 0.8 },
+            { type: "Bracket", x1: 0.2, y1: 0.8, x2: 0.5, y2: 0.8 },
+            { type: "Marker", x1: 0.2, y1: 0.6, x2: 0.8, y2: 0.6 },
+            {
+              type: "Note",
+              x: 0.01,
+              y: 0.12,
+              html: `<h3>h3</h3>あいうえお<br/>かき $x$ くけこ $$\\int e^x dx$$ $10 / 3 \\approx 3.33$`,
+            },
+            { type: "PageLink", x: 0.1, y: 0.5, page: 100 },
+          ],
+        },
         "1": { excluded: true },
         "2": { excluded: true },
         "3": { part: "第1部" },
