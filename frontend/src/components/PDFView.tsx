@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, BoxProps, Container } from "@mui/material";
-import { pdfjs, Document, Page as ReactPage } from "react-pdf";
+import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import Control from "./PDFView/Control";
@@ -160,12 +160,14 @@ const PDFView: React.FC<Props> = ({
           loading={""}
           noData={""}
         >
-          <ReactPage
+          <PDFPage
             pageIndex={currentPage}
             width={width}
             error={""}
             loading={""}
             noData={""}
+            renderAnnotationLayer={false}
+            renderTextLayer={false}
             onRenderSuccess={() => {
               setReading(false);
             }}

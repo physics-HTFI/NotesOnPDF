@@ -50,6 +50,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "Rect":
               return (
                 <Rect
+                  key={JSON.stringify(n)}
                   x={n.x * width}
                   y={n.y * height}
                   width={n.width * width}
@@ -60,6 +61,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "Polygon":
               return (
                 <Polygon
+                  key={JSON.stringify(n)}
                   points={n.points.map((p) => [p[0] * width, p[1] * height])}
                   onClick={() => undefined}
                 />
@@ -67,6 +69,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "Arrow":
               return (
                 <Arrow
+                  key={JSON.stringify(n)}
                   x1={n.x1 * width}
                   y1={n.y1 * height}
                   x2={n.x2 * width}
@@ -77,6 +80,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "Bracket":
               return (
                 <Bracket
+                  key={JSON.stringify(n)}
                   x1={n.x1 * width}
                   y1={n.y1 * height}
                   x2={n.x2 * width}
@@ -87,6 +91,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "Marker":
               return (
                 <Marker
+                  key={JSON.stringify(n)}
                   x1={n.x1 * width}
                   y1={n.y1 * height}
                   x2={n.x2 * width}
@@ -95,7 +100,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
                 />
               );
           }
-          return <></>;
+          return undefined;
         })}
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
@@ -104,6 +109,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "Note":
               return (
                 <Note
+                  key={JSON.stringify(n)}
                   x={`${100 * n.x}%`}
                   y={`${100 * n.y}%`}
                   html={n.html}
@@ -113,6 +119,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "PageLink":
               return (
                 <PageLink
+                  key={JSON.stringify(n)}
                   x={n.x}
                   y={n.y}
                   label={`p. ${n.page}`}
@@ -122,6 +129,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "Chip":
               return (
                 <Chip
+                  key={JSON.stringify(n)}
                   x={n.x}
                   y={n.y}
                   label={n.label}
@@ -129,7 +137,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
                 />
               );
           }
-          return <></>;
+          return undefined;
         })}
       </MathJaxContext>
     </>

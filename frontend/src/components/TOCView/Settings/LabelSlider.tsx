@@ -15,7 +15,7 @@ interface Props {
  */
 const LabelSlider: React.FC<Props> = ({ label, value, onChange }) => {
   return (
-    <Box sx={{ display: "flex", "&:first-child": { mb: 1 } }}>
+    <Box sx={{ display: "flex", "&:first-of-type": { mb: 1 } }}>
       <Typography variant="button" sx={{ whiteSpace: "nowrap", pr: 2 }}>
         {label}
       </Typography>
