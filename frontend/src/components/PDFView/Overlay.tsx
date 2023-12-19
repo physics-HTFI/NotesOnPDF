@@ -9,7 +9,7 @@ import Rect from "./Overlay/Rect";
 import Polygon from "./Overlay/Polygon";
 import Svg from "./Overlay/Svg";
 import { MathJaxContext } from "better-react-mathjax";
-import { Chip } from "@mui/material";
+import Chip from "./Overlay/Chip";
 
 const mathjaxConfig = {
   loader: { load: ["[tex]/html"] },
@@ -113,8 +113,8 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "PageLink":
               return (
                 <PageLink
-                  x={`${100 * n.x}%`}
-                  y={`${100 * n.y}%`}
+                  x={n.x}
+                  y={n.y}
                   label={`p. ${n.page}`}
                   onClick={() => undefined}
                 />
@@ -122,13 +122,8 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
             case "Chip":
               return (
                 <Chip
-                  sx={{
-                    position: "absolute",
-                    left: `${100 * n.x}%`,
-                    top: `${100 * n.y}%`,
-                    cursor: "alias",
-                  }}
-                  color="primary"
+                  x={n.x}
+                  y={n.y}
                   label={n.label}
                   onClick={() => undefined}
                 />

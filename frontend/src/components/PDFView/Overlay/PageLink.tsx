@@ -1,12 +1,13 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Chip } from "@mui/material";
+import { Shortcut } from "@mui/icons-material";
 
 /**
  * `PageLink`の引数
  */
 interface Props {
-  x: string;
-  y: string;
+  x: number;
+  y: number;
   label: string;
   onClick: () => void;
 }
@@ -15,29 +16,25 @@ interface Props {
  * ページへのリンク
  */
 const PageLink: React.FC<Props> = ({ x, y, label, onClick }) => {
-  console.log(x);
   return (
-    <Box
+    <Chip
       sx={{
         position: "absolute",
-        left: x,
-        top: y,
-        borderRadius: 3,
-        border: "solid 1px red",
-        color: "red",
+        left: `${100 * x}%`,
+        top: `${100 * y}%`,
         cursor: "pointer",
-        px: 1,
-        background: "#FFFc",
+        fontSize: "75%",
       }}
-      fontSize={12}
+      color="success"
+      icon={<Shortcut />}
+      label={label}
+      size="small"
       onMouseDown={(e) => {
         e.stopPropagation();
         e.preventDefault();
         onClick();
       }}
-    >
-      {label}
-    </Box>
+    />
   );
 };
 
