@@ -126,6 +126,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
                     position: "absolute",
                     left: `${100 * n.x}%`,
                     top: `${100 * n.y}%`,
+                    cursor: "alias",
                   }}
                   color="primary"
                   label={n.label}

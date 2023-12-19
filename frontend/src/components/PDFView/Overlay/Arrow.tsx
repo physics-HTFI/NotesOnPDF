@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 /**
  * `Arrow`の引数
@@ -15,15 +15,23 @@ interface Props {
  * 矢印などの直線
  */
 const Arrow: React.FC<Props> = ({ x1, y1, x2, y2, onClick }) => {
+  const [hover, setHover] = useState(false);
   return (
     <g
       style={{
-        cursor: "pointer",
+        cursor: "alias",
       }}
       onMouseDown={(e) => {
+        if (e.button !== 2) return;
         e.stopPropagation();
         e.preventDefault();
         onClick();
+      }}
+      onMouseEnter={() => {
+        setHover(true);
+      }}
+      onMouseLeave={() => {
+        setHover(false);
       }}
     >
       <line
@@ -43,6 +51,7 @@ const Arrow: React.FC<Props> = ({ x1, y1, x2, y2, onClick }) => {
         x2={`${x2}`}
         y2={`${y2}`}
         style={{
+          opacity: hover ? 0.5 : 1,
           stroke: "red",
           strokeWidth: "1",
           markerStart: "url(#head)",

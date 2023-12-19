@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 
@@ -16,6 +16,7 @@ interface Props {
  * PDFビュークリック時に表示されるコントロール
  */
 const Note: React.FC<Props> = ({ x, y, html, onClick }) => {
+  const [hover, setHover] = useState(false);
   return (
     <MathJax hideUntilTypeset={"first"}>
       <Box
@@ -24,18 +25,26 @@ const Note: React.FC<Props> = ({ x, y, html, onClick }) => {
           left: x,
           top: y,
           color: "red",
-          cursor: "pointer",
+          cursor: "alias",
+          opacity: hover ? 0.5 : 1,
           background: "#FFFc",
           lineHeight: 1.2,
           fontSize: "90%",
         }}
         dangerouslySetInnerHTML={{ __html: html }}
         onMouseDown={(e) => {
+          if (e.button !== 2) return;
           e.stopPropagation();
           e.preventDefault();
           onClick();
         }}
-      ></Box>
+        onMouseEnter={() => {
+          setHover(true);
+        }}
+        onMouseLeave={() => {
+          setHover(false);
+        }}
+      />
     </MathJax>
   );
 };
