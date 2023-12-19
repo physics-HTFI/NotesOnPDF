@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Chip } from "@mui/material";
 
 /**
  * `PageLabelSmall`の引数
@@ -9,29 +9,26 @@ interface Props {
 }
 
 /**
- * 画面橋のページ数表示コンポーネント
+ * 画面隅のページ数表示コンポーネント
  */
 const PageLabelSmall: React.FC<Props> = ({ label }) => (
-  <Box
+  <Chip
     sx={{
       position: "absolute",
       left: 3,
       bottom: 2,
-      background: "darkseagreen",
-      borderRadius: 3,
-      color: "white",
-      pr: 1,
-      pl: 1,
+      fontSize: "75%",
+      opacity: 0.7,
       cursor: "default",
     }}
-    fontSize={14}
+    color="success"
+    label={label}
+    size="small"
     onMouseDown={(e) => {
       e.stopPropagation();
       e.preventDefault();
     }}
-  >
-    {label}
-  </Box>
+  />
 );
 
 export default PageLabelSmall;
