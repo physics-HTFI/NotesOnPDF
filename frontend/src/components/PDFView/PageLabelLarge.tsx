@@ -26,7 +26,6 @@ const PageLabelLarge: React.FC<Props> = ({ label, shown }) =>
         justifyContent: "center",
         alignItems: "center",
         fontSize: "2em",
-        zIndex: 100,
         background: "white",
       }}
     >
