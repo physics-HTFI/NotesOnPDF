@@ -4,7 +4,7 @@ import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import Control from "./PDFView/Control";
-import { Page, Settings } from "@/types/Notes";
+import { Notes, Settings, getPageLabel } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
 import Overlay from "./PDFView/Overlay";
@@ -46,8 +46,7 @@ const preferredSize = (
 interface Props extends BoxProps {
   file?: string | File;
   currentPage?: number;
-  pageLabel?: string;
-  page?: Page;
+  notes?: Notes;
   settings?: Settings;
   openDrawer: boolean;
   onLoadError?: () => void;
@@ -62,8 +61,7 @@ interface Props extends BoxProps {
 const PDFView: React.FC<Props> = ({
   file,
   currentPage,
-  pageLabel,
-  page,
+  notes,
   settings,
   onLoadError,
   onLoadSuccess,
@@ -89,6 +87,8 @@ const PDFView: React.FC<Props> = ({
           outer.current?.clientWidth,
           outer.current?.clientHeight
         );
+  const page = notes ? notes.pages[notes.currentPage] : undefined;
+  const pageLabel = notes ? getPageLabel(notes) : undefined;
 
   useEffect(() => {
     if (currentPage === undefined) return;
@@ -174,7 +174,7 @@ const PDFView: React.FC<Props> = ({
           />
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
-        <Overlay page={page} width={width} height={height} />
+        <Overlay notes={notes} width={width} height={height} />
         <Palette
           open={paretteOpen}
           x={(100 * paretteX) / (width ?? 1)}

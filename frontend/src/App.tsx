@@ -5,7 +5,7 @@ import IModel from "@/models/IModel";
 import Model from "./models/Model";
 import ModelMock from "@/models/Model.Mock";
 import { Progresses } from "@/types/Progresses";
-import { Notes, createNewNotes, getPageLabelSmall } from "@/types/Notes";
+import { Notes, createNewNotes } from "@/types/Notes";
 import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "./components/OpenFileDrawer";
 import PDFView from "@/components/PDFView";
@@ -124,8 +124,7 @@ function App() {
             sx={{ flexGrow: 1 }}
             file={pdf}
             currentPage={notes?.currentPage}
-            page={notes?.pages[notes.currentPage]}
-            pageLabel={notes ? getPageLabelSmall(notes) : undefined}
+            notes={notes ?? undefined}
             settings={notes?.settings}
             openDrawer={openBottomDrawer}
             onOpenFileTree={() => {

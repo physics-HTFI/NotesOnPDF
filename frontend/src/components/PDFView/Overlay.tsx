@@ -1,5 +1,5 @@
 import React from "react";
-import { Page } from "@/types/Notes";
+import { Notes, getPageLabel } from "@/types/Notes";
 import Arrow from "./Overlay/Arrow";
 import Bracket from "./Overlay/Bracket";
 import Marker from "./Overlay/Marker";
@@ -30,7 +30,7 @@ const mathjaxConfig = {
  * `Overlay`の引数
  */
 interface Props {
-  page?: Page;
+  notes?: Notes;
   width?: number;
   height?: number;
 }
@@ -38,10 +38,10 @@ interface Props {
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-// TODO ページリンクの数字が正しくない
-// TODO マウスホバー時にカーソルを変えるのではなく、注釈の色を変える
-const Overlay: React.FC<Props> = ({ page, width, height }) => {
-  if (!page?.notes || !width || !height) return <></>;
+const Overlay: React.FC<Props> = ({ notes, width, height }) => {
+  if (!notes || !width || !height) return <></>;
+  const page = notes.pages[notes.currentPage];
+  if (!page?.notes) return <></>;
   return (
     <>
       <Svg width={width} height={height}>
@@ -122,7 +122,7 @@ const Overlay: React.FC<Props> = ({ page, width, height }) => {
                   key={JSON.stringify(n)}
                   x={n.x}
                   y={n.y}
-                  label={`p. ${n.page}`}
+                  label={getPageLabel(notes, n.page)}
                   onClick={() => undefined}
                 />
               );
