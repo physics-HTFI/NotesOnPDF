@@ -52,22 +52,6 @@ const getChapter = (key: string, title: string) => (
 );
 
 /**
- * 節を返す
- */
-const getSection = (key: string, section: JSX.Element[]) => (
-  <span
-    key={key}
-    style={{
-      marginRight: 5,
-      display: "inline-block",
-      hyphens: "auto",
-    }}
-  >
-    {section}
-  </span>
-);
-
-/**
  * ページの色を返す
  */
 const getPageColor = (i: number, currentPage: number, page?: Page) => {
@@ -105,8 +89,23 @@ const getTOCData = (
         page?.chapter !== undefined ||
         page?.sectionBreak
       ) {
-        toc.push(getSection(`section-${i}`, section));
+        toc.push(<span key={`section-${i}`}>{section}</span>);
         section = [];
+        if (page.sectionBreak) {
+          toc.push(
+            <span
+              key={`section-${i}-separator`}
+              style={{
+                height: 11,
+                width: 1,
+                marginLeft: 2,
+                marginRight: 4,
+                background: "darkgray",
+                display: "inline-block",
+              }}
+            />
+          );
+        }
       }
     }
     // 第名を追加
@@ -138,6 +137,7 @@ const getTOCData = (
             height: 7,
             background: getPageColor(i, notes.currentPage, page),
             marginRight: 2,
+            marginBottom: 2,
             cursor: "pointer",
           }}
           onClick={() => {
@@ -148,7 +148,7 @@ const getTOCData = (
     );
     ++pageNum;
   }
-  toc.push(getSection(`section-last`, section));
+  toc.push(<span key="section-last">{section}</span>);
   return toc;
 };
 
