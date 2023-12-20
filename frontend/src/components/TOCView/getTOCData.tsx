@@ -73,11 +73,11 @@ const getSection = (key: string, section: JSX.Element[]) => (
 const getPageColor = (i: number, currentPage: number, page?: Page) => {
   if (i === currentPage) {
     if (page?.excluded) return "lightpink";
-    //if(page?.notes) return "gold";
+    if (page?.notes) return "magenta";
     return "red";
   } else {
     if (page?.excluded) return "lightgray";
-    //if(page?.notes) return "green";
+    if (page?.notes) return "limegreen";
     return "black";
   }
 };
