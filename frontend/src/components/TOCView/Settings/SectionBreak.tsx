@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
   FormControlLabel,
@@ -24,13 +24,9 @@ const SectionBreak: React.FC<Props> = ({
   sectionBreakInner,
   onChange,
 }) => {
-  const [sectionBreakLocal, setSectionBreakLocal] = useState(false);
-  const [sectionBreakInnerLocal, setSectionBreakInnerLocal] = useState(false);
+  const sectionBreakLocal = sectionBreak ?? false;
+  const sectionBreakInnerLocal = sectionBreakInner ?? false;
 
-  useEffect(() => {
-    setSectionBreakLocal(sectionBreak ?? false);
-    setSectionBreakInnerLocal(sectionBreakInner ?? false);
-  }, [sectionBreak, sectionBreakInner]);
   return (
     <Box sx={{ display: "flex", flexDirection: "row" }}>
       <Tooltip title="このページの前に節区切りを入れます" disableInteractive>
@@ -40,9 +36,7 @@ const SectionBreak: React.FC<Props> = ({
               size="small"
               checked={sectionBreakLocal}
               onChange={(e) => {
-                const newVal = e.target.checked;
-                setSectionBreakLocal(newVal);
-                onChange(newVal, sectionBreakInnerLocal);
+                onChange(e.target.checked, sectionBreakInnerLocal);
               }}
             />
           }
@@ -56,9 +50,7 @@ const SectionBreak: React.FC<Props> = ({
               size="small"
               checked={sectionBreakInnerLocal}
               onChange={(e) => {
-                const newVal = e.target.checked;
-                setSectionBreakInnerLocal(newVal);
-                onChange(sectionBreakLocal, newVal);
+                onChange(sectionBreakLocal, e.target.checked);
               }}
             />
           }

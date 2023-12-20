@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
   FormControlLabel,
@@ -30,13 +30,8 @@ const CheckboxText: React.FC<Props> = ({
   preferredText,
   onChange,
 }) => {
-  const [textLocal, setTextLocal] = useState("");
-  const [checkedLocal, setCheckedLocal] = useState(false);
-
-  useEffect(() => {
-    setCheckedLocal(text !== undefined);
-    setTextLocal(text ?? preferredText);
-  }, [text, preferredText]);
+  const checkedLocal = text !== undefined;
+  const textLocal = text ?? preferredText;
 
   return (
     <Box sx={{ whiteSpace: "nowrap", width: "100%", display: "flex" }}>
@@ -47,9 +42,7 @@ const CheckboxText: React.FC<Props> = ({
               checked={checkedLocal}
               size="small"
               onChange={(e) => {
-                const newVal = e.target.checked;
-                setCheckedLocal(newVal);
-                onChange(newVal ? textLocal : undefined);
+                onChange(e.target.checked ? textLocal : undefined);
               }}
             />
           }
@@ -70,9 +63,7 @@ const CheckboxText: React.FC<Props> = ({
           },
         }}
         onChange={(e) => {
-          const newVal = e.target.value;
-          setTextLocal(newVal);
-          onChange(checkedLocal ? newVal : undefined);
+          onChange(checkedLocal ? e.target.value : undefined);
         }}
         sx={{ flexGrow: 1, pb: 0.5, pt: 1 }}
       />

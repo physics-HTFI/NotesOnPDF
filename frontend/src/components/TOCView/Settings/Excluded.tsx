@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
 
 /**
@@ -13,11 +13,7 @@ interface Props {
  * ページを除外するかを決めるコンポーネント
  */
 const Excluded: React.FC<Props> = ({ excluded, onChange }) => {
-  const [excludedLocal, setExcludedLocal] = useState(false);
-
-  useEffect(() => {
-    setExcludedLocal(excluded ?? false);
-  }, [excluded]);
+  const excludedLocal = excluded ?? false;
 
   return (
     <Tooltip title="このページを灰色にします" disableInteractive>
@@ -27,9 +23,7 @@ const Excluded: React.FC<Props> = ({ excluded, onChange }) => {
             size="small"
             checked={excludedLocal}
             onChange={(e) => {
-              const newVal = e.target.checked;
-              setExcludedLocal(newVal);
-              onChange(newVal ? true : undefined);
+              onChange(e.target.checked ? true : undefined);
             }}
           />
         }

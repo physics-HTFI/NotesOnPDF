@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
   FormControlLabel,
@@ -24,13 +24,8 @@ const PageNumberRestart: React.FC<Props> = ({
   preferredPageNumber,
   onChange,
 }) => {
-  const [checked, setChecked] = useState(false);
-  const [restart, setRestart] = useState(1);
-
-  useEffect(() => {
-    setChecked(pageNumberRestart !== undefined);
-    setRestart(pageNumberRestart ?? preferredPageNumber ?? 1);
-  }, [pageNumberRestart, preferredPageNumber]);
+  const checked = pageNumberRestart !== undefined;
+  const restart = pageNumberRestart ?? preferredPageNumber ?? 1;
 
   return (
     <Box sx={{ whiteSpace: "nowrap" }}>
@@ -42,7 +37,6 @@ const PageNumberRestart: React.FC<Props> = ({
             checked={checked}
             onChange={(e) => {
               const newVal = e.target.checked;
-              setChecked(newVal);
               onChange(newVal ? restart : undefined);
             }}
           />
@@ -60,7 +54,6 @@ const PageNumberRestart: React.FC<Props> = ({
         onChange={(e) => {
           const num = Number(e.target.value);
           const numValidated = Math.min(999999, Math.max(1, num));
-          setRestart(numValidated);
           onChange(checked ? numValidated : undefined);
         }}
         InputProps={{ sx: { fontSize: "140%", pl: 1 } }}
