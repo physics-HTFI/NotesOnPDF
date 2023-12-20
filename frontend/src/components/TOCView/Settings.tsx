@@ -81,8 +81,12 @@ const Settings: React.FC<Props> = ({
         {/* 節区切り */}
         <SectionBreak
           sectionBreak={page?.sectionBreak}
-          onChange={(sectionBreak) => {
-            onChangePage({ sectionBreak });
+          sectionBreakInner={page?.sectionBreakInner}
+          onChange={(sectionBreak, sectionBreakInner) => {
+            onChangePage({
+              sectionBreak: sectionBreak ? true : undefined,
+              sectionBreakInner: sectionBreakInner ? true : undefined,
+            });
           }}
         />
 

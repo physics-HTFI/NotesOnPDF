@@ -4,9 +4,9 @@ import { Notes, Page } from "@/types/Notes";
 /**
  * 題名を返す
  */
-const getBook = (key: string, title: string) => (
+const getBook = (i: number, title: string) => (
   <Typography
-    key={key}
+    key={`book-${i}`}
     variant="body1"
     sx={{
       whiteSpace: "nowrap",
@@ -21,9 +21,9 @@ const getBook = (key: string, title: string) => (
 /**
  * 部名を返す
  */
-const getPart = (key: string, title: string) => (
+const getPart = (i: number, title: string) => (
   <Typography
-    key={key}
+    key={`part-${i}`}
     variant="body2"
     sx={{ whiteSpace: "nowrap", color: "gray", pt: 0.8 }}
   >
@@ -34,9 +34,9 @@ const getPart = (key: string, title: string) => (
 /**
  * 章名を返す
  */
-const getChapter = (key: string, title: string) => (
+const getChapter = (i: number, title: string) => (
   <Typography
-    key={key}
+    key={`chapter-${i}`}
     variant="body2"
     sx={{
       pt: 0.5,
@@ -49,6 +49,74 @@ const getChapter = (key: string, title: string) => (
   >
     {title}
   </Typography>
+);
+
+/**
+ * ページを返す
+ */
+const getPage = (
+  i: number,
+  pageNum: number,
+  currentPage: number,
+  page?: Page,
+  onClick?: () => void
+) => (
+  <Tooltip
+    key={`page-${i}`}
+    title={`p. ${pageNum}`}
+    disableInteractive
+    enterDelay={0}
+    leaveDelay={0}
+  >
+    <span
+      style={{
+        display: "inline-block",
+        width: 7,
+        height: 7,
+        background: getPageColor(i, currentPage, page),
+        marginRight: 2,
+        marginBottom: 2,
+        marginTop: 2,
+        cursor: "pointer",
+      }}
+      onClick={onClick}
+    />
+  </Tooltip>
+);
+
+/**
+ * 節区切りを返す
+ */
+const getSeparator = (i: number) => (
+  <span
+    key={`separator-${i}`}
+    style={{
+      height: 11,
+      width: 1,
+      marginLeft: 2,
+      marginRight: 4,
+      background: "darkgray",
+      display: "inline-block",
+    }}
+  />
+);
+
+/**
+ * ページ内節区切りを返す
+ */
+const getSeparatorInner = (i: number) => (
+  <span
+    key={`separator-inner-${i}`}
+    style={{
+      position: "relative",
+      left: -5,
+      height: 11,
+      width: 1,
+      marginLeft: -1,
+      background: "gray",
+      display: "inline-block",
+    }}
+  />
 );
 
 /**
@@ -69,7 +137,6 @@ const getPageColor = (i: number, currentPage: number, page?: Page) => {
 /**
  * @returns 目次の内容
  */
-// TODO 節が長いと途中で改行されて、新規の節と紛らわしい。ハイフンなどがつけられれば良いが。
 const getTOCData = (
   notes?: Notes,
   onChanged?: (notes: Notes) => void
@@ -77,78 +144,38 @@ const getTOCData = (
   if (!notes) return [];
   const toc: JSX.Element[] = [];
   let pageNum = 1;
-  let section: JSX.Element[] = [];
   for (let i = 0; i < notes.numPages; i++) {
     const page = notes.pages[i];
 
-    // 節を追加
-    if (i !== 0) {
-      if (
-        page?.book !== undefined ||
-        page?.part !== undefined ||
-        page?.chapter !== undefined ||
-        page?.sectionBreak
-      ) {
-        toc.push(<span key={`section-${i}`}>{section}</span>);
-        section = [];
-        if (page.sectionBreak) {
-          toc.push(
-            <span
-              key={`section-${i}-separator`}
-              style={{
-                height: 11,
-                width: 1,
-                marginLeft: 2,
-                marginRight: 4,
-                background: "darkgray",
-                display: "inline-block",
-              }}
-            />
-          );
-        }
-      }
-    }
     // 第名を追加
     if (page?.book !== undefined) {
-      toc.push(getBook(`book-${i}`, page.book));
+      toc.push(getBook(i, page.book));
     }
     // 部名を追加
     if (page?.part !== undefined) {
-      toc.push(getPart(`part-${i}`, page.part));
+      toc.push(getPart(i, page.part));
     }
     // 章名を追加
     if (page?.chapter !== undefined) {
-      toc.push(getChapter(`chapter-${i}`, page.chapter));
+      toc.push(getChapter(i, page.chapter));
     }
-    // 節にページを追加
+    // 節区切りを追加
+    if (page?.sectionBreak) {
+      toc.push(getSeparator(i));
+    }
+    // ページを追加
     pageNum = page?.pageNumberRestart ?? pageNum;
-    section.push(
-      <Tooltip
-        key={`page-${i}`}
-        title={`p. ${pageNum}`}
-        disableInteractive
-        enterDelay={0}
-        leaveDelay={0}
-      >
-        <span
-          style={{
-            display: "inline-block",
-            width: 7,
-            height: 7,
-            background: getPageColor(i, notes.currentPage, page),
-            marginRight: 2,
-            marginBottom: 2,
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            onChanged?.({ ...notes, currentPage: i });
-          }}
-        />
-      </Tooltip>
+    toc.push(
+      getPage(i, pageNum, notes.currentPage, page, () => {
+        onChanged?.({ ...notes, currentPage: i });
+      })
     );
+    // ページ内節区切りを追加
+    if (page?.sectionBreakInner) {
+      toc.push(getSeparatorInner(i));
+    }
     ++pageNum;
   }
-  toc.push(<span key="section-last">{section}</span>);
   return toc;
 };
 

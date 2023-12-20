@@ -69,8 +69,10 @@ export interface Page {
   part?: string;
   /** 章のタイトル */
   chapter?: string;
-  /** このページで節が変わる場合`true` */
+  /** このページの先頭で節が変わる場合`true` */
   sectionBreak?: boolean;
+  /** このページの途中で節が変わる場合`true` */
+  sectionBreakInner?: boolean;
   /** 新たにページ番号を振りなおす場合に数値を指定する */
   pageNumberRestart?: number;
   /** 無効なページの場合に`true` */

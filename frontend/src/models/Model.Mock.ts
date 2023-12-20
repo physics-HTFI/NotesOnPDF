@@ -156,7 +156,7 @@ export default class ModelMock implements IModel {
         "4": { chapter: "第1章" },
         "7": { sectionBreak: true },
         "10": { chapter: "第2章" },
-        "11": { sectionBreak: true },
+        "11": { sectionBreakInner: true },
         "17": { chapter: "第3章" },
         "18": { sectionBreak: true },
         "22": { part: "第2部", excluded: true },
