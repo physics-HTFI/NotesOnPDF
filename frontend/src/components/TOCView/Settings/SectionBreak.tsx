@@ -13,7 +13,7 @@ import {
 interface Props {
   sectionBreak?: boolean;
   sectionBreakInner?: boolean;
-  onChange: (sectionBreak: boolean, sectionBreakInner: boolean) => void;
+  onChange: (sectionBreak?: boolean, sectionBreakInner?: boolean) => void;
 }
 
 /**
@@ -24,9 +24,6 @@ const SectionBreak: React.FC<Props> = ({
   sectionBreakInner,
   onChange,
 }) => {
-  const sectionBreakLocal = sectionBreak ?? false;
-  const sectionBreakInnerLocal = sectionBreakInner ?? false;
-
   return (
     <Box sx={{ display: "flex", flexDirection: "row" }}>
       <Tooltip title="このページの前に節区切りを入れます" disableInteractive>
@@ -34,9 +31,9 @@ const SectionBreak: React.FC<Props> = ({
           control={
             <Switch
               size="small"
-              checked={sectionBreakLocal}
+              checked={sectionBreak ?? false}
               onChange={(e) => {
-                onChange(e.target.checked, sectionBreakInnerLocal);
+                onChange(e.target.checked, sectionBreakInner);
               }}
             />
           }
@@ -48,9 +45,9 @@ const SectionBreak: React.FC<Props> = ({
           control={
             <Switch
               size="small"
-              checked={sectionBreakInnerLocal}
+              checked={sectionBreakInner ?? false}
               onChange={(e) => {
-                onChange(sectionBreakLocal, e.target.checked);
+                onChange(sectionBreak, e.target.checked);
               }}
             />
           }

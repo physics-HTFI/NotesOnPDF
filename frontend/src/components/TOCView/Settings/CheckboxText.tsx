@@ -30,7 +30,7 @@ const CheckboxText: React.FC<Props> = ({
   preferredText,
   onChange,
 }) => {
-  const checkedLocal = text !== undefined;
+  const checked = text !== undefined;
   const textLocal = text ?? preferredText;
 
   return (
@@ -39,7 +39,7 @@ const CheckboxText: React.FC<Props> = ({
         <FormControlLabel
           control={
             <Switch
-              checked={checkedLocal}
+              checked={checked}
               size="small"
               onChange={(e) => {
                 onChange(e.target.checked ? textLocal : undefined);
@@ -50,20 +50,20 @@ const CheckboxText: React.FC<Props> = ({
         />
       </Tooltip>
       <TextField
-        hidden={!checkedLocal}
+        hidden={!checked}
         value={textLocal}
         variant="standard"
         InputProps={{
           sx: {
             fontSize: "140%",
-            visibility: checkedLocal ? "visible" : "hidden",
+            visibility: checked ? "visible" : "hidden",
             height: 30,
             width: "auto",
             flexGrow: 1,
           },
         }}
         onChange={(e) => {
-          onChange(checkedLocal ? e.target.value : undefined);
+          onChange(checked ? e.target.value : undefined);
         }}
         sx={{ flexGrow: 1, pb: 0.5, pt: 1 }}
       />

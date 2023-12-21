@@ -13,15 +13,13 @@ interface Props {
  * ページを除外するかを決めるコンポーネント
  */
 const Excluded: React.FC<Props> = ({ excluded, onChange }) => {
-  const excludedLocal = excluded ?? false;
-
   return (
     <Tooltip title="このページを灰色にします" disableInteractive>
       <FormControlLabel
         control={
           <Switch
             size="small"
-            checked={excludedLocal}
+            checked={excluded ?? false}
             onChange={(e) => {
               onChange(e.target.checked ? true : undefined);
             }}

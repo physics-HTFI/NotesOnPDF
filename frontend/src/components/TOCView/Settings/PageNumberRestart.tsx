@@ -24,7 +24,7 @@ const PageNumberRestart: React.FC<Props> = ({
   preferredPageNumber,
   onChange,
 }) => {
-  const checked = pageNumberRestart !== undefined;
+  const isManual = pageNumberRestart !== undefined;
   const restart = pageNumberRestart ?? preferredPageNumber ?? 1;
 
   return (
@@ -34,7 +34,7 @@ const PageNumberRestart: React.FC<Props> = ({
         control={
           <Switch
             size="small"
-            checked={checked}
+            checked={isManual}
             onChange={(e) => {
               const newVal = e.target.checked;
               onChange(newVal ? restart : undefined);
@@ -54,14 +54,14 @@ const PageNumberRestart: React.FC<Props> = ({
         onChange={(e) => {
           const num = Number(e.target.value);
           const numValidated = Math.min(999999, Math.max(1, num));
-          onChange(checked ? numValidated : undefined);
+          onChange(isManual ? numValidated : undefined);
         }}
         InputProps={{ sx: { fontSize: "140%", pl: 1 } }}
         type="number"
         sx={{
           pl: 3.6,
           width: 80,
-          visibility: checked ? "visible" : "hidden",
+          visibility: isManual ? "visible" : "hidden",
         }}
       />
     </Box>
