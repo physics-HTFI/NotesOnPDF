@@ -51,7 +51,7 @@ const SectionBreak: React.FC<Props> = ({
               }}
             />
           }
-          label={<Typography variant="button">同(途中)</Typography>}
+          label={<Typography variant="button">(ページ内)</Typography>}
         />
       </Tooltip>
     </Box>

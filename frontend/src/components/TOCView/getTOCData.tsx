@@ -55,14 +55,15 @@ const getChapter = (i: number, title: string) => (
  * ページを返す
  */
 const getPage = (
-  i: number,
+  key: string,
   pageNum: number,
-  currentPage: number,
+  isCurrent: boolean,
+  sectionBreakInner?: boolean,
   page?: Page,
   onClick?: () => void
 ) => (
   <Tooltip
-    key={`page-${i}`}
+    key={key}
     title={`p. ${pageNum}`}
     disableInteractive
     enterDelay={0}
@@ -71,9 +72,9 @@ const getPage = (
     <span
       style={{
         display: "inline-block",
-        width: 7,
+        width: sectionBreakInner ? 3 : 7,
         height: 7,
-        background: getPageColor(i, currentPage, page),
+        background: getPageColor(isCurrent, page),
         marginRight: 2,
         marginBottom: 2,
         marginTop: 2,
@@ -87,9 +88,9 @@ const getPage = (
 /**
  * 節区切りを返す
  */
-const getSeparator = (i: number) => (
+const getSeparator = (key: string) => (
   <span
-    key={`separator-${i}`}
+    key={key}
     style={{
       height: 11,
       width: 1,
@@ -102,28 +103,10 @@ const getSeparator = (i: number) => (
 );
 
 /**
- * ページ内節区切りを返す
- */
-const getSeparatorInner = (i: number) => (
-  <span
-    key={`separator-inner-${i}`}
-    style={{
-      position: "relative",
-      left: -5,
-      height: 11,
-      width: 1,
-      marginLeft: -1,
-      background: "gray",
-      display: "inline-block",
-    }}
-  />
-);
-
-/**
  * ページの色を返す
  */
-const getPageColor = (i: number, currentPage: number, page?: Page) => {
-  if (i === currentPage) {
+const getPageColor = (isCurrent: boolean, page?: Page) => {
+  if (isCurrent) {
     if (page?.excluded) return "lightpink";
     if (page?.notes) return "magenta";
     return "red";
@@ -161,18 +144,36 @@ const getTOCData = (
     }
     // 節区切りを追加
     if (page?.sectionBreak) {
-      toc.push(getSeparator(i));
+      toc.push(getSeparator(`separator-${i}`));
     }
     // ページを追加
     pageNum = page?.pageNumberRestart ?? pageNum;
     toc.push(
-      getPage(i, pageNum, notes.currentPage, page, () => {
-        onChanged?.({ ...notes, currentPage: i });
-      })
+      getPage(
+        `page-${i}`,
+        pageNum,
+        i === notes.currentPage,
+        page?.sectionBreakInner,
+        page,
+        () => {
+          onChanged?.({ ...notes, currentPage: i });
+        }
+      )
     );
-    // ページ内節区切りを追加
     if (page?.sectionBreakInner) {
-      toc.push(getSeparatorInner(i));
+      toc.push(getSeparator(`separator-inner-${i}`));
+      toc.push(
+        getPage(
+          `page-right-${i}`,
+          pageNum,
+          i === notes.currentPage,
+          page.sectionBreakInner,
+          page,
+          () => {
+            onChanged?.({ ...notes, currentPage: i });
+          }
+        )
+      );
     }
     ++pageNum;
   }

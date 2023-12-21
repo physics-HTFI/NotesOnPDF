@@ -102,7 +102,7 @@ function App() {
 
       <PanelGroup direction="horizontal">
         {/* 目次 */}
-        <Panel defaultSizePixels={270} minSizePixels={220}>
+        <Panel defaultSizePixels={270} minSizePixels={240}>
           <TOCView
             pdfPath={pdfPath}
             openDrawer={openBottomDrawer}
