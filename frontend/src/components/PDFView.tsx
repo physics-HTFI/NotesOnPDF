@@ -53,6 +53,7 @@ interface Props extends BoxProps {
   onLoadSuccess?: (numPages: number) => void;
   onOpenFileTree: () => void;
   onOpenDrawer: () => void;
+  onNotesChanged: (notes: Notes) => void;
 }
 
 /**
@@ -67,6 +68,7 @@ const PDFView: React.FC<Props> = ({
   onLoadSuccess,
   onOpenFileTree,
   onOpenDrawer,
+  onNotesChanged,
   sx,
 }) => {
   const [reading, setReading] = useState(false);
@@ -174,7 +176,12 @@ const PDFView: React.FC<Props> = ({
           />
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
-        <Overlay notes={notes} width={width} height={height} />
+        <Overlay
+          notes={notes}
+          width={width}
+          height={height}
+          onNotesChanged={onNotesChanged}
+        />
         <Palette
           open={paretteOpen}
           x={(100 * paretteX) / (width ?? 1)}

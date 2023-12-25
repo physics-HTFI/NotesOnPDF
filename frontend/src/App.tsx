@@ -144,6 +144,9 @@ function App() {
               setIsWaitingPDF(false);
               setOpenLeftDrawer(false);
             }}
+            onNotesChanged={(notes) => {
+              setNotes(notes);
+            }}
           />
         </Panel>
       </PanelGroup>

@@ -132,7 +132,7 @@ export const createNewNotes = (title: string, numPages: number): Notes => ({
  */
 export const getPageLabel = (notes: Notes, pageNumber?: number): string => {
   pageNumber ??= notes.currentPage;
-  if (notes.numPages <= pageNumber) return "p. ???";
+  if (pageNumber < 0 || notes.numPages <= pageNumber) return "p. ???";
   let retval = 0;
   for (let i = pageNumber; 0 <= i; i--) {
     const restart = notes.pages[i]?.pageNumberRestart;

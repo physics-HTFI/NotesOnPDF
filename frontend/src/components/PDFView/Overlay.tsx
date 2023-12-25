@@ -36,12 +36,13 @@ interface Props {
   notes?: Notes;
   width?: number;
   height?: number;
+  onNotesChanged: (notes: Notes) => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Overlay: React.FC<Props> = ({ notes, width, height }) => {
+const Overlay: React.FC<Props> = ({ notes, width, height, onNotesChanged }) => {
   if (!notes || !width || !height) return <></>;
   const page = notes.pages[notes.currentPage];
   if (!page?.notes) return <></>;
@@ -141,7 +142,13 @@ const Overlay: React.FC<Props> = ({ notes, width, height }) => {
                   x={n.x}
                   y={n.y}
                   label={getPageLabel(notes, n.page)}
-                  onClick={() => undefined}
+                  onClick={() => {
+                    if (n.page < 0 || notes.numPages <= n.page) return;
+                    onNotesChanged({
+                      ...notes,
+                      currentPage: n.page,
+                    });
+                  }}
                 />
               );
           }
