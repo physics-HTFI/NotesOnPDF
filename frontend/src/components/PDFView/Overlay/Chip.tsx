@@ -8,13 +8,14 @@ interface Props {
   x: number;
   y: number;
   label: string;
+  outlined: boolean;
   onClick: () => void;
 }
 
 /**
  * チップ
  */
-const Chip: React.FC<Props> = ({ x, y, label, onClick }) => {
+const Chip: React.FC<Props> = ({ x, y, label, outlined, onClick }) => {
   const [hover, setHover] = useState(false);
   return (
     <MuiChip
@@ -26,6 +27,8 @@ const Chip: React.FC<Props> = ({ x, y, label, onClick }) => {
         opacity: hover ? 0.5 : 1,
       }}
       color="primary"
+      variant={outlined ? "outlined" : undefined}
+      size="small"
       label={label}
       onMouseDown={(e) => {
         if (e.button !== 2) return;

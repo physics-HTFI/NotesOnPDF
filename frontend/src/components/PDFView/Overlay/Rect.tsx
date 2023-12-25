@@ -8,13 +8,14 @@ interface Props {
   y: number;
   width: number;
   height: number;
+  border?: boolean;
   onClick: () => void;
 }
 
 /**
  * 長方形
  */
-const Rect: React.FC<Props> = ({ x, y, width, height, onClick }) => {
+const Rect: React.FC<Props> = ({ x, y, width, height, border, onClick }) => {
   const [hover, setHover] = useState(false);
   return (
     <rect
@@ -22,7 +23,13 @@ const Rect: React.FC<Props> = ({ x, y, width, height, onClick }) => {
       y={y}
       width={width}
       height={height}
-      style={{ fill: "red", opacity: hover ? 0.2 : 0.3, cursor: "alias" }}
+      style={{
+        fill: "red",
+        stroke: border ? "red" : "none",
+        fillOpacity: border ? 0 : hover ? 0.2 : 0.3,
+        strokeOpacity: hover ? 0.5 : 1,
+        cursor: "alias",
+      }}
       onMouseDown={(e) => {
         if (e.button !== 2) return;
         e.stopPropagation();

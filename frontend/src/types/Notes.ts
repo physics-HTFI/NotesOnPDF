@@ -8,23 +8,14 @@ export interface Notes {
   settings: Settings;
 }
 
-interface Rect {
-  type: "Rect";
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-interface Polygon {
-  type: "Polygon";
-  points: [number, number][];
-}
+export type Heads = "end" | "start" | "start-end" | "none";
 interface Arrow {
   type: "Arrow";
   x1: number;
   y1: number;
   x2: number;
   y2: number;
+  heads?: Heads;
 }
 interface Bracket {
   type: "Bracket";
@@ -32,6 +23,14 @@ interface Bracket {
   y1: number;
   x2: number;
   y2: number;
+  heads?: Heads;
+}
+interface Chip {
+  type: "Chip";
+  x: number;
+  y: number;
+  label: string;
+  outlined?: boolean;
 }
 interface Marker {
   type: "Marker";
@@ -52,11 +51,18 @@ interface PageLink {
   y: number;
   page: number;
 }
-interface Chip {
-  type: "Chip";
+interface Polygon {
+  type: "Polygon";
+  points: [number, number][];
+  border?: boolean;
+}
+interface Rect {
+  type: "Rect";
   x: number;
   y: number;
-  label: string;
+  width: number;
+  height: number;
+  border?: boolean;
 }
 
 /**

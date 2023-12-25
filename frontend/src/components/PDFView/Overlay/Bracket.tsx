@@ -1,3 +1,4 @@
+import { Heads } from "@/types/Notes";
 import React, { useState } from "react";
 
 /**
@@ -8,13 +9,14 @@ interface Props {
   y1: number;
   x2: number;
   y2: number;
+  heads: Heads;
   onClick: () => void;
 }
 
 /**
  * 括弧
  */
-const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, onClick }) => {
+const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, heads, onClick }) => {
   const [hover, setHover] = useState(false);
   return (
     <g
@@ -54,8 +56,8 @@ const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, onClick }) => {
           stroke: "red",
           strokeWidth: "1",
           opacity: hover ? 0.5 : 1,
-          markerStart: "url(#bracket)",
-          markerEnd: "url(#bracket)",
+          markerStart: heads.includes("start") ? "url(#bracket)" : undefined,
+          markerEnd: heads.includes("end") ? "url(#bracket)" : undefined,
         }}
       />
     </g>

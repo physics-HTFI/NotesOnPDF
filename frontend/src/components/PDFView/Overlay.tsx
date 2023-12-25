@@ -24,6 +24,9 @@ const mathjaxConfig = {
       ["\\[", "\\]"],
     ],
   },
+  options: {
+    enableMenu: false,
+  },
 };
 
 /**
@@ -47,25 +50,6 @@ const Overlay: React.FC<Props> = ({ notes, width, height }) => {
       <Svg width={width} height={height}>
         {page.notes.map((n) => {
           switch (n.type) {
-            case "Rect":
-              return (
-                <Rect
-                  key={JSON.stringify(n)}
-                  x={n.x * width}
-                  y={n.y * height}
-                  width={n.width * width}
-                  height={n.height * height}
-                  onClick={() => undefined}
-                />
-              );
-            case "Polygon":
-              return (
-                <Polygon
-                  key={JSON.stringify(n)}
-                  points={n.points.map((p) => [p[0] * width, p[1] * height])}
-                  onClick={() => undefined}
-                />
-              );
             case "Arrow":
               return (
                 <Arrow
@@ -74,6 +58,7 @@ const Overlay: React.FC<Props> = ({ notes, width, height }) => {
                   y1={n.y1 * height}
                   x2={n.x2 * width}
                   y2={n.y2 * height}
+                  heads={n.heads ?? "end"}
                   onClick={() => undefined}
                 />
               );
@@ -85,6 +70,7 @@ const Overlay: React.FC<Props> = ({ notes, width, height }) => {
                   y1={n.y1 * height}
                   x2={n.x2 * width}
                   y2={n.y2 * height}
+                  heads={n.heads ?? "start-end"}
                   onClick={() => undefined}
                 />
               );
@@ -99,6 +85,27 @@ const Overlay: React.FC<Props> = ({ notes, width, height }) => {
                   onClick={() => undefined}
                 />
               );
+            case "Polygon":
+              return (
+                <Polygon
+                  key={JSON.stringify(n)}
+                  points={n.points.map((p) => [p[0] * width, p[1] * height])}
+                  border={n.border}
+                  onClick={() => undefined}
+                />
+              );
+            case "Rect":
+              return (
+                <Rect
+                  key={JSON.stringify(n)}
+                  x={n.x * width}
+                  y={n.y * height}
+                  width={n.width * width}
+                  height={n.height * height}
+                  border={n.border}
+                  onClick={() => undefined}
+                />
+              );
           }
           return undefined;
         })}
@@ -106,6 +113,17 @@ const Overlay: React.FC<Props> = ({ notes, width, height }) => {
       <MathJaxContext version={3} config={mathjaxConfig}>
         {page.notes.map((n) => {
           switch (n.type) {
+            case "Chip":
+              return (
+                <Chip
+                  key={JSON.stringify(n)}
+                  x={n.x}
+                  y={n.y}
+                  label={n.label}
+                  outlined={n.outlined ?? false}
+                  onClick={() => undefined}
+                />
+              );
             case "Note":
               return (
                 <Note
@@ -123,16 +141,6 @@ const Overlay: React.FC<Props> = ({ notes, width, height }) => {
                   x={n.x}
                   y={n.y}
                   label={getPageLabel(notes, n.page)}
-                  onClick={() => undefined}
-                />
-              );
-            case "Chip":
-              return (
-                <Chip
-                  key={JSON.stringify(n)}
-                  x={n.x}
-                  y={n.y}
-                  label={n.label}
                   onClick={() => undefined}
                 />
               );
