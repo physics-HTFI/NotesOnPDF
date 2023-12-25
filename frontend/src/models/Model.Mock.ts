@@ -178,12 +178,12 @@ export default class ModelMock implements IModel {
               heads: "none",
             },
             { type: "Bracket", x1: 0.8, y1: 0.2, x2: 0.95, y2: 0.2 },
-            { type: "Chip", x: 0.1, y: 0.25, label: "定理" },
-            { type: "Chip", x: 0.1, y: 0.28, label: "Theorem", outlined: true },
+            { type: "Chip", x: 0.1, y: 0.25, label: "チップ" },
+            { type: "Chip", x: 0.1, y: 0.29, label: "チップ", outlined: true },
             {
               type: "Chip",
               x: 0.1,
-              y: 0.31,
+              y: 0.33,
               label: "絵文字❓❔✅",
               outlined: true,
             },
@@ -194,14 +194,16 @@ export default class ModelMock implements IModel {
               y: 0.45,
               html: `インライン数式：$\\ddot{\\boldsymbol{x}}=100$<br/>別行立て数式👇$$\\int e^x dx$$`,
             },
+            /*
             {
               type: "Note",
-              x: 0.4,
+              x: 0.5,
               y: 0.45,
               html: `<span style="text-decoration: underline;">下線</span> <strong>太字</strong> <span style="color: green;">green</span><br/><span>絵文字</span><span style="font-size: 150%">⚡🔥✨</span><br/><span style="font-family: serif; font-size: 200%">文字サイズ</span></br><span style="transform: rotate(15deg); display: inline-block;">回転</span>`,
             },
-            { type: "PageLink", x: 0.1, y: 0.6, page: 10 },
-            { type: "PageLink", x: 0.2, y: 0.6, page: 999 },
+            */
+            { type: "PageLink", x: 0.1, y: 0.63, page: 10 },
+            { type: "PageLink", x: 0.25, y: 0.63, page: 999 },
             {
               type: "Polygon",
               points: [
