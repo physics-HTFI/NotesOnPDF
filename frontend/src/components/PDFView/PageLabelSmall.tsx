@@ -18,9 +18,9 @@ const PageLabelSmall: React.FC<Props> = ({ label }) => (
       left: 3,
       bottom: 2,
       fontSize: "75%",
-      opacity: 0.7,
       cursor: "default",
     }}
+    variant="outlined"
     color="success"
     label={label}
     size="small"
