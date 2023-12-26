@@ -121,7 +121,6 @@ function App() {
         {/* PDFビュー */}
         <Panel minSizePixels={300}>
           <PDFView
-            sx={{ flexGrow: 1 }}
             file={pdf}
             currentPage={notes?.currentPage}
             notes={notes ?? undefined}

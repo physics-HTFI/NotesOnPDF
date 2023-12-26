@@ -34,17 +34,17 @@ const mathjaxConfig = {
  */
 interface Props {
   notes?: Notes;
-  width?: number;
-  height?: number;
+  pageRect?: DOMRect;
   onNotesChanged: (notes: Notes) => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Overlay: React.FC<Props> = ({ notes, width, height, onNotesChanged }) => {
-  if (!notes || !width || !height) return <></>;
+const Overlay: React.FC<Props> = ({ notes, pageRect, onNotesChanged }) => {
+  if (!notes || !pageRect) return <></>;
   const page = notes.pages[notes.currentPage];
+  const { width, height } = pageRect;
   if (!page?.notes) return <></>;
   return (
     <>
@@ -113,6 +113,7 @@ const Overlay: React.FC<Props> = ({ notes, width, height, onNotesChanged }) => {
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
         {page.notes.map((n) => {
+          let label: { pageNum?: number; pageLabel?: string };
           switch (n.type) {
             case "Chip":
               return (
@@ -136,13 +137,16 @@ const Overlay: React.FC<Props> = ({ notes, width, height, onNotesChanged }) => {
                 />
               );
             case "PageLink":
+              label = getPageLabel(notes, n.page);
               return (
                 <PageLink
                   key={JSON.stringify(n)}
                   x={n.x}
                   y={n.y}
-                  label={getPageLabel(notes, n.page)}
-                  onClick={() => {
+                  pageNum={label.pageNum ?? getPageLabel(notes).pageNum ?? 1}
+                  label={label.pageLabel ?? ""}
+                  pageRect={pageRect}
+                  onLeftClick={() => {
                     if (n.page < 0 || notes.numPages <= n.page) return;
                     onNotesChanged({
                       ...notes,

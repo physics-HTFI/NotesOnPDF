@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Box, BoxProps, Container } from "@mui/material";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Box, Container } from "@mui/material";
 import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
@@ -43,7 +43,7 @@ const preferredSize = (
 /**
  * `PDFView`の引数
  */
-interface Props extends BoxProps {
+interface Props {
   file?: string | File;
   currentPage?: number;
   notes?: Notes;
@@ -69,15 +69,16 @@ const PDFView: React.FC<Props> = ({
   onOpenFileTree,
   onOpenDrawer,
   onNotesChanged,
-  sx,
 }) => {
   const [reading, setReading] = useState(false);
   const [paretteOpen, setParetteOpen] = useState(false);
   const [paretteX, setParetteX] = useState(0);
   const [paretteY, setParetteY] = useState(0);
   const sizes = useRef<{ width: number; height: number }[]>();
-  const outer = useRef<HTMLDivElement>(null);
-  const inner = useRef<HTMLDivElement>(null);
+  const [refContainer, setRefContainer] = useState<HTMLDivElement>();
+  const [refPage, setRefPage] = useState<HTMLDivElement>();
+  const containerRect = refContainer?.getBoundingClientRect();
+  const pageRect = refPage?.getBoundingClientRect();
   const [width, height, top, bottom] =
     currentPage === undefined
       ? [undefined, undefined]
@@ -86,11 +87,18 @@ const PDFView: React.FC<Props> = ({
           settings?.offsetBottom ?? 0,
           sizes.current?.[currentPage]?.width,
           sizes.current?.[currentPage]?.height,
-          outer.current?.clientWidth,
-          outer.current?.clientHeight
+          containerRect?.width,
+          containerRect?.height
         );
   const page = notes ? notes.pages[notes.currentPage] : undefined;
-  const pageLabel = notes ? getPageLabel(notes) : undefined;
+  const { pageLabel } = getPageLabel(notes);
+
+  const getPageRect = useCallback((ref: HTMLDivElement) => {
+    setRefPage(ref);
+  }, []);
+  const getContainerRect = useCallback((ref: HTMLDivElement) => {
+    setRefContainer(ref);
+  }, []);
 
   useEffect(() => {
     if (currentPage === undefined) return;
@@ -100,18 +108,16 @@ const PDFView: React.FC<Props> = ({
   return (
     <Box
       sx={{
-        ...sx,
         background: "gainsboro",
         height: "100vh",
         overflow: "hidden",
         position: "relative",
       }}
-      ref={outer}
+      ref={getContainerRect}
       onMouseDown={(e) => {
-        if (!inner.current) return;
-        const rect = inner.current.getBoundingClientRect();
-        setParetteX(e.pageX - rect.left - window.scrollX);
-        setParetteY(e.pageY - rect.top - window.scrollY);
+        if (!pageRect) return;
+        setParetteX(e.pageX - pageRect.left);
+        setParetteY(e.pageY - pageRect.top);
         setParetteOpen(true);
         e.preventDefault();
       }}
@@ -135,7 +141,7 @@ const PDFView: React.FC<Props> = ({
           containerType: "size",
         }}
         disableGutters
-        ref={inner}
+        ref={getPageRect}
       >
         <Document
           file={
@@ -178,8 +184,7 @@ const PDFView: React.FC<Props> = ({
         <PageLabelLarge label={pageLabel} shown={reading} />
         <Overlay
           notes={notes}
-          width={width}
-          height={height}
+          pageRect={pageRect}
           onNotesChanged={onNotesChanged}
         />
         <Palette

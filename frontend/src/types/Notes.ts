@@ -130,9 +130,14 @@ export const createNewNotes = (title: string, numPages: number): Notes => ({
  * `pageNumber`の表示上のページ数を返す。
  * `pageNumber`が省略されている場合は`notes.currentPage`を対象とする。
  */
-export const getPageLabel = (notes: Notes, pageNumber?: number): string => {
+export const getPageLabel = (
+  notes?: Notes,
+  pageNumber?: number
+): { pageNum?: number; pageLabel?: string } => {
+  if (!notes) return { pageLabel: "p. ???" };
   pageNumber ??= notes.currentPage;
-  if (pageNumber < 0 || notes.numPages <= pageNumber) return "p. ???";
+  if (pageNumber < 0 || notes.numPages <= pageNumber)
+    return { pageLabel: "p. ???" };
   let retval = 0;
   for (let i = pageNumber; 0 <= i; i--) {
     const restart = notes.pages[i]?.pageNumberRestart;
@@ -143,5 +148,5 @@ export const getPageLabel = (notes: Notes, pageNumber?: number): string => {
       break;
     }
   }
-  return `p. ${retval}`;
+  return { pageNum: retval, pageLabel: `p. ${retval}` };
 };
