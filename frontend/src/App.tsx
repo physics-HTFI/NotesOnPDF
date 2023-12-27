@@ -11,6 +11,7 @@ import OpenFileDrawer from "./components/OpenFileDrawer";
 import PDFView from "@/components/PDFView";
 import Waiting from "@/components/Fullscreen/Waiting";
 import TOCView from "@/components/TOCView";
+import { NotesContext } from "./contexts/NotesContext";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 const model: IModel = IS_MOCK ? new ModelMock() : new Model();
@@ -63,99 +64,90 @@ function App() {
   }, [isWaitingPDF, isWaitingNotes, numPages, notes, pdfPath, pdf]);
 
   return (
-    <Box
-      sx={{ display: "flex" }}
-      onWheel={(e) => {
-        handlePageChange(e.deltaY < 0 ? -1 : 1);
-      }}
+    <NotesContext.Provider
+      value={{ notes: notes ?? undefined, setNotes, pdfPath }}
     >
-      {/* ファイルツリー */}
-      <OpenFileDrawer
-        model={model}
-        progresses={progresses}
-        open={openLeftDrawer}
-        onClose={() => {
-          if (!pdf) return;
-          setOpenLeftDrawer(false);
+      <Box
+        sx={{ display: "flex" }}
+        onWheel={(e) => {
+          handlePageChange(e.deltaY < 0 ? -1 : 1);
         }}
-        onSelect={(pdf) => {
-          setOpenLeftDrawer(false);
-          const pdfPathNew = pdf instanceof File ? pdf.name : pdf;
-          if (pdfPath === pdfPathNew || !pdfPathNew) return;
-          setIsWaitingPDF(true);
-          setIsWaitingNotes(true);
-          setNotes(undefined);
-          setPDF(pdf);
-          model
-            .getNotes(pdfPathNew)
-            .then((notes) => {
-              setNotes(notes);
-            })
-            .catch(() => {
-              setNotes(null);
-            })
-            .finally(() => {
-              setIsWaitingNotes(false);
-            });
-        }}
-      />
+      >
+        {/* ファイルツリー */}
+        <OpenFileDrawer
+          model={model}
+          progresses={progresses}
+          open={openLeftDrawer}
+          onClose={() => {
+            if (!pdf) return;
+            setOpenLeftDrawer(false);
+          }}
+          onSelect={(pdf) => {
+            setOpenLeftDrawer(false);
+            const pdfPathNew = pdf instanceof File ? pdf.name : pdf;
+            if (pdfPath === pdfPathNew || !pdfPathNew) return;
+            setIsWaitingPDF(true);
+            setIsWaitingNotes(true);
+            setNotes(undefined);
+            setPDF(pdf);
+            model
+              .getNotes(pdfPathNew)
+              .then((notes) => {
+                setNotes(notes);
+              })
+              .catch(() => {
+                setNotes(null);
+              })
+              .finally(() => {
+                setIsWaitingNotes(false);
+              });
+          }}
+        />
 
-      <PanelGroup direction="horizontal">
-        {/* 目次 */}
-        <Panel defaultSizePixels={270} minSizePixels={240}>
-          <TOCView
-            pdfPath={pdfPath}
-            openDrawer={openBottomDrawer}
-            notes={notes ?? undefined}
-            onChanged={(notes) => {
-              setNotes(notes);
-            }}
-          />
-        </Panel>
+        <PanelGroup direction="horizontal">
+          {/* 目次 */}
+          <Panel defaultSizePixels={270} minSizePixels={240}>
+            <TOCView openDrawer={openBottomDrawer} />
+          </Panel>
 
-        {/* リサイズハンドル */}
-        <PanelResizeHandle>
-          <Box sx={{ width: 5, height: "100vh", background: "silver" }} />
-        </PanelResizeHandle>
+          {/* リサイズハンドル */}
+          <PanelResizeHandle>
+            <Box sx={{ width: 5, height: "100vh", background: "silver" }} />
+          </PanelResizeHandle>
 
-        {/* PDFビュー */}
-        <Panel minSizePixels={300}>
-          <PDFView
-            file={pdf}
-            currentPage={notes?.currentPage}
-            notes={notes ?? undefined}
-            settings={notes?.settings}
-            openDrawer={openBottomDrawer}
-            onOpenFileTree={() => {
-              setOpenLeftDrawer(true);
-            }}
-            onOpenDrawer={() => {
-              setOpenBottomDrawer(!openBottomDrawer);
-            }}
-            onLoadError={() => {
-              setPDF(undefined);
-              setNumPages(undefined);
-              setIsWaitingPDF(false);
-              setOpenLeftDrawer(true);
-            }}
-            onLoadSuccess={(numPages) => {
-              setNumPages(numPages);
-              setIsWaitingPDF(false);
-              setOpenLeftDrawer(false);
-            }}
-            onNotesChanged={(notes) => {
-              setNotes(notes);
-            }}
-          />
-        </Panel>
-      </PanelGroup>
+          {/* PDFビュー */}
+          <Panel minSizePixels={300}>
+            <PDFView
+              file={pdf}
+              openDrawer={openBottomDrawer}
+              onOpenFileTree={() => {
+                setOpenLeftDrawer(true);
+              }}
+              onOpenDrawer={() => {
+                setOpenBottomDrawer(!openBottomDrawer);
+              }}
+              onLoadError={() => {
+                setPDF(undefined);
+                setNumPages(undefined);
+                setIsWaitingPDF(false);
+                setOpenLeftDrawer(true);
+              }}
+              onLoadSuccess={(numPages) => {
+                setNumPages(numPages);
+                setIsWaitingPDF(false);
+                setOpenLeftDrawer(false);
+              }}
+            />
+          </Panel>
+        </PanelGroup>
 
-      {/* 処理中プログレス表示 */}
-      <Waiting isWaiting={isWaitingPDF || isWaitingNotes} />
+        {/* 処理中プログレス表示 */}
+        <Waiting isWaiting={isWaitingPDF || isWaitingNotes} />
 
-      {/* モックモデルを使用していることを示すポップアップ表示 */}
-      {IS_MOCK && <SnackbarsMock open />}
-    </Box>
+        {/* モックモデルを使用していることを示すポップアップ表示 */}
+        {IS_MOCK && <SnackbarsMock open />}
+      </Box>
+    </NotesContext.Provider>
   );
 }
 

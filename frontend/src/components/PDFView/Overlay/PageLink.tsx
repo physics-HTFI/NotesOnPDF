@@ -1,29 +1,26 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Chip, Popover } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
 import PageLinkMenu from "./Menus/PageLinkMenu";
-import {
-  Notes,
-  PageLink as PageLinkType,
-  toDisplayedPage,
-} from "@/types/Notes";
+import { PageLink as PageLinkType, toDisplayedPage } from "@/types/Notes";
+import { NotesContext } from "@/contexts/NotesContext";
 
 /**
  * `PageLink`の引数
  */
 interface Props {
   params: PageLinkType;
-  notes: Notes;
   pageRect: DOMRect;
-  onNotesChanged: (notes: Notes) => void;
 }
 
 /**
  * ページへのリンク
  */
-const PageLink: React.FC<Props> = ({ params, notes, onNotesChanged }) => {
+const PageLink: React.FC<Props> = ({ params }) => {
+  const { notes, setNotes } = useContext(NotesContext);
   const [anchor, setAnchor] = useState<HTMLElement>();
   const { pageNum, pageLabel } = toDisplayedPage(notes, params.page);
+  if (!notes || !setNotes) return <></>;
   return (
     <>
       <Chip
@@ -43,13 +40,9 @@ const PageLink: React.FC<Props> = ({ params, notes, onNotesChanged }) => {
           e.preventDefault();
           // 左クリック
           if (e.button === 0) {
-            if (
-              params.page < 0 ||
-              notes.numPages <= params.page ||
-              notes.currentPage === params.page
-            )
-              return;
-            onNotesChanged({ ...notes, currentPage: params.page });
+            if (notes.currentPage === params.page) return;
+            if (params.page < 0 || notes.numPages <= params.page) return;
+            setNotes({ ...notes, currentPage: params.page });
           }
         }}
         onContextMenu={(e) => {
@@ -72,16 +65,8 @@ const PageLink: React.FC<Props> = ({ params, notes, onNotesChanged }) => {
         <PageLinkMenu
           pageNum={pageNum ?? toDisplayedPage(notes).pageNum ?? 1}
           params={params}
-          notes={notes}
-          onClose={(p) => {
+          onClose={() => {
             setAnchor(undefined);
-            const page = notes.pages[notes.currentPage];
-            if (!p || !page) return;
-            page.notes = page.notes?.filter((n) => n !== params);
-            if (p !== "delete") {
-              page.notes?.push(p);
-            }
-            onNotesChanged({ ...notes });
           }}
         />
       </Popover>

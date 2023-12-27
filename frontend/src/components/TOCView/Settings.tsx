@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -13,35 +13,49 @@ import Excluded from "./Settings/Excluded";
 import PageNumberRestart from "./Settings/PageNumberRestart";
 import { ExpandLess } from "@mui/icons-material";
 import LabelSlider from "./Settings/LabelSlider";
-
-/**
- * `Settings`の引数
- */
-interface Props {
-  page?: Page;
-  settings?: Settings;
-  preferredBook: string;
-  preferredPart: string;
-  preferredChapter: string;
-  preferredPageNumber?: number;
-  onChangePage: (p: Partial<Page>) => void;
-  onChangeSettings: (s: Partial<Settings>) => void;
-}
+import { NotesContext } from "@/contexts/NotesContext";
 
 /**
  * 設定パネル
  */
-// TODO 表示範囲
-const Settings: React.FC<Props> = ({
-  page,
-  settings,
-  preferredBook,
-  preferredPart,
-  preferredChapter,
-  preferredPageNumber,
-  onChangePage,
-  onChangeSettings,
-}) => {
+const Settings: React.FC = () => {
+  const { notes, setNotes, pdfPath } = useContext(NotesContext);
+  if (!notes || !setNotes || !pdfPath) return <></>;
+  const page: Page | undefined = notes.pages[notes.currentPage];
+
+  // 部名・章名・ページ番号の候補
+  const bookName = pdfPath.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? "";
+  let partNum = 1;
+  let chapterNum = 1;
+  let pageNum = 1;
+  for (let i = 0; i < notes.currentPage; i++) {
+    ++pageNum;
+    const page = notes.pages[i];
+    if (!page) continue;
+    if (page.part !== undefined) ++partNum;
+    if (page.chapter !== undefined) ++chapterNum;
+    if (page.pageNumberRestart) {
+      pageNum = 1 + page.pageNumberRestart;
+    }
+  }
+
+  // ページ設定変更
+  const handleChangePage = (page: Partial<Page>) => {
+    notes.pages[notes.currentPage] = {
+      ...notes.pages[notes.currentPage],
+      ...page,
+    };
+    setNotes({ ...notes });
+  };
+
+  // PDF設定変更
+  const handleChangeSettings = (settings: Partial<Settings>) => {
+    setNotes({
+      ...notes,
+      settings: { ...notes.settings, ...settings },
+    });
+  };
+
   return (
     <Box sx={{ fontSize: "80%", flexWrap: "wrap" }}>
       <Box sx={{ mx: 1.5, mb: 1.5 }}>
@@ -50,9 +64,9 @@ const Settings: React.FC<Props> = ({
           label="題区切り"
           tooltip="このページの前に題名を追加します"
           text={page?.book}
-          preferredText={preferredBook}
+          preferredText={bookName}
           onChange={(book) => {
-            onChangePage({ book });
+            handleChangePage({ book });
           }}
         />
 
@@ -61,9 +75,9 @@ const Settings: React.FC<Props> = ({
           label="部区切り"
           tooltip="このページの前に部名を追加します"
           text={page?.part}
-          preferredText={preferredPart}
+          preferredText={`第${partNum}部`}
           onChange={(part) => {
-            onChangePage({ part });
+            handleChangePage({ part });
           }}
         />
 
@@ -72,9 +86,9 @@ const Settings: React.FC<Props> = ({
           label="章区切り"
           tooltip="このページの前に章名を追加します"
           text={page?.chapter}
-          preferredText={preferredChapter}
+          preferredText={`第${chapterNum}章`}
           onChange={(chapter) => {
-            onChangePage({ chapter });
+            handleChangePage({ chapter });
           }}
         />
 
@@ -83,7 +97,7 @@ const Settings: React.FC<Props> = ({
           sectionBreak={page?.sectionBreak}
           sectionBreakInner={page?.sectionBreakInner}
           onChange={(sectionBreak, sectionBreakInner) => {
-            onChangePage({
+            handleChangePage({
               sectionBreak: sectionBreak ? true : undefined,
               sectionBreakInner: sectionBreakInner ? true : undefined,
             });
@@ -93,9 +107,9 @@ const Settings: React.FC<Props> = ({
         {/* ページ番号 */}
         <PageNumberRestart
           pageNumberRestart={page?.pageNumberRestart}
-          preferredPageNumber={preferredPageNumber}
+          preferredPageNumber={pageNum}
           onChange={(pageNumberRestart) => {
-            onChangePage({ pageNumberRestart });
+            handleChangePage({ pageNumberRestart });
           }}
         />
 
@@ -103,7 +117,7 @@ const Settings: React.FC<Props> = ({
         <Excluded
           excluded={page?.excluded}
           onChange={(excluded) => {
-            onChangePage({ excluded });
+            handleChangePage({ excluded });
           }}
         />
       </Box>
@@ -114,16 +128,16 @@ const Settings: React.FC<Props> = ({
         <AccordionDetails>
           <LabelSlider
             label="余白(上)"
-            value={settings?.offsetTop ?? 0}
+            value={notes.settings.offsetTop}
             onChange={(offsetTop) => {
-              onChangeSettings({ offsetTop });
+              handleChangeSettings({ offsetTop });
             }}
           />
           <LabelSlider
             label="余白(下)"
-            value={settings?.offsetBottom ?? 0}
+            value={notes.settings.offsetBottom}
             onChange={(offsetBottom) => {
-              onChangeSettings({ offsetBottom });
+              handleChangeSettings({ offsetBottom });
             }}
           />
         </AccordionDetails>

@@ -1,41 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Drawer } from "@mui/material";
 import { Notes } from "@/types/Notes";
 import Settings from "./TOCView/Settings";
 import getTOCData from "./TOCView/getTOCData";
+import { NotesContext } from "@/contexts/NotesContext";
 
 /**
  * `TOCView`の引数
  */
 interface Props {
-  pdfPath?: string;
-  notes?: Notes;
   openDrawer: boolean;
-  onChanged: (notes: Notes) => void;
 }
 
 /**
  * 目次を表示するコンポーネント
  */
-const TOCView: React.FC<Props> = ({
-  pdfPath,
-  openDrawer,
-  notes,
-  onChanged,
-}) => {
-  let partNum = 1;
-  let chapterNum = 1;
-  let pageNum = 1;
-  for (let i = 0; i < (notes?.currentPage ?? 0); i++) {
-    ++pageNum;
-    const page = notes?.pages[i];
-    if (!page) continue;
-    if (page.part !== undefined) ++partNum;
-    if (page.chapter !== undefined) ++chapterNum;
-    if (page.pageNumberRestart) {
-      pageNum = 1 + page.pageNumberRestart;
-    }
-  }
+const TOCView: React.FC<Props> = ({ openDrawer }) => {
+  const { notes, setNotes } = useContext(NotesContext);
+  const handleChanged = (notes: Notes) => {
+    setNotes?.(notes);
+  };
 
   return (
     <Box
@@ -48,7 +32,9 @@ const TOCView: React.FC<Props> = ({
         fontSize: "70%",
       }}
     >
-      <Box sx={{ p: 0.5, lineHeight: 1 }}>{getTOCData(notes, onChanged)}</Box>
+      <Box sx={{ p: 0.5, lineHeight: 1 }}>
+        {getTOCData(notes, handleChanged)}
+      </Box>
 
       <Drawer
         variant="persistent"
@@ -66,29 +52,7 @@ const TOCView: React.FC<Props> = ({
           e.stopPropagation();
         }}
       >
-        <Settings
-          page={notes?.pages[notes.currentPage] ?? {}}
-          settings={notes?.settings}
-          preferredBook={pdfPath?.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? ""}
-          preferredPart={`第${partNum}部`}
-          preferredChapter={`第${chapterNum}章`}
-          preferredPageNumber={pageNum}
-          onChangePage={(page) => {
-            if (!notes) return;
-            notes.pages[notes.currentPage] = {
-              ...notes.pages[notes.currentPage],
-              ...page,
-            };
-            onChanged({ ...notes });
-          }}
-          onChangeSettings={(settings) => {
-            if (!notes) return;
-            onChanged({
-              ...notes,
-              settings: { ...notes.settings, ...settings },
-            });
-          }}
-        />
+        <Settings />
       </Drawer>
     </Box>
   );

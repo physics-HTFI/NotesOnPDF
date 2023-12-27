@@ -1,13 +1,20 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Box, Container } from "@mui/material";
 import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import Control from "./PDFView/Control";
-import { Notes, Settings, toDisplayedPage } from "@/types/Notes";
+import { toDisplayedPage } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
 import Overlay from "./PDFView/Overlay";
+import { NotesContext } from "@/contexts/NotesContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -45,15 +52,11 @@ const preferredSize = (
  */
 interface Props {
   file?: string | File;
-  currentPage?: number;
-  notes?: Notes;
-  settings?: Settings;
   openDrawer: boolean;
   onLoadError?: () => void;
   onLoadSuccess?: (numPages: number) => void;
   onOpenFileTree: () => void;
   onOpenDrawer: () => void;
-  onNotesChanged: (notes: Notes) => void;
 }
 
 /**
@@ -61,14 +64,10 @@ interface Props {
  */
 const PDFView: React.FC<Props> = ({
   file,
-  currentPage,
-  notes,
-  settings,
   onLoadError,
   onLoadSuccess,
   onOpenFileTree,
   onOpenDrawer,
-  onNotesChanged,
 }) => {
   const [reading, setReading] = useState(false);
   const [paretteOpen, setParetteOpen] = useState(false);
@@ -79,14 +78,15 @@ const PDFView: React.FC<Props> = ({
   const [refPage, setRefPage] = useState<HTMLDivElement>();
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
+  const { notes } = useContext(NotesContext);
   const [width, height, top, bottom] =
-    currentPage === undefined
+    notes?.currentPage === undefined
       ? [undefined, undefined]
       : preferredSize(
-          settings?.offsetTop ?? 0,
-          settings?.offsetBottom ?? 0,
-          sizes.current?.[currentPage]?.width,
-          sizes.current?.[currentPage]?.height,
+          notes.settings.offsetTop,
+          notes.settings.offsetBottom,
+          sizes.current?.[notes.currentPage]?.width,
+          sizes.current?.[notes.currentPage]?.height,
           containerRect?.width,
           containerRect?.height
         );
@@ -101,9 +101,9 @@ const PDFView: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (currentPage === undefined) return;
+    if (notes?.currentPage === undefined) return;
     setReading(true);
-  }, [currentPage]);
+  }, [notes?.currentPage]);
 
   return (
     <Box
@@ -169,7 +169,7 @@ const PDFView: React.FC<Props> = ({
           noData={""}
         >
           <PDFPage
-            pageIndex={currentPage}
+            pageIndex={notes?.currentPage}
             width={width}
             error={""}
             loading={""}
@@ -182,11 +182,7 @@ const PDFView: React.FC<Props> = ({
           />
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
-        <Overlay
-          notes={notes}
-          pageRect={pageRect}
-          onNotesChanged={onNotesChanged}
-        />
+        <Overlay pageRect={pageRect} />
         <Palette
           open={paretteOpen}
           x={(100 * paretteX) / (width ?? 1)}

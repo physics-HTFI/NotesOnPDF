@@ -1,5 +1,4 @@
-import React from "react";
-import { Notes } from "@/types/Notes";
+import React, { useContext } from "react";
 import Arrow from "./Overlay/Arrow";
 import Bracket from "./Overlay/Bracket";
 import Marker from "./Overlay/Marker";
@@ -10,6 +9,7 @@ import Polygon from "./Overlay/Polygon";
 import Svg from "./Overlay/Svg";
 import { MathJaxContext } from "better-react-mathjax";
 import Chip from "./Overlay/Chip";
+import { NotesContext } from "@/contexts/NotesContext";
 
 const mathjaxConfig = {
   loader: { load: ["[tex]/html"] },
@@ -33,16 +33,16 @@ const mathjaxConfig = {
  * `Overlay`の引数
  */
 interface Props {
-  notes?: Notes;
   pageRect?: DOMRect;
-  onNotesChanged: (notes: Notes) => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Overlay: React.FC<Props> = ({ notes, pageRect, onNotesChanged }) => {
+const Overlay: React.FC<Props> = ({ pageRect }) => {
+  const { notes } = useContext(NotesContext);
   if (!notes || !pageRect) return <></>;
+
   const page = notes.pages[notes.currentPage];
   const { width, height } = pageRect;
   if (!page?.notes) return <></>;
@@ -140,9 +140,7 @@ const Overlay: React.FC<Props> = ({ notes, pageRect, onNotesChanged }) => {
                 <PageLink
                   key={JSON.stringify(n)}
                   params={n}
-                  notes={notes}
                   pageRect={pageRect}
-                  onNotesChanged={onNotesChanged}
                 />
               );
           }

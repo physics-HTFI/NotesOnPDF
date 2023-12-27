@@ -1,7 +1,8 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { Box, IconButton, TextField } from "@mui/material";
 import { Delete, OpenWith } from "@mui/icons-material";
-import { Notes, PageLink, fromDisplayedPage } from "@/types/Notes";
+import { PageLink, fromDisplayedPage } from "@/types/Notes";
+import { NotesContext } from "@/contexts/NotesContext";
 
 /**
  * `PageLinkMenu`の引数
@@ -9,22 +10,43 @@ import { Notes, PageLink, fromDisplayedPage } from "@/types/Notes";
 interface Props {
   params: PageLink;
   pageNum: number;
-  notes: Notes;
-  onClose: (p?: PageLink | "delete") => void;
+  onClose: () => void;
 }
 
 /**
  * ページリンクのメニュー
  */
-const PageLinkMenu: React.FC<Props> = ({ params, pageNum, notes, onClose }) => {
+const PageLinkMenu: React.FC<Props> = ({ params, pageNum, onClose }) => {
+  const { notes, setNotes } = useContext(NotesContext);
   const num = useRef<number>(pageNum);
+  const page = notes?.pages[notes.currentPage];
+  const notesTrimmed = page?.notes?.filter((n) => n !== params);
+  if (!notes || !setNotes || !page || !notesTrimmed) return <></>;
+
+  const handleEdit = (p: PageLink) => {
+    notesTrimmed.push(p);
+    page.notes = notesTrimmed;
+    setNotes({ ...notes });
+    onClose();
+  };
+
+  const handleDelete = () => {
+    page.notes = notesTrimmed;
+    setNotes({ ...notes });
+    onClose();
+  };
+
   return (
     <Box
+      sx={{ p: 1 }}
       onMouseLeave={() => {
         if (pageNum === num.current) {
           onClose();
         } else {
-          onClose({ ...params, page: fromDisplayedPage(notes, num.current) });
+          handleEdit({
+            ...params,
+            page: fromDisplayedPage(notes, num.current),
+          });
         }
       }}
       onMouseDown={(e) => {
@@ -38,11 +60,7 @@ const PageLinkMenu: React.FC<Props> = ({ params, pageNum, notes, onClose }) => {
         <IconButton onClick={undefined}>
           <OpenWith />
         </IconButton>
-        <IconButton
-          onClick={() => {
-            onClose("delete");
-          }}
-        >
+        <IconButton onClick={handleDelete}>
           <Delete />
         </IconButton>
       </Box>
