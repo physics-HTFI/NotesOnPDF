@@ -4,7 +4,7 @@ import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import Control from "./PDFView/Control";
-import { Notes, Settings, getPageLabel } from "@/types/Notes";
+import { Notes, Settings, toDisplayedPage } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
 import Overlay from "./PDFView/Overlay";
@@ -91,7 +91,7 @@ const PDFView: React.FC<Props> = ({
           containerRect?.height
         );
   const page = notes ? notes.pages[notes.currentPage] : undefined;
-  const { pageLabel } = getPageLabel(notes);
+  const { pageLabel } = toDisplayedPage(notes);
 
   const getPageRect = useCallback((ref: HTMLDivElement) => {
     setRefPage(ref);

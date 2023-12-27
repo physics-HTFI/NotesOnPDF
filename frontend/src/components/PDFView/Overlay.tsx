@@ -1,5 +1,5 @@
 import React from "react";
-import { Notes, getPageLabel } from "@/types/Notes";
+import { Notes } from "@/types/Notes";
 import Arrow from "./Overlay/Arrow";
 import Bracket from "./Overlay/Bracket";
 import Marker from "./Overlay/Marker";
@@ -113,7 +113,6 @@ const Overlay: React.FC<Props> = ({ notes, pageRect, onNotesChanged }) => {
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
         {page.notes.map((n) => {
-          let label: { pageNum?: number; pageLabel?: string };
           switch (n.type) {
             case "Chip":
               return (
@@ -137,22 +136,13 @@ const Overlay: React.FC<Props> = ({ notes, pageRect, onNotesChanged }) => {
                 />
               );
             case "PageLink":
-              label = getPageLabel(notes, n.page);
               return (
                 <PageLink
                   key={JSON.stringify(n)}
-                  x={n.x}
-                  y={n.y}
-                  pageNum={label.pageNum ?? getPageLabel(notes).pageNum ?? 1}
-                  label={label.pageLabel ?? ""}
+                  params={n}
+                  notes={notes}
                   pageRect={pageRect}
-                  onLeftClick={() => {
-                    if (n.page < 0 || notes.numPages <= n.page) return;
-                    onNotesChanged({
-                      ...notes,
-                      currentPage: n.page,
-                    });
-                  }}
+                  onNotesChanged={onNotesChanged}
                 />
               );
           }

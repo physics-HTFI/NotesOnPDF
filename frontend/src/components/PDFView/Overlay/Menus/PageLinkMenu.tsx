@@ -1,23 +1,32 @@
 import React, { useRef } from "react";
 import { Box, IconButton, TextField } from "@mui/material";
-import { Delete, Edit, OpenWith } from "@mui/icons-material";
+import { Delete, OpenWith } from "@mui/icons-material";
+import { Notes, PageLink, fromDisplayedPage } from "@/types/Notes";
 
 /**
  * `PageLinkMenu`の引数
  */
 interface Props {
+  params: PageLink;
   pageNum: number;
-  onClose: () => void;
+  notes: Notes;
+  onClose: (p?: PageLink | "delete") => void;
 }
 
 /**
  * ページリンクのメニュー
  */
-const PageLinkMenu: React.FC<Props> = ({ pageNum, onClose }) => {
+const PageLinkMenu: React.FC<Props> = ({ params, pageNum, notes, onClose }) => {
   const num = useRef<number>(pageNum);
   return (
     <Box
-      onMouseLeave={onClose}
+      onMouseLeave={() => {
+        if (pageNum === num.current) {
+          onClose();
+        } else {
+          onClose({ ...params, page: fromDisplayedPage(notes, num.current) });
+        }
+      }}
       onMouseDown={(e) => {
         e.stopPropagation();
       }}
@@ -29,10 +38,11 @@ const PageLinkMenu: React.FC<Props> = ({ pageNum, onClose }) => {
         <IconButton onClick={undefined}>
           <OpenWith />
         </IconButton>
-        <IconButton onClick={undefined}>
-          <Edit />
-        </IconButton>
-        <IconButton onClick={undefined}>
+        <IconButton
+          onClick={() => {
+            onClose("delete");
+          }}
+        >
           <Delete />
         </IconButton>
       </Box>

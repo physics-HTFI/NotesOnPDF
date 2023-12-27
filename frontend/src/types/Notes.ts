@@ -9,7 +9,7 @@ export interface Notes {
 }
 
 export type Heads = "end" | "start" | "start-end" | "none";
-interface Arrow {
+export interface Arrow {
   type: "Arrow";
   x1: number;
   y1: number;
@@ -17,7 +17,7 @@ interface Arrow {
   y2: number;
   heads?: Heads;
 }
-interface Bracket {
+export interface Bracket {
   type: "Bracket";
   x1: number;
   y1: number;
@@ -25,38 +25,38 @@ interface Bracket {
   y2: number;
   heads?: Heads;
 }
-interface Chip {
+export interface Chip {
   type: "Chip";
   x: number;
   y: number;
   label: string;
   outlined?: boolean;
 }
-interface Marker {
+export interface Marker {
   type: "Marker";
   x1: number;
   y1: number;
   x2: number;
   y2: number;
 }
-interface Note {
+export interface Note {
   type: "Note";
   x: number;
   y: number;
   html: string;
 }
-interface PageLink {
+export interface PageLink {
   type: "PageLink";
   x: number;
   y: number;
   page: number;
 }
-interface Polygon {
+export interface Polygon {
   type: "Polygon";
   points: [number, number][];
   border?: boolean;
 }
-interface Rect {
+export interface Rect {
   type: "Rect";
   x: number;
   y: number;
@@ -130,7 +130,7 @@ export const createNewNotes = (title: string, numPages: number): Notes => ({
  * `pageNumber`の表示上のページ数を返す。
  * `pageNumber`が省略されている場合は`notes.currentPage`を対象とする。
  */
-export const getPageLabel = (
+export const toDisplayedPage = (
   notes?: Notes,
   pageNumber?: number
 ): { pageNum?: number; pageLabel?: string } => {
@@ -149,4 +149,31 @@ export const getPageLabel = (
     }
   }
   return { pageNum: retval, pageLabel: `p. ${retval}` };
+};
+
+/**
+ * `displayedPageNumber`を通し番号でのページ数に変換する。
+ * できなかった場合は、-1を返す。
+ */
+export const fromDisplayedPage = (
+  notes: Notes,
+  displayedPageNumber: number
+): number => {
+  const current = toDisplayedPage(notes).pageNum;
+  if (current === undefined) return -1;
+  if (displayedPageNumber <= current) {
+    // 現在のページより小さい場合は、遡って探す
+    for (let i = notes.currentPage; i >= 0; i--) {
+      if (displayedPageNumber === toDisplayedPage(notes, i).pageNum) {
+        return i;
+      }
+    }
+  } else {
+    for (let i = notes.currentPage + 1; i < notes.numPages; i++) {
+      if (displayedPageNumber === toDisplayedPage(notes, i).pageNum) {
+        return i;
+      }
+    }
+  }
+  return -1;
 };
