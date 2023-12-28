@@ -10,6 +10,7 @@ import Svg from "./Overlay/Svg";
 import { MathJaxContext } from "better-react-mathjax";
 import Chip from "./Overlay/Chip";
 import { NotesContext } from "@/contexts/NotesContext";
+import { Mode } from "./Control";
 
 const mathjaxConfig = {
   loader: { load: ["[tex]/html"] },
@@ -33,13 +34,14 @@ const mathjaxConfig = {
  * `Overlay`の引数
  */
 interface Props {
+  mode: Mode;
   pageRect?: DOMRect;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Overlay: React.FC<Props> = ({ pageRect }) => {
+const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
   const { notes } = useContext(NotesContext);
   if (!notes || !pageRect) return <></>;
 
@@ -60,6 +62,7 @@ const Overlay: React.FC<Props> = ({ pageRect }) => {
                   x2={n.x2 * width}
                   y2={n.y2 * height}
                   heads={n.heads ?? "end"}
+                  mode={mode}
                   onClick={() => undefined}
                 />
               );
@@ -72,6 +75,7 @@ const Overlay: React.FC<Props> = ({ pageRect }) => {
                   x2={n.x2 * width}
                   y2={n.y2 * height}
                   heads={n.heads ?? "start-end"}
+                  mode={mode}
                   onClick={() => undefined}
                 />
               );
@@ -83,6 +87,7 @@ const Overlay: React.FC<Props> = ({ pageRect }) => {
                   y1={n.y1 * height}
                   x2={n.x2 * width}
                   y2={n.y2 * height}
+                  mode={mode}
                   onClick={() => undefined}
                 />
               );
@@ -92,6 +97,7 @@ const Overlay: React.FC<Props> = ({ pageRect }) => {
                   key={JSON.stringify(n)}
                   points={n.points.map((p) => [p[0] * width, p[1] * height])}
                   border={n.border}
+                  mode={mode}
                   onClick={() => undefined}
                 />
               );
@@ -104,6 +110,7 @@ const Overlay: React.FC<Props> = ({ pageRect }) => {
                   width={n.width * width}
                   height={n.height * height}
                   border={n.border}
+                  mode={mode}
                   onClick={() => undefined}
                 />
               );
@@ -122,6 +129,7 @@ const Overlay: React.FC<Props> = ({ pageRect }) => {
                   y={n.y}
                   label={n.label}
                   outlined={n.outlined ?? false}
+                  mode={mode}
                   onClick={() => undefined}
                 />
               );
@@ -132,6 +140,7 @@ const Overlay: React.FC<Props> = ({ pageRect }) => {
                   x={`${100 * n.x}%`}
                   y={`${100 * n.y}%`}
                   html={n.html}
+                  mode={mode}
                   onClick={() => undefined}
                 />
               );
@@ -140,6 +149,7 @@ const Overlay: React.FC<Props> = ({ pageRect }) => {
                 <PageLink
                   key={JSON.stringify(n)}
                   params={n}
+                  mode={mode}
                   pageRect={pageRect}
                 />
               );

@@ -9,10 +9,14 @@ import {
   OpenWith,
 } from "@mui/icons-material";
 
+export type Mode = null | "edit" | "move" | "delete";
+
 /**
  * `Control`の引数
  */
 interface Props {
+  mode: Mode;
+  setMode: (mode: Mode) => void;
   onOpenFileTree: () => void;
   onOpenSettings: () => void;
 }
@@ -20,9 +24,15 @@ interface Props {
 /**
  * 目次の右上に表示されるボタンコントロール
  */
-const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
+const Control: React.FC<Props> = ({
+  mode,
+  setMode,
+  onOpenFileTree,
+  onOpenSettings,
+}) => {
   const [upward, setUpward] = useState(true);
   const [open, setOpen] = React.useState(false);
+
   return (
     <Box
       sx={{
@@ -32,16 +42,30 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
         zIndex: 100,
       }}
       onMouseDown={(e) => {
-        e.stopPropagation();
+        if (open) e.stopPropagation();
       }}
     >
       <SpeedDial
         ariaLabel="edit"
         direction="down"
         open={open}
+        icon={
+          !mode ? (
+            <SpeedDialIcon />
+          ) : mode === "edit" ? (
+            <Edit sx={{ color: "cornflowerblue" }} />
+          ) : mode === "move" ? (
+            <OpenWith sx={{ color: "mediumseagreen" }} />
+          ) : (
+            <Delete sx={{ color: "palevioletred" }} />
+          )
+        }
+        sx={{ mt: 1 }}
         onMouseEnter={() => {
-          // onOpenで設定すると、ファイルツリーを開いた後、再度呼ばれてopen===trueに戻ってしまう。
-          // ファイルツリーを閉じた後はopen===falseのままになってほしいので、onMouseEnterにしている。
+          if (!mode) setOpen(true);
+        }}
+        onClick={() => {
+          if (mode) setMode(null);
           setOpen(true);
         }}
         onClose={() => {
@@ -50,15 +74,13 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
         FabProps={{
           size: "small",
           sx: {
-            bgcolor: "silver",
+            bgcolor: !mode ? "silver" : "white",
             "&:hover": {
               bgcolor: "darkgray",
             },
             boxShadow: "none",
           },
         }}
-        sx={{ mt: 1 }}
-        icon={<SpeedDialIcon />}
       >
         {/* PDF選択パネルを開く */}
         <SpeedDialAction
@@ -66,9 +88,11 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
             <span style={{ fontSize: "80%" }}>PDF選択パネルを開く</span>
           }
           icon={<KeyboardArrowRight />}
-          onClick={() => {
+          onClick={(e) => {
             onOpenFileTree();
+            setMode(null);
             setOpen(false);
+            e.stopPropagation();
           }}
           tooltipPlacement="right"
           tooltipOpen
@@ -80,10 +104,12 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
             <span style={{ fontSize: "80%" }}>設定パネルの開閉</span>
           }
           icon={upward ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-          onClick={() => {
+          onClick={(e) => {
             onOpenSettings();
             setUpward(!upward);
+            setMode(null);
             setOpen(false);
+            e.stopPropagation();
           }}
           tooltipPlacement="right"
           tooltipOpen
@@ -96,8 +122,12 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
               注釈の<strong>編集</strong>
             </span>
           }
-          icon={<Edit />}
-          onClick={() => undefined}
+          icon={<Edit sx={{ color: "cornflowerblue" }} />}
+          onClick={(e) => {
+            setMode("edit");
+            setOpen(false);
+            e.stopPropagation();
+          }}
           tooltipPlacement="right"
           tooltipOpen
         />
@@ -109,8 +139,12 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
               注釈の<strong>移動</strong>
             </span>
           }
-          icon={<OpenWith />}
-          onClick={() => undefined}
+          icon={<OpenWith sx={{ color: "mediumseagreen" }} />}
+          onClick={(e) => {
+            setMode("move");
+            setOpen(false);
+            e.stopPropagation();
+          }}
           tooltipPlacement="right"
           tooltipOpen
         />
@@ -122,8 +156,12 @@ const Control: React.FC<Props> = ({ onOpenFileTree, onOpenSettings }) => {
               注釈の<strong>削除</strong>
             </span>
           }
-          icon={<Delete />}
-          onClick={() => undefined}
+          icon={<Delete sx={{ color: "palevioletred" }} />}
+          onClick={(e) => {
+            setMode("delete");
+            setOpen(false);
+            e.stopPropagation();
+          }}
           tooltipPlacement="right"
           tooltipOpen
         />

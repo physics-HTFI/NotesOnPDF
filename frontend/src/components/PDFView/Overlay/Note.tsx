@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
+import { Mode } from "../Control";
 
 /**
  * `Note`の引数
@@ -9,14 +10,16 @@ interface Props {
   x: string;
   y: string;
   html: string;
+  mode: Mode;
   onClick: () => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Note: React.FC<Props> = ({ x, y, html, onClick }) => {
+const Note: React.FC<Props> = ({ x, y, html, mode, onClick }) => {
   const [hover, setHover] = useState(false);
+  const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <MathJax hideUntilTypeset={"first"}>
       <Box
@@ -25,7 +28,7 @@ const Note: React.FC<Props> = ({ x, y, html, onClick }) => {
           left: x,
           top: y,
           color: "red",
-          cursor: "alias",
+          cursor: cursor,
           opacity: hover ? 0.5 : 1,
           background: "#FFFc",
           lineHeight: 1.2,
@@ -39,7 +42,7 @@ const Note: React.FC<Props> = ({ x, y, html, onClick }) => {
           onClick();
         }}
         onMouseEnter={() => {
-          setHover(true);
+          setHover(!!cursor);
         }}
         onMouseLeave={() => {
           setHover(false);

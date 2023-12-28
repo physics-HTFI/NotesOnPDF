@@ -9,7 +9,7 @@ import { Box, Container } from "@mui/material";
 import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
-import Control from "./PDFView/Control";
+import Control, { Mode } from "./PDFView/Control";
 import { toDisplayedPage } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
@@ -76,6 +76,8 @@ const PDFView: React.FC<Props> = ({
   const sizes = useRef<{ width: number; height: number }[]>();
   const [refContainer, setRefContainer] = useState<HTMLDivElement>();
   const [refPage, setRefPage] = useState<HTMLDivElement>();
+  const [mode, setMode] = useState<Mode>(null);
+
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
   const { notes } = useContext(NotesContext);
@@ -108,18 +110,27 @@ const PDFView: React.FC<Props> = ({
   return (
     <Box
       sx={{
-        background: "gainsboro",
+        background: !mode
+          ? "gainsboro"
+          : mode === "edit"
+          ? "#dcdce2"
+          : mode === "move"
+          ? "#dcdfdc"
+          : "#dfdcdc",
         height: "100vh",
         overflow: "hidden",
         position: "relative",
+        cursor: !mode ? "default" : "not-allowed",
       }}
       ref={getContainerRect}
       onMouseDown={(e) => {
         if (!pageRect) return;
+        setMode(null);
+        e.preventDefault();
+        if (mode) return;
         setParetteX(e.pageX - pageRect.left);
         setParetteY(e.pageY - pageRect.top);
         setParetteOpen(true);
-        e.preventDefault();
       }}
       onMouseUp={() => {
         setParetteOpen(false);
@@ -185,7 +196,7 @@ const PDFView: React.FC<Props> = ({
           />
         </Document>
         <PageLabelLarge label={pageLabel} shown={reading} />
-        <Overlay pageRect={pageRect} />
+        <Overlay pageRect={pageRect} mode={mode} />
         <Palette
           open={paretteOpen}
           x={(100 * paretteX) / (width ?? 1)}
@@ -194,7 +205,12 @@ const PDFView: React.FC<Props> = ({
       </Container>
       <Excluded excluded={page?.excluded ?? false} />
       <PageLabelSmall label={pageLabel} />
-      <Control onOpenFileTree={onOpenFileTree} onOpenSettings={onOpenDrawer} />
+      <Control
+        onOpenFileTree={onOpenFileTree}
+        onOpenSettings={onOpenDrawer}
+        mode={mode}
+        setMode={setMode}
+      />
     </Box>
   );
 };

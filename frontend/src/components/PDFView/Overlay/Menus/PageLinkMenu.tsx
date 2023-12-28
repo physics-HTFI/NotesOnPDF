@@ -1,6 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { Box, IconButton, TextField } from "@mui/material";
-import { Delete, Edit, OpenWith } from "@mui/icons-material";
+import { TextField } from "@mui/material";
 import { PageLink, fromDisplayedPage } from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
 
@@ -30,15 +29,15 @@ const PageLinkMenu: React.FC<Props> = ({ params, pageNum, onClose }) => {
     onClose();
   };
 
-  const handleDelete = () => {
-    page.notes = notesTrimmed;
-    setNotes({ ...notes });
-    onClose();
-  };
-
   return (
-    <Box
-      sx={{ p: 1 }}
+    <TextField
+      variant="standard"
+      defaultValue={pageNum}
+      type="number"
+      sx={{ width: 80, p: 1 }}
+      onChange={(e) => {
+        num.current = Number(e.target.value);
+      }}
       onMouseLeave={() => {
         if (pageNum === num.current) {
           onClose();
@@ -55,43 +54,7 @@ const PageLinkMenu: React.FC<Props> = ({ params, pageNum, onClose }) => {
       onWheel={(e) => {
         e.stopPropagation();
       }}
-    >
-      <Box>
-        <IconButton
-          sx={{
-            "&:focus": { outline: "none" },
-          }}
-          onClick={undefined}
-        >
-          <OpenWith />
-        </IconButton>
-        <IconButton
-          sx={{
-            "&:focus": { outline: "none" },
-          }}
-          onClick={undefined}
-        >
-          <Edit />
-        </IconButton>
-        <IconButton
-          sx={{
-            "&:focus": { outline: "none" },
-          }}
-          onClick={handleDelete}
-        >
-          <Delete />
-        </IconButton>
-      </Box>
-      <TextField
-        variant="standard"
-        defaultValue={pageNum}
-        onChange={(e) => {
-          num.current = Number(e.target.value);
-        }}
-        type="number"
-        sx={{ width: 80, p: 1 }}
-      />
-    </Box>
+    />
   );
 };
 

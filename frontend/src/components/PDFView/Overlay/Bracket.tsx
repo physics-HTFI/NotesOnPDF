@@ -1,5 +1,6 @@
-import { Heads } from "@/types/Notes";
 import React, { useState } from "react";
+import { Heads } from "@/types/Notes";
+import { Mode } from "../Control";
 
 /**
  * `Bracket`の引数
@@ -10,18 +11,20 @@ interface Props {
   x2: number;
   y2: number;
   heads: Heads;
+  mode: Mode;
   onClick: () => void;
 }
 
 /**
  * 括弧
  */
-const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, heads, onClick }) => {
+const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, heads, mode, onClick }) => {
   const [hover, setHover] = useState(false);
+  const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <g
       style={{
-        cursor: "alias",
+        cursor: cursor,
       }}
       onMouseDown={(e) => {
         if (e.button !== 2) return;
@@ -30,7 +33,7 @@ const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, heads, onClick }) => {
         onClick();
       }}
       onMouseEnter={() => {
-        setHover(true);
+        setHover(!!cursor);
       }}
       onMouseLeave={() => {
         setHover(false);

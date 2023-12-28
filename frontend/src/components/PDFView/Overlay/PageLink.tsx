@@ -4,23 +4,27 @@ import { Shortcut } from "@mui/icons-material";
 import PageLinkMenu from "./Menus/PageLinkMenu";
 import { PageLink as PageLinkType, toDisplayedPage } from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
+import { Mode } from "../Control";
 
 /**
  * `PageLink`の引数
  */
 interface Props {
   params: PageLinkType;
+  mode: Mode;
   pageRect: DOMRect;
 }
 
 /**
  * ページへのリンク
  */
-const PageLink: React.FC<Props> = ({ params }) => {
+const PageLink: React.FC<Props> = ({ params, mode }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const [anchor, setAnchor] = useState<HTMLElement>();
   const { pageNum, pageLabel } = toDisplayedPage(notes, params.page);
+  const [hover, setHover] = useState(false);
   if (!notes || !setNotes) return <></>;
+  const cursor = mode === "move" ? "move" : "pointer";
   return (
     <>
       <Chip
@@ -28,7 +32,8 @@ const PageLink: React.FC<Props> = ({ params }) => {
           position: "absolute",
           left: `${100 * params.x}%`,
           top: `${100 * params.y}%`,
-          cursor: "pointer",
+          cursor: cursor,
+          opacity: hover ? 0.5 : 1,
           fontSize: "75%",
         }}
         color="success"
@@ -40,14 +45,31 @@ const PageLink: React.FC<Props> = ({ params }) => {
           e.preventDefault();
           // 左クリック
           if (e.button === 0) {
-            if (notes.currentPage === params.page) return;
-            if (params.page < 0 || notes.numPages <= params.page) return;
-            setNotes({ ...notes, currentPage: params.page });
+            if (mode === "delete") {
+              // 削除
+              const page = notes.pages[notes.currentPage];
+              if (!page) return;
+              const notesTrimmed = page.notes?.filter((n) => n !== params);
+              page.notes = notesTrimmed;
+              setNotes({ ...notes });
+            } else if (mode === "edit") {
+              // 編集
+              setAnchor(e.currentTarget);
+            } else if (mode === "move") {
+              // 移動
+            } else {
+              // ページリンク先へ移動
+              if (notes.currentPage === params.page) return;
+              if (params.page < 0 || notes.numPages <= params.page) return;
+              setNotes({ ...notes, currentPage: params.page });
+            }
           }
         }}
-        onContextMenu={(e) => {
-          setAnchor(e.currentTarget);
-          e.preventDefault();
+        onMouseEnter={() => {
+          setHover(!!cursor);
+        }}
+        onMouseLeave={() => {
+          setHover(false);
         }}
       />
       {/* メニュー */}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Mode } from "../Control";
 
 /**
  * `Marker`の引数
@@ -8,14 +9,16 @@ interface Props {
   y1: number;
   x2: number;
   y2: number;
+  mode: Mode;
   onClick: () => void;
 }
 
 /**
  * 黄色いマーカー
  */
-const Marker: React.FC<Props> = ({ x1, y1, x2, y2, onClick }) => {
+const Marker: React.FC<Props> = ({ x1, y1, x2, y2, mode, onClick }) => {
   const [hover, setHover] = useState(false);
+  const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <line
       x1={`${x1}`}
@@ -26,7 +29,7 @@ const Marker: React.FC<Props> = ({ x1, y1, x2, y2, onClick }) => {
         stroke: "yellow",
         opacity: hover ? 0.2 : 0.5,
         strokeWidth: "8",
-        cursor: "alias",
+        cursor: cursor,
       }}
       onMouseDown={(e) => {
         if (e.button !== 2) return;
@@ -35,7 +38,7 @@ const Marker: React.FC<Props> = ({ x1, y1, x2, y2, onClick }) => {
         onClick();
       }}
       onMouseEnter={() => {
-        setHover(true);
+        setHover(!!cursor);
       }}
       onMouseLeave={() => {
         setHover(false);
