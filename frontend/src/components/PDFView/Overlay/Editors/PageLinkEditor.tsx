@@ -35,6 +35,9 @@ const PageLinkEditor: React.FC<Props> = ({ params, pageNum, onClose }) => {
       defaultValue={pageNum}
       type="number"
       sx={{ width: 80, p: 1 }}
+      inputRef={(ref?: HTMLInputElement) => {
+        ref?.focus();
+      }}
       onChange={(e) => {
         num.current = Number(e.target.value);
       }}
