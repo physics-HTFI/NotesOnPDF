@@ -1,6 +1,6 @@
 import React, { useContext, useRef } from "react";
 import { Box, IconButton, TextField } from "@mui/material";
-import { Delete, OpenWith } from "@mui/icons-material";
+import { Delete, Edit, OpenWith } from "@mui/icons-material";
 import { PageLink, fromDisplayedPage } from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
 
@@ -57,10 +57,28 @@ const PageLinkMenu: React.FC<Props> = ({ params, pageNum, onClose }) => {
       }}
     >
       <Box>
-        <IconButton onClick={undefined}>
+        <IconButton
+          sx={{
+            "&:focus": { outline: "none" },
+          }}
+          onClick={undefined}
+        >
           <OpenWith />
         </IconButton>
-        <IconButton onClick={handleDelete}>
+        <IconButton
+          sx={{
+            "&:focus": { outline: "none" },
+          }}
+          onClick={undefined}
+        >
+          <Edit />
+        </IconButton>
+        <IconButton
+          sx={{
+            "&:focus": { outline: "none" },
+          }}
+          onClick={handleDelete}
+        >
           <Delete />
         </IconButton>
       </Box>

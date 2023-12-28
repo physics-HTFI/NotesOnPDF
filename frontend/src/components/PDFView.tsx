@@ -127,6 +127,9 @@ const PDFView: React.FC<Props> = ({
       onMouseLeave={() => {
         setParetteOpen(false);
       }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+      }}
     >
       <Container
         sx={{
