@@ -101,7 +101,9 @@ const Control: React.FC<Props> = ({
         {/* 設定パネルの開閉 */}
         <SpeedDialAction
           tooltipTitle={
-            <span style={{ fontSize: "80%" }}>設定パネルの開閉</span>
+            <span style={{ fontSize: "80%" }}>
+              設定パネルを{upward ? "開く" : "閉じる"}
+            </span>
           }
           icon={upward ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           onClick={(e) => {

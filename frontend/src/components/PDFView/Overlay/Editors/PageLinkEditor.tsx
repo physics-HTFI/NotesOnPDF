@@ -39,9 +39,8 @@ const PageLinkEditor: React.FC<Props> = ({ params, pageNum, onClose }) => {
         num.current = Number(e.target.value);
       }}
       onMouseLeave={() => {
-        if (pageNum === num.current) {
-          onClose();
-        } else {
+        if (pageNum == num.current) onClose();
+        else {
           handleEdit({
             ...params,
             page: fromDisplayedPage(notes, num.current),
