@@ -4,7 +4,7 @@ import { PageLink, fromDisplayedPage } from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
 
 /**
- * `PageLinkMenu`の引数
+ * `PageLinkEditor`の引数
  */
 interface Props {
   params: PageLink;
@@ -15,7 +15,7 @@ interface Props {
 /**
  * ページリンクのメニュー
  */
-const PageLinkMenu: React.FC<Props> = ({ params, pageNum, onClose }) => {
+const PageLinkEditor: React.FC<Props> = ({ params, pageNum, onClose }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const num = useRef<number>(pageNum);
   const page = notes?.pages[notes.currentPage];
@@ -58,4 +58,4 @@ const PageLinkMenu: React.FC<Props> = ({ params, pageNum, onClose }) => {
   );
 };
 
-export default PageLinkMenu;
+export default PageLinkEditor;

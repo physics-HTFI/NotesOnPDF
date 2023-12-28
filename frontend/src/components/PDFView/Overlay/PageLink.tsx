@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Chip, Popover } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
-import PageLinkMenu from "./Menus/PageLinkMenu";
+import PageLinkEditor from "./Editors/PageLinkEditor";
 import { PageLink as PageLinkType, toDisplayedPage } from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
 import { Mode } from "../Control";
@@ -84,7 +84,7 @@ const PageLink: React.FC<Props> = ({ params, mode }) => {
           setAnchor(undefined);
         }}
       >
-        <PageLinkMenu
+        <PageLinkEditor
           pageNum={pageNum ?? toDisplayedPage(notes).pageNum ?? 1}
           params={params}
           onClose={() => {
