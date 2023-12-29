@@ -29,15 +29,15 @@ const Bracket: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
         cursor: cursor,
       }}
       onMouseDown={(e) => {
+        if (!mode || e.button !== 0) return;
         e.stopPropagation();
         e.preventDefault();
-        if (e.button === 0) {
-          if (mode === "delete") onDelete();
-          else if (mode === "edit") {
-            // TODO
-          } else if (mode === "move") {
-            // TODO
-          }
+        if (mode === "delete") onDelete();
+        if (mode === "edit") {
+          // TODO
+        }
+        if (mode === "move") {
+          // TODO
         }
       }}
       onMouseEnter={() => {

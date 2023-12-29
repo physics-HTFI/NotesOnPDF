@@ -41,20 +41,19 @@ const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
         label={pageLabel}
         size="small"
         onMouseDown={(e) => {
+          if (e.button !== 0) return;
           e.stopPropagation();
           e.preventDefault();
-          // 左クリック
-          if (e.button === 0) {
-            if (mode === "delete") onDelete();
-            else if (mode === "edit") setAnchor(e.currentTarget);
-            else if (mode === "move") {
-              // TODO 移動
-            } else {
-              // ページリンク先へ移動
-              if (notes.currentPage === params.page) return;
-              if (params.page < 0 || notes.numPages <= params.page) return;
-              setNotes({ ...notes, currentPage: params.page });
-            }
+          if (mode === "delete") onDelete();
+          if (mode === "edit") setAnchor(e.currentTarget);
+          if (mode === "move") {
+            // TODO 移動
+          }
+          if (!mode) {
+            // ページリンク先へ移動
+            if (notes.currentPage === params.page) return;
+            if (params.page < 0 || notes.numPages <= params.page) return;
+            setNotes({ ...notes, currentPage: params.page });
           }
         }}
         onMouseEnter={() => {
