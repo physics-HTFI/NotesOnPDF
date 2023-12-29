@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material";
 import {
   Delete,
@@ -17,6 +17,7 @@ export type Mode = null | "edit" | "move" | "delete";
 interface Props {
   mode: Mode;
   setMode: (mode: Mode) => void;
+  openDrawer: boolean;
   onOpenFileTree: () => void;
   onOpenSettings: () => void;
 }
@@ -27,10 +28,10 @@ interface Props {
 const Control: React.FC<Props> = ({
   mode,
   setMode,
+  openDrawer,
   onOpenFileTree,
   onOpenSettings,
 }) => {
-  const [upward, setUpward] = useState(true);
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -102,13 +103,12 @@ const Control: React.FC<Props> = ({
         <SpeedDialAction
           tooltipTitle={
             <span style={{ fontSize: "80%" }}>
-              設定パネルを{upward ? "開く" : "閉じる"}
+              設定パネルを{openDrawer ? "閉じる" : "開く"}
             </span>
           }
-          icon={upward ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+          icon={openDrawer ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
           onClick={(e) => {
             onOpenSettings();
-            setUpward(!upward);
             setMode(null);
             setOpen(false);
             e.stopPropagation();

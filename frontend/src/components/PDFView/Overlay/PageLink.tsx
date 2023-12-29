@@ -74,7 +74,7 @@ const PageLink: React.FC<Props> = ({ params, mode }) => {
       />
       {/* メニュー */}
       <Popover
-        open={Boolean(anchor)}
+        open={!!anchor}
         anchorEl={anchor}
         anchorOrigin={{
           vertical: "top",

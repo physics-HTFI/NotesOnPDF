@@ -64,6 +64,7 @@ interface Props {
  */
 const PDFView: React.FC<Props> = ({
   file,
+  openDrawer,
   onLoadError,
   onLoadSuccess,
   onOpenFileTree,
@@ -206,10 +207,11 @@ const PDFView: React.FC<Props> = ({
       <Excluded excluded={page?.excluded ?? false} />
       <PageLabelSmall label={pageLabel} />
       <Control
-        onOpenFileTree={onOpenFileTree}
-        onOpenSettings={onOpenDrawer}
         mode={mode}
         setMode={setMode}
+        openDrawer={openDrawer}
+        onOpenSettings={onOpenDrawer}
+        onOpenFileTree={onOpenFileTree}
       />
     </Box>
   );
