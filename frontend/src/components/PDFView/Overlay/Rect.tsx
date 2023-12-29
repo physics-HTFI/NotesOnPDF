@@ -36,6 +36,11 @@ const Rect: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
         e.preventDefault();
         if (e.button === 0) {
           if (mode === "delete") onDelete();
+          else if (mode === "edit") {
+            // TODO
+          } else if (mode === "move") {
+            // TODO
+          }
         }
       }}
       onMouseEnter={() => {

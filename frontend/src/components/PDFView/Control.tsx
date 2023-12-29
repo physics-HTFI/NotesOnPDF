@@ -134,11 +134,11 @@ const Control: React.FC<Props> = ({
           tooltipOpen
         />
 
-        {/* 注釈の移動 */}
+        {/* 注釈の移動・変形 */}
         <SpeedDialAction
           tooltipTitle={
             <span style={{ fontSize: "80%" }}>
-              注釈の<strong>移動</strong>
+              注釈の<strong>移動・変形</strong>
             </span>
           }
           icon={<OpenWith sx={{ color: "mediumseagreen" }} />}
