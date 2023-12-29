@@ -1,25 +1,27 @@
 import React, { useState } from "react";
-import { Heads } from "@/types/Notes";
+import { Bracket as Bracket } from "@/types/Notes";
 import { Mode } from "../Control";
 
 /**
  * `Bracket`の引数
  */
 interface Props {
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  heads: Heads;
+  params: Bracket;
   mode: Mode;
-  onClick: () => void;
+  pageRect: DOMRect;
+  onDelete: () => void;
 }
 
 /**
  * 括弧
  */
-const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, heads, mode, onClick }) => {
+const Bracket: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
   const [hover, setHover] = useState(false);
+  const x1 = params.x1 * pageRect.width;
+  const y1 = params.y1 * pageRect.height;
+  const x2 = params.x2 * pageRect.width;
+  const y2 = params.y2 * pageRect.height;
+  const heads = params.heads ?? "start-end";
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <g
@@ -27,10 +29,11 @@ const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, heads, mode, onClick }) => {
         cursor: cursor,
       }}
       onMouseDown={(e) => {
-        if (e.button !== 2) return;
         e.stopPropagation();
         e.preventDefault();
-        onClick();
+        if (e.button === 0) {
+          if (mode === "delete") onDelete();
+        }
       }}
       onMouseEnter={() => {
         setHover(!!cursor);
@@ -40,10 +43,10 @@ const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, heads, mode, onClick }) => {
       }}
     >
       <line
-        x1={`${x1}`}
-        y1={`${y1}`}
-        x2={`${x2}`}
-        y2={`${y2}`}
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
         style={{
           stroke: "white",
           opacity: 0.7,
@@ -51,10 +54,10 @@ const Bracket: React.FC<Props> = ({ x1, y1, x2, y2, heads, mode, onClick }) => {
         }}
       />
       <line
-        x1={`${x1}`}
-        y1={`${y1}`}
-        x2={`${x2}`}
-        y2={`${y2}`}
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
         style={{
           stroke: "red",
           strokeWidth: "1",

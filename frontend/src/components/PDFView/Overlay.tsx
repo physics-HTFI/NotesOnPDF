@@ -12,6 +12,9 @@ import Chip from "./Overlay/Chip";
 import { NotesContext } from "@/contexts/NotesContext";
 import { Mode } from "./Control";
 
+/**
+ * 数式表示のコンフィグ
+ */
 const mathjaxConfig = {
   loader: { load: ["[tex]/html"] },
   tex: {
@@ -42,76 +45,82 @@ interface Props {
  * PDFビュークリック時に表示されるコントロール
  */
 const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
-  const { notes } = useContext(NotesContext);
-  if (!notes || !pageRect) return <></>;
+  const { notes, setNotes } = useContext(NotesContext);
+  if (!notes || !setNotes || !pageRect) return <></>;
 
   const page = notes.pages[notes.currentPage];
   const { width, height } = pageRect;
   if (!page?.notes) return <></>;
+
+  // 注釈をクリックして削除するときの関数
+  const deleteNote = (p: (typeof page.notes)[number]) => {
+    page.notes = page.notes?.filter((n) => n !== p);
+    setNotes({ ...notes });
+  };
+
   return (
     <>
       <Svg width={width} height={height}>
-        {page.notes.map((n) => {
-          switch (n.type) {
+        {page.notes.map((p) => {
+          switch (p.type) {
             case "Arrow":
               return (
                 <Arrow
-                  key={JSON.stringify(n)}
-                  x1={n.x1 * width}
-                  y1={n.y1 * height}
-                  x2={n.x2 * width}
-                  y2={n.y2 * height}
-                  heads={n.heads ?? "end"}
+                  key={JSON.stringify(p)}
+                  params={p}
                   mode={mode}
-                  onClick={() => undefined}
+                  pageRect={pageRect}
+                  onDelete={() => {
+                    deleteNote(p);
+                  }}
                 />
               );
             case "Bracket":
               return (
                 <Bracket
-                  key={JSON.stringify(n)}
-                  x1={n.x1 * width}
-                  y1={n.y1 * height}
-                  x2={n.x2 * width}
-                  y2={n.y2 * height}
-                  heads={n.heads ?? "start-end"}
+                  key={JSON.stringify(p)}
+                  params={p}
                   mode={mode}
-                  onClick={() => undefined}
+                  pageRect={pageRect}
+                  onDelete={() => {
+                    deleteNote(p);
+                  }}
                 />
               );
             case "Marker":
               return (
                 <Marker
-                  key={JSON.stringify(n)}
-                  x1={n.x1 * width}
-                  y1={n.y1 * height}
-                  x2={n.x2 * width}
-                  y2={n.y2 * height}
+                  key={JSON.stringify(p)}
+                  params={p}
                   mode={mode}
-                  onClick={() => undefined}
+                  pageRect={pageRect}
+                  onDelete={() => {
+                    deleteNote(p);
+                  }}
                 />
               );
             case "Polygon":
               return (
                 <Polygon
-                  key={JSON.stringify(n)}
-                  points={n.points.map((p) => [p[0] * width, p[1] * height])}
-                  border={n.border}
+                  key={JSON.stringify(p)}
+                  params={p}
                   mode={mode}
-                  onClick={() => undefined}
+                  pageRect={pageRect}
+                  onDelete={() => {
+                    deleteNote(p);
+                  }}
                 />
               );
             case "Rect":
               return (
                 <Rect
-                  key={JSON.stringify(n)}
-                  x={n.x * width}
-                  y={n.y * height}
-                  width={n.width * width}
-                  height={n.height * height}
-                  border={n.border}
+                  key={JSON.stringify(p)}
+                  params={p}
                   mode={mode}
-                  onClick={() => undefined}
+                  pageRect={pageRect}
+                  onDelete={() => {
+                    deleteNote(p);
+                  }}
                 />
               );
           }
@@ -119,38 +128,39 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
         })}
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
-        {page.notes.map((n) => {
-          switch (n.type) {
+        {page.notes.map((p) => {
+          switch (p.type) {
             case "Chip":
               return (
                 <Chip
-                  key={JSON.stringify(n)}
-                  x={n.x}
-                  y={n.y}
-                  label={n.label}
-                  outlined={n.outlined ?? false}
+                  key={JSON.stringify(p)}
+                  params={p}
                   mode={mode}
-                  onClick={() => undefined}
+                  onDelete={() => {
+                    deleteNote(p);
+                  }}
                 />
               );
             case "Note":
               return (
                 <Note
-                  key={JSON.stringify(n)}
-                  x={`${100 * n.x}%`}
-                  y={`${100 * n.y}%`}
-                  html={n.html}
+                  key={JSON.stringify(p)}
+                  params={p}
                   mode={mode}
-                  onClick={() => undefined}
+                  onDelete={() => {
+                    deleteNote(p);
+                  }}
                 />
               );
             case "PageLink":
               return (
                 <PageLink
-                  key={JSON.stringify(n)}
-                  params={n}
+                  key={JSON.stringify(p)}
+                  params={p}
                   mode={mode}
-                  pageRect={pageRect}
+                  onDelete={() => {
+                    deleteNote(p);
+                  }}
                 />
               );
           }

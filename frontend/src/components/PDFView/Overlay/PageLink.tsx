@@ -12,19 +12,19 @@ import { Mode } from "../Control";
 interface Props {
   params: PageLinkType;
   mode: Mode;
-  pageRect: DOMRect;
+  onDelete: () => void;
 }
 
 /**
  * ページへのリンク
  */
-const PageLink: React.FC<Props> = ({ params, mode }) => {
+const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const [anchor, setAnchor] = useState<HTMLElement>();
   const { pageNum, pageLabel } = toDisplayedPage(notes, params.page);
   const [hover, setHover] = useState(false);
-  if (!notes || !setNotes) return <></>;
   const cursor = mode === "move" ? "move" : "pointer";
+  if (!notes || !setNotes) return <></>;
   return (
     <>
       <Chip
@@ -45,18 +45,10 @@ const PageLink: React.FC<Props> = ({ params, mode }) => {
           e.preventDefault();
           // 左クリック
           if (e.button === 0) {
-            if (mode === "delete") {
-              // 削除
-              const page = notes.pages[notes.currentPage];
-              if (!page) return;
-              const notesTrimmed = page.notes?.filter((n) => n !== params);
-              page.notes = notesTrimmed;
-              setNotes({ ...notes });
-            } else if (mode === "edit") {
-              // 編集
-              setAnchor(e.currentTarget);
-            } else if (mode === "move") {
-              // 移動
+            if (mode === "delete") onDelete();
+            else if (mode === "edit") setAnchor(e.currentTarget);
+            else if (mode === "move") {
+              // TODO 移動
             } else {
               // ページリンク先へ移動
               if (notes.currentPage === params.page) return;

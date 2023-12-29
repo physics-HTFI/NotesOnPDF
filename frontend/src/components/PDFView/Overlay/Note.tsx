@@ -2,22 +2,21 @@ import React, { useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { Mode } from "../Control";
+import { Note as NoteType } from "@/types/Notes";
 
 /**
  * `Note`の引数
  */
 interface Props {
-  x: string;
-  y: string;
-  html: string;
+  params: NoteType;
   mode: Mode;
-  onClick: () => void;
+  onDelete: () => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Note: React.FC<Props> = ({ x, y, html, mode, onClick }) => {
+const Note: React.FC<Props> = ({ params, mode, onDelete }) => {
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
@@ -25,8 +24,8 @@ const Note: React.FC<Props> = ({ x, y, html, mode, onClick }) => {
       <Box
         sx={{
           position: "absolute",
-          left: x,
-          top: y,
+          left: `${100 * params.x}%`,
+          top: `${100 * params.y}%`,
           color: "red",
           cursor: cursor,
           opacity: hover ? 0.5 : 1,
@@ -34,12 +33,13 @@ const Note: React.FC<Props> = ({ x, y, html, mode, onClick }) => {
           lineHeight: 1.2,
           fontSize: "90%",
         }}
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: params.html }}
         onMouseDown={(e) => {
-          if (e.button !== 2) return;
           e.stopPropagation();
           e.preventDefault();
-          onClick();
+          if (e.button === 0) {
+            if (mode === "delete") onDelete();
+          }
         }}
         onMouseEnter={() => {
           setHover(!!cursor);

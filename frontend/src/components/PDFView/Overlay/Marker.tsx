@@ -1,30 +1,29 @@
 import React, { useState } from "react";
 import { Mode } from "../Control";
+import { Marker as MarkerType } from "@/types/Notes";
 
 /**
  * `Marker`の引数
  */
 interface Props {
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
+  params: MarkerType;
   mode: Mode;
-  onClick: () => void;
+  pageRect: DOMRect;
+  onDelete: () => void;
 }
 
 /**
  * 黄色いマーカー
  */
-const Marker: React.FC<Props> = ({ x1, y1, x2, y2, mode, onClick }) => {
+const Marker: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <line
-      x1={`${x1}`}
-      y1={`${y1}`}
-      x2={`${x2}`}
-      y2={`${y2}`}
+      x1={params.x1 * pageRect.width}
+      y1={params.y1 * pageRect.height}
+      x2={params.x2 * pageRect.width}
+      y2={params.y2 * pageRect.height}
       style={{
         stroke: "yellow",
         opacity: hover ? 0.2 : 0.5,
@@ -32,10 +31,11 @@ const Marker: React.FC<Props> = ({ x1, y1, x2, y2, mode, onClick }) => {
         cursor: cursor,
       }}
       onMouseDown={(e) => {
-        if (e.button !== 2) return;
         e.stopPropagation();
         e.preventDefault();
-        onClick();
+        if (e.button === 0) {
+          if (mode === "delete") onDelete();
+        }
       }}
       onMouseEnter={() => {
         setHover(!!cursor);
