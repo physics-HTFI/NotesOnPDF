@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Mode } from "../Control";
+import { Mode } from "../SpeedDial";
 import { Marker as MarkerType } from "@/types/Notes";
 
 /**

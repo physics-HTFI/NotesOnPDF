@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
-import { Mode } from "../Control";
+import { Mode } from "../SpeedDial";
 import { Note as NoteType } from "@/types/Notes";
 
 /**

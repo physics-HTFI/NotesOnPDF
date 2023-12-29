@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Bracket as Bracket } from "@/types/Notes";
-import { Mode } from "../Control";
+import { Mode } from "../SpeedDial";
 
 /**
  * `Bracket`の引数

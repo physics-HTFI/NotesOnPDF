@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Chip as MuiChip } from "@mui/material";
-import { Mode } from "../Control";
+import { Mode } from "../SpeedDial";
 import { Chip as ChipType } from "@/types/Notes";
 
 /**

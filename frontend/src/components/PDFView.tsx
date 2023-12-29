@@ -9,7 +9,7 @@ import { Box, Container } from "@mui/material";
 import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
-import Control, { Mode } from "./PDFView/Control";
+import SpeedDial, { Mode } from "./PDFView/SpeedDial";
 import { toDisplayedPage } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
@@ -111,13 +111,7 @@ const PDFView: React.FC<Props> = ({
   return (
     <Box
       sx={{
-        background: !mode
-          ? "gainsboro"
-          : mode === "edit"
-          ? "#dcdce2"
-          : mode === "move"
-          ? "#dcdfdc"
-          : "#dfdcdc",
+        background: "gainsboro",
         height: "100vh",
         overflow: "hidden",
         position: "relative",
@@ -206,7 +200,7 @@ const PDFView: React.FC<Props> = ({
       </Container>
       <Excluded excluded={page?.excluded ?? false} />
       <PageLabelSmall label={pageLabel} />
-      <Control
+      <SpeedDial
         mode={mode}
         setMode={setMode}
         openDrawer={openDrawer}

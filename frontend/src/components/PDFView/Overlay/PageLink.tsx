@@ -4,7 +4,7 @@ import { Shortcut } from "@mui/icons-material";
 import PageLinkEditor from "./Editors/PageLinkEditor";
 import { PageLink as PageLinkType, toDisplayedPage } from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
-import { Mode } from "../Control";
+import { Mode } from "../SpeedDial";
 
 /**
  * `PageLink`の引数

@@ -10,7 +10,7 @@ import Svg from "./Overlay/Svg";
 import { MathJaxContext } from "better-react-mathjax";
 import Chip from "./Overlay/Chip";
 import { NotesContext } from "@/contexts/NotesContext";
-import { Mode } from "./Control";
+import { Mode } from "./SpeedDial";
 
 /**
  * 数式表示のコンフィグ

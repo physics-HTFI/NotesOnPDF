@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Mode } from "../Control";
+import { Mode } from "../SpeedDial";
 import { Polygon as PolygonType } from "@/types/Notes";
 
 /**

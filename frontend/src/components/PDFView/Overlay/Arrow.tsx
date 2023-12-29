@@ -1,6 +1,6 @@
 import { Arrow as ArrowType } from "@/types/Notes";
 import React, { useState } from "react";
-import { Mode } from "../Control";
+import { Mode } from "../SpeedDial";
 
 /**
  * `Arrow`の引数
