@@ -22,14 +22,14 @@ const LabelSlider: React.FC<Props> = ({ label, value, onChange }) => {
       <Slider
         size="small"
         min={0}
-        max={20}
-        step={1}
-        value={Math.round(100 * value)}
+        max={0.2}
+        step={0.001}
+        value={value}
         sx={{ flexGrow: 1 }}
-        valueLabelDisplay="auto"
+        valueLabelDisplay="off"
         onChange={(_, v) => {
           if (typeof v === "number") {
-            onChange(0.01 * v);
+            onChange(v);
           }
         }}
       />
