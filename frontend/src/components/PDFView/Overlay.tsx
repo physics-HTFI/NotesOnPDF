@@ -62,6 +62,9 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
     <>
       <Svg width={width} height={height}>
         {page.notes.map((p) => {
+          const handleDelete = () => {
+            deleteNote(p);
+          };
           switch (p.type) {
             case "Arrow":
               return (
@@ -70,9 +73,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
                   params={p}
                   mode={mode}
                   pageRect={pageRect}
-                  onDelete={() => {
-                    deleteNote(p);
-                  }}
+                  onDelete={handleDelete}
                 />
               );
             case "Bracket":
@@ -82,9 +83,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
                   params={p}
                   mode={mode}
                   pageRect={pageRect}
-                  onDelete={() => {
-                    deleteNote(p);
-                  }}
+                  onDelete={handleDelete}
                 />
               );
             case "Marker":
@@ -94,9 +93,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
                   params={p}
                   mode={mode}
                   pageRect={pageRect}
-                  onDelete={() => {
-                    deleteNote(p);
-                  }}
+                  onDelete={handleDelete}
                 />
               );
             case "Polygon":
@@ -106,9 +103,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
                   params={p}
                   mode={mode}
                   pageRect={pageRect}
-                  onDelete={() => {
-                    deleteNote(p);
-                  }}
+                  onDelete={handleDelete}
                 />
               );
             case "Rect":
@@ -118,9 +113,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
                   params={p}
                   mode={mode}
                   pageRect={pageRect}
-                  onDelete={() => {
-                    deleteNote(p);
-                  }}
+                  onDelete={handleDelete}
                 />
               );
           }
@@ -129,6 +122,9 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
         {page.notes.map((p) => {
+          const handleDelete = () => {
+            deleteNote(p);
+          };
           switch (p.type) {
             case "Chip":
               return (
@@ -136,9 +132,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
                   key={JSON.stringify(p)}
                   params={p}
                   mode={mode}
-                  onDelete={() => {
-                    deleteNote(p);
-                  }}
+                  onDelete={handleDelete}
                 />
               );
             case "Note":
@@ -147,9 +141,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
                   key={JSON.stringify(p)}
                   params={p}
                   mode={mode}
-                  onDelete={() => {
-                    deleteNote(p);
-                  }}
+                  onDelete={handleDelete}
                 />
               );
             case "PageLink":
@@ -158,9 +150,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
                   key={JSON.stringify(p)}
                   params={p}
                   mode={mode}
-                  onDelete={() => {
-                    deleteNote(p);
-                  }}
+                  onDelete={handleDelete}
                 />
               );
           }
