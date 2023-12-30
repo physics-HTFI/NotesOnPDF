@@ -36,8 +36,6 @@ const Note: React.FC<Props> = ({ params, mode, onDelete }) => {
         dangerouslySetInnerHTML={{ __html: params.html }}
         onMouseDown={(e) => {
           if (!mode || e.button !== 0) return;
-          e.stopPropagation();
-          e.preventDefault();
           if (mode === "delete") onDelete();
           if (mode === "edit") {
             // TODO

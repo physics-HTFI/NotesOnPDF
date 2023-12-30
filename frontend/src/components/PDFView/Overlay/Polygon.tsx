@@ -33,8 +33,6 @@ const Polygon: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
       }}
       onMouseDown={(e) => {
         if (!mode || e.button !== 0) return;
-        e.stopPropagation();
-        e.preventDefault();
         if (mode === "delete") onDelete();
         if (mode === "edit") {
           // TODO

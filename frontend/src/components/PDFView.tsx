@@ -15,6 +15,7 @@ import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
 import Overlay from "./PDFView/Overlay";
 import { NotesContext } from "@/contexts/NotesContext";
+import { MouseContext } from "@/contexts/MouseContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -81,6 +82,7 @@ const PDFView: React.FC<Props> = ({
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
+  const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
   const { notes } = useContext(NotesContext);
   const [width, height, top, bottom] =
     notes?.currentPage === undefined
@@ -109,105 +111,111 @@ const PDFView: React.FC<Props> = ({
   }, [notes?.currentPage]);
 
   return (
-    <Box
-      sx={{
-        background: "gainsboro",
-        height: "100vh",
-        overflow: "hidden",
-        position: "relative",
-        cursor: !mode ? "default" : "not-allowed",
-      }}
-      ref={getContainerRect}
-      onMouseDown={(e) => {
-        if (!pageRect) return;
-        setMode(null);
-        e.preventDefault();
-        if (mode) return;
-        setParetteX(e.pageX - pageRect.left);
-        setParetteY(e.pageY - pageRect.top);
-        setParetteOpen(true);
-      }}
-      onMouseUp={() => {
-        setParetteOpen(false);
-      }}
-      onMouseLeave={() => {
-        setParetteOpen(false);
-      }}
-      onContextMenu={(e) => {
-        e.preventDefault();
-      }}
-    >
-      <Container
+    <MouseContext.Provider value={{ mouse, pageRect }}>
+      <Box
         sx={{
-          width,
-          height,
-          position: "absolute",
-          top,
-          bottom,
-          left: 0,
-          right: 0,
-          margin: "auto",
-          containerType: "size",
+          background: "gainsboro",
+          height: "100vh",
+          overflow: "hidden",
+          position: "relative",
+          cursor: !mode ? "default" : "not-allowed",
         }}
-        disableGutters
-        ref={getPageRect}
+        ref={getContainerRect}
+        onMouseDown={(e) => {
+          if (!pageRect) return;
+          setMode(null);
+          setMouse({ pageX: e.pageX, pageY: e.pageY });
+          e.preventDefault();
+          if (mode) return;
+          setParetteX(e.pageX - pageRect.left);
+          setParetteY(e.pageY - pageRect.top);
+          setParetteOpen(true);
+        }}
+        onMouseUp={() => {
+          setParetteOpen(false);
+        }}
+        onMouseLeave={() => {
+          setParetteOpen(false);
+        }}
+        onContextMenu={(e) => {
+          e.preventDefault();
+        }}
       >
-        <Document
-          file={
-            file instanceof File
-              ? file
-              : `${import.meta.env.VITE_PDF_ROOT}${file}`
-          }
-          onLoadSuccess={(doc) => {
-            if (!file) return;
-            onLoadSuccess?.(doc.numPages);
-            const getsizes = async () => {
-              sizes.current = [];
-              for (let i = 0; i < doc.numPages; i++) {
-                const page = await doc.getPage(i + 1);
-                const [width, height] = [page.view[2] ?? 0, page.view[3] ?? 0];
-                sizes.current.push({ width, height });
-              }
-            };
-            getsizes().catch(() => undefined);
+        <Container
+          sx={{
+            width,
+            height,
+            position: "absolute",
+            top,
+            bottom,
+            left: 0,
+            right: 0,
+            margin: "auto",
+            containerType: "size",
           }}
-          onLoadError={onLoadError}
-          options={options}
-          error={""}
-          loading={""}
-          noData={""}
+          disableGutters
+          ref={getPageRect}
         >
-          <PDFPage
-            pageIndex={notes?.currentPage}
-            width={width}
+          <Document
+            file={
+              file instanceof File
+                ? file
+                : `${import.meta.env.VITE_PDF_ROOT}${file}`
+            }
+            onLoadSuccess={(doc) => {
+              if (!file) return;
+              onLoadSuccess?.(doc.numPages);
+              const getsizes = async () => {
+                sizes.current = [];
+                for (let i = 0; i < doc.numPages; i++) {
+                  const page = await doc.getPage(i + 1);
+                  const [width, height] = [
+                    page.view[2] ?? 0,
+                    page.view[3] ?? 0,
+                  ];
+                  sizes.current.push({ width, height });
+                }
+              };
+              getsizes().catch(() => undefined);
+            }}
+            onLoadError={onLoadError}
+            options={options}
             error={""}
             loading={""}
             noData={""}
-            renderAnnotationLayer={false}
-            renderTextLayer={false}
-            onRenderSuccess={() => {
-              setReading(false);
-            }}
+          >
+            <PDFPage
+              pageIndex={notes?.currentPage}
+              width={width}
+              error={""}
+              loading={""}
+              noData={""}
+              renderAnnotationLayer={false}
+              renderTextLayer={false}
+              onRenderSuccess={() => {
+                setReading(false);
+              }}
+            />
+          </Document>
+          <PageLabelLarge label={pageLabel} shown={reading} />
+          <Overlay pageRect={pageRect} mode={mode} />
+          <Palette
+            open={paretteOpen}
+            x={(100 * paretteX) / (width ?? 1)}
+            y={(100 * paretteY) / (height ?? 1)}
           />
-        </Document>
-        <PageLabelLarge label={pageLabel} shown={reading} />
-        <Overlay pageRect={pageRect} mode={mode} />
-        <Palette
-          open={paretteOpen}
-          x={(100 * paretteX) / (width ?? 1)}
-          y={(100 * paretteY) / (height ?? 1)}
+        </Container>
+        <Excluded excluded={page?.excluded ?? false} />
+        <PageLabelSmall label={pageLabel} />
+        <SpeedDial
+          mode={mode}
+          setMode={setMode}
+          openDrawer={openDrawer}
+          onOpenSettings={onOpenDrawer}
+          onOpenFileTree={onOpenFileTree}
         />
-      </Container>
-      <Excluded excluded={page?.excluded ?? false} />
-      <PageLabelSmall label={pageLabel} />
-      <SpeedDial
-        mode={mode}
-        setMode={setMode}
-        openDrawer={openDrawer}
-        onOpenSettings={onOpenDrawer}
-        onOpenFileTree={onOpenFileTree}
-      />
-    </Box>
+      </Box>
+    </MouseContext.Provider>
   );
 };
 

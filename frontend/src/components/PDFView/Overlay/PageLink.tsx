@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Chip, Popover } from "@mui/material";
+import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
 import PageLinkEditor from "./Editors/PageLinkEditor";
 import { PageLink as PageLinkType, toDisplayedPage } from "@/types/Notes";
@@ -20,7 +20,7 @@ interface Props {
  */
 const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
   const { notes, setNotes } = useContext(NotesContext);
-  const [anchor, setAnchor] = useState<HTMLElement>();
+  const [edit, setEdit] = useState(false);
   const { pageNum, pageLabel } = toDisplayedPage(notes, params.page);
   const [hover, setHover] = useState(false);
   const cursor = mode === "move" ? "move" : "pointer";
@@ -42,47 +42,36 @@ const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
         size="small"
         onMouseDown={(e) => {
           if (e.button !== 0) return;
-          e.stopPropagation();
-          e.preventDefault();
           if (mode === "delete") onDelete();
-          if (mode === "edit") setAnchor(e.currentTarget);
+          if (mode === "edit") setEdit(true);
           if (mode === "move") {
             // TODO 移動
           }
           if (!mode) {
             // ページリンク先へ移動
+            e.stopPropagation();
             if (notes.currentPage === params.page) return;
             if (params.page < 0 || notes.numPages <= params.page) return;
             setNotes({ ...notes, currentPage: params.page });
           }
         }}
         onMouseEnter={() => {
-          setHover(!!cursor);
+          setHover(true);
         }}
         onMouseLeave={() => {
           setHover(false);
         }}
       />
       {/* メニュー */}
-      <Popover
-        open={!!anchor}
-        anchorEl={anchor}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        onClose={() => {
-          setAnchor(undefined);
-        }}
-      >
+      {edit && (
         <PageLinkEditor
           pageNum={pageNum ?? toDisplayedPage(notes).pageNum ?? 1}
           params={params}
           onClose={() => {
-            setAnchor(undefined);
+            setEdit(false);
           }}
         />
-      </Popover>
+      )}
     </>
   );
 };
