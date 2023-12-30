@@ -14,7 +14,7 @@ interface Props {
 }
 
 /**
- * 画面クリック時にポップアップするエディタ
+ * 画面クリック時にポップアップする編集ダイアログ
  */
 const EditorBase: React.FC<Props> = ({ children, width, height, onClose }) => {
   const { notes, setNotes } = useContext(NotesContext);

@@ -15,7 +15,7 @@ interface Props {
 }
 
 /**
- * ページリンクのメニュー
+ * ページリンクの編集ダイアログ
  */
 const PageLinkEditor: React.FC<Props> = ({ params, pageNum, onClose }) => {
   const { notes, setNotes, update } = useNotes();

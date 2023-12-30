@@ -67,7 +67,7 @@ const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
           setHover(false);
         }}
       />
-      {/* メニュー */}
+      {/* 編集 */}
       {edit && (
         <PageLinkEditor
           pageNum={pageNum ?? toDisplayedPage(notes).pageNum ?? 1}
