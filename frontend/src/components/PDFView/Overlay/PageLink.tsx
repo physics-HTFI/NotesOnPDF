@@ -5,6 +5,7 @@ import PageLinkEditor from "./Editors/PageLinkEditor";
 import { PageLink as PageLinkType, toDisplayedPage } from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
 import { Mode } from "../SpeedDial";
+import { MouseContext } from "@/contexts/MouseContext";
 
 /**
  * `PageLink`の引数
@@ -20,6 +21,7 @@ interface Props {
  */
 const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
   const { notes, setNotes } = useContext(NotesContext);
+  const { setMouse } = useContext(MouseContext);
   const [edit, setEdit] = useState(false);
   const { pageNum, pageLabel } = toDisplayedPage(notes, params.page);
   const [hover, setHover] = useState(false);
@@ -41,18 +43,21 @@ const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
         label={pageLabel}
         size="small"
         onMouseDown={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
           if (e.button !== 0) return;
+          if (!mode) {
+            // ページリンク先へ移動
+            if (notes.currentPage === params.page) return;
+            if (params.page < 0 || notes.numPages <= params.page) return;
+            setNotes({ ...notes, currentPage: params.page });
+            return;
+          }
+          setMouse?.({ pageX: e.pageX, pageY: e.pageY });
           if (mode === "delete") onDelete();
           if (mode === "edit") setEdit(true);
           if (mode === "move") {
             // TODO 移動
-          }
-          if (!mode) {
-            // ページリンク先へ移動
-            e.stopPropagation();
-            if (notes.currentPage === params.page) return;
-            if (params.page < 0 || notes.numPages <= params.page) return;
-            setNotes({ ...notes, currentPage: params.page });
           }
         }}
         onMouseEnter={() => {

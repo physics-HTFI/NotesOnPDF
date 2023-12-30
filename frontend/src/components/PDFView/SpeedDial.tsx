@@ -23,6 +23,15 @@ export type Mode = null | "edit" | "move" | "delete";
  */
 const theme = createTheme({
   components: {
+    MuiSpeedDial: {
+      styleOverrides: {
+        fab: {
+          "&:focus": {
+            outline: "none",
+          },
+        },
+      },
+    },
     MuiSpeedDialAction: {
       styleOverrides: {
         staticTooltipLabel: {
@@ -63,17 +72,26 @@ const SpeedDial: React.FC<Props> = ({
   onOpenSettings,
 }) => {
   const [open, setOpen] = React.useState(false);
-
   return (
     <Box
       sx={{
         position: "absolute",
         top: 0,
         left: 0,
-        zIndex: 100,
       }}
       onMouseDown={(e) => {
-        if (open) e.stopPropagation();
+        e.preventDefault();
+        const speeddialYMax = 50;
+        const isSpeedDial = e.pageY < speeddialYMax;
+        if (open || isSpeedDial) {
+          e.stopPropagation();
+          // `SpeedDialAction`は非表示でもサイズを持っているので、
+          // `isSpeedDial`を含めることで、アイコンがあった部分のクリック時に`Palette`が出なくなるのを防いでいる
+        }
+        if (isSpeedDial) {
+          if (mode) setMode(null);
+          setOpen(!open);
+        }
       }}
     >
       <ThemeProvider theme={theme}>
@@ -81,32 +99,12 @@ const SpeedDial: React.FC<Props> = ({
           ariaLabel="edit"
           direction="down"
           open={open}
-          icon={
-            !mode ? (
-              <SpeedDialIcon />
-            ) : mode === "edit" ? (
-              <Edit sx={{ color: "cornflowerblue" }} />
-            ) : mode === "move" ? (
-              <OpenWith sx={{ color: "mediumseagreen" }} />
-            ) : (
-              <Delete sx={{ color: "palevioletred" }} />
-            )
-          }
+          icon={<SpeedDialIcon />}
           sx={{ mt: 1 }}
-          onMouseEnter={() => {
-            if (!mode) setOpen(true);
-          }}
-          onClick={() => {
-            if (mode) setMode(null);
-            setOpen(true);
-          }}
-          onClose={() => {
-            setOpen(false);
-          }}
           FabProps={{
             size: "small",
             sx: {
-              bgcolor: !mode ? "silver" : "white",
+              bgcolor: "silver",
               "&:hover": {
                 bgcolor: "darkgray",
               },
@@ -118,67 +116,55 @@ const SpeedDial: React.FC<Props> = ({
           <SpeedDialAction
             tooltipTitle={"PDF選択パネルを開く"}
             icon={<KeyboardArrowRight />}
-            onClick={(e) => {
+            onClick={() => {
               onOpenFileTree();
               setMode(null);
-              setOpen(false);
-              e.stopPropagation();
             }}
             tooltipPlacement="right"
-            tooltipOpen
           />
 
           {/* 設定パネルの開閉 */}
           <SpeedDialAction
             tooltipTitle={`設定パネルを${openDrawer ? "閉じる" : "開く"}`}
             icon={openDrawer ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
-            onClick={(e) => {
+            onClick={() => {
               onOpenSettings();
               setMode(null);
-              setOpen(false);
-              e.stopPropagation();
             }}
             tooltipPlacement="right"
-            tooltipOpen
           />
 
           {/* 注釈の編集 */}
           <SpeedDialAction
             tooltipTitle={"注釈の編集"}
             icon={<Edit sx={{ color: "cornflowerblue" }} />}
-            onClick={(e) => {
+            sx={{ background: mode === "edit" ? "#FDD" : undefined }}
+            onClick={() => {
               setMode("edit");
-              setOpen(false);
-              e.stopPropagation();
             }}
             tooltipPlacement="right"
-            tooltipOpen
           />
 
           {/* 注釈の移動・変形 */}
           <SpeedDialAction
             tooltipTitle={"注釈の移動・変形"}
             icon={<OpenWith sx={{ color: "mediumseagreen" }} />}
-            onClick={(e) => {
+            sx={{ background: mode === "move" ? "#FDD" : undefined }}
+            onClick={() => {
               setMode("move");
-              setOpen(false);
-              e.stopPropagation();
             }}
             tooltipPlacement="right"
-            tooltipOpen
           />
 
           {/* 注釈の削除 */}
           <SpeedDialAction
             tooltipTitle={"注釈の削除"}
             icon={<Delete sx={{ color: "palevioletred" }} />}
-            onClick={(e) => {
+            sx={{ background: mode === "delete" ? "#FDD" : undefined }}
+            onClick={() => {
               setMode("delete");
-              setOpen(false);
-              e.stopPropagation();
             }}
             tooltipPlacement="right"
-            tooltipOpen
           />
         </MUISpeedDial>
       </ThemeProvider>

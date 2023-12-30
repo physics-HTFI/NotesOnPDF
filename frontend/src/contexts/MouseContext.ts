@@ -1,7 +1,13 @@
 import { createContext } from "react";
 
+interface Mouse {
+  pageX: number;
+  pageY: number;
+}
+
 interface MouseContextType {
-  mouse?: { pageX: number; pageY: number };
+  mouse?: Mouse;
+  setMouse?: (m: Mouse) => void;
   pageRect?: DOMRect;
 }
 

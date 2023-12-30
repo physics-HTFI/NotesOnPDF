@@ -32,6 +32,7 @@ const Marker: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
       }}
       onMouseDown={(e) => {
         if (!mode || e.button !== 0) return;
+        e.stopPropagation();
         if (mode === "delete") onDelete();
         if (mode === "move") {
           // TODO

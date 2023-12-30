@@ -34,6 +34,7 @@ const Chip: React.FC<Props> = ({ params, mode, onDelete }) => {
       label={params.label}
       onMouseDown={(e) => {
         if (!mode || e.button !== 0) return;
+        e.stopPropagation();
         if (mode === "delete") onDelete();
         if (mode === "edit") {
           // TODO

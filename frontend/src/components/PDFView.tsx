@@ -111,7 +111,7 @@ const PDFView: React.FC<Props> = ({
   }, [notes?.currentPage]);
 
   return (
-    <MouseContext.Provider value={{ mouse, pageRect }}>
+    <MouseContext.Provider value={{ mouse, setMouse, pageRect }}>
       <Box
         sx={{
           background: "gainsboro",
@@ -122,10 +122,9 @@ const PDFView: React.FC<Props> = ({
         }}
         ref={getContainerRect}
         onMouseDown={(e) => {
+          e.preventDefault();
           if (!pageRect) return;
           setMode(null);
-          setMouse({ pageX: e.pageX, pageY: e.pageY });
-          e.preventDefault();
           if (mode) return;
           setParetteX(e.pageX - pageRect.left);
           setParetteY(e.pageY - pageRect.top);
