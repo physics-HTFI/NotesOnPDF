@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import Arrow from "./Overlay/Arrow";
 import Bracket from "./Overlay/Bracket";
 import Marker from "./Overlay/Marker";
@@ -9,8 +9,8 @@ import Polygon from "./Overlay/Polygon";
 import Svg from "./Overlay/Svg";
 import { MathJaxContext } from "better-react-mathjax";
 import Chip from "./Overlay/Chip";
-import { NotesContext } from "@/contexts/NotesContext";
 import { Mode } from "./SpeedDial";
+import { useNotes } from "@/hooks/useNotes";
 
 /**
  * 数式表示のコンフィグ
@@ -45,25 +45,19 @@ interface Props {
  * PDFビュークリック時に表示されるコントロール
  */
 const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
-  const { notes, setNotes } = useContext(NotesContext);
+  const { notes, setNotes, pop } = useNotes();
   if (!notes || !setNotes || !pageRect) return <></>;
 
   const page = notes.pages[notes.currentPage];
   const { width, height } = pageRect;
   if (!page?.notes) return <></>;
 
-  // 注釈をクリックして削除するときの関数
-  const deleteNote = (p: (typeof page.notes)[number]) => {
-    page.notes = page.notes?.filter((n) => n !== p);
-    setNotes({ ...notes });
-  };
-
   return (
     <>
       <Svg width={width} height={height}>
         {page.notes.map((p) => {
           const handleDelete = () => {
-            deleteNote(p);
+            pop(p);
           };
           switch (p.type) {
             case "Arrow":
@@ -123,7 +117,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
       <MathJaxContext version={3} config={mathjaxConfig}>
         {page.notes.map((p) => {
           const handleDelete = () => {
-            deleteNote(p);
+            pop(p);
           };
           switch (p.type) {
             case "Chip":

@@ -8,6 +8,15 @@ export interface Notes {
   settings: Settings;
 }
 
+export type NoteType =
+  | Rect
+  | Polygon
+  | Arrow
+  | Bracket
+  | Marker
+  | Note
+  | PageLink
+  | Chip;
 export type Heads = "end" | "start" | "start-end" | "none";
 export interface Arrow {
   type: "Arrow";
@@ -84,16 +93,7 @@ export interface Page {
   /** 無効なページの場合に`true` */
   excluded?: boolean;
   /** PDFビューに表示される注釈 */
-  notes?: (
-    | Rect
-    | Polygon
-    | Arrow
-    | Bracket
-    | Marker
-    | Note
-    | PageLink
-    | Chip
-  )[];
+  notes?: NoteType[];
 }
 
 /**
