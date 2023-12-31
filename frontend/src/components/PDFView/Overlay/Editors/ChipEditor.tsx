@@ -1,13 +1,32 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
+  Autocomplete,
   Chip as MuiChip,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { Chip } from "@/types/Notes";
+import { Chip, Notes } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
+
+/**
+ * `notes`に含まれているチップ注釈のうち、出現回数が多い順に並べ替えて返す。
+ */
+const getOptions = (notes?: Notes): string[] => {
+  if (!notes) return [];
+  const counts: Record<string, number> = {};
+  for (const page of Object.values(notes.pages)) {
+    if (!page.notes) continue;
+    for (const n of page.notes) {
+      if (n.type !== "Chip") continue;
+      counts[n.text] = 1 + (counts[n.text] ?? 0);
+    }
+  }
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .map((a) => a[0]);
+};
 
 /**
  * `ChipEditor`の引数
@@ -21,11 +40,12 @@ interface Props {
  * チップの編集ダイアログ
  */
 const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
-  const { update } = useNotes();
+  const { notes, update } = useNotes();
   const [type, setType] = useState(
     params.outlined ?? false ? "outlined" : "filled"
   );
   const [rawText, setRawText] = useState(params.text);
+  const options = useMemo(() => getOptions(notes), [notes]);
 
   // TODO 使用されているテキストのリストを表示する
 
@@ -41,15 +61,14 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
 
   return (
     <EditorBase width={350} height={60} onClose={handleClose}>
-      <TextField
-        variant="standard"
-        value={rawText}
-        sx={{ p: 1 }}
-        inputRef={(ref?: HTMLInputElement) => {
-          ref?.focus();
-        }}
-        onChange={(e) => {
-          setRawText(e.target.value);
+      <Autocomplete
+        freeSolo
+        options={options}
+        sx={{ p: 1, width: "100%" }}
+        renderInput={(params) => <TextField {...params} variant="standard" />}
+        inputValue={rawText}
+        onInputChange={(_, text) => {
+          setRawText(text);
         }}
       />
       <ToggleButtonGroup
