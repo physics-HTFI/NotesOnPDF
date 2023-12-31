@@ -63,7 +63,15 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
         freeSolo
         options={options}
         sx={{ p: 1, width: "100%" }}
-        renderInput={(params) => <TextField {...params} variant="standard" />}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="standard"
+            inputRef={(ref?: HTMLInputElement) => {
+              ref?.focus();
+            }}
+          />
+        )}
         inputValue={rawText}
         onInputChange={(_, text) => {
           setRawText(text);

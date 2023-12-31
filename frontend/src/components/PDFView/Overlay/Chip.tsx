@@ -1,8 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
-import { Chip as ChipType } from "@/types/Notes";
-import ChipEditor from "./Editors/ChipEditor";
+import { Chip as ChipType, NoteType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
 
 /**
@@ -12,15 +11,15 @@ interface Props {
   params: ChipType;
   mode: Mode;
   onDelete: () => void;
+  onEdit: (edit: NoteType) => void;
 }
 
 /**
  * チップ
  */
-const Chip: React.FC<Props> = ({ params, mode, onDelete }) => {
+const Chip: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
-  const [edit, setEdit] = useState(false);
   const outlined = params.outlined ?? false;
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
@@ -42,7 +41,7 @@ const Chip: React.FC<Props> = ({ params, mode, onDelete }) => {
           e.stopPropagation();
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
           if (mode === "delete") onDelete();
-          if (mode === "edit") setEdit(true);
+          if (mode === "edit") onEdit(params);
           if (mode === "move") {
             // TODO
           }
@@ -54,15 +53,6 @@ const Chip: React.FC<Props> = ({ params, mode, onDelete }) => {
           setHover(false);
         }}
       />
-      {/* 編集 */}
-      {edit && (
-        <ChipEditor
-          params={params}
-          onClose={() => {
-            setEdit(false);
-          }}
-        />
-      )}
     </>
   );
 };

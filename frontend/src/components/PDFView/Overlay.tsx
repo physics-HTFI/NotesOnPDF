@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Arrow from "./Overlay/Arrow";
 import Bracket from "./Overlay/Bracket";
 import Marker from "./Overlay/Marker";
@@ -11,6 +11,8 @@ import { MathJaxContext } from "better-react-mathjax";
 import Chip from "./Overlay/Chip";
 import { Mode } from "./SpeedDial";
 import { useNotes } from "@/hooks/useNotes";
+import Editor from "./Overlay/Editors/Editor";
+import { NoteType } from "@/types/Notes";
 
 /**
  * 数式表示のコンフィグ
@@ -46,6 +48,7 @@ interface Props {
  */
 const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
   const { notes, setNotes, pop } = useNotes();
+  const [editPrams, setEditParams] = useState<NoteType>();
   if (!notes || !setNotes || !pageRect) return <></>;
 
   const page = notes.pages[notes.currentPage];
@@ -54,101 +57,61 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
     <>
       <Svg pageRect={pageRect}>
         {page?.notes?.map((p) => {
-          const handleDelete = () => {
-            pop(p);
+          const props = {
+            key: JSON.stringify(p),
+            mode,
+            pageRect,
+            onDelete: () => {
+              pop(p);
+            },
+            onEdit: setEditParams,
           };
           switch (p.type) {
             case "Arrow":
-              return (
-                <Arrow
-                  key={JSON.stringify(p)}
-                  params={p}
-                  mode={mode}
-                  pageRect={pageRect}
-                  onDelete={handleDelete}
-                />
-              );
+              return <Arrow params={p} {...props} />;
             case "Bracket":
-              return (
-                <Bracket
-                  key={JSON.stringify(p)}
-                  params={p}
-                  mode={mode}
-                  pageRect={pageRect}
-                  onDelete={handleDelete}
-                />
-              );
+              return <Bracket params={p} {...props} />;
             case "Marker":
-              return (
-                <Marker
-                  key={JSON.stringify(p)}
-                  params={p}
-                  mode={mode}
-                  pageRect={pageRect}
-                  onDelete={handleDelete}
-                />
-              );
+              return <Marker params={p} {...props} />;
             case "Polygon":
-              return (
-                <Polygon
-                  key={JSON.stringify(p)}
-                  params={p}
-                  mode={mode}
-                  pageRect={pageRect}
-                  onDelete={handleDelete}
-                />
-              );
+              return <Polygon params={p} {...props} />;
             case "Rect":
-              return (
-                <Rect
-                  key={JSON.stringify(p)}
-                  params={p}
-                  mode={mode}
-                  pageRect={pageRect}
-                  onDelete={handleDelete}
-                />
-              );
+              return <Rect params={p} {...props} />;
           }
           return undefined;
         })}
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
         {page?.notes?.map((p) => {
-          const handleDelete = () => {
-            pop(p);
+          const props = {
+            key: JSON.stringify(p),
+            mode,
+            pageRect,
+            onDelete: () => {
+              pop(p);
+            },
+            onEdit: setEditParams,
           };
           switch (p.type) {
             case "Chip":
-              return (
-                <Chip
-                  key={JSON.stringify(p)}
-                  params={p}
-                  mode={mode}
-                  onDelete={handleDelete}
-                />
-              );
+              return <Chip params={p} {...props} />;
             case "Note":
-              return (
-                <Note
-                  key={JSON.stringify(p)}
-                  params={p}
-                  mode={mode}
-                  onDelete={handleDelete}
-                />
-              );
+              return <Note params={p} {...props} />;
             case "PageLink":
-              return (
-                <PageLink
-                  key={JSON.stringify(p)}
-                  params={p}
-                  mode={mode}
-                  onDelete={handleDelete}
-                />
-              );
+              return <PageLink params={p} {...props} />;
           }
           return undefined;
         })}
       </MathJaxContext>
+
+      {/* 編集エディター */}
+      <Editor
+        open={Boolean(editPrams)}
+        params={editPrams}
+        onClose={() => {
+          setEditParams(undefined);
+        }}
+      />
     </>
   );
 };

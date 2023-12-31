@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
-import { Rect as RectType } from "@/types/Notes";
-import PolygonEditor from "./Editors/PolygonEditor";
+import { NoteType, Rect as RectType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
 
 /**
@@ -12,15 +11,21 @@ interface Props {
   mode: Mode;
   pageRect: DOMRect;
   onDelete: () => void;
+  onEdit: (edit: NoteType) => void;
 }
 
 /**
  * 長方形
  */
-const Rect: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
+const Rect: React.FC<Props> = ({
+  params,
+  mode,
+  pageRect,
+  onDelete,
+  onEdit,
+}) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
-  const [edit, setEdit] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <>
@@ -41,7 +46,7 @@ const Rect: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
           e.stopPropagation();
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
           if (mode === "delete") onDelete();
-          if (mode === "edit") setEdit(true);
+          if (mode === "edit") onEdit(params);
           if (mode === "move") {
             // TODO
           }
@@ -53,15 +58,6 @@ const Rect: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
           setHover(false);
         }}
       />
-      {/* 編集 */}
-      {edit && (
-        <PolygonEditor
-          params={params}
-          onClose={() => {
-            setEdit(false);
-          }}
-        />
-      )}
     </>
   );
 };

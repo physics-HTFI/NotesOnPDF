@@ -1,6 +1,6 @@
 import React, { useContext, useRef } from "react";
 import { TextField } from "@mui/material";
-import { PageLink, fromDisplayedPage } from "@/types/Notes";
+import { PageLink, fromDisplayedPage, toDisplayedPage } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
 import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
@@ -10,16 +10,19 @@ import EditorBase from "./EditorBase";
  */
 interface Props {
   params: PageLink;
-  pageNum: number;
   onClose: () => void;
 }
 
 /**
  * ページリンクの編集ダイアログ
  */
-const PageLinkEditor: React.FC<Props> = ({ params, pageNum, onClose }) => {
+const PageLinkEditor: React.FC<Props> = ({ params, onClose }) => {
   const { notes, setNotes, update } = useNotes();
   const { mouse, pageRect } = useContext(MouseContext);
+  const pageNum =
+    toDisplayedPage(notes, params.page).pageNum ??
+    toDisplayedPage(notes).pageNum ??
+    1;
   const num = useRef<number>(pageNum);
   const page = notes?.pages[notes.currentPage];
 

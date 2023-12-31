@@ -1,8 +1,11 @@
 import React, { useContext, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
-import PageLinkEditor from "./Editors/PageLinkEditor";
-import { PageLink as PageLinkType, toDisplayedPage } from "@/types/Notes";
+import {
+  NoteType,
+  PageLink as PageLinkType,
+  toDisplayedPage,
+} from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -14,17 +17,17 @@ interface Props {
   params: PageLinkType;
   mode: Mode;
   onDelete: () => void;
+  onEdit: (edit: NoteType) => void;
 }
 
 /**
  * ページへのリンク
  */
-const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
+const PageLink: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const { setMouse } = useContext(MouseContext);
-  const { pageNum, pageLabel } = toDisplayedPage(notes, params.page);
+  const { pageLabel } = toDisplayedPage(notes, params.page);
   const [hover, setHover] = useState(false);
-  const [edit, setEdit] = useState(false);
   const cursor = mode === "move" ? "move" : "pointer";
   if (!notes || !setNotes) return <></>;
   return (
@@ -55,7 +58,7 @@ const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
           }
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
           if (mode === "delete") onDelete();
-          if (mode === "edit") setEdit(true);
+          if (mode === "edit") onEdit(params);
           if (mode === "move") {
             // TODO 移動
           }
@@ -67,16 +70,6 @@ const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
           setHover(false);
         }}
       />
-      {/* 編集 */}
-      {edit && (
-        <PageLinkEditor
-          pageNum={pageNum ?? toDisplayedPage(notes).pageNum ?? 1}
-          params={params}
-          onClose={() => {
-            setEdit(false);
-          }}
-        />
-      )}
     </>
   );
 };

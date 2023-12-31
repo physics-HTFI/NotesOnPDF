@@ -31,7 +31,7 @@ const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
   };
 
   return (
-    <EditorBase width={100} height={50} onClose={handleClose}>
+    <EditorBase width={100} height={60} onClose={handleClose}>
       <ToggleButtonGroup
         value={type}
         exclusive
@@ -39,12 +39,13 @@ const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
           if (!newType) return;
           setType(newType);
         }}
+        size="small"
       >
         <ToggleButton value="filled">
-          <Rectangle />
+          <Rectangle sx={{ color: "#ffb2b2" }} />
         </ToggleButton>
         <ToggleButton value="border">
-          <RectangleOutlined />
+          <RectangleOutlined sx={{ color: "red" }} />
         </ToggleButton>
       </ToggleButtonGroup>
     </EditorBase>

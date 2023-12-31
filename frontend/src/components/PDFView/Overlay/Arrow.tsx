@@ -1,4 +1,4 @@
-import { Arrow as ArrowType } from "@/types/Notes";
+import { Arrow as ArrowType, NoteType } from "@/types/Notes";
 import React, { useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -11,12 +11,19 @@ interface Props {
   mode: Mode;
   pageRect: DOMRect;
   onDelete: () => void;
+  onEdit: (edit: NoteType) => void;
 }
 
 /**
  * 矢印などの直線
  */
-const Arrow: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
+const Arrow: React.FC<Props> = ({
+  params,
+  mode,
+  pageRect,
+  onDelete,
+  onEdit,
+}) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const x1 = params.x1 * pageRect.width;
@@ -35,9 +42,7 @@ const Arrow: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
         e.stopPropagation();
         setMouse?.({ pageX: e.pageX, pageY: e.pageY });
         if (mode === "delete") onDelete();
-        if (mode === "edit") {
-          // TODO
-        }
+        if (mode === "edit") onEdit(params);
         if (mode === "move") {
           // TODO
         }
