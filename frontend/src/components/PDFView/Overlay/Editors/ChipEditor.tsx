@@ -47,8 +47,6 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
   const [rawText, setRawText] = useState(params.text);
   const options = useMemo(() => getOptions(notes), [notes]);
 
-  // TODO 使用されているテキストのリストを表示する
-
   // 閉じたときに値を更新する
   const handleClose = () => {
     onClose();

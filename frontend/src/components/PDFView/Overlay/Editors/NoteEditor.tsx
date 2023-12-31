@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { TextField } from "@mui/material";
+import { TextField, Tooltip } from "@mui/material";
 import { Note } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
+import { HelpOutlineOutlined } from "@mui/icons-material";
 
 /**
  * `NoteEditor`の引数
@@ -18,8 +19,6 @@ interface Props {
 const NoteEditor: React.FC<Props> = ({ params, onClose }) => {
   const { update } = useNotes();
   const [text, setText] = useState(params.html.replace(/<br\/>/g, "\n"));
-
-  // TODO 使用されているテキストのリストを表示する
 
   // 閉じたときに値を更新する
   const handleClose = () => {
@@ -47,6 +46,29 @@ const NoteEditor: React.FC<Props> = ({ params, onClose }) => {
           setText(e.target.value);
         }}
       />
+      <Tooltip
+        disableInteractive
+        enterDelay={0}
+        title={
+          <span>
+            ・インライン数式：$e=mc^2$
+            <br />
+            ・別行立て数式：$$e=mc^2$$
+            <br />
+            ・その他、HTMLタグが使用できます。
+          </span>
+        }
+      >
+        <HelpOutlineOutlined
+          sx={{
+            position: "absolute",
+            right: 12,
+            bottom: 12,
+            fontSize: "130%",
+            color: "cornflowerblue",
+          }}
+        />
+      </Tooltip>
     </EditorBase>
   );
 };
