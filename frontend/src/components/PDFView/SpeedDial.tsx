@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Box,
   SpeedDial as MUISpeedDial,
@@ -72,6 +72,16 @@ const SpeedDial: React.FC<Props> = ({
   onOpenSettings,
 }) => {
   const [open, setOpen] = React.useState(false);
+  const modeOld = useRef(mode);
+
+  // モードを設定したときに一度SpeedDialが閉じる[1]ので、
+  // その後モードが解除されたときに再表示する。
+  // [1] 閉じておかないと編集エディタの邪魔になる（SpeedDialのほうが上にくる）。
+  useEffect(() => {
+    if (modeOld.current && !mode) setOpen(true);
+    modeOld.current = mode;
+  }, [mode]);
+
   return (
     <Box
       sx={{
@@ -86,7 +96,7 @@ const SpeedDial: React.FC<Props> = ({
         if (open || isSpeedDial) {
           e.stopPropagation();
           // `SpeedDialAction`は非表示でもサイズを持っているので、
-          // `isSpeedDial`を含めることで、アイコンがあった部分のクリック時に`Palette`が出なくなるのを防いでいる
+          // `isSpeedDial`に限定することで、アイコンがあった部分のクリック時に`Palette`が出なくなるのを防いでいる
         }
         if (isSpeedDial) {
           if (mode) setMode(null);
@@ -99,12 +109,22 @@ const SpeedDial: React.FC<Props> = ({
           ariaLabel="edit"
           direction="down"
           open={open}
-          icon={<SpeedDialIcon />}
+          icon={
+            !mode ? (
+              <SpeedDialIcon />
+            ) : mode === "edit" ? (
+              <Edit sx={{ color: "cornflowerblue" }} />
+            ) : mode === "move" ? (
+              <OpenWith sx={{ color: "mediumseagreen" }} />
+            ) : (
+              <Delete sx={{ color: "palevioletred" }} />
+            )
+          }
           sx={{ mt: 1 }}
           FabProps={{
             size: "small",
             sx: {
-              bgcolor: "silver",
+              bgcolor: !mode ? "silver" : "white",
               "&:hover": {
                 bgcolor: "darkgray",
               },
@@ -141,6 +161,7 @@ const SpeedDial: React.FC<Props> = ({
             sx={{ background: mode === "edit" ? "#FDD" : undefined }}
             onClick={() => {
               setMode("edit");
+              setOpen(false);
             }}
             tooltipPlacement="right"
           />
@@ -152,6 +173,7 @@ const SpeedDial: React.FC<Props> = ({
             sx={{ background: mode === "move" ? "#FDD" : undefined }}
             onClick={() => {
               setMode("move");
+              setOpen(false);
             }}
             tooltipPlacement="right"
           />
@@ -163,6 +185,7 @@ const SpeedDial: React.FC<Props> = ({
             sx={{ background: mode === "delete" ? "#FDD" : undefined }}
             onClick={() => {
               setMode("delete");
+              setOpen(false);
             }}
             tooltipPlacement="right"
           />
