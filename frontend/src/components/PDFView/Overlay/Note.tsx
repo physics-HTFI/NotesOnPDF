@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
 import { Note as NoteType } from "@/types/Notes";
+import { MouseContext } from "@/contexts/MouseContext";
 
 /**
  * `Note`の引数
@@ -17,6 +18,7 @@ interface Props {
  * PDFビュークリック時に表示されるコントロール
  */
 const Note: React.FC<Props> = ({ params, mode, onDelete }) => {
+  const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
@@ -37,6 +39,7 @@ const Note: React.FC<Props> = ({ params, mode, onDelete }) => {
         onMouseDown={(e) => {
           if (!mode || e.button !== 0) return;
           e.stopPropagation();
+          setMouse?.({ pageX: e.pageX, pageY: e.pageY });
           if (mode === "delete") onDelete();
           if (mode === "edit") {
             // TODO

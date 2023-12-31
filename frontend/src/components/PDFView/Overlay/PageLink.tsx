@@ -22,9 +22,9 @@ interface Props {
 const PageLink: React.FC<Props> = ({ params, mode, onDelete }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const { setMouse } = useContext(MouseContext);
-  const [edit, setEdit] = useState(false);
   const { pageNum, pageLabel } = toDisplayedPage(notes, params.page);
   const [hover, setHover] = useState(false);
+  const [edit, setEdit] = useState(false);
   const cursor = mode === "move" ? "move" : "pointer";
   if (!notes || !setNotes) return <></>;
   return (

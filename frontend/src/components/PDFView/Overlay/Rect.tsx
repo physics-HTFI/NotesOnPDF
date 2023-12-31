@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
 import { Rect as RectType } from "@/types/Notes";
 import PolygonEditor from "./Editors/PolygonEditor";
+import { MouseContext } from "@/contexts/MouseContext";
 
 /**
  * `Rect`の引数
@@ -17,8 +18,9 @@ interface Props {
  * 長方形
  */
 const Rect: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
-  const [edit, setEdit] = useState(false);
+  const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
+  const [edit, setEdit] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <>
@@ -37,6 +39,7 @@ const Rect: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
         onMouseDown={(e) => {
           if (!mode || e.button !== 0) return;
           e.stopPropagation();
+          setMouse?.({ pageX: e.pageX, pageY: e.pageY });
           if (mode === "delete") onDelete();
           if (mode === "edit") setEdit(true);
           if (mode === "move") {

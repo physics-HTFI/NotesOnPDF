@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Polygon, Rect } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
@@ -18,19 +18,20 @@ interface Props {
  */
 const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
   const { update } = useNotes();
-  const [type, setType] = useState(params.border ?? false ? "border" : "fill");
+  const [type, setType] = useState(
+    params.border ?? false ? "border" : "filled"
+  );
 
   // 閉じたときに値を更新する
-  useEffect(() => {
-    return () => {
-      const border = type === "border" ? true : undefined;
-      if (border === params.border) return;
-      update(params, { ...params, border });
-    };
-  });
+  const handleClose = () => {
+    onClose();
+    const border = type === "border" ? true : undefined;
+    if (border === params.border) return;
+    update(params, { ...params, border });
+  };
 
   return (
-    <EditorBase width={100} height={50} onClose={onClose}>
+    <EditorBase width={100} height={50} onClose={handleClose}>
       <ToggleButtonGroup
         value={type}
         exclusive
@@ -39,7 +40,7 @@ const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
           setType(newType);
         }}
       >
-        <ToggleButton value="fill">
+        <ToggleButton value="filled">
           <Rectangle />
         </ToggleButton>
         <ToggleButton value="border">

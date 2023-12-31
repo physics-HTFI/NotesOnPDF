@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Bracket as Bracket } from "@/types/Notes";
 import { Mode } from "../SpeedDial";
+import { MouseContext } from "@/contexts/MouseContext";
 
 /**
  * `Bracket`の引数
@@ -16,6 +17,7 @@ interface Props {
  * 括弧
  */
 const Bracket: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
+  const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const x1 = params.x1 * pageRect.width;
   const y1 = params.y1 * pageRect.height;
@@ -31,6 +33,7 @@ const Bracket: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
       onMouseDown={(e) => {
         if (!mode || e.button !== 0) return;
         e.stopPropagation();
+        setMouse?.({ pageX: e.pageX, pageY: e.pageY });
         if (mode === "delete") onDelete();
         if (mode === "edit") {
           // TODO

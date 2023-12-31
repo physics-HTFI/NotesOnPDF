@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { TextField } from "@mui/material";
 import { PageLink, fromDisplayedPage } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -24,20 +24,19 @@ const PageLinkEditor: React.FC<Props> = ({ params, pageNum, onClose }) => {
   const page = notes?.pages[notes.currentPage];
 
   // 閉じたときに値を更新する
-  useEffect(() => {
-    return () => {
-      if (!notes) return;
-      if (pageNum === num.current) return;
-      update(params, {
-        ...params,
-        page: fromDisplayedPage(notes, num.current),
-      });
-    };
-  });
+  const handleClose = () => {
+    onClose();
+    if (!notes) return;
+    if (pageNum === num.current) return;
+    update(params, {
+      ...params,
+      page: fromDisplayedPage(notes, num.current),
+    });
+  };
 
   if (!notes || !setNotes || !page || !mouse || !pageRect) return <></>;
   return (
-    <EditorBase width={100} height={50} onClose={onClose}>
+    <EditorBase width={100} height={50} onClose={handleClose}>
       <TextField
         variant="standard"
         defaultValue={pageNum}

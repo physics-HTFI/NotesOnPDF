@@ -40,6 +40,7 @@ const EditorBase: React.FC<Props> = ({ children, width, height, onClose }) => {
         justifyContent: "center",
         alignItems: "center",
         cursor: "default",
+        zIndex: 2000, // https://mui.com/material-ui/customization/z-index/
       }}
       onMouseLeave={onClose}
       onMouseDown={(e) => {

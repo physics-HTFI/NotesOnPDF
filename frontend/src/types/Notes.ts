@@ -38,7 +38,7 @@ export interface Chip {
   type: "Chip";
   x: number;
   y: number;
-  label: string;
+  text: string;
   outlined?: boolean;
 }
 export interface Marker {
@@ -63,7 +63,7 @@ export interface PageLink {
 export interface Polygon {
   type: "Polygon";
   points: [number, number][];
-  border?: boolean;
+  border?: boolean; // TODO Chipに合わせて"outlined"のほうが良い?
 }
 export interface Rect {
   type: "Rect";
@@ -71,7 +71,7 @@ export interface Rect {
   y: number;
   width: number;
   height: number;
-  border?: boolean;
+  border?: boolean; // TODO Chipに合わせて"outlined"のほうが良い?
 }
 
 /**
