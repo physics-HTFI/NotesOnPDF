@@ -4,6 +4,7 @@ import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
 import { Note as NoteType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
+import NoteEditor from "./Editors/NoteEditor";
 
 /**
  * `Note`の引数
@@ -20,6 +21,7 @@ interface Props {
 const Note: React.FC<Props> = ({ params, mode, onDelete }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
+  const [edit, setEdit] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <MathJax hideUntilTypeset={"first"}>
@@ -41,9 +43,7 @@ const Note: React.FC<Props> = ({ params, mode, onDelete }) => {
           e.stopPropagation();
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
           if (mode === "delete") onDelete();
-          if (mode === "edit") {
-            // TODO
-          }
+          if (mode === "edit") setEdit(true);
           if (mode === "move") {
             // TODO
           }
@@ -55,6 +55,15 @@ const Note: React.FC<Props> = ({ params, mode, onDelete }) => {
           setHover(false);
         }}
       />
+      {/* 編集 */}
+      {edit && (
+        <NoteEditor
+          params={params}
+          onClose={() => {
+            setEdit(false);
+          }}
+        />
+      )}
     </MathJax>
   );
 };
