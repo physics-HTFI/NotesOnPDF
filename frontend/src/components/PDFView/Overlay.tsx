@@ -49,13 +49,11 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
   if (!notes || !setNotes || !pageRect) return <></>;
 
   const page = notes.pages[notes.currentPage];
-  const { width, height } = pageRect;
-  if (!page?.notes) return <></>;
 
   return (
     <>
-      <Svg width={width} height={height}>
-        {page.notes.map((p) => {
+      <Svg pageRect={pageRect}>
+        {page?.notes?.map((p) => {
           const handleDelete = () => {
             pop(p);
           };
@@ -115,7 +113,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
         })}
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
-        {page.notes.map((p) => {
+        {page?.notes?.map((p) => {
           const handleDelete = () => {
             pop(p);
           };

@@ -4,17 +4,16 @@ import React, { ReactNode } from "react";
  * `Svg`の引数
  */
 interface Props {
-  width: number;
-  height: number;
+  pageRect: DOMRect;
   children: ReactNode;
 }
 
 /**
  * `Overlay.tsx`で使用する<svg>要素
  */
-const Svg: React.FC<Props> = ({ width, height, children }) => (
+const Svg: React.FC<Props> = ({ pageRect, children }) => (
   <svg
-    viewBox={`0 0 ${width} ${height}`}
+    viewBox={`0 0 ${pageRect.width} ${pageRect.height}`}
     style={{
       width: "100%",
       height: "100%",
@@ -25,6 +24,7 @@ const Svg: React.FC<Props> = ({ width, height, children }) => (
     }}
   >
     <defs>
+      {/* `Arrow.tsx`で使用するマーカー */}
       <marker
         viewBox="0 0 10 8"
         id="head"
@@ -36,6 +36,8 @@ const Svg: React.FC<Props> = ({ width, height, children }) => (
       >
         <path d="M0,0 V10 L8,5 Z" fill="red" />
       </marker>
+
+      {/* `Bracket.tsx`で使用するマーカー */}
       <marker
         viewBox="-2 -1 2 11"
         id="bracket"
