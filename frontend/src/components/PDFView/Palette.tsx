@@ -1,21 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box } from "@mui/material";
+import { MouseContext } from "@/contexts/MouseContext";
 
 /**
  * `Palette`の引数
  */
 interface Props {
-  /** 表示位置(%) */
-  x: number;
-  /** 表示位置(%) */
-  y: number;
   open: boolean;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Palette: React.FC<Props> = ({ open, x, y }) => {
+const Palette: React.FC<Props> = ({ open }) => {
+  const { mouse, pageRect } = useContext(MouseContext);
   const L = 40;
   const props = {
     width: L,
@@ -33,6 +31,9 @@ const Palette: React.FC<Props> = ({ open, x, y }) => {
     return `translate(${Math.cos(i * Θ) * L}px, ${Math.sin(i * Θ) * L}px)`;
   };
 
+  if (!mouse || !pageRect) return <></>;
+  const x = (100 * (mouse.pageX - pageRect.left)) / pageRect.width;
+  const y = (100 * (mouse.pageY - pageRect.top)) / pageRect.height;
   return (
     open && (
       <Box

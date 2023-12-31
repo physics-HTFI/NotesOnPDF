@@ -37,6 +37,7 @@ const Marker: React.FC<Props> = ({ params, mode, pageRect, onDelete }) => {
         e.stopPropagation();
         setMouse?.({ pageX: e.pageX, pageY: e.pageY });
         if (mode === "delete") onDelete();
+        if (mode === "edit") return;
         if (mode === "move") {
           // TODO
         }

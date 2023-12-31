@@ -73,8 +73,6 @@ const PDFView: React.FC<Props> = ({
 }) => {
   const [reading, setReading] = useState(false);
   const [paretteOpen, setParetteOpen] = useState(false);
-  const [paretteX, setParetteX] = useState(0);
-  const [paretteY, setParetteY] = useState(0);
   const sizes = useRef<{ width: number; height: number }[]>();
   const [refContainer, setRefContainer] = useState<HTMLDivElement>();
   const [refPage, setRefPage] = useState<HTMLDivElement>();
@@ -126,8 +124,7 @@ const PDFView: React.FC<Props> = ({
           if (!pageRect) return;
           setMode(null);
           if (mode) return;
-          setParetteX(e.pageX - pageRect.left);
-          setParetteY(e.pageY - pageRect.top);
+          setMouse({ pageX: e.pageX, pageY: e.pageY });
           setParetteOpen(true);
         }}
         onMouseUp={() => {
@@ -198,11 +195,7 @@ const PDFView: React.FC<Props> = ({
           </Document>
           <PageLabelLarge label={pageLabel} shown={reading} />
           <Overlay pageRect={pageRect} mode={mode} />
-          <Palette
-            open={paretteOpen}
-            x={(100 * paretteX) / (width ?? 1)}
-            y={(100 * paretteY) / (height ?? 1)}
-          />
+          <Palette open={paretteOpen} />
         </Container>
         <Excluded excluded={page?.excluded ?? false} />
         <PageLabelSmall label={pageLabel} />
