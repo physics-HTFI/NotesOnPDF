@@ -18,14 +18,14 @@ interface Props {
 }
 
 /**
- * ページリンクのメニュー
+ * チップの編集ダイアログ
  */
 const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
   const { update } = useNotes();
   const [type, setType] = useState(
     params.outlined ?? false ? "outlined" : "filled"
   );
-  const [text, setText] = useState(params.text);
+  const [rawText, setRawText] = useState(params.text);
 
   // TODO 使用されているテキストのリストを表示する
 
@@ -33,6 +33,7 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
   const handleClose = () => {
     onClose();
     const outlined = type === "outlined" ? true : undefined;
+    const text = rawText.trim();
     if (outlined === params.outlined && text === params.text) return;
     if (text === "") return;
     update(params, { ...params, outlined, text });
@@ -42,15 +43,13 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
     <EditorBase width={350} height={60} onClose={handleClose}>
       <TextField
         variant="standard"
-        value={text}
+        value={rawText}
         sx={{ p: 1 }}
         inputRef={(ref?: HTMLInputElement) => {
           ref?.focus();
         }}
         onChange={(e) => {
-          const txt = e.target.value.trim();
-          if (txt === "") return;
-          setText(txt);
+          setRawText(e.target.value);
         }}
       />
       <ToggleButtonGroup
