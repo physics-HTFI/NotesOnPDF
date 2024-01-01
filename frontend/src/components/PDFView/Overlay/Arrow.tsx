@@ -63,7 +63,7 @@ const Arrow: React.FC<Props> = ({
         style={{
           stroke: "white",
           opacity: 0.7,
-          strokeWidth: "5",
+          strokeWidth: "10",
         }}
       />
       <line
