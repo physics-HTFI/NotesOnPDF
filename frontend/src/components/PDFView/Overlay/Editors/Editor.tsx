@@ -4,6 +4,7 @@ import ChipEditor from "./ChipEditor";
 import PolygonEditor from "./PolygonEditor";
 import PageLinkEditor from "./PageLinkEditor";
 import NoteEditor from "./NoteEditor";
+import LineEditor from "./LineEditor";
 
 /**
  * `Editor`の引数
@@ -21,9 +22,9 @@ const Editor: React.FC<Props> = ({ open, params, onClose }) => {
   if (!open || !params) return <></>;
   switch (params.type) {
     case "Arrow":
-      return <></>;
+      return <LineEditor params={params} onClose={onClose} />;
     case "Bracket":
-      return <></>;
+      return <LineEditor params={params} onClose={onClose} />;
     case "Chip":
       return <ChipEditor params={params} onClose={onClose} />;
     case "Marker":

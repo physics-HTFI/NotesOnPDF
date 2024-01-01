@@ -30,7 +30,8 @@ const Arrow: React.FC<Props> = ({
   const y1 = params.y1 * pageRect.height;
   const x2 = params.x2 * pageRect.width;
   const y2 = params.y2 * pageRect.height;
-  const heads = params.heads ?? "end";
+  const hasStart = ["start", "both"].includes(params.heads ?? "end");
+  const hasEnd = ["end", "both"].includes(params.heads ?? "end");
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <g
@@ -74,8 +75,8 @@ const Arrow: React.FC<Props> = ({
           opacity: hover ? 0.5 : 1,
           stroke: "red",
           strokeWidth: "1",
-          markerStart: heads.includes("start") ? "url(#head)" : undefined,
-          markerEnd: heads.includes("end") ? "url(#head)" : undefined,
+          markerStart: hasStart ? "url(#head)" : undefined,
+          markerEnd: hasEnd ? "url(#head)" : undefined,
         }}
       />
     </g>

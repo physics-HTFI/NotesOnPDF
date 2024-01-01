@@ -17,7 +17,7 @@ export type NoteType =
   | Note
   | PageLink
   | Chip;
-export type Heads = "end" | "start" | "start-end" | "none";
+export type Heads = "end" | "start" | "both" | "none";
 export interface Arrow {
   type: "Arrow";
   x1: number;

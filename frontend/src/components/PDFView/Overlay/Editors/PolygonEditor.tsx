@@ -32,7 +32,7 @@ const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
     update(params, { ...params, border });
   };
 
-  const size = 40;
+  const size = 50;
   const pageRect = new DOMRect(0, 0, size, size);
   const rect: Rect = {
     type: "Rect",

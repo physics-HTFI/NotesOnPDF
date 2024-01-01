@@ -30,7 +30,8 @@ const Bracket: React.FC<Props> = ({
   const y1 = params.y1 * pageRect.height;
   const x2 = params.x2 * pageRect.width;
   const y2 = params.y2 * pageRect.height;
-  const heads = params.heads ?? "start-end";
+  const hasStart = ["start", "both"].includes(params.heads ?? "both");
+  const hasEnd = ["end", "both"].includes(params.heads ?? "both");
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <g
@@ -74,8 +75,8 @@ const Bracket: React.FC<Props> = ({
           stroke: "red",
           strokeWidth: "1",
           opacity: hover ? 0.5 : 1,
-          markerStart: heads.includes("start") ? "url(#bracket)" : undefined,
-          markerEnd: heads.includes("end") ? "url(#bracket)" : undefined,
+          markerStart: hasStart ? "url(#bracket)" : undefined,
+          markerEnd: hasEnd ? "url(#bracket)" : undefined,
         }}
       />
     </g>

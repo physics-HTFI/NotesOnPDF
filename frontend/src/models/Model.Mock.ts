@@ -134,7 +134,7 @@ export default class ModelMock implements IModel {
               y1: 0.1,
               x2: 0.3,
               y2: 0.2,
-              heads: "start-end",
+              heads: "both",
             },
             {
               type: "Arrow",
