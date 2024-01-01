@@ -89,6 +89,7 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
           if (!newType) return;
           setType(newType);
         }}
+        color="info"
       >
         <ToggleButton value="filled">
           <MuiChip color="primary" variant="filled" size="small" label="abc" />

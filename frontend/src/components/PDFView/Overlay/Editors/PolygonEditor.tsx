@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { Polygon, Rect } from "@/types/Notes";
+import { Rect, Polygon } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
-import { Rectangle, RectangleOutlined } from "@mui/icons-material";
+import Svg from "../Svg";
+import RectSvg from "../Rect";
 
 /**
  * `PolygonEditor`の引数
@@ -30,23 +31,49 @@ const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
     update(params, { ...params, border });
   };
 
+  const size = 40;
+  const pageRect = new DOMRect(0, 0, size, size);
+  const rect: Rect = {
+    type: "Rect",
+    x: 0.2,
+    y: 0.3,
+    width: 0.6,
+    height: 0.4,
+  };
   return (
     <EditorBase onClose={handleClose}>
       <ToggleButtonGroup
         value={type}
         exclusive
         size="small"
-        sx={{ m: 1 }}
+        color="info"
+        sx={{ m: 1, "& *:focus": { outline: "none" } }}
         onChange={(_, newType: string | null) => {
           if (!newType) return;
           setType(newType);
         }}
       >
-        <ToggleButton value="filled">
-          <Rectangle sx={{ color: "#ffb2b2" }} />
+        <ToggleButton value="filled" sx={{ width: size, height: size }}>
+          <Svg pageRect={pageRect}>
+            <RectSvg
+              pageRect={pageRect}
+              params={rect}
+              mode={null}
+              onDelete={() => undefined}
+              onEdit={() => undefined}
+            />
+          </Svg>
         </ToggleButton>
-        <ToggleButton value="border">
-          <RectangleOutlined sx={{ color: "red" }} />
+        <ToggleButton value="border" sx={{ width: size, height: size }}>
+          <Svg pageRect={pageRect}>
+            <RectSvg
+              pageRect={pageRect}
+              params={{ ...rect, border: true }}
+              mode={null}
+              onDelete={() => undefined}
+              onEdit={() => undefined}
+            />
+          </Svg>
         </ToggleButton>
       </ToggleButtonGroup>
     </EditorBase>
