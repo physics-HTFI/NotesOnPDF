@@ -12,6 +12,7 @@ import PDFView from "@/components/PDFView";
 import Waiting from "@/components/Fullscreen/Waiting";
 import TOCView from "@/components/TOCView";
 import { NotesContext } from "./contexts/NotesContext";
+import { grey } from "@mui/material/colors";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 const model: IModel = IS_MOCK ? new ModelMock() : new Model();
@@ -117,7 +118,7 @@ function App() {
 
           {/* リサイズハンドル */}
           <PanelResizeHandle>
-            <Box sx={{ width: 5, height: "100vh", background: "silver" }} />
+            <Box sx={{ width: 5, height: "100vh", background: grey[400] }} />
           </PanelResizeHandle>
 
           {/* PDFビュー */}

@@ -15,6 +15,7 @@ import {
   KeyboardArrowUp,
   OpenWith,
 } from "@mui/icons-material";
+import { grey, red } from "@mui/material/colors";
 
 export type Mode = null | "edit" | "move" | "delete";
 
@@ -105,9 +106,9 @@ const SpeedDial: React.FC<Props> = ({
           FabProps={{
             size: "small",
             sx: {
-              bgcolor: "silver",
+              bgcolor: grey[400],
               "&:hover": {
-                bgcolor: "darkgray",
+                bgcolor: grey[500],
               },
               boxShadow: "none",
             },
@@ -139,7 +140,7 @@ const SpeedDial: React.FC<Props> = ({
           <SpeedDialAction
             tooltipTitle={"注釈の編集"}
             icon={<Edit sx={{ color: "cornflowerblue" }} />}
-            sx={{ background: mode === "edit" ? "#FDD" : undefined }}
+            sx={{ background: mode === "edit" ? red[100] : undefined }}
             onClick={() => {
               setMode("edit");
             }}
@@ -150,7 +151,7 @@ const SpeedDial: React.FC<Props> = ({
           <SpeedDialAction
             tooltipTitle={"注釈の移動・変形"}
             icon={<OpenWith sx={{ color: "mediumseagreen" }} />}
-            sx={{ background: mode === "move" ? "#FDD" : undefined }}
+            sx={{ background: mode === "move" ? red[100] : undefined }}
             onClick={() => {
               setMode("move");
             }}
@@ -161,7 +162,7 @@ const SpeedDial: React.FC<Props> = ({
           <SpeedDialAction
             tooltipTitle={"注釈の削除"}
             icon={<Delete sx={{ color: "palevioletred" }} />}
-            sx={{ background: mode === "delete" ? "#FDD" : undefined }}
+            sx={{ background: mode === "delete" ? red[100] : undefined }}
             onClick={() => {
               setMode("delete");
             }}

@@ -17,6 +17,7 @@ import Overlay from "./PDFView/Overlay";
 import { NotesContext } from "@/contexts/NotesContext";
 import { MouseContext } from "@/contexts/MouseContext";
 import Editor from "./PDFView/Overlay/Editors/Editor";
+import { grey } from "@mui/material/colors";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -114,7 +115,7 @@ const PDFView: React.FC<Props> = ({
     <MouseContext.Provider value={{ mouse, setMouse, pageRect }}>
       <Box
         sx={{
-          background: "gainsboro",
+          background: grey[300],
           height: "100vh",
           overflow: "hidden",
           position: "relative",

@@ -5,6 +5,7 @@ import Settings from "./TOCView/Settings";
 import getTOCData from "./TOCView/getTOCData";
 import { NotesContext } from "@/contexts/NotesContext";
 import { ExpandMore } from "@mui/icons-material";
+import { grey } from "@mui/material/colors";
 
 /**
  * `TOCView`の引数
@@ -26,7 +27,7 @@ const TOCView: React.FC<Props> = ({ openDrawer, onCloseDrawer }) => {
   return (
     <Box
       sx={{
-        background: "whitesmoke",
+        background: grey[100],
         position: "relative",
         height: "100vh",
         overflowWrap: "break-word",
