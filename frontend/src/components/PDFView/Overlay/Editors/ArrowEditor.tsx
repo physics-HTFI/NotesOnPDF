@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Arrow, Bracket } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
@@ -45,14 +45,14 @@ const ArrowEditor: React.FC<Props> = ({ params, onClose }) => {
   const isArrow = params.type === "Arrow";
   const defaultHeads = isArrow ? "end" : "both";
   const { update } = useNotes();
-  const [type, setType] = useState(params.heads ?? defaultHeads);
   const { pageRect } = useContext(MouseContext);
   if (!pageRect) return <></>;
 
   // 閉じたときに値を更新する
-  const handleClose = () => {
+  const handleClose = (newType?: typeof params.heads) => {
     onClose();
-    const heads = type === defaultHeads ? undefined : type;
+    if (!newType) return; // キャンセル時
+    const heads = newType === defaultHeads ? undefined : newType;
     if (heads === params.heads) return;
     update(params, { ...params, heads });
   };
@@ -96,7 +96,7 @@ const ArrowEditor: React.FC<Props> = ({ params, onClose }) => {
   return (
     <EditorBase onClose={handleClose}>
       <ToggleButtonGroup
-        value={type}
+        value={params.heads ?? defaultHeads}
         exclusive
         size="small"
         sx={{ m: 1, "& *:focus": { outline: "none" } }}
@@ -107,7 +107,7 @@ const ArrowEditor: React.FC<Props> = ({ params, onClose }) => {
             newType === "start" ||
             newType === "none"
           ) {
-            setType(newType);
+            handleClose(newType);
           }
         }}
       >

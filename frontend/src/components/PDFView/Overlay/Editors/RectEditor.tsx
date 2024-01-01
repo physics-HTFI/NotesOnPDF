@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Rect, Polygon } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
@@ -20,14 +20,12 @@ interface Props {
  */
 const RectEditor: React.FC<Props> = ({ params, onClose }) => {
   const { update } = useNotes();
-  const [type, setType] = useState(
-    params.border ?? false ? "border" : "filled"
-  );
 
   // 閉じたときに値を更新する
-  const handleClose = () => {
+  const handleClose = (newType?: "border" | "filled") => {
     onClose();
-    const border = type === "border" ? true : undefined;
+    if (!newType) return; // キャンセル時
+    const border = newType === "border" ? true : undefined;
     if (border === params.border) return;
     update(params, { ...params, border });
   };
@@ -51,13 +49,14 @@ const RectEditor: React.FC<Props> = ({ params, onClose }) => {
   return (
     <EditorBase onClose={handleClose}>
       <ToggleButtonGroup
-        value={type}
+        value={params.border === true ? "border" : "filled"}
         exclusive
         size="small"
         sx={{ m: 1, "& *:focus": { outline: "none" } }}
         onChange={(_, newType: string | null) => {
-          if (!newType) return;
-          setType(newType);
+          if (newType === "border" || newType === "filled") {
+            handleClose(newType);
+          }
         }}
       >
         <ToggleButton value="filled" sx={toggleSx}>
