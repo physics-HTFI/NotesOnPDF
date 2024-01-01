@@ -31,7 +31,7 @@ const getVector = (
 };
 
 /**
- * `LineEditor`の引数
+ * `ArrowEditor`の引数
  */
 interface Props {
   params: Arrow | Bracket;
@@ -41,7 +41,7 @@ interface Props {
 /**
  * Arrow, Bracketの編集ダイアログ
  */
-const LineEditor: React.FC<Props> = ({ params, onClose }) => {
+const ArrowEditor: React.FC<Props> = ({ params, onClose }) => {
   const isArrow = params.type === "Arrow";
   const defaultHeads = isArrow ? "end" : "both";
   const { update } = useNotes();
@@ -120,4 +120,4 @@ const LineEditor: React.FC<Props> = ({ params, onClose }) => {
   );
 };
 
-export default LineEditor;
+export default ArrowEditor;

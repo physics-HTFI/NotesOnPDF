@@ -8,7 +8,7 @@ import RectSvg from "../Rect";
 import { red } from "@mui/material/colors";
 
 /**
- * `PolygonEditor`の引数
+ * `RectEditor`の引数
  */
 interface Props {
   params: Polygon | Rect;
@@ -18,7 +18,7 @@ interface Props {
 /**
  * 直方体、ポリゴンの編集ダイアログ
  */
-const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
+const RectEditor: React.FC<Props> = ({ params, onClose }) => {
   const { update } = useNotes();
   const [type, setType] = useState(
     params.border ?? false ? "border" : "filled"
@@ -87,4 +87,4 @@ const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
   );
 };
 
-export default PolygonEditor;
+export default RectEditor;

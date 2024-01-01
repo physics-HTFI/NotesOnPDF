@@ -1,10 +1,10 @@
 import React from "react";
 import { NoteType } from "@/types/Notes";
 import ChipEditor from "./ChipEditor";
-import PolygonEditor from "./PolygonEditor";
+import RectEditor from "./RectEditor";
 import PageLinkEditor from "./PageLinkEditor";
 import NoteEditor from "./NoteEditor";
-import LineEditor from "./LineEditor";
+import ArrowEditor from "./ArrowEditor";
 
 /**
  * `Editor`の引数
@@ -22,9 +22,9 @@ const Editor: React.FC<Props> = ({ open, params, onClose }) => {
   if (!open || !params) return <></>;
   switch (params.type) {
     case "Arrow":
-      return <LineEditor params={params} onClose={onClose} />;
+      return <ArrowEditor params={params} onClose={onClose} />;
     case "Bracket":
-      return <LineEditor params={params} onClose={onClose} />;
+      return <ArrowEditor params={params} onClose={onClose} />;
     case "Chip":
       return <ChipEditor params={params} onClose={onClose} />;
     case "Marker":
@@ -34,9 +34,9 @@ const Editor: React.FC<Props> = ({ open, params, onClose }) => {
     case "PageLink":
       return <PageLinkEditor params={params} onClose={onClose} />;
     case "Polygon":
-      return <PolygonEditor params={params} onClose={onClose} />;
+      return <RectEditor params={params} onClose={onClose} />;
     case "Rect":
-      return <PolygonEditor params={params} onClose={onClose} />;
+      return <RectEditor params={params} onClose={onClose} />;
   }
 };
 
