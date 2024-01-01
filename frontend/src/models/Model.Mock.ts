@@ -192,7 +192,7 @@ export default class ModelMock implements IModel {
               type: "Note",
               x: 0.1,
               y: 0.45,
-              html: `インライン数式：$\\ddot{\\boldsymbol{x}}=100$<br/>別行立て数式👇$$\\int e^x dx$$`,
+              html: "インライン数式：$\\ddot{\\boldsymbol{x}}=100$\n別行立て数式👇\n$$\\int e^x dx$$",
             },
             /*
             {
