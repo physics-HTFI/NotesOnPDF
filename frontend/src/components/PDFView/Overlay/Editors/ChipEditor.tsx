@@ -70,7 +70,7 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
         freeSolo
         open={open}
         options={options}
-        sx={{ p: 1, width: "200px" }}
+        sx={{ width: "200px" }}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -88,7 +88,7 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
       />
       <ToggleButtonGroup
         value={type}
-        sx={{ p: 1 }}
+        sx={{ pl: 1 }}
         size="small"
         exclusive
         onChange={(_, newType: string | null) => {

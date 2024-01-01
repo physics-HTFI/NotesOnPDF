@@ -52,7 +52,7 @@ const RectEditor: React.FC<Props> = ({ params, onClose }) => {
         value={params.border === true ? "border" : "filled"}
         exclusive
         size="small"
-        sx={{ m: 1, "& *:focus": { outline: "none" } }}
+        sx={{ "& *:focus": { outline: "none" } }}
         onChange={(_, newType: string | null) => {
           if (newType === "border" || newType === "filled") {
             handleClose(newType);

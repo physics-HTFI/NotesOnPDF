@@ -33,7 +33,9 @@ const EditorBase: React.FC<Props> = ({ children, onClose }) => {
           },
         },
       }}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+      }}
     >
       <Paper
         sx={{
@@ -42,7 +44,9 @@ const EditorBase: React.FC<Props> = ({ children, onClose }) => {
           left: 0,
           transform: `translate(calc(-50% + ${mouse.pageX}px), calc(-50% + ${mouse.pageY}px))`,
           display: "flex",
+          alignItems: "center",
           cursor: "default",
+          p: 1,
         }}
         // onMouseLeave={onClose} // <Chip>のドロップダウン選択時これは呼ばれない（そのため手動で閉じる方で統一している）
         onMouseDown={(e) => {

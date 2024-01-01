@@ -38,7 +38,6 @@ const NoteEditor: React.FC<Props> = ({ params, onClose }) => {
           spellCheck: "false",
           sx: { whiteSpace: "nowrap", fontSize: "90%", width: 350 },
         }}
-        sx={{ p: 1 }}
         inputRef={(ref?: HTMLInputElement) => {
           ref?.focus();
         }}

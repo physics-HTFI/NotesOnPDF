@@ -93,7 +93,7 @@ const ArrowEditor: React.FC<Props> = ({ params, onClose }) => {
         value={params.heads ?? defaultHeads}
         exclusive
         size="small"
-        sx={{ m: 1, "& *:focus": { outline: "none" } }}
+        sx={{ "& *:focus": { outline: "none" } }}
         onChange={(_, newType: string | null) => {
           if (
             newType === "end" ||
