@@ -198,7 +198,6 @@ const PDFView: React.FC<Props> = ({
           </Document>
           <PageLabelLarge label={pageLabel} shown={reading} />
           <Overlay pageRect={pageRect} mode={mode} onEdit={setEditParams} />
-          <Palette open={paretteOpen} />
         </Container>
         <Excluded excluded={page?.excluded ?? false} />
         <PageLabelSmall label={pageLabel} />
@@ -209,6 +208,8 @@ const PDFView: React.FC<Props> = ({
           onOpenSettings={onOpenDrawer}
           onOpenFileTree={onOpenFileTree}
         />
+
+        <Palette open={paretteOpen} />
 
         {/* 編集エディター */}
         <Editor
