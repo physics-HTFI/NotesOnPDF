@@ -5,6 +5,7 @@ import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
 import Svg from "../Svg";
 import RectSvg from "../Rect";
+import { red } from "@mui/material/colors";
 
 /**
  * `PolygonEditor`の引数
@@ -40,20 +41,26 @@ const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
     width: 0.6,
     height: 0.4,
   };
+  const toggleSx = {
+    width: size,
+    height: size,
+    "&.Mui-selected, &.Mui-selected:hover": {
+      background: red[50],
+    },
+  };
   return (
     <EditorBase onClose={handleClose}>
       <ToggleButtonGroup
         value={type}
         exclusive
         size="small"
-        color="info"
         sx={{ m: 1, "& *:focus": { outline: "none" } }}
         onChange={(_, newType: string | null) => {
           if (!newType) return;
           setType(newType);
         }}
       >
-        <ToggleButton value="filled" sx={{ width: size, height: size }}>
+        <ToggleButton value="filled" sx={toggleSx}>
           <Svg pageRect={pageRect}>
             <RectSvg
               pageRect={pageRect}
@@ -64,7 +71,7 @@ const PolygonEditor: React.FC<Props> = ({ params, onClose }) => {
             />
           </Svg>
         </ToggleButton>
-        <ToggleButton value="border" sx={{ width: size, height: size }}>
+        <ToggleButton value="border" sx={toggleSx}>
           <Svg pageRect={pageRect}>
             <RectSvg
               pageRect={pageRect}

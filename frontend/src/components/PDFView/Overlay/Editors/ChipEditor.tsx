@@ -9,6 +9,7 @@ import {
 import { Chip, Notes } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
+import { blue } from "@mui/material/colors";
 
 /**
  * `notes`に含まれているチップ注釈のうち、出現回数が多い順に並べ替えて返す。
@@ -58,6 +59,11 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
     update(params, { ...params, outlined, text });
   };
 
+  const toggleSx = {
+    "&.Mui-selected, &.Mui-selected:hover": {
+      background: blue[50],
+    },
+  };
   return (
     <EditorBase onClose={handleClose}>
       <Autocomplete
@@ -89,12 +95,11 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
           if (!newType) return;
           setType(newType);
         }}
-        color="info"
       >
-        <ToggleButton value="filled">
+        <ToggleButton value="filled" sx={toggleSx}>
           <MuiChip color="primary" variant="filled" size="small" label="abc" />
         </ToggleButton>
-        <ToggleButton value="outlined">
+        <ToggleButton value="outlined" sx={toggleSx}>
           <MuiChip
             color="primary"
             variant="outlined"
