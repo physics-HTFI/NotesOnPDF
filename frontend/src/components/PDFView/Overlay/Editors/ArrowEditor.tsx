@@ -74,19 +74,13 @@ const ArrowEditor: React.FC<Props> = ({ params, onClose }) => {
       heads,
       ...getVector(params, pageRect, 0.8),
     };
-    const props = {
-      pageRect: pageRectButton,
-      mode: null,
-      onDelete: () => undefined,
-      onEdit: () => undefined,
-    };
     return (
       <ToggleButton key={heads} value={heads} sx={toggleSx}>
         <Svg pageRect={pageRectButton}>
           {line.type === "Arrow" ? (
-            <ArrowSvg {...props} params={line} />
+            <ArrowSvg pageRect={pageRectButton} params={line} />
           ) : (
-            <BracketSvg {...props} params={line} />
+            <BracketSvg pageRect={pageRectButton} params={line} />
           )}
         </Svg>
       </ToggleButton>

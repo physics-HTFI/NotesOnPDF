@@ -10,9 +10,9 @@ import { MouseContext } from "@/contexts/MouseContext";
  */
 interface Props {
   params: NoteType;
-  mode: Mode;
-  onDelete: () => void;
-  onEdit: (edit: NoteType) => void;
+  mode?: Mode;
+  onDelete?: () => void;
+  onEdit?: (edit: NoteType) => void;
 }
 
 /**
@@ -45,8 +45,8 @@ const Note: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
           e.stopPropagation();
           e.preventDefault(); // これがないと編集エディタの表示時にフォーカスが当たらない
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          if (mode === "delete") onDelete();
-          if (mode === "edit") onEdit(params);
+          if (mode === "delete") onDelete?.();
+          if (mode === "edit") onEdit?.(params);
           if (mode === "move") {
             // TODO
           }

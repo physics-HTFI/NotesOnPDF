@@ -9,9 +9,9 @@ import { MouseContext } from "@/contexts/MouseContext";
  */
 interface Props {
   params: ChipType;
-  mode: Mode;
-  onDelete: () => void;
-  onEdit: (edit: NoteType) => void;
+  mode?: Mode;
+  onDelete?: () => void;
+  onEdit?: (edit: NoteType) => void;
 }
 
 /**
@@ -40,8 +40,8 @@ const Chip: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
           if (!mode || e.button !== 0) return;
           e.stopPropagation();
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          if (mode === "delete") onDelete();
-          if (mode === "edit") onEdit(params);
+          if (mode === "delete") onDelete?.();
+          if (mode === "edit") onEdit?.(params);
           if (mode === "move") {
             // TODO
           }

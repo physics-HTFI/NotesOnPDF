@@ -8,10 +8,10 @@ import { MouseContext } from "@/contexts/MouseContext";
  */
 interface Props {
   params: PolygonType;
-  mode: Mode;
+  mode?: Mode;
   pageRect: DOMRect;
-  onDelete: () => void;
-  onEdit: (edit: NoteType) => void;
+  onDelete?: () => void;
+  onEdit?: (edit: NoteType) => void;
 }
 
 /**
@@ -45,8 +45,8 @@ const Polygon: React.FC<Props> = ({
           if (!mode || e.button !== 0) return;
           e.stopPropagation();
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          if (mode === "delete") onDelete();
-          if (mode === "edit") onEdit(params);
+          if (mode === "delete") onDelete?.();
+          if (mode === "edit") onEdit?.(params);
           if (mode === "move") {
             // TODO
           }

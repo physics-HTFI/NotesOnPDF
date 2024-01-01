@@ -15,9 +15,9 @@ import { MouseContext } from "@/contexts/MouseContext";
  */
 interface Props {
   params: PageLinkType;
-  mode: Mode;
-  onDelete: () => void;
-  onEdit: (edit: NoteType) => void;
+  mode?: Mode;
+  onDelete?: () => void;
+  onEdit?: (edit: NoteType) => void;
 }
 
 /**
@@ -57,8 +57,8 @@ const PageLink: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
             return;
           }
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          if (mode === "delete") onDelete();
-          if (mode === "edit") onEdit(params);
+          if (mode === "delete") onDelete?.();
+          if (mode === "edit") onEdit?.(params);
           if (mode === "move") {
             // TODO 移動
           }

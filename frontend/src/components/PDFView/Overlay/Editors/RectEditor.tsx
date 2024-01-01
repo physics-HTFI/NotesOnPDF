@@ -61,24 +61,12 @@ const RectEditor: React.FC<Props> = ({ params, onClose }) => {
       >
         <ToggleButton value="filled" sx={toggleSx}>
           <Svg pageRect={pageRect}>
-            <RectSvg
-              pageRect={pageRect}
-              params={rect}
-              mode={null}
-              onDelete={() => undefined}
-              onEdit={() => undefined}
-            />
+            <RectSvg pageRect={pageRect} params={rect} />
           </Svg>
         </ToggleButton>
         <ToggleButton value="border" sx={toggleSx}>
           <Svg pageRect={pageRect}>
-            <RectSvg
-              pageRect={pageRect}
-              params={{ ...rect, border: true }}
-              mode={null}
-              onDelete={() => undefined}
-              onEdit={() => undefined}
-            />
+            <RectSvg pageRect={pageRect} params={{ ...rect, border: true }} />
           </Svg>
         </ToggleButton>
       </ToggleButtonGroup>
