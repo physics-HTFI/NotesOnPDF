@@ -45,6 +45,7 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
     params.outlined ?? false ? "outlined" : "filled"
   );
   const [rawText, setRawText] = useState(params.text);
+  const [open, setOpen] = useState(false);
   const options = useMemo(() => getOptions(notes), [notes]);
 
   // 閉じたときに値を更新する
@@ -58,11 +59,12 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
   };
 
   return (
-    <EditorBase width={350} height={60} onClose={handleClose}>
+    <EditorBase onClose={handleClose}>
       <Autocomplete
         freeSolo
+        open={open}
         options={options}
-        sx={{ p: 1, width: "100%" }}
+        sx={{ p: 1, width: "200px" }}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -75,6 +77,7 @@ const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
         inputValue={rawText}
         onInputChange={(_, text) => {
           setRawText(text);
+          setOpen(text === "");
         }}
       />
       <ToggleButtonGroup

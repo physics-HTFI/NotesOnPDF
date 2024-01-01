@@ -3,7 +3,7 @@ import { TextField, Tooltip } from "@mui/material";
 import { Note } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
-import { HelpOutlineOutlined } from "@mui/icons-material";
+import { Help } from "@mui/icons-material";
 
 /**
  * `NoteEditor`の引数
@@ -18,27 +18,27 @@ interface Props {
  */
 const NoteEditor: React.FC<Props> = ({ params, onClose }) => {
   const { update } = useNotes();
-  const [text, setText] = useState(params.html.replace(/<br\/>/g, "\n"));
+  const [text, setText] = useState(params.html);
 
   // 閉じたときに値を更新する
   const handleClose = () => {
     onClose();
-    const html = text.trim().replace(/\n/g, "<br/>");
+    const html = text.trim();
     if (text === "" || text === params.html) return;
     update(params, { ...params, html });
   };
 
   return (
-    <EditorBase width={350} height={280} onClose={handleClose}>
+    <EditorBase onClose={handleClose}>
       <TextField
         value={text}
         multiline
         rows={10}
         inputProps={{
           spellCheck: "false",
-          sx: { whiteSpace: "nowrap", fontSize: "90%" },
+          sx: { whiteSpace: "nowrap", fontSize: "90%", width: 350 },
         }}
-        sx={{ p: 1, width: "100%" }}
+        sx={{ p: 1 }}
         inputRef={(ref?: HTMLInputElement) => {
           ref?.focus();
         }}
@@ -47,25 +47,27 @@ const NoteEditor: React.FC<Props> = ({ params, onClose }) => {
         }}
       />
       <Tooltip
-        disableInteractive
         enterDelay={0}
         title={
           <span>
-            ・インライン数式：$e=mc^2$
+            ・インライン数式 <code style={{ fontSize: "120%" }}>$e=mc^2$</code>
             <br />
-            ・別行立て数式：$$e=mc^2$$
+            ・別行立て数式 <code style={{ fontSize: "120%" }}>$$e=mc^2$$</code>
+            {/*
             <br />
-            ・その他、HTMLタグが使用できます。
+            ・HTMLタグも使用できます{" "}
+            <code style={{ fontSize: "120%" }}>{"<h1>タイトル</h1>"}</code>
+            */}
           </span>
         }
       >
-        <HelpOutlineOutlined
+        <Help
           sx={{
             position: "absolute",
-            right: 12,
-            bottom: 12,
+            right: 0,
+            bottom: -25,
             fontSize: "130%",
-            color: "cornflowerblue",
+            color: "white",
           }}
         />
       </Tooltip>

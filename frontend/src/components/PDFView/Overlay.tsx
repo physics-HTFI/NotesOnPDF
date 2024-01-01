@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Arrow from "./Overlay/Arrow";
 import Bracket from "./Overlay/Bracket";
 import Marker from "./Overlay/Marker";
@@ -11,7 +11,6 @@ import { MathJaxContext } from "better-react-mathjax";
 import Chip from "./Overlay/Chip";
 import { Mode } from "./SpeedDial";
 import { useNotes } from "@/hooks/useNotes";
-import Editor from "./Overlay/Editors/Editor";
 import { NoteType } from "@/types/Notes";
 
 /**
@@ -41,14 +40,14 @@ const mathjaxConfig = {
 interface Props {
   mode: Mode;
   pageRect?: DOMRect;
+  onEdit: (note: NoteType) => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
+const Overlay: React.FC<Props> = ({ mode, pageRect, onEdit }) => {
   const { notes, setNotes, pop } = useNotes();
-  const [editPrams, setEditParams] = useState<NoteType>();
   if (!notes || !setNotes || !pageRect) return <></>;
 
   const page = notes.pages[notes.currentPage];
@@ -64,7 +63,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
             onDelete: () => {
               pop(p);
             },
-            onEdit: setEditParams,
+            onEdit,
           };
           switch (p.type) {
             case "Arrow":
@@ -90,7 +89,7 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
             onDelete: () => {
               pop(p);
             },
-            onEdit: setEditParams,
+            onEdit,
           };
           switch (p.type) {
             case "Chip":
@@ -103,15 +102,6 @@ const Overlay: React.FC<Props> = ({ mode, pageRect }) => {
           return undefined;
         })}
       </MathJaxContext>
-
-      {/* 編集エディター */}
-      <Editor
-        open={Boolean(editPrams)}
-        params={editPrams}
-        onClose={() => {
-          setEditParams(undefined);
-        }}
-      />
     </>
   );
 };

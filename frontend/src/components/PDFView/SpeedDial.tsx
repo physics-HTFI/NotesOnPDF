@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import {
   Box,
   SpeedDial as MUISpeedDial,
@@ -72,15 +72,6 @@ const SpeedDial: React.FC<Props> = ({
   onOpenSettings,
 }) => {
   const [open, setOpen] = React.useState(false);
-  const modeOld = useRef(mode);
-
-  // モードを設定したときに一度SpeedDialが閉じる[1]ので、
-  // その後モードが解除されたときに再表示する。
-  // [1] 閉じておかないと編集エディタの邪魔になる（SpeedDialのほうが上にくる）。
-  useEffect(() => {
-    if (modeOld.current && !mode) setOpen(true);
-    modeOld.current = mode;
-  }, [mode]);
 
   return (
     <Box
@@ -109,22 +100,12 @@ const SpeedDial: React.FC<Props> = ({
           ariaLabel="edit"
           direction="down"
           open={open}
-          icon={
-            !mode ? (
-              <SpeedDialIcon />
-            ) : mode === "edit" ? (
-              <Edit sx={{ color: "cornflowerblue" }} />
-            ) : mode === "move" ? (
-              <OpenWith sx={{ color: "mediumseagreen" }} />
-            ) : (
-              <Delete sx={{ color: "palevioletred" }} />
-            )
-          }
+          icon={<SpeedDialIcon />}
           sx={{ mt: 1 }}
           FabProps={{
             size: "small",
             sx: {
-              bgcolor: !mode ? "silver" : "white",
+              bgcolor: "silver",
               "&:hover": {
                 bgcolor: "darkgray",
               },
@@ -161,7 +142,6 @@ const SpeedDial: React.FC<Props> = ({
             sx={{ background: mode === "edit" ? "#FDD" : undefined }}
             onClick={() => {
               setMode("edit");
-              setOpen(false);
             }}
             tooltipPlacement="right"
           />
@@ -173,7 +153,6 @@ const SpeedDial: React.FC<Props> = ({
             sx={{ background: mode === "move" ? "#FDD" : undefined }}
             onClick={() => {
               setMode("move");
-              setOpen(false);
             }}
             tooltipPlacement="right"
           />
@@ -185,7 +164,6 @@ const SpeedDial: React.FC<Props> = ({
             sx={{ background: mode === "delete" ? "#FDD" : undefined }}
             onClick={() => {
               setMode("delete");
-              setOpen(false);
             }}
             tooltipPlacement="right"
           />

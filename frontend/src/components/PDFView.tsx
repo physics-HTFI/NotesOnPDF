@@ -10,12 +10,13 @@ import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import SpeedDial, { Mode } from "./PDFView/SpeedDial";
-import { toDisplayedPage } from "@/types/Notes";
+import { NoteType, toDisplayedPage } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
 import Overlay from "./PDFView/Overlay";
 import { NotesContext } from "@/contexts/NotesContext";
 import { MouseContext } from "@/contexts/MouseContext";
+import Editor from "./PDFView/Overlay/Editors/Editor";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -77,6 +78,7 @@ const PDFView: React.FC<Props> = ({
   const [refContainer, setRefContainer] = useState<HTMLDivElement>();
   const [refPage, setRefPage] = useState<HTMLDivElement>();
   const [mode, setMode] = useState<Mode>(null);
+  const [editPrams, setEditParams] = useState<NoteType>();
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
@@ -194,7 +196,7 @@ const PDFView: React.FC<Props> = ({
             />
           </Document>
           <PageLabelLarge label={pageLabel} shown={reading} />
-          <Overlay pageRect={pageRect} mode={mode} />
+          <Overlay pageRect={pageRect} mode={mode} onEdit={setEditParams} />
           <Palette open={paretteOpen} />
         </Container>
         <Excluded excluded={page?.excluded ?? false} />
@@ -205,6 +207,15 @@ const PDFView: React.FC<Props> = ({
           openDrawer={openDrawer}
           onOpenSettings={onOpenDrawer}
           onOpenFileTree={onOpenFileTree}
+        />
+
+        {/* 編集エディター */}
+        <Editor
+          open={Boolean(editPrams)}
+          params={editPrams}
+          onClose={() => {
+            setEditParams(undefined);
+          }}
         />
       </Box>
     </MouseContext.Provider>

@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext } from "react";
-import { Paper } from "@mui/material";
+import { Modal, Paper } from "@mui/material";
 import { NotesContext } from "@/contexts/NotesContext";
 import { MouseContext } from "@/contexts/MouseContext";
 
@@ -8,50 +8,52 @@ import { MouseContext } from "@/contexts/MouseContext";
  */
 interface Props {
   children: ReactNode;
-  width: number;
-  height: number;
   onClose: () => void;
 }
 
 /**
  * 画面クリック時にポップアップする編集ダイアログ
  */
-const EditorBase: React.FC<Props> = ({ children, width, height, onClose }) => {
+const EditorBase: React.FC<Props> = ({ children, onClose }) => {
   const { notes, setNotes } = useContext(NotesContext);
-  const { mouse, pageRect } = useContext(MouseContext);
-  if (!notes || !setNotes || !mouse || !pageRect) return <></>;
+  const { mouse } = useContext(MouseContext);
+  if (!notes || !setNotes || !mouse) return <></>;
 
-  const x = (100 * (mouse.pageX - pageRect.left)) / pageRect.width;
-  const y = (100 * (mouse.pageY - pageRect.top)) / pageRect.height;
   return (
-    <Paper
-      sx={{
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        width,
-        height,
-        m: "auto",
-        transform: `translate(${-50 + x}cqw, ${-50 + y}cqh)`,
-        background: "white",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        cursor: "default",
-        zIndex: 2000, // https://mui.com/material-ui/customization/z-index/
+    <Modal
+      open
+      slotProps={{
+        backdrop: {
+          sx: { background: "#0003" },
+          onMouseDown: (e) => {
+            e.stopPropagation();
+          },
+          onWheel: (e) => {
+            e.stopPropagation();
+          },
+        },
       }}
-      onMouseLeave={onClose}
-      onMouseDown={(e) => {
-        e.stopPropagation();
-      }}
-      onWheel={(e) => {
-        e.stopPropagation();
-      }}
+      onClose={onClose}
     >
-      {children}
-    </Paper>
+      <Paper
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          transform: `translate(calc(-50% + ${mouse.pageX}px), calc(-50% + ${mouse.pageY}px))`,
+          display: "flex",
+          cursor: "default",
+        }}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+        }}
+        onWheel={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        {children}
+      </Paper>
+    </Modal>
   );
 };
 

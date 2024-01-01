@@ -39,12 +39,12 @@ const PageLinkEditor: React.FC<Props> = ({ params, onClose }) => {
 
   if (!notes || !setNotes || !page || !mouse || !pageRect) return <></>;
   return (
-    <EditorBase width={100} height={50} onClose={handleClose}>
+    <EditorBase onClose={handleClose}>
       <TextField
         variant="standard"
         defaultValue={pageNum}
         type="number"
-        sx={{ p: 1 }}
+        sx={{ p: 1, width: 80 }}
         inputRef={(ref?: HTMLInputElement) => {
           ref?.focus();
         }}

@@ -22,6 +22,9 @@ const Note: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
+  const html = params.html
+    .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
+    .replace(/\n/g, "<br/>");
   return (
     <MathJax hideUntilTypeset={"first"}>
       <Box
@@ -36,7 +39,7 @@ const Note: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
           lineHeight: 1.2,
           fontSize: "90%",
         }}
-        dangerouslySetInnerHTML={{ __html: params.html }}
+        dangerouslySetInnerHTML={{ __html: html }}
         onMouseDown={(e) => {
           if (!mode || e.button !== 0) return;
           e.stopPropagation();
