@@ -3,8 +3,8 @@ import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Rect, Polygon } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
-import Svg from "../Svg";
-import RectSvg from "../Rect";
+import Svg from "../Overlay/Svg";
+import RectSvg from "../Overlay/Rect";
 import { red } from "@mui/material/colors";
 
 /**

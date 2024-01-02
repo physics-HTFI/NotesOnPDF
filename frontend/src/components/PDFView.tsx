@@ -17,7 +17,7 @@ import Excluded from "./PDFView/Excluded";
 import Overlay from "./PDFView/Overlay";
 import { NotesContext } from "@/contexts/NotesContext";
 import { MouseContext } from "@/contexts/MouseContext";
-import Editor from "./PDFView/Overlay/Editors/Editor";
+import Editor from "./PDFView/Editor";
 import { grey } from "@mui/material/colors";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;

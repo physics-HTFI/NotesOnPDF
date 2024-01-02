@@ -3,10 +3,10 @@ import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Arrow, Bracket } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
-import Svg from "../Svg";
+import Svg from "../Overlay/Svg";
 import { red } from "@mui/material/colors";
-import ArrowSvg from "../Arrow";
-import BracketSvg from "../Bracket";
+import ArrowSvg from "../Overlay/Arrow";
+import BracketSvg from "../Overlay/Bracket";
 import { MouseContext } from "@/contexts/MouseContext";
 
 /**

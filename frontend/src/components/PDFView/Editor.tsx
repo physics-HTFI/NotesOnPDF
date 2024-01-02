@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { NoteType } from "@/types/Notes";
-import ChipEditor from "./ChipEditor";
-import RectEditor from "./RectEditor";
-import PageLinkEditor from "./PageLinkEditor";
-import NoteEditor from "./NoteEditor";
-import ArrowEditor from "./ArrowEditor";
+import ChipEditor from "./Editor/ChipEditor";
+import RectEditor from "./Editor/RectEditor";
+import PageLinkEditor from "./Editor/PageLinkEditor";
+import NoteEditor from "./Editor/NoteEditor";
+import ArrowEditor from "./Editor/ArrowEditor";
 
 /**
  * `Editor`の引数
