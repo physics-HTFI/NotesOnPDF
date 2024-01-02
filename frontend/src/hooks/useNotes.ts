@@ -11,7 +11,7 @@ export const useNotes = () => {
   /**
    * `Notes`オブジェクトの現在ページから注釈を消去する。
    */
-  const pop = (note: NoteType) => {
+  const popNote = (note: NoteType) => {
     const page = notes?.pages[notes.currentPage];
     if (!page || !setNotes) return;
     page.notes = page.notes?.filter((n) => n !== note);
@@ -23,30 +23,30 @@ export const useNotes = () => {
   /**
    * `Notes`オブジェクトの現在ページに注釈を追加する。
    */
-  const push = (note: NoteType) => {
-    const page = notes?.pages[notes.currentPage];
-    if (!page || !setNotes) return;
-    if (!page.notes) page.notes = [];
+  const pushNote = (note: NoteType) => {
+    if (!notes || !setNotes) return;
+    const page = notes.pages[notes.currentPage] ?? {};
+    page.notes ??= [];
     page.notes.push(note);
+    notes.pages[notes.currentPage] = page;
     setNotes({ ...notes });
   };
 
   /**
    * `Notes`オブジェクトの現在ページの注釈を入れ替える。
+   * `pop`がない場合は`push`の追加だけが行われる。
    */
-  const update = (pop: NoteType, push: NoteType) => {
-    const page = notes?.pages[notes.currentPage];
-    if (!page || !setNotes || !page.notes) return;
-    page.notes = page.notes.filter((n) => n !== pop);
-    page.notes.push(push);
-    setNotes({ ...notes });
+  const updateNote = (pop: NoteType, push: NoteType) => {
+    // TODO setNotesが2回呼ばれるので、2回レンダリングしている可能性がある
+    popNote(pop);
+    pushNote(push);
   };
 
   return {
     notes,
     setNotes,
-    pop,
-    push,
-    update,
+    popNote,
+    pushNote,
+    updateNote,
   };
 };

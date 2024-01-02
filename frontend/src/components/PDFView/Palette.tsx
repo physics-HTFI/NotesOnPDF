@@ -23,7 +23,7 @@ interface Props {
  */
 const Palette: FC<Props> = ({ open, onClose }) => {
   const { mouse, pageRect } = useContext(MouseContext);
-  const { notes, push } = useNotes();
+  const { notes, pushNote } = useNotes();
   const L = 50;
   const svgRect = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
   const props = (i: number) => {
@@ -68,7 +68,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(0)}
         onMouseEnter={() => {
           onClose();
-          push({
+          pushNote({
             type: "Marker",
             x1: x,
             y1: y,
@@ -96,7 +96,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(1)}
         onMouseEnter={() => {
           onClose();
-          push({
+          pushNote({
             type: "Arrow",
             x1: x,
             y1: y,
@@ -124,7 +124,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(2)}
         onMouseEnter={() => {
           onClose();
-          push({
+          pushNote({
             type: "Bracket",
             x1: x,
             y1: y,
@@ -152,7 +152,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(3)}
         onMouseEnter={() => {
           onClose();
-          push({
+          pushNote({
             type: "Note",
             x,
             y,
@@ -176,7 +176,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(4)}
         onMouseEnter={() => {
           onClose();
-          push({
+          pushNote({
             type: "Chip",
             x,
             y,
@@ -200,7 +200,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(5)}
         onMouseEnter={() => {
           onClose();
-          push({
+          pushNote({
             type: "PageLink",
             x: x,
             y: y,
@@ -225,7 +225,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(6)}
         onMouseEnter={() => {
           onClose();
-          push({
+          pushNote({
             type: "Polygon",
             points: [
               [x, y],
@@ -257,7 +257,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(7)}
         onMouseEnter={() => {
           onClose();
-          push({
+          pushNote({
             type: "Rect",
             x1: x,
             y1: y - 0.1,

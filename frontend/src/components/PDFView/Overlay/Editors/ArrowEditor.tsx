@@ -44,7 +44,7 @@ interface Props {
 const ArrowEditor: FC<Props> = ({ params, onClose }) => {
   const isArrow = params.type === "Arrow";
   const defaultHeads = isArrow ? "end" : "both";
-  const { update } = useNotes();
+  const { updateNote } = useNotes();
   const { pageRect } = useContext(MouseContext);
   if (!pageRect) return <></>;
 
@@ -54,7 +54,7 @@ const ArrowEditor: FC<Props> = ({ params, onClose }) => {
     if (!newType) return; // キャンセル時
     const heads = newType === defaultHeads ? undefined : newType;
     if (heads === params.heads) return;
-    update(params, { ...params, heads });
+    updateNote(params, { ...params, heads });
   };
 
   const size = 50;

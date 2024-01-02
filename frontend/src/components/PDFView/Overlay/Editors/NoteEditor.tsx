@@ -17,7 +17,7 @@ interface Props {
  * 注釈コメントの編集ダイアログ
  */
 const NoteEditor: FC<Props> = ({ params, onClose }) => {
-  const { update } = useNotes();
+  const { updateNote } = useNotes();
   const [text, setText] = useState(params.html);
 
   // 閉じたときに値を更新する
@@ -25,7 +25,7 @@ const NoteEditor: FC<Props> = ({ params, onClose }) => {
     onClose();
     const html = text.trim();
     if (text === "" || text === params.html) return;
-    update(params, { ...params, html });
+    updateNote(params, { ...params, html });
   };
 
   return (

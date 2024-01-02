@@ -19,7 +19,7 @@ interface Props {
  * 直方体、ポリゴンの編集ダイアログ
  */
 const RectEditor: FC<Props> = ({ params, onClose }) => {
-  const { update } = useNotes();
+  const { updateNote } = useNotes();
 
   // 閉じたときに値を更新する
   const handleClose = (newType?: "border" | "filled") => {
@@ -27,7 +27,7 @@ const RectEditor: FC<Props> = ({ params, onClose }) => {
     if (!newType) return; // キャンセル時
     const border = newType === "border" ? true : undefined;
     if (border === params.border) return;
-    update(params, { ...params, border });
+    updateNote(params, { ...params, border });
   };
 
   const size = 50;

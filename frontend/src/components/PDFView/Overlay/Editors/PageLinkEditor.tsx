@@ -17,7 +17,7 @@ interface Props {
  * ページリンクの編集ダイアログ
  */
 const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
-  const { notes, setNotes, update } = useNotes();
+  const { notes, setNotes, updateNote } = useNotes();
   const { mouse, pageRect } = useContext(MouseContext);
   const pageNum =
     toDisplayedPage(notes, params.page).pageNum ??
@@ -31,7 +31,7 @@ const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
     onClose();
     if (!notes) return;
     if (pageNum === num.current) return;
-    update(params, {
+    updateNote(params, {
       ...params,
       page: fromDisplayedPage(notes, num.current),
     });

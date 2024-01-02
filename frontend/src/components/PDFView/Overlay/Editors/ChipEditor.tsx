@@ -41,7 +41,7 @@ interface Props {
  * チップの編集ダイアログ
  */
 const ChipEditor: FC<Props> = ({ params, onClose }) => {
-  const { notes, update } = useNotes();
+  const { notes, updateNote } = useNotes();
   const [type, setType] = useState(
     params.outlined ?? false ? "outlined" : "filled"
   );
@@ -56,7 +56,7 @@ const ChipEditor: FC<Props> = ({ params, onClose }) => {
     const text = rawText.trim();
     if (outlined === params.outlined && text === params.text) return;
     if (text === "") return;
-    update(params, { ...params, outlined, text });
+    updateNote(params, { ...params, outlined, text });
   };
 
   const toggleSx = {

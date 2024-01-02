@@ -47,57 +47,50 @@ interface Props {
  * PDFビュークリック時に表示されるコントロール
  */
 const Overlay: FC<Props> = ({ mode, pageRect, onEdit }) => {
-  const { notes, setNotes, pop } = useNotes();
+  const { notes, setNotes, popNote } = useNotes();
   if (!notes || !setNotes || !pageRect) return <></>;
 
   const page = notes.pages[notes.currentPage];
+  const props = <T extends NoteType>(p: T) => ({
+    key: JSON.stringify(p),
+    mode,
+    pageRect,
+    onDelete: () => {
+      popNote(p);
+    },
+    onEdit,
+    params: p,
+  });
 
   return (
     <>
+      {/* <Svg>には<def>も含まれているので、注釈がない場合でも存在する必要がある（そうでないとSpeedDialのアイコンが消える？） */}
       <Svg pageRect={pageRect}>
         {page?.notes?.map((p) => {
-          const props = {
-            key: JSON.stringify(p),
-            mode,
-            pageRect,
-            onDelete: () => {
-              pop(p);
-            },
-            onEdit,
-          };
           switch (p.type) {
             case "Arrow":
-              return <Arrow params={p} {...props} />;
+              return <Arrow {...props(p)} />;
             case "Bracket":
-              return <Bracket params={p} {...props} />;
+              return <Bracket {...props(p)} />;
             case "Marker":
-              return <Marker params={p} {...props} />;
+              return <Marker {...props(p)} />;
             case "Polygon":
-              return <Polygon params={p} {...props} />;
+              return <Polygon {...props(p)} />;
             case "Rect":
-              return <Rect params={p} {...props} />;
+              return <Rect {...props(p)} />;
           }
           return undefined;
         })}
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
         {page?.notes?.map((p) => {
-          const props = {
-            key: JSON.stringify(p),
-            mode,
-            pageRect,
-            onDelete: () => {
-              pop(p);
-            },
-            onEdit,
-          };
           switch (p.type) {
             case "Chip":
-              return <Chip params={p} {...props} />;
+              return <Chip {...props(p)} />;
             case "Note":
-              return <Note params={p} {...props} />;
+              return <Note {...props(p)} />;
             case "PageLink":
-              return <PageLink params={p} {...props} />;
+              return <PageLink {...props(p)} />;
           }
           return undefined;
         })}
