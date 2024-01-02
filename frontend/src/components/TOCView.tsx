@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { FC, useContext } from "react";
 import { Box, Drawer, IconButton } from "@mui/material";
 import { Notes } from "@/types/Notes";
 import Settings from "./TOCView/Settings";
@@ -18,7 +18,7 @@ interface Props {
 /**
  * 目次を表示するコンポーネント
  */
-const TOCView: React.FC<Props> = ({ openDrawer, onCloseDrawer }) => {
+const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const handleChanged = (notes: Notes) => {
     setNotes?.(notes);

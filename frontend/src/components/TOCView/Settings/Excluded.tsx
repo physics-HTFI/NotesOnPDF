@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
 
 /**
@@ -12,7 +12,7 @@ interface Props {
 /**
  * ページを除外するかを決めるコンポーネント
  */
-const Excluded: React.FC<Props> = ({ excluded, onChange }) => {
+const Excluded: FC<Props> = ({ excluded, onChange }) => {
   return (
     <Tooltip title="このページを灰色にします" disableInteractive>
       <FormControlLabel

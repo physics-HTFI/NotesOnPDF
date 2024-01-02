@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { FC, useRef } from "react";
 import { Box, Divider, IconButton, Tooltip } from "@mui/material";
 import { FolderOpen, GitHub, Language, MenuBook } from "@mui/icons-material";
 import OpenUrlDialog from "./OpenUrlDialog";
@@ -13,7 +13,7 @@ interface Props {
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
-const IconButtons: React.FC<Props> = ({ onOpenFile }) => {
+const IconButtons: FC<Props> = ({ onOpenFile }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (

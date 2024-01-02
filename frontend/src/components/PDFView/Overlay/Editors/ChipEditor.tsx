@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import {
   Autocomplete,
   Chip as MuiChip,
@@ -40,7 +40,7 @@ interface Props {
 /**
  * チップの編集ダイアログ
  */
-const ChipEditor: React.FC<Props> = ({ params, onClose }) => {
+const ChipEditor: FC<Props> = ({ params, onClose }) => {
   const { notes, update } = useNotes();
   const [type, setType] = useState(
     params.outlined ?? false ? "outlined" : "filled"

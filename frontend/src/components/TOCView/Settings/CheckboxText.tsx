@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import {
   Box,
   FormControlLabel,
@@ -23,7 +23,7 @@ interface Props {
  * ☑ラベル ________
  * という形のコンポーネント
  */
-const CheckboxText: React.FC<Props> = ({
+const CheckboxText: FC<Props> = ({
   label,
   tooltip,
   text,

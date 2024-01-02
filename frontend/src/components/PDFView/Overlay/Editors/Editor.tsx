@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { NoteType } from "@/types/Notes";
 import ChipEditor from "./ChipEditor";
 import RectEditor from "./RectEditor";
@@ -18,7 +18,7 @@ interface Props {
 /**
  * 編集ダイアログ
  */
-const Editor: React.FC<Props> = ({ open, params, onClose }) => {
+const Editor: FC<Props> = ({ open, params, onClose }) => {
   if (!open || !params) return <></>;
   switch (params.type) {
     case "Arrow":

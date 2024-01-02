@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext } from "react";
+import { FC, ReactNode, useContext } from "react";
 import { Modal, Paper } from "@mui/material";
 import { NotesContext } from "@/contexts/NotesContext";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -14,7 +14,7 @@ interface Props {
 /**
  * 画面クリック時にポップアップする編集ダイアログ
  */
-const EditorBase: React.FC<Props> = ({ children, onClose }) => {
+const EditorBase: FC<Props> = ({ children, onClose }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const { mouse } = useContext(MouseContext);
   if (!notes || !setNotes || !mouse) return <></>;

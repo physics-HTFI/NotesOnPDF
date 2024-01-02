@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
@@ -18,7 +18,7 @@ interface Props {
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Note: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
+const Note: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";

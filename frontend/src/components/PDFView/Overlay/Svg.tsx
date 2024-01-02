@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { FC, ReactNode } from "react";
 
 /**
  * `Svg`の引数
@@ -11,7 +11,7 @@ interface Props {
 /**
  * `Overlay.tsx`で使用する<svg>要素
  */
-const Svg: React.FC<Props> = ({ pageRect, children }) => (
+const Svg: FC<Props> = ({ pageRect, children }) => (
   <svg
     viewBox={`0 0 ${pageRect.width} ${pageRect.height}`}
     style={{

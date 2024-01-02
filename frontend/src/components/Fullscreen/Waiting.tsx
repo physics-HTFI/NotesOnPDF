@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { Backdrop, CircularProgress } from "@mui/material";
 
 /**
@@ -11,7 +11,7 @@ interface Props {
 /**
  * 処理中を表すモーダル表示
  */
-const Waiting: React.FC<Props> = ({ isWaiting }) => {
+const Waiting: FC<Props> = ({ isWaiting }) => {
   return (
     <Backdrop
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

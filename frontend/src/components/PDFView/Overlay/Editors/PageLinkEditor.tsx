@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import { FC, useContext, useRef } from "react";
 import { TextField } from "@mui/material";
 import { PageLink, fromDisplayedPage, toDisplayedPage } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -16,7 +16,7 @@ interface Props {
 /**
  * ページリンクの編集ダイアログ
  */
-const PageLinkEditor: React.FC<Props> = ({ params, onClose }) => {
+const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
   const { notes, setNotes, update } = useNotes();
   const { mouse, pageRect } = useContext(MouseContext);
   const pageNum =

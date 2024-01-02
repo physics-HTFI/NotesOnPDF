@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { Chip } from "@mui/material";
 
 /**
@@ -11,7 +11,7 @@ interface Props {
 /**
  * 画面隅のページ数表示コンポーネント
  */
-const PageLabelSmall: React.FC<Props> = ({ label }) => (
+const PageLabelSmall: FC<Props> = ({ label }) => (
   <Chip
     sx={{
       position: "absolute",

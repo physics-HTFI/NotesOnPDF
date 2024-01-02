@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { Box } from "@mui/material";
 
 /**
@@ -11,7 +11,7 @@ interface Props {
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Excluded: React.FC<Props> = ({ excluded }) => {
+const Excluded: FC<Props> = ({ excluded }) => {
   return (
     excluded && (
       <Box

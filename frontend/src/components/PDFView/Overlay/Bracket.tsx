@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Bracket as Bracket, NoteType } from "@/types/Notes";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -17,13 +17,7 @@ interface Props {
 /**
  * 括弧
  */
-const Bracket: React.FC<Props> = ({
-  params,
-  mode,
-  pageRect,
-  onDelete,
-  onEdit,
-}) => {
+const Bracket: FC<Props> = ({ params, mode, pageRect, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const x1 = params.x1 * pageRect.width;

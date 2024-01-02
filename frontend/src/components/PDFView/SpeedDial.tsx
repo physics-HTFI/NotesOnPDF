@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, useState } from "react";
 import {
   Box,
   SpeedDial as MUISpeedDial,
@@ -65,14 +65,14 @@ interface Props {
 /**
  * 目次の右上に表示されるボタンコントロール
  */
-const SpeedDial: React.FC<Props> = ({
+const SpeedDial: FC<Props> = ({
   mode,
   setMode,
   openDrawer,
   onOpenFileTree,
   onOpenSettings,
 }) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <Box

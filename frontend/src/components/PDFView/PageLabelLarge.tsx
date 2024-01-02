@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { Box } from "@mui/material";
 
 /**
@@ -12,7 +12,7 @@ interface Props {
 /**
  * 画面中央のページ数表示コンポーネント
  */
-const PageLabelLarge: React.FC<Props> = ({ label, shown }) =>
+const PageLabelLarge: FC<Props> = ({ label, shown }) =>
   shown && (
     <Box
       sx={{

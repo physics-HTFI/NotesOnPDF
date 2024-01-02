@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
 import {
@@ -23,7 +23,7 @@ interface Props {
 /**
  * ページへのリンク
  */
-const PageLink: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
+const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const { setMouse } = useContext(MouseContext);
   const { pageLabel } = toDisplayedPage(notes, params.page);

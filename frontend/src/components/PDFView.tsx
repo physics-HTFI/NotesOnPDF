@@ -1,4 +1,5 @@
-import React, {
+import {
+  FC,
   useCallback,
   useContext,
   useEffect,
@@ -65,7 +66,7 @@ interface Props {
 /**
  * PDFを表示するコンポーネント
  */
-const PDFView: React.FC<Props> = ({
+const PDFView: FC<Props> = ({
   file,
   openDrawer,
   onLoadError,

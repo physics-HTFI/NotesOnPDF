@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -19,7 +19,7 @@ interface Props {
 /**
  * URLを指定するダイアログ
  */
-const OpenUrlDialog: React.FC<Props> = ({ open, onClose }) => {
+const OpenUrlDialog: FC<Props> = ({ open, onClose }) => {
   const [url, setURL] = useState("");
   const [disabled, setDisabled] = useState(true);
 

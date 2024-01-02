@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
 import { Marker as MarkerType, NoteType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -17,13 +17,7 @@ interface Props {
 /**
  * 黄色いマーカー
  */
-const Marker: React.FC<Props> = ({
-  params,
-  mode,
-  pageRect,
-  onDelete,
-  onEdit,
-}) => {
+const Marker: FC<Props> = ({ params, mode, pageRect, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";

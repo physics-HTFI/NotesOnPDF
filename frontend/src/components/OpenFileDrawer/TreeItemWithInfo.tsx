@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { alpha, styled } from "@mui/material/styles";
 import { Box, Tooltip, Typography } from "@mui/material";
 import { TreeItem, TreeItemProps, treeItemClasses } from "@mui/x-tree-view";
@@ -25,7 +26,7 @@ interface Props extends TreeItemProps {
 /**
  * `TreeItem`の右端に進捗バーとツールチップを表示できるようにしたもの
  */
-const TreeItemWithInfo: React.FC<Props> = (props: Props) => {
+const TreeItemWithInfo: FC<Props> = (props: Props) => {
   const { label, progress, ...other } = props;
 
   // 進捗

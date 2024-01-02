@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Drawer } from "@mui/material";
 import { Progresses } from "@/types/Progresses";
 import IModel from "@/models/IModel";
@@ -24,7 +24,7 @@ interface Props {
 /**
  * ファイル一覧を表示するドロワー
  */
-const OpenFileDrawer: React.FC<Props> = ({
+const OpenFileDrawer: FC<Props> = ({
   open,
   progresses,
   model,
@@ -77,7 +77,7 @@ const OpenFileDrawer: React.FC<Props> = ({
       }}
     >
       <IconButtons
-        onOpenFile={(file) => {
+        onOpenFile={(file: string | File) => {
           onSelect(file);
         }}
       />

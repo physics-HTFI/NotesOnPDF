@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
@@ -12,8 +12,8 @@ interface Props {
 /**
  * モックモデルを使用していることを示すポップアップ表示
  */
-const SnackbarsMock: React.FC<Props> = ({ open }) => {
-  const [openLocal, setOpenLocal] = React.useState(open);
+const SnackbarsMock: FC<Props> = ({ open }) => {
+  const [openLocal, setOpenLocal] = useState(open);
 
   const handleClose = () => {
     setOpenLocal(false);

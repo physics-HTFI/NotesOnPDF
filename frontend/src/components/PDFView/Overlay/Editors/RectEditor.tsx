@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Rect, Polygon } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
@@ -18,7 +18,7 @@ interface Props {
 /**
  * 直方体、ポリゴンの編集ダイアログ
  */
-const RectEditor: React.FC<Props> = ({ params, onClose }) => {
+const RectEditor: FC<Props> = ({ params, onClose }) => {
   const { update } = useNotes();
 
   // 閉じたときに値を更新する

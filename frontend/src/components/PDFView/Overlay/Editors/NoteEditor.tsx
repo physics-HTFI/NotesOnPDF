@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { FC, useState } from "react";
 import { TextField, Tooltip } from "@mui/material";
 import { Note } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
@@ -16,7 +16,7 @@ interface Props {
 /**
  * 注釈コメントの編集ダイアログ
  */
-const NoteEditor: React.FC<Props> = ({ params, onClose }) => {
+const NoteEditor: FC<Props> = ({ params, onClose }) => {
   const { update } = useNotes();
   const [text, setText] = useState(params.html);
 

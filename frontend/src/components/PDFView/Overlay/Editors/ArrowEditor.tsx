@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { FC, useContext } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Arrow, Bracket } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
@@ -41,7 +41,7 @@ interface Props {
 /**
  * Arrow, Bracketの編集ダイアログ
  */
-const ArrowEditor: React.FC<Props> = ({ params, onClose }) => {
+const ArrowEditor: FC<Props> = ({ params, onClose }) => {
   const isArrow = params.type === "Arrow";
   const defaultHeads = isArrow ? "end" : "both";
   const { update } = useNotes();

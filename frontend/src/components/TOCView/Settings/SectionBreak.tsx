@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import {
   Box,
   FormControlLabel,
@@ -19,7 +19,7 @@ interface Props {
 /**
  * 節区切りを設定するコンポーネント
  */
-const SectionBreak: React.FC<Props> = ({
+const SectionBreak: FC<Props> = ({
   sectionBreak,
   sectionBreakInner,
   onChange,

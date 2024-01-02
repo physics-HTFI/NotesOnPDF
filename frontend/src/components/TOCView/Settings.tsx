@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 import { Page, Settings } from "@/types/Notes";
 import CheckboxText from "./Settings/CheckboxText";
@@ -11,7 +11,7 @@ import { NotesContext } from "@/contexts/NotesContext";
 /**
  * 設定パネル
  */
-const Settings: React.FC = () => {
+const Settings: FC = () => {
   const [tab, setTab] = useState(0);
   const { notes, setNotes, pdfPath } = useContext(NotesContext);
   if (!notes || !setNotes || !pdfPath) return <></>;

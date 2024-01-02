@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
 import { NoteType, Rect as RectType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -17,13 +17,7 @@ interface Props {
 /**
  * 長方形
  */
-const Rect: React.FC<Props> = ({
-  params,
-  mode,
-  pageRect,
-  onDelete,
-  onEdit,
-}) => {
+const Rect: FC<Props> = ({ params, mode, pageRect, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";

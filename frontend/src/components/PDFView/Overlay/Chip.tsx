@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
 import { Chip as ChipType, NoteType } from "@/types/Notes";
@@ -17,7 +17,7 @@ interface Props {
 /**
  * チップ
  */
-const Chip: React.FC<Props> = ({ params, mode, onDelete, onEdit }) => {
+const Chip: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const outlined = params.outlined ?? false;

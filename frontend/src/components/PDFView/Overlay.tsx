@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import Arrow from "./Overlay/Arrow";
 import Bracket from "./Overlay/Bracket";
 import Marker from "./Overlay/Marker";
@@ -46,7 +46,7 @@ interface Props {
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Overlay: React.FC<Props> = ({ mode, pageRect, onEdit }) => {
+const Overlay: FC<Props> = ({ mode, pageRect, onEdit }) => {
   const { notes, setNotes, pop } = useNotes();
   if (!notes || !setNotes || !pageRect) return <></>;
 

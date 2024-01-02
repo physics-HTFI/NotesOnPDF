@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { FC, useContext } from "react";
 import { Box, Chip, Paper } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
 import Arrow from "./Overlay/Arrow";
@@ -19,7 +19,7 @@ interface Props {
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Palette: React.FC<Props> = ({ open }) => {
+const Palette: FC<Props> = ({ open }) => {
   const { mouse } = useContext(MouseContext);
   const L = 50;
   const svgRect = new DOMRect(0, 0, 1.5 * L, 1.5 * L);

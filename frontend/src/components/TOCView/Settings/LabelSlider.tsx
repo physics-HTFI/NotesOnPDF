@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { Box, Slider, Typography } from "@mui/material";
 
 /**
@@ -13,7 +13,7 @@ interface Props {
 /**
  * ラベル付きスライダーのコンポーネント
  */
-const LabelSlider: React.FC<Props> = ({ label, value, onChange }) => {
+const LabelSlider: FC<Props> = ({ label, value, onChange }) => {
   return (
     <Box sx={{ display: "flex", "&:first-of-type": { mb: 1 } }}>
       <Typography variant="button" sx={{ whiteSpace: "nowrap", pr: 2 }}>

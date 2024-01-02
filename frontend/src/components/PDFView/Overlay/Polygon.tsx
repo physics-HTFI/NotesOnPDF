@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
 import { NoteType, Polygon as PolygonType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -17,13 +17,7 @@ interface Props {
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Polygon: React.FC<Props> = ({
-  params,
-  mode,
-  pageRect,
-  onDelete,
-  onEdit,
-}) => {
+const Polygon: FC<Props> = ({ params, mode, pageRect, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";

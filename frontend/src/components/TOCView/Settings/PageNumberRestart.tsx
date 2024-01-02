@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import {
   Box,
   FormControlLabel,
@@ -19,7 +19,7 @@ interface Props {
 /**
  * ページ番号を設定するコンポーネント
  */
-const PageNumberRestart: React.FC<Props> = ({
+const PageNumberRestart: FC<Props> = ({
   pageNumberRestart,
   preferredPageNumber,
   onChange,
