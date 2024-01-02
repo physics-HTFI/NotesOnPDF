@@ -6,12 +6,13 @@ import { FC, ReactNode } from "react";
 interface Props {
   pageRect: DOMRect;
   children: ReactNode;
+  noPointerEvents?: boolean;
 }
 
 /**
  * <svg>要素
  */
-const Svg: FC<Props> = ({ pageRect, children }) => (
+const Svg: FC<Props> = ({ pageRect, children, noPointerEvents }) => (
   <svg
     viewBox={`0 0 ${pageRect.width} ${pageRect.height}`}
     style={{
@@ -21,6 +22,7 @@ const Svg: FC<Props> = ({ pageRect, children }) => (
       left: 0,
       top: 0,
       overflow: "visible",
+      pointerEvents: noPointerEvents ? "none" : undefined,
     }}
   >
     {children}
