@@ -22,22 +22,24 @@ interface Props {
 const Palette: React.FC<Props> = ({ open }) => {
   const { mouse } = useContext(MouseContext);
   const L = 50;
-  const props = {
-    position: "absolute",
-    width: L,
-    height: L,
-    top: L,
-    left: L,
-    borderRadius: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  };
-  const translate = (i: number) => {
+  const svgRect = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
+  const props = (i: number) => {
     const Θ = (2 * Math.PI) / 8;
-    return `translate(${Math.cos(i * Θ) * L}px, ${Math.sin(i * Θ) * L}px)`;
+    return {
+      position: "absolute",
+      width: L,
+      height: L,
+      top: L,
+      left: L,
+      borderRadius: "100%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      transform: `translate(${Math.cos(i * Θ) * L}px, ${
+        Math.sin(i * Θ) * L
+      }px)`,
+    };
   };
-  const pageRect = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
 
   if (!mouse || !open) return <></>;
   return (
@@ -54,10 +56,10 @@ const Palette: React.FC<Props> = ({ open }) => {
         zIndex: 1050, // SpeedDialより手前にする：https://mui.com/material-ui/customization/z-index/
       }}
     >
-      <Box sx={{ ...props, transform: translate(0) }}>
-        <Svg pageRect={pageRect}>
+      <Box sx={props(0)}>
+        <Svg pageRect={svgRect}>
           <Marker
-            pageRect={pageRect}
+            pageRect={svgRect}
             params={{
               type: "Marker",
               x1: 0.2,
@@ -70,10 +72,10 @@ const Palette: React.FC<Props> = ({ open }) => {
       </Box>
 
       {/* Arrow */}
-      <Box sx={{ ...props, transform: translate(1) }}>
-        <Svg pageRect={pageRect}>
+      <Box sx={props(1)}>
+        <Svg pageRect={svgRect}>
           <Arrow
-            pageRect={pageRect}
+            pageRect={svgRect}
             params={{
               type: "Arrow",
               x1: 0.3,
@@ -86,10 +88,10 @@ const Palette: React.FC<Props> = ({ open }) => {
       </Box>
 
       {/* Bracket */}
-      <Box sx={{ ...props, transform: translate(2) }}>
-        <Svg pageRect={pageRect}>
+      <Box sx={props(2)}>
+        <Svg pageRect={svgRect}>
           <Bracket
-            pageRect={pageRect}
+            pageRect={svgRect}
             params={{
               type: "Bracket",
               x1: 0.5,
@@ -102,7 +104,7 @@ const Palette: React.FC<Props> = ({ open }) => {
       </Box>
 
       {/* Note */}
-      <Box sx={{ ...props, transform: translate(3) }}>
+      <Box sx={props(3)}>
         <Box
           sx={{
             color: "red",
@@ -115,20 +117,20 @@ const Palette: React.FC<Props> = ({ open }) => {
       </Box>
 
       {/* Chip */}
-      <Box sx={{ ...props, transform: translate(4) }}>
+      <Box sx={props(4)}>
         <Chip
           sx={{
             fontSize: "75%",
             transform: "scale(80%)",
           }}
           color="primary"
-          label="ABCDE"
+          label="ABC"
           size="small"
         />
       </Box>
 
       {/* PageLink */}
-      <Box sx={{ ...props, transform: translate(5) }}>
+      <Box sx={props(5)}>
         <Chip
           sx={{
             fontSize: "75%",
@@ -136,16 +138,16 @@ const Palette: React.FC<Props> = ({ open }) => {
           }}
           color="success"
           icon={<Shortcut />}
-          label="p. 1"
+          label="p."
           size="small"
         />
       </Box>
 
       {/* Polygon */}
-      <Box sx={{ ...props, transform: translate(6) }}>
-        <Svg pageRect={pageRect}>
+      <Box sx={props(6)}>
+        <Svg pageRect={svgRect}>
           <Polygon
-            pageRect={pageRect}
+            pageRect={svgRect}
             params={{
               type: "Polygon",
               points: [
@@ -160,10 +162,10 @@ const Palette: React.FC<Props> = ({ open }) => {
       </Box>
 
       {/* Rect */}
-      <Box sx={{ ...props, transform: translate(7) }}>
-        <Svg pageRect={pageRect}>
+      <Box sx={props(7)}>
+        <Svg pageRect={svgRect}>
           <Rect
-            pageRect={pageRect}
+            pageRect={svgRect}
             params={{
               type: "Rect",
               x1: 0.25,
