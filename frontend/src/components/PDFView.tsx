@@ -200,6 +200,7 @@ const PDFView: FC<Props> = ({
           <PageLabelLarge label={pageLabel} shown={reading} />
           <Overlay pageRect={pageRect} mode={mode} onEdit={setEditParams} />
         </Container>
+
         <Excluded excluded={page?.excluded ?? false} />
         <PageLabelSmall label={pageLabel} />
         <SpeedDial
@@ -209,10 +210,7 @@ const PDFView: FC<Props> = ({
           onOpenSettings={onOpenDrawer}
           onOpenFileTree={onOpenFileTree}
         />
-
         <Palette open={paretteOpen} />
-
-        {/* 編集エディター */}
         <Editor
           open={Boolean(editPrams)}
           params={editPrams}
