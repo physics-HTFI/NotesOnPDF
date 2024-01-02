@@ -215,6 +215,7 @@ const PDFView: FC<Props> = ({
           onClose={() => {
             setParetteOpen(false);
           }}
+          onEdit={setEditParams}
         />
         <Editor
           open={Boolean(editPrams)}

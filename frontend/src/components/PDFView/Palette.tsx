@@ -9,6 +9,7 @@ import Rect from "./Overlay/Rect";
 import Polygon from "./Overlay/Polygon";
 import { Shortcut } from "@mui/icons-material";
 import { useNotes } from "@/hooks/useNotes";
+import { NoteType } from "@/types/Notes";
 
 /**
  * `Palette`の引数
@@ -16,12 +17,13 @@ import { useNotes } from "@/hooks/useNotes";
 interface Props {
   open: boolean;
   onClose: () => void;
+  onEdit: (note: NoteType) => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Palette: FC<Props> = ({ open, onClose }) => {
+const Palette: FC<Props> = ({ open, onClose, onEdit }) => {
   const { mouse, pageRect } = useContext(MouseContext);
   const { notes, pushNote } = useNotes();
   const L = 50;
@@ -152,11 +154,11 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(3)}
         onMouseEnter={() => {
           onClose();
-          pushNote({
+          onEdit({
             type: "Note",
             x,
             y,
-            html: "example",
+            html: "",
           });
         }}
       >
@@ -176,11 +178,11 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(4)}
         onMouseEnter={() => {
           onClose();
-          pushNote({
+          onEdit({
             type: "Chip",
             x,
             y,
-            text: "チップ",
+            text: "",
           });
         }}
       >
@@ -200,7 +202,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
         sx={props(5)}
         onMouseEnter={() => {
           onClose();
-          pushNote({
+          onEdit({
             type: "PageLink",
             x: x,
             y: y,

@@ -46,14 +46,14 @@ const ChipEditor: FC<Props> = ({ params, onClose }) => {
     params.outlined ?? false ? "outlined" : "filled"
   );
   const [rawText, setRawText] = useState(params.text);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(params.text === "");
   const options = useMemo(() => getOptions(notes), [notes]);
 
   // 閉じたときに値を更新する
-  const handleClose = () => {
+  const handleClose = (newText?: string) => {
     onClose();
     const outlined = type === "outlined" ? true : undefined;
-    const text = rawText.trim();
+    const text = newText ?? rawText.trim();
     if (outlined === params.outlined && text === params.text) return;
     if (text === "") return;
     updateNote(params, { ...params, outlined, text });
@@ -81,9 +81,14 @@ const ChipEditor: FC<Props> = ({ params, onClose }) => {
           />
         )}
         inputValue={rawText}
-        onInputChange={(_, text) => {
-          setRawText(text);
-          setOpen(text === "");
+        onInputChange={(_, value) => {
+          // この関数はテキストボックスが変更されたときに呼ばれる
+          setRawText(value);
+          setOpen(value === "");
+        }}
+        onChange={(_, value, reason) => {
+          // この関数は選択されたときに呼ばれる
+          if (value && reason === "selectOption") handleClose(value);
         }}
       />
       <ToggleButtonGroup
