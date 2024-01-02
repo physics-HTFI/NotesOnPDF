@@ -12,6 +12,7 @@ import Chip from "./Overlay/Chip";
 import { Mode } from "./SpeedDial";
 import { useNotes } from "@/hooks/useNotes";
 import { NoteType } from "@/types/Notes";
+import SvgDefs from "./Overlay/SvgDefs";
 
 /**
  * 数式表示のコンフィグ
@@ -62,11 +63,12 @@ const Overlay: FC<Props> = ({ mode, pageRect, onEdit }) => {
     params: p,
   });
 
+  if (!page?.notes) return <SvgDefs />;
   return (
     <>
-      {/* <Svg>には<def>も含まれているので、注釈がない場合でも存在する必要がある（そうでないとSpeedDialのアイコンが消える？） */}
+      <SvgDefs />
       <Svg pageRect={pageRect}>
-        {page?.notes?.map((p) => {
+        {page.notes.map((p) => {
           switch (p.type) {
             case "Arrow":
               return <Arrow {...props(p)} />;
@@ -83,7 +85,7 @@ const Overlay: FC<Props> = ({ mode, pageRect, onEdit }) => {
         })}
       </Svg>
       <MathJaxContext version={3} config={mathjaxConfig}>
-        {page?.notes?.map((p) => {
+        {page.notes.map((p) => {
           switch (p.type) {
             case "Chip":
               return <Chip {...props(p)} />;
