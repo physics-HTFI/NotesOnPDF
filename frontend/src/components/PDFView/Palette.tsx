@@ -8,23 +8,27 @@ import Marker from "./Overlay/Marker";
 import Rect from "./Overlay/Rect";
 import Polygon from "./Overlay/Polygon";
 import { Shortcut } from "@mui/icons-material";
+import { useNotes } from "@/hooks/useNotes";
 
 /**
  * `Palette`の引数
  */
 interface Props {
   open: boolean;
+  onClose: () => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Palette: FC<Props> = ({ open }) => {
-  const { mouse } = useContext(MouseContext);
+const Palette: FC<Props> = ({ open, onClose }) => {
+  const { mouse, pageRect } = useContext(MouseContext);
+  const { notes, push } = useNotes();
   const L = 50;
   const svgRect = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
   const props = (i: number) => {
-    const Θ = (2 * Math.PI) / 8;
+    const iMax = 8;
+    const Θ = (2 * Math.PI) / iMax;
     return {
       position: "absolute",
       width: L,
@@ -40,8 +44,11 @@ const Palette: FC<Props> = ({ open }) => {
       }px)`,
     };
   };
-
-  if (!mouse || !open) return <></>;
+  if (!mouse || !pageRect || !notes || !open) return <></>;
+  const [x, y] = [
+    (mouse.pageX - pageRect.x) / pageRect.width,
+    (mouse.pageY - pageRect.y) / pageRect.height,
+  ];
   return (
     <Paper
       elevation={3}
@@ -56,7 +63,20 @@ const Palette: FC<Props> = ({ open }) => {
         zIndex: 1050, // SpeedDialより手前にする：https://mui.com/material-ui/customization/z-index/
       }}
     >
-      <Box sx={props(0)}>
+      {/* Marker */}
+      <Box
+        sx={props(0)}
+        onMouseEnter={() => {
+          onClose();
+          push({
+            type: "Marker",
+            x1: x,
+            y1: y,
+            x2: x + 0.1,
+            y2: y,
+          });
+        }}
+      >
         <Svg pageRect={svgRect}>
           <Marker
             pageRect={svgRect}
@@ -72,7 +92,19 @@ const Palette: FC<Props> = ({ open }) => {
       </Box>
 
       {/* Arrow */}
-      <Box sx={props(1)}>
+      <Box
+        sx={props(1)}
+        onMouseEnter={() => {
+          onClose();
+          push({
+            type: "Arrow",
+            x1: x,
+            y1: y,
+            x2: x + 0.1,
+            y2: y + 0.1,
+          });
+        }}
+      >
         <Svg pageRect={svgRect}>
           <Arrow
             pageRect={svgRect}
@@ -88,7 +120,19 @@ const Palette: FC<Props> = ({ open }) => {
       </Box>
 
       {/* Bracket */}
-      <Box sx={props(2)}>
+      <Box
+        sx={props(2)}
+        onMouseEnter={() => {
+          onClose();
+          push({
+            type: "Bracket",
+            x1: x,
+            y1: y,
+            x2: x,
+            y2: y + 0.1,
+          });
+        }}
+      >
         <Svg pageRect={svgRect}>
           <Bracket
             pageRect={svgRect}
@@ -104,7 +148,18 @@ const Palette: FC<Props> = ({ open }) => {
       </Box>
 
       {/* Note */}
-      <Box sx={props(3)}>
+      <Box
+        sx={props(3)}
+        onMouseEnter={() => {
+          onClose();
+          push({
+            type: "Note",
+            x,
+            y,
+            html: "example",
+          });
+        }}
+      >
         <Box
           sx={{
             color: "red",
@@ -117,7 +172,18 @@ const Palette: FC<Props> = ({ open }) => {
       </Box>
 
       {/* Chip */}
-      <Box sx={props(4)}>
+      <Box
+        sx={props(4)}
+        onMouseEnter={() => {
+          onClose();
+          push({
+            type: "Chip",
+            x,
+            y,
+            text: "チップ",
+          });
+        }}
+      >
         <Chip
           sx={{
             fontSize: "75%",
@@ -130,7 +196,18 @@ const Palette: FC<Props> = ({ open }) => {
       </Box>
 
       {/* PageLink */}
-      <Box sx={props(5)}>
+      <Box
+        sx={props(5)}
+        onMouseEnter={() => {
+          onClose();
+          push({
+            type: "PageLink",
+            x: x,
+            y: y,
+            page: notes.currentPage,
+          });
+        }}
+      >
         <Chip
           sx={{
             fontSize: "75%",
@@ -144,7 +221,21 @@ const Palette: FC<Props> = ({ open }) => {
       </Box>
 
       {/* Polygon */}
-      <Box sx={props(6)}>
+      <Box
+        sx={props(6)}
+        onMouseEnter={() => {
+          onClose();
+          push({
+            type: "Polygon",
+            points: [
+              [x, y],
+              [x + 0.1, y],
+              [x + 0.08, y - 0.03],
+              [x + 0.04, y - 0.05],
+            ],
+          });
+        }}
+      >
         <Svg pageRect={svgRect}>
           <Polygon
             pageRect={svgRect}
@@ -162,7 +253,19 @@ const Palette: FC<Props> = ({ open }) => {
       </Box>
 
       {/* Rect */}
-      <Box sx={props(7)}>
+      <Box
+        sx={props(7)}
+        onMouseEnter={() => {
+          onClose();
+          push({
+            type: "Rect",
+            x1: x,
+            y1: y - 0.1,
+            x2: x + 0.1,
+            y2: y,
+          });
+        }}
+      >
         <Svg pageRect={svgRect}>
           <Rect
             pageRect={svgRect}

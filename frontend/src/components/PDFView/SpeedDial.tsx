@@ -142,7 +142,7 @@ const SpeedDial: FC<Props> = ({
             icon={<Edit sx={{ color: "cornflowerblue" }} />}
             sx={{ background: mode === "edit" ? red[100] : undefined }}
             onClick={() => {
-              setMode("edit");
+              setMode(mode !== "edit" ? "edit" : null);
             }}
             tooltipPlacement="right"
           />
@@ -153,7 +153,7 @@ const SpeedDial: FC<Props> = ({
             icon={<OpenWith sx={{ color: "mediumseagreen" }} />}
             sx={{ background: mode === "move" ? red[100] : undefined }}
             onClick={() => {
-              setMode("move");
+              setMode(mode !== "move" ? "move" : null);
             }}
             tooltipPlacement="right"
           />
@@ -164,7 +164,7 @@ const SpeedDial: FC<Props> = ({
             icon={<Delete sx={{ color: "palevioletred" }} />}
             sx={{ background: mode === "delete" ? red[100] : undefined }}
             onClick={() => {
-              setMode("delete");
+              setMode(mode !== "delete" ? "delete" : null);
             }}
             tooltipPlacement="right"
           />

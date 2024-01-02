@@ -20,7 +20,8 @@ interface Props {
 const Marker: FC<Props> = ({ params, mode, pageRect, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
-  const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
+  const cursor =
+    !mode || mode === "edit" ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <line
       x1={params.x1 * pageRect.width}
