@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
@@ -20,7 +20,6 @@ interface Props {
  */
 const Note: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
   const { setMouse } = useContext(MouseContext);
-  const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   const html = params.html
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
@@ -34,7 +33,7 @@ const Note: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
           top: `${100 * params.y}%`,
           color: "red",
           cursor: cursor,
-          opacity: hover ? 0.5 : 1,
+          "&:hover": { opacity: 0.5 },
           background: "#FFFc",
           lineHeight: 1.2,
           fontSize: "90%",
@@ -50,12 +49,6 @@ const Note: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
           if (mode === "move") {
             // TODO
           }
-        }}
-        onMouseEnter={() => {
-          setHover(!!cursor);
-        }}
-        onMouseLeave={() => {
-          setHover(false);
         }}
       />
     </MathJax>

@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
 import {
@@ -27,7 +27,6 @@ const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const { setMouse } = useContext(MouseContext);
   const { pageLabel } = toDisplayedPage(notes, params.page);
-  const [hover, setHover] = useState(false);
   const cursor = mode === "move" ? "move" : "pointer";
   if (!notes || !setNotes) return <></>;
   return (
@@ -38,7 +37,7 @@ const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
           left: `${100 * params.x}%`,
           top: `${100 * params.y}%`,
           cursor: cursor,
-          opacity: hover ? 0.5 : 1,
+          "&:hover": { opacity: 0.5 },
           fontSize: "75%",
         }}
         color="success"
@@ -62,12 +61,6 @@ const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
           if (mode === "move") {
             // TODO 移動
           }
-        }}
-        onMouseEnter={() => {
-          setHover(true);
-        }}
-        onMouseLeave={() => {
-          setHover(false);
         }}
       />
     </>
