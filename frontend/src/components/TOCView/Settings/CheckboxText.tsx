@@ -56,7 +56,7 @@ const CheckboxText: FC<Props> = ({
         InputProps={{
           sx: {
             fontSize: "140%",
-            visibility: checked ? "visible" : "hidden",
+            visibility: checked ? undefined : "hidden",
             height: 30,
             width: "auto",
             flexGrow: 1,

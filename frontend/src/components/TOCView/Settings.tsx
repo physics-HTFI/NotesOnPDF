@@ -1,5 +1,5 @@
 import { FC, useContext, useState } from "react";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, IconButton, Tab, Tabs } from "@mui/material";
 import { Page, Settings } from "@/types/Notes";
 import CheckboxText from "./Settings/CheckboxText";
 import SectionBreak from "./Settings/SectionBreak";
@@ -7,11 +7,16 @@ import Excluded from "./Settings/Excluded";
 import PageNumberRestart from "./Settings/PageNumberRestart";
 import LabelSlider from "./Settings/LabelSlider";
 import { NotesContext } from "@/contexts/NotesContext";
+import { ExpandMore } from "@mui/icons-material";
+
+interface Props {
+  onClose: () => void;
+}
 
 /**
  * 設定パネル
  */
-const Settings: FC = () => {
+const Settings: FC<Props> = ({ onClose }) => {
   const [tab, setTab] = useState(0);
   const { notes, setNotes, pdfPath } = useContext(NotesContext);
   if (!notes || !setNotes || !pdfPath) return <></>;
@@ -52,6 +57,18 @@ const Settings: FC = () => {
 
   return (
     <Box sx={{ width: "100%", fontSize: "80%" }}>
+      <IconButton
+        sx={{
+          position: "absolute",
+          right: 0,
+          top: "-35px",
+        }}
+        onClick={onClose}
+        size="small"
+      >
+        <ExpandMore />
+      </IconButton>
+
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={tab}
@@ -60,7 +77,7 @@ const Settings: FC = () => {
           }}
         >
           <Tab label="ページ設定" />
-          <Tab label="PDF設定" />
+          <Tab label="ファイル設定" />
         </Tabs>
       </Box>
 

@@ -1,10 +1,9 @@
 import { FC, useContext } from "react";
-import { Box, Drawer, IconButton } from "@mui/material";
+import { Box, Drawer } from "@mui/material";
 import { Notes } from "@/types/Notes";
 import Settings from "./TOCView/Settings";
 import getTOCData from "./TOCView/getTOCData";
 import { NotesContext } from "@/contexts/NotesContext";
-import { ExpandMore } from "@mui/icons-material";
 import { grey } from "@mui/material/colors";
 
 /**
@@ -48,25 +47,14 @@ const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
           sx: {
             position: "absolute",
             borderRadius: "10px 10px 0 0",
-            overflow: "visible",
+            overflow: "hidden",
           },
         }}
         onWheel={(e) => {
           e.stopPropagation();
         }}
       >
-        <Settings />
-        <IconButton
-          sx={{
-            position: "absolute",
-            right: 0,
-            top: "-35px",
-          }}
-          onClick={onCloseDrawer}
-          size="small"
-        >
-          <ExpandMore />
-        </IconButton>
+        <Settings onClose={onCloseDrawer} />
       </Drawer>
     </Box>
   );
