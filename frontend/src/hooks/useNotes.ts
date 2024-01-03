@@ -45,6 +45,7 @@ export const useNotes = () => {
   return {
     notes,
     setNotes,
+    page: notes?.pages[notes.currentPage],
     popNote,
     pushNote,
     updateNote,

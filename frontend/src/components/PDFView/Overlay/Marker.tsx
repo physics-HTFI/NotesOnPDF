@@ -12,12 +12,20 @@ interface Props {
   pageRect: DOMRect;
   onDelete?: () => void;
   onEdit?: (edit: NoteType) => void;
+  onMove?: (edit: NoteType) => void;
 }
 
 /**
  * 黄色いマーカー
  */
-const Marker: FC<Props> = ({ params, mode, pageRect, onDelete, onEdit }) => {
+const Marker: FC<Props> = ({
+  params,
+  mode,
+  pageRect,
+  onDelete,
+  onEdit,
+  onMove,
+}) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor =
@@ -37,12 +45,11 @@ const Marker: FC<Props> = ({ params, mode, pageRect, onDelete, onEdit }) => {
       onMouseDown={(e) => {
         if (!mode || e.button !== 0) return;
         e.stopPropagation();
+        e.preventDefault();
         setMouse?.({ pageX: e.pageX, pageY: e.pageY });
         if (mode === "delete") onDelete?.();
         if (mode === "edit") onEdit?.(params);
-        if (mode === "move") {
-          // TODO
-        }
+        if (mode === "move") onMove?.(params);
       }}
       onMouseEnter={() => {
         setHover(!!cursor);

@@ -12,12 +12,20 @@ interface Props {
   pageRect: DOMRect;
   onDelete?: () => void;
   onEdit?: (edit: NoteType) => void;
+  onMove?: (edit: NoteType) => void;
 }
 
 /**
  * 矢印などの直線
  */
-const Arrow: FC<Props> = ({ params, mode, pageRect, onDelete, onEdit }) => {
+const Arrow: FC<Props> = ({
+  params,
+  mode,
+  pageRect,
+  onDelete,
+  onEdit,
+  onMove,
+}) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const x1 = params.x1 * pageRect.width;
@@ -35,12 +43,11 @@ const Arrow: FC<Props> = ({ params, mode, pageRect, onDelete, onEdit }) => {
       onMouseDown={(e) => {
         if (!mode || e.button !== 0) return;
         e.stopPropagation();
+        e.preventDefault(); // これがないと、この要素を起点にドラッグすると、ほかの要素の文字列が選択されてしまう
         setMouse?.({ pageX: e.pageX, pageY: e.pageY });
         if (mode === "delete") onDelete?.();
         if (mode === "edit") onEdit?.(params);
-        if (mode === "move") {
-          // TODO
-        }
+        if (mode === "move") onMove?.(params);
       }}
       onMouseEnter={() => {
         setHover(!!cursor);

@@ -1,11 +1,4 @@
-import {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { Box, Container } from "@mui/material";
 import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
@@ -15,15 +8,38 @@ import { NoteType, toDisplayedPage } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
 import Overlay from "./PDFView/Overlay";
-import { NotesContext } from "@/contexts/NotesContext";
 import { MouseContext } from "@/contexts/MouseContext";
 import Editor from "./PDFView/Editor";
 import { grey } from "@mui/material/colors";
+import { MathJaxContext } from "better-react-mathjax";
+import Move from "./PDFView/Move";
+import { useNotes } from "@/hooks/useNotes";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
   cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
   standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts`,
+};
+
+/**
+ * 数式表示のコンフィグ
+ */
+const mathjaxConfig = {
+  loader: { load: ["[tex]/html"] },
+  tex: {
+    packages: { "[+]": ["html"] },
+    inlineMath: [
+      ["$", "$"],
+      ["\\(", "\\)"],
+    ],
+    displayMath: [
+      ["$$", "$$"],
+      ["\\[", "\\]"],
+    ],
+  },
+  options: {
+    enableMenu: false,
+  },
 };
 
 /** [width, height, deltaY（＝view中心とPDF中心の差）] */
@@ -80,12 +96,13 @@ const PDFView: FC<Props> = ({
   const [refContainer, setRefContainer] = useState<HTMLDivElement>();
   const [refPage, setRefPage] = useState<HTMLDivElement>();
   const [mode, setMode] = useState<Mode>(null);
-  const [editPrams, setEditParams] = useState<NoteType>();
+  const [editNote, setEditNote] = useState<NoteType>();
+  const [moveNote, setMoveNote] = useState<NoteType>();
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const { notes } = useContext(NotesContext);
+  const { notes, updateNote } = useNotes();
   const [width, height, top, bottom] =
     notes?.currentPage === undefined
       ? [undefined, undefined]
@@ -125,6 +142,7 @@ const PDFView: FC<Props> = ({
         ref={getContainerRect}
         onMouseDown={(e) => {
           e.preventDefault();
+          if (e.button !== 0) return;
           if (!pageRect) return;
           setMode(null);
           if (mode) return;
@@ -141,65 +159,83 @@ const PDFView: FC<Props> = ({
           e.preventDefault();
         }}
       >
-        <Container
-          sx={{
-            width,
-            height,
-            position: "absolute",
-            top,
-            bottom,
-            left: 0,
-            right: 0,
-            margin: "auto",
-            containerType: "size",
-          }}
-          disableGutters
-          ref={getPageRect}
-        >
-          <Document
-            file={
-              file instanceof File
-                ? file
-                : `${import.meta.env.VITE_PDF_ROOT}${file}`
-            }
-            onLoadSuccess={(doc) => {
-              if (!file) return;
-              onLoadSuccess?.(doc.numPages);
-              const getsizes = async () => {
-                sizes.current = [];
-                for (let i = 0; i < doc.numPages; i++) {
-                  const page = await doc.getPage(i + 1);
-                  const [width, height] = [
-                    page.view[2] ?? 0,
-                    page.view[3] ?? 0,
-                  ];
-                  sizes.current.push({ width, height });
-                }
-              };
-              getsizes().catch(() => undefined);
+        <MathJaxContext version={3} config={mathjaxConfig}>
+          <Container
+            sx={{
+              width,
+              height,
+              position: "absolute",
+              top,
+              bottom,
+              left: 0,
+              right: 0,
+              margin: "auto",
+              containerType: "size",
             }}
-            onLoadError={onLoadError}
-            options={options}
-            error={""}
-            loading={""}
-            noData={""}
+            disableGutters
+            ref={getPageRect}
           >
-            <PDFPage
-              pageIndex={notes?.currentPage}
-              width={width}
+            <Document
+              file={
+                file instanceof File
+                  ? file
+                  : `${import.meta.env.VITE_PDF_ROOT}${file}`
+              }
+              onLoadSuccess={(doc) => {
+                if (!file) return;
+                onLoadSuccess?.(doc.numPages);
+                const getsizes = async () => {
+                  sizes.current = [];
+                  for (let i = 0; i < doc.numPages; i++) {
+                    const page = await doc.getPage(i + 1);
+                    const [width, height] = [
+                      page.view[2] ?? 0,
+                      page.view[3] ?? 0,
+                    ];
+                    sizes.current.push({ width, height });
+                  }
+                };
+                getsizes().catch(() => undefined);
+              }}
+              onLoadError={onLoadError}
+              options={options}
               error={""}
               loading={""}
               noData={""}
-              renderAnnotationLayer={false}
-              renderTextLayer={false}
-              onRenderSuccess={() => {
-                setReading(false);
+            >
+              <PDFPage
+                pageIndex={notes?.currentPage}
+                width={width}
+                error={""}
+                loading={""}
+                noData={""}
+                renderAnnotationLayer={false}
+                renderTextLayer={false}
+                onRenderSuccess={() => {
+                  setReading(false);
+                }}
+              />
+            </Document>
+            <PageLabelLarge label={pageLabel} shown={reading} />
+            <Overlay
+              pageRect={pageRect}
+              mode={mode}
+              moveNote={moveNote}
+              onEdit={setEditNote}
+              onMove={setMoveNote}
+            />
+            <Move
+              params={moveNote}
+              mouse={mouse}
+              pageRect={pageRect}
+              onClose={(note) => {
+                setMoveNote(undefined);
+                if (!moveNote || !note) return;
+                updateNote(moveNote, note);
               }}
             />
-          </Document>
-          <PageLabelLarge label={pageLabel} shown={reading} />
-          <Overlay pageRect={pageRect} mode={mode} onEdit={setEditParams} />
-        </Container>
+          </Container>
+        </MathJaxContext>
 
         <Excluded excluded={(!mode && page?.excluded) ?? false} />
         <PageLabelSmall label={pageLabel} />
@@ -215,13 +251,13 @@ const PDFView: FC<Props> = ({
           onClose={() => {
             setParetteOpen(false);
           }}
-          onEdit={setEditParams}
+          onEdit={setEditNote}
         />
         <Editor
-          open={Boolean(editPrams)}
-          params={editPrams}
+          open={Boolean(editNote)}
+          params={editNote}
           onClose={() => {
-            setEditParams(undefined);
+            setEditNote(undefined);
           }}
         />
       </Box>

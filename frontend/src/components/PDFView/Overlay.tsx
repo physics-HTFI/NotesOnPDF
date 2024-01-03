@@ -7,7 +7,6 @@ import PageLink from "./Overlay/PageLink";
 import Rect from "./Overlay/Rect";
 import Polygon from "./Overlay/Polygon";
 import Svg from "./Overlay/Svg";
-import { MathJaxContext } from "better-react-mathjax";
 import Chip from "./Overlay/Chip";
 import { Mode } from "./SpeedDial";
 import { useNotes } from "@/hooks/useNotes";
@@ -15,43 +14,23 @@ import { NoteType } from "@/types/Notes";
 import SvgDefs from "./Overlay/SvgDefs";
 
 /**
- * 数式表示のコンフィグ
- */
-const mathjaxConfig = {
-  loader: { load: ["[tex]/html"] },
-  tex: {
-    packages: { "[+]": ["html"] },
-    inlineMath: [
-      ["$", "$"],
-      ["\\(", "\\)"],
-    ],
-    displayMath: [
-      ["$$", "$$"],
-      ["\\[", "\\]"],
-    ],
-  },
-  options: {
-    enableMenu: false,
-  },
-};
-
-/**
  * `Overlay`の引数
  */
 interface Props {
   mode: Mode;
   pageRect?: DOMRect;
+  moveNote?: NoteType;
   onEdit: (note: NoteType) => void;
+  onMove: (note: NoteType) => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Overlay: FC<Props> = ({ mode, pageRect, onEdit }) => {
-  const { notes, setNotes, popNote } = useNotes();
-  if (!notes || !setNotes || !pageRect) return <></>;
+const Overlay: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
+  const { page, setNotes, popNote } = useNotes();
+  if (!page?.notes || !setNotes || !pageRect) return <SvgDefs />;
 
-  const page = notes.pages[notes.currentPage];
   const props = <T extends NoteType>(p: T) => ({
     key: JSON.stringify(p),
     mode,
@@ -60,15 +39,16 @@ const Overlay: FC<Props> = ({ mode, pageRect, onEdit }) => {
       popNote(p);
     },
     onEdit,
+    onMove,
     params: p,
   });
 
-  if (!page?.notes) return <SvgDefs />;
+  const notes = page.notes.filter((n) => n !== moveNote);
   return (
     <>
       <SvgDefs />
       <Svg pageRect={pageRect}>
-        {page.notes.map((p) => {
+        {notes.map((p) => {
           switch (p.type) {
             case "Arrow":
               return <Arrow {...props(p)} />;
@@ -84,19 +64,17 @@ const Overlay: FC<Props> = ({ mode, pageRect, onEdit }) => {
           return undefined;
         })}
       </Svg>
-      <MathJaxContext version={3} config={mathjaxConfig}>
-        {page.notes.map((p) => {
-          switch (p.type) {
-            case "Chip":
-              return <Chip {...props(p)} />;
-            case "Note":
-              return <Note {...props(p)} />;
-            case "PageLink":
-              return <PageLink {...props(p)} />;
-          }
-          return undefined;
-        })}
-      </MathJaxContext>
+      {notes.map((p) => {
+        switch (p.type) {
+          case "Chip":
+            return <Chip {...props(p)} />;
+          case "Note":
+            return <Note {...props(p)} />;
+          case "PageLink":
+            return <PageLink {...props(p)} />;
+        }
+        return undefined;
+      })}
     </>
   );
 };

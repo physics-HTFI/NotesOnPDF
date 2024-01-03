@@ -13,12 +13,13 @@ interface Props {
   mode?: Mode;
   onDelete?: () => void;
   onEdit?: (edit: NoteType) => void;
+  onMove?: (edit: NoteType) => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Note: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
+const Note: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
   const { setMouse } = useContext(MouseContext);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   const html = params.html
@@ -46,9 +47,7 @@ const Note: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
           if (mode === "delete") onDelete?.();
           if (mode === "edit") onEdit?.(params);
-          if (mode === "move") {
-            // TODO
-          }
+          if (mode === "move") onMove?.(params);
         }}
       />
     </MathJax>

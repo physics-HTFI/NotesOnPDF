@@ -18,12 +18,13 @@ interface Props {
   mode?: Mode;
   onDelete?: () => void;
   onEdit?: (edit: NoteType) => void;
+  onMove?: (edit: NoteType) => void;
 }
 
 /**
  * ページへのリンク
  */
-const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
+const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
   const { notes, setNotes } = useContext(NotesContext);
   const { setMouse } = useContext(MouseContext);
   const { pageLabel } = toDisplayedPage(notes, params.page);
@@ -58,9 +59,7 @@ const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit }) => {
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
           if (mode === "delete") onDelete?.();
           if (mode === "edit") onEdit?.(params);
-          if (mode === "move") {
-            // TODO 移動
-          }
+          if (mode === "move") onMove?.(params);
         }}
       />
     </>
