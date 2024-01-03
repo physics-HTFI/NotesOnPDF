@@ -33,10 +33,10 @@ const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
           top: `${100 * params.y}%`,
           color: "red",
           cursor: cursor,
-          opacity: hover ? 0.5 : 1,
           lineHeight: 1.2,
           fontSize: "80%",
-          // background: "#FFFc",
+          background: hover ? "#F881" : undefined,
+          whiteSpace: "nowrap", // 画面右端においたときに改行するのを防ぐ
         }}
         dangerouslySetInnerHTML={{ __html: html }}
         onMouseDown={(e) => {

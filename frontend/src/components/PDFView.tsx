@@ -151,11 +151,21 @@ const PDFView: FC<Props> = ({
     setReading(true);
   }, [notes?.currentPage]);
 
+  const base = grey[300];
+  const stripe = !mode
+    ? base
+    : mode === "edit"
+    ? "#e0e0f8"
+    : mode === "move"
+    ? "#e0e4e0"
+    : "#e8e0e0";
+
   return (
     <MouseContext.Provider value={{ mouse, setMouse, pageRect }}>
       <Box
         sx={{
-          background: grey[300],
+          //background: grey[300],
+          background: `repeating-linear-gradient(-60deg, ${stripe}, ${stripe} 5px, ${base} 5px, ${base} 10px)`,
           height: "100vh",
           overflow: "hidden",
           position: "relative",
