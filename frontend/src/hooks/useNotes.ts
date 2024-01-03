@@ -37,6 +37,7 @@ export const useNotes = () => {
    * `pop`がない場合は`push`の追加だけが行われる。
    */
   const updateNote = (pop: NoteType, push: NoteType) => {
+    if (JSON.stringify(pop) === JSON.stringify(push)) return;
     // TODO setNotesが2回呼ばれるので、2回レンダリングしている可能性がある
     popNote(pop);
     pushNote(push);

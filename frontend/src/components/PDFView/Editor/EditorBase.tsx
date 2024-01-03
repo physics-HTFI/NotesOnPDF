@@ -48,7 +48,6 @@ const EditorBase: FC<Props> = ({ children, onClose }) => {
           cursor: "default",
           p: 1,
         }}
-        // onMouseLeave={onClose} // <Chip>のドロップダウン選択時これは呼ばれない（そのため手動で閉じる方で統一している）
         onMouseDown={(e) => {
           e.stopPropagation();
         }}
