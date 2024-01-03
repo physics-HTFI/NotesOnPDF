@@ -1,6 +1,6 @@
 import { FC, useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
-import { NoteType, Polygon as PolygonType } from "@/types/Notes";
+import { Polygon as PolygonType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
 
 /**
@@ -10,22 +10,13 @@ interface Props {
   params: PolygonType;
   mode?: Mode;
   pageRect: DOMRect;
-  onDelete?: () => void;
-  onEdit?: (edit: NoteType) => void;
-  onMove?: (edit: NoteType) => void;
+  onMouseDown?: () => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Polygon: FC<Props> = ({
-  params,
-  mode,
-  pageRect,
-  onDelete,
-  onEdit,
-  onMove,
-}) => {
+const Polygon: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
@@ -48,9 +39,7 @@ const Polygon: FC<Props> = ({
           e.stopPropagation();
           e.preventDefault();
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          if (mode === "delete") onDelete?.();
-          if (mode === "edit") onEdit?.(params);
-          if (mode === "move") onMove?.(params);
+          onMouseDown?.();
         }}
         onMouseEnter={() => {
           setHover(!!cursor);

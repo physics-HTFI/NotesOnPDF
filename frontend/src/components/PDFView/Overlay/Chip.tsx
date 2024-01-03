@@ -1,7 +1,7 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useState } from "react";
 import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
-import { Chip as ChipType, NoteType } from "@/types/Notes";
+import { Chip as ChipType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
 
 /**
@@ -10,15 +10,14 @@ import { MouseContext } from "@/contexts/MouseContext";
 interface Props {
   params: ChipType;
   mode?: Mode;
-  onDelete?: () => void;
-  onEdit?: (edit: NoteType) => void;
-  onMove?: (edit: NoteType) => void;
+  onMouseDown?: () => void;
 }
 
 /**
  * チップ
  */
-const Chip: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
+const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
+  const [hover, setHover] = useState(false);
   const { setMouse } = useContext(MouseContext);
   const outlined = params.outlined ?? false;
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
@@ -29,7 +28,7 @@ const Chip: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
         left: `${100 * params.x}%`,
         top: `${100 * params.y}%`,
         cursor: cursor,
-        "&:hover": { opacity: 0.5 },
+        opacity: hover ? 0.5 : 1,
         fontSize: "75%",
       }}
       color="primary"
@@ -41,9 +40,13 @@ const Chip: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
         e.stopPropagation();
         e.preventDefault();
         setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-        if (mode === "delete") onDelete?.();
-        if (mode === "edit") onEdit?.(params);
-        if (mode === "move") onMove?.(params);
+        onMouseDown?.();
+      }}
+      onMouseEnter={() => {
+        setHover(!!cursor);
+      }}
+      onMouseLeave={() => {
+        setHover(false);
       }}
     />
   );

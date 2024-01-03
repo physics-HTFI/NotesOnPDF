@@ -1,6 +1,6 @@
 import { FC, useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
-import { NoteType, Rect as RectType } from "@/types/Notes";
+import { Rect as RectType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
 
 /**
@@ -10,22 +10,13 @@ interface Props {
   params: RectType;
   mode?: Mode;
   pageRect: DOMRect;
-  onDelete?: () => void;
-  onEdit?: (edit: NoteType) => void;
-  onMove?: (edit: NoteType) => void;
+  onMouseDown?: () => void;
 }
 
 /**
  * 長方形
  */
-const Rect: FC<Props> = ({
-  params,
-  mode,
-  pageRect,
-  onDelete,
-  onEdit,
-  onMove,
-}) => {
+const Rect: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
@@ -48,9 +39,7 @@ const Rect: FC<Props> = ({
           e.stopPropagation();
           e.preventDefault();
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          if (mode === "delete") onDelete?.();
-          if (mode === "edit") onEdit?.(params);
-          if (mode === "move") onMove?.(params);
+          onMouseDown?.();
         }}
         onMouseEnter={() => {
           setHover(!!cursor);

@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
@@ -11,15 +11,14 @@ import { MouseContext } from "@/contexts/MouseContext";
 interface Props {
   params: NoteType;
   mode?: Mode;
-  onDelete?: () => void;
-  onEdit?: (edit: NoteType) => void;
-  onMove?: (edit: NoteType) => void;
+  onMouseDown?: () => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Note: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
+const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
+  const [hover, setHover] = useState(false);
   const { setMouse } = useContext(MouseContext);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   const html = params.html
@@ -34,7 +33,7 @@ const Note: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
           top: `${100 * params.y}%`,
           color: "red",
           cursor: cursor,
-          "&:hover": { opacity: 0.5 },
+          opacity: hover ? 0.5 : 1,
           lineHeight: 1.2,
           fontSize: "80%",
           // background: "#FFFc",
@@ -45,9 +44,13 @@ const Note: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
           e.stopPropagation();
           e.preventDefault(); // これがないと編集エディタの表示時にフォーカスが当たらない
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          if (mode === "delete") onDelete?.();
-          if (mode === "edit") onEdit?.(params);
-          if (mode === "move") onMove?.(params);
+          onMouseDown?.();
+        }}
+        onMouseEnter={() => {
+          setHover(!!cursor);
+        }}
+        onMouseLeave={() => {
+          setHover(false);
         }}
       />
     </MathJax>

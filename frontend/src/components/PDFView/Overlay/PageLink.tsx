@@ -1,11 +1,7 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
-import {
-  NoteType,
-  PageLink as PageLinkType,
-  toDisplayedPage,
-} from "@/types/Notes";
+import { PageLink as PageLinkType, toDisplayedPage } from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -16,15 +12,14 @@ import { MouseContext } from "@/contexts/MouseContext";
 interface Props {
   params: PageLinkType;
   mode?: Mode;
-  onDelete?: () => void;
-  onEdit?: (edit: NoteType) => void;
-  onMove?: (edit: NoteType) => void;
+  onMouseDown?: () => void;
 }
 
 /**
  * ページへのリンク
  */
-const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
+const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
+  const [hover, setHover] = useState(false);
   const { notes, setNotes } = useContext(NotesContext);
   const { setMouse } = useContext(MouseContext);
   const { pageLabel } = toDisplayedPage(notes, params.page);
@@ -38,7 +33,8 @@ const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
           left: `${100 * params.x}%`,
           top: `${100 * params.y}%`,
           cursor: cursor,
-          "&:hover": { opacity: 0.5 },
+          opacity: mode && hover ? 0.5 : 1,
+          background: !mode && hover ? "mediumseagreen" : "green",
           fontSize: "75%",
         }}
         color="success"
@@ -57,9 +53,13 @@ const PageLink: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
             return;
           }
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          if (mode === "delete") onDelete?.();
-          if (mode === "edit") onEdit?.(params);
-          if (mode === "move") onMove?.(params);
+          onMouseDown?.();
+        }}
+        onMouseEnter={() => {
+          setHover(!!cursor);
+        }}
+        onMouseLeave={() => {
+          setHover(false);
         }}
       />
     </>

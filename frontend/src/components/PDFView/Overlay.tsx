@@ -35,11 +35,11 @@ const Overlay: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
     key: JSON.stringify(p),
     mode,
     pageRect,
-    onDelete: () => {
-      popNote(p);
+    onMouseDown: () => {
+      if (mode === "edit") onEdit(p);
+      if (mode === "move") onMove(p);
+      if (mode === "delete") popNote(p);
     },
-    onEdit,
-    onMove,
     params: p,
   });
 

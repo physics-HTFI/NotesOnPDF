@@ -1,4 +1,4 @@
-import { Arrow as ArrowType, NoteType } from "@/types/Notes";
+import { Arrow as ArrowType } from "@/types/Notes";
 import { FC, useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -10,22 +10,13 @@ interface Props {
   params: ArrowType;
   mode?: Mode;
   pageRect: DOMRect;
-  onDelete?: () => void;
-  onEdit?: (edit: NoteType) => void;
-  onMove?: (edit: NoteType) => void;
+  onMouseDown?: () => void;
 }
 
 /**
  * 矢印などの直線
  */
-const Arrow: FC<Props> = ({
-  params,
-  mode,
-  pageRect,
-  onDelete,
-  onEdit,
-  onMove,
-}) => {
+const Arrow: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const x1 = params.x1 * pageRect.width;
@@ -45,9 +36,7 @@ const Arrow: FC<Props> = ({
         e.stopPropagation();
         e.preventDefault(); // これがないと、この要素を起点にドラッグすると、ほかの要素の文字列が選択されてしまう
         setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-        if (mode === "delete") onDelete?.();
-        if (mode === "edit") onEdit?.(params);
-        if (mode === "move") onMove?.(params);
+        onMouseDown?.();
       }}
       onMouseEnter={() => {
         setHover(!!cursor);
