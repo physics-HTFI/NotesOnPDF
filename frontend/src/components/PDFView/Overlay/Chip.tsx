@@ -30,6 +30,7 @@ const Chip: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
         top: `${100 * params.y}%`,
         cursor: cursor,
         "&:hover": { opacity: 0.5 },
+        fontSize: "75%",
       }}
       color="primary"
       variant={outlined ? "outlined" : undefined}

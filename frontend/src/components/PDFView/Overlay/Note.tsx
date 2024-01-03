@@ -35,9 +35,9 @@ const Note: FC<Props> = ({ params, mode, onDelete, onEdit, onMove }) => {
           color: "red",
           cursor: cursor,
           "&:hover": { opacity: 0.5 },
-          background: "#FFFc",
           lineHeight: 1.2,
-          fontSize: "90%",
+          fontSize: "80%",
+          // background: "#FFFc",
         }}
         dangerouslySetInnerHTML={{ __html: html }}
         onMouseDown={(e) => {
