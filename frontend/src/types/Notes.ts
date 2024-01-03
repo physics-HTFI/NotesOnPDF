@@ -73,6 +73,12 @@ export interface Rect {
   y2: number;
   border?: boolean; // TODO Chipに合わせて"outlined"のほうが良い?
 }
+/** ノード位置編集時のマーカー */
+export interface Node {
+  type: "Node";
+  target: Arrow | Bracket | Marker | Polygon | Rect;
+  index: number;
+}
 
 /**
  * 1つのページに追加された全ての情報

@@ -4,7 +4,7 @@ import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import SpeedDial, { Mode } from "./PDFView/SpeedDial";
-import { NoteType, toDisplayedPage } from "@/types/Notes";
+import { Node, NoteType, toDisplayedPage } from "@/types/Notes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
 import Overlay from "./PDFView/Overlay";
@@ -119,7 +119,7 @@ const PDFView: FC<Props> = ({
   const [refPage, setRefPage] = useState<HTMLDivElement>();
   const [mode, setMode] = useState<Mode>(null);
   const [editNote, setEditNote] = useState<NoteType>();
-  const [moveNote, setMoveNote] = useState<NoteType>();
+  const [moveNote, setMoveNote] = useState<NoteType | Node>();
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
@@ -262,7 +262,10 @@ const PDFView: FC<Props> = ({
               onClose={(note) => {
                 setMoveNote(undefined);
                 if (!moveNote || !note) return;
-                updateNote(moveNote, note);
+                updateNote(
+                  moveNote.type === "Node" ? moveNote.target : moveNote,
+                  note
+                );
               }}
             />
           </Container>

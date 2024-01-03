@@ -31,7 +31,7 @@ const Marker: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
         stroke: "yellow",
         opacity: hover ? 0.3 : 0.5,
         strokeWidth: "8",
-        cursor: cursor,
+        cursor,
       }}
       onMouseDown={(e) => {
         if (!mode || e.button !== 0) return;

@@ -27,7 +27,7 @@ const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
         position: "absolute",
         left: `${100 * params.x}%`,
         top: `${100 * params.y}%`,
-        cursor: cursor,
+        cursor,
         opacity: hover ? 0.5 : 1,
         fontSize: "75%",
       }}

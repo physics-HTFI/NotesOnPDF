@@ -32,7 +32,7 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
           position: "absolute",
           left: `${100 * params.x}%`,
           top: `${100 * params.y}%`,
-          cursor: cursor,
+          cursor,
           opacity: mode && hover ? 0.5 : 1,
           background: !mode && hover ? "mediumseagreen" : "green",
           fontSize: "75%",

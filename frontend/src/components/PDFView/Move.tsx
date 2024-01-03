@@ -8,14 +8,14 @@ import Rect from "./Overlay/Rect";
 import Polygon from "./Overlay/Polygon";
 import Svg from "./Overlay/Svg";
 import Chip from "./Overlay/Chip";
-import { NoteType } from "@/types/Notes";
+import { Node, NoteType } from "@/types/Notes";
 import { Box } from "@mui/material";
 
 /**
  * `Move`の引数
  */
 interface Props {
-  params?: NoteType;
+  params?: NoteType | Node;
   mouse: { pageX: number; pageY: number };
   pageRect?: DOMRect;
   onClose: (note?: NoteType) => void;
@@ -64,7 +64,7 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
       (xy.pageX - mouse.pageX) / pageRect.width,
       (xy.pageY - mouse.pageY) / pageRect.height,
     ];
-    const newParams = { ...params };
+    const newParams: NoteType | Node = { ...params };
     switch (newParams.type) {
       case "Chip":
       case "Note":
@@ -84,6 +84,9 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
       case "Polygon":
         newParams.points = newParams.points.map((p) => [p[0] + dx, p[1] + dy]);
         break;
+      case "Node":
+        onClose(); // TODO
+        return;
     }
     onClose(newParams);
   };

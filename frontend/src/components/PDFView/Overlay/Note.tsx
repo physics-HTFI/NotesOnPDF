@@ -32,7 +32,7 @@ const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
           left: `${100 * params.x}%`,
           top: `${100 * params.y}%`,
           color: "red",
-          cursor: cursor,
+          cursor,
           lineHeight: 1.2,
           fontSize: "80%",
           background: hover ? "#F881" : undefined,

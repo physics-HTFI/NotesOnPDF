@@ -28,9 +28,7 @@ const Bracket: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
     <g
-      style={{
-        cursor: cursor,
-      }}
+      style={{ cursor }}
       onMouseDown={(e) => {
         if (!mode || e.button !== 0) return;
         e.stopPropagation();

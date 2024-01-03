@@ -10,8 +10,9 @@ import Svg from "./Overlay/Svg";
 import Chip from "./Overlay/Chip";
 import { Mode } from "./SpeedDial";
 import { useNotes } from "@/hooks/useNotes";
-import { NoteType } from "@/types/Notes";
+import { Node as NodeType, NoteType } from "@/types/Notes";
 import SvgDefs from "./Overlay/SvgDefs";
+import Node from "./Overlay/Node";
 
 /**
  * `Overlay`の引数
@@ -19,9 +20,9 @@ import SvgDefs from "./Overlay/SvgDefs";
 interface Props {
   mode: Mode;
   pageRect?: DOMRect;
-  moveNote?: NoteType;
+  moveNote?: NoteType | NodeType;
   onEdit: (note: NoteType) => void;
-  onMove: (note: NoteType) => void;
+  onMove: (note: NoteType | NodeType) => void;
 }
 
 /**
@@ -31,19 +32,46 @@ const Overlay: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
   const { page, setNotes, popNote } = useNotes();
   if (!page?.notes || !setNotes || !pageRect) return <SvgDefs />;
 
-  const props = <T extends NoteType>(p: T) => ({
+  const props = <T extends NoteType | NodeType>(p: T) => ({
     key: JSON.stringify(p),
     mode,
     pageRect,
     onMouseDown: () => {
-      if (mode === "edit") onEdit(p);
       if (mode === "move") onMove(p);
-      if (mode === "delete") popNote(p);
+      if (p.type !== "Node") {
+        if (mode === "edit") onEdit(p);
+        if (mode === "delete") popNote(p);
+      }
     },
     params: p,
   });
 
-  const notes = page.notes.filter((n) => n !== moveNote);
+  const notes: (NoteType | NodeType)[] = page.notes.filter(
+    (n) => n !== moveNote
+  );
+  if (mode === "move" && !moveNote) {
+    for (const n of notes) {
+      switch (n.type) {
+        case "Arrow":
+        case "Bracket":
+        case "Marker":
+          notes.push({ type: "Node", target: n, index: 0 });
+          notes.push({ type: "Node", target: n, index: 1 });
+          break;
+        case "Rect":
+          notes.push({ type: "Node", target: n, index: 0 });
+          notes.push({ type: "Node", target: n, index: 1 });
+          notes.push({ type: "Node", target: n, index: 3 });
+          notes.push({ type: "Node", target: n, index: 4 });
+          break;
+        case "Polygon":
+          for (let i = 0; i < n.points.length; i++) {
+            notes.push({ type: "Node", target: n, index: i });
+          }
+          break;
+      }
+    }
+  }
   return (
     <>
       <SvgDefs />
@@ -62,6 +90,9 @@ const Overlay: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
         })}
         {notes.map((p) => {
           return p.type === "Arrow" ? <Arrow {...props(p)} /> : undefined;
+        })}
+        {notes.map((p) => {
+          return p.type === "Node" ? <Node {...props(p)} /> : undefined;
         })}
       </Svg>
       {notes.map((p) => {
