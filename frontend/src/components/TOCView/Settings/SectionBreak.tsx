@@ -25,7 +25,7 @@ const SectionBreak: FC<Props> = ({
   onChange,
 }) => {
   return (
-    <Box sx={{ display: "flex", flexDirection: "row" }}>
+    <Box sx={{ whiteSpace: "nowrap", display: "flex", flexDirection: "row" }}>
       <Tooltip title="このページの前に節区切りを入れます" disableInteractive>
         <FormControlLabel
           control={
