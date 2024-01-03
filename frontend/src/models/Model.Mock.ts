@@ -194,14 +194,12 @@ export default class ModelMock implements IModel {
               y: 0.45,
               html: "インライン数式：$\\ddot{\\boldsymbol{x}}=100$\n別行立て数式👇\n$$\\int e^x dx$$",
             },
-            /*
             {
               type: "Note",
               x: 0.5,
               y: 0.45,
-              html: `<span style="text-decoration: underline;">下線</span> <strong>太字</strong> <span style="color: green;">green</span><br/><span>絵文字</span><span style="font-size: 150%">⚡🔥✨</span><br/><span style="font-family: serif; font-size: 200%">文字サイズ</span></br><span style="transform: rotate(15deg); display: inline-block;">回転</span>`,
+              html: `<span style="text-decoration: underline;">下線</span> <strong>太字</strong> <span style="color: green;">green</span>\n<span>絵文字</span><span style="font-size: 150%">⚡🔥✨</span>\n<span style="font-family: serif; font-size: 200%">文字サイズ</span></br><span style="transform: rotate(15deg); display: inline-block;">回転</span>`,
             },
-            */
             { type: "PageLink", x: 0.1, y: 0.63, page: 10 },
             { type: "PageLink", x: 0.25, y: 0.63, page: 999 },
             {

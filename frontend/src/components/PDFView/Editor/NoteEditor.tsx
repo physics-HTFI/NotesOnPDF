@@ -1,9 +1,45 @@
 import { FC, useState } from "react";
-import { TextField, Tooltip } from "@mui/material";
+import {
+  TextareaAutosize,
+  Tooltip,
+  TooltipProps,
+  styled,
+  tooltipClasses,
+} from "@mui/material";
 import { Note } from "@/types/Notes";
 import { useNotes } from "@/hooks/useNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
+import { blue, grey } from "@mui/material/colors";
+
+// https://mui.com/base-ui/react-textarea-autosize/
+const Textarea = styled(TextareaAutosize)(
+  () => `
+  width: 500px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  color: ${grey[900]};
+  background: ${"#fff"};
+  border: 1px solid ${grey[200]};
+  white-space: nowrap;
+  &:hover {
+    border-color: ${blue[400]};
+  }
+  // firefox
+  &:focus-visible {
+    outline: 0;
+  }
+`
+);
+
+const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: "none",
+  },
+});
 
 /**
  * `NoteEditor`の引数
@@ -30,33 +66,37 @@ const NoteEditor: FC<Props> = ({ params, onClose }) => {
 
   return (
     <EditorBase onClose={handleClose}>
-      <TextField
+      <Textarea
+        minRows={10}
         value={text}
-        multiline
-        rows={10}
-        inputProps={{
-          spellCheck: "false",
-          sx: { whiteSpace: "nowrap", fontSize: "90%", width: 350 },
-        }}
-        inputRef={(ref?: HTMLInputElement) => {
-          ref?.focus();
-        }}
+        spellCheck={false}
         onChange={(e) => {
           setText(e.target.value);
         }}
+        ref={(ref: HTMLElement | null) => {
+          ref?.focus();
+        }}
       />
-      <Tooltip
+      <NoMaxWidthTooltip
         enterDelay={0}
+        disableInteractive={false}
         title={
           <span>
-            ・インライン数式 <code style={{ fontSize: "120%" }}>$e=mc^2$</code>
+            ・インライン数式:
+            <code style={{ fontSize: "120%", paddingLeft: 4 }}>$e=mc^2$</code>
             <br />
-            ・別行立て数式 <code style={{ fontSize: "120%" }}>$$e=mc^2$$</code>
-            {/*
+            ・別行立て数式:
+            <code style={{ fontSize: "120%", paddingLeft: 4 }}>$$e=mc^2$$</code>
             <br />
-            ・HTMLタグも使用できます{" "}
-            <code style={{ fontSize: "120%" }}>{"<h1>タイトル</h1>"}</code>
-            */}
+            ・amsmath:
+            <code style={{ fontSize: "120%", paddingLeft: 4 }}>
+              {"\\begin{align} e=mc^2 \\end{align}"}
+            </code>
+            <br />
+            ・HTMLタグ:
+            <code style={{ fontSize: "120%", paddingLeft: 4 }}>
+              {'<span style="font-size: 150%;">テキスト</span>'}
+            </code>
           </span>
         }
       >
@@ -69,7 +109,7 @@ const NoteEditor: FC<Props> = ({ params, onClose }) => {
             color: "white",
           }}
         />
-      </Tooltip>
+      </NoMaxWidthTooltip>
     </EditorBase>
   );
 };

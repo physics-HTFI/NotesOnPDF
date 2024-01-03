@@ -25,9 +25,31 @@ const options = {
  * 数式表示のコンフィグ
  */
 const mathjaxConfig = {
-  loader: { load: ["[tex]/html"] },
+  loader: {
+    load: [
+      "[tex]/html",
+      "[tex]/boldsymbol",
+      "[tex]/ams",
+      "[tex]/braket",
+      "[tex]/cancel",
+      "[tex]/cases",
+      "[tex]/color",
+      //"[tex]/physics", // Mathjaxは対応していないが、physics2というのがあるらしい: https://qiita.com/Yarakashi_Kikohshi/items/131e2324f401c3effb84
+    ],
+  },
   tex: {
-    packages: { "[+]": ["html"] },
+    packages: {
+      "[+]": [
+        "html",
+        "boldsymbol",
+        "ams",
+        "braket",
+        "cancel",
+        "cases",
+        "color",
+        //"physics",
+      ],
+    },
     inlineMath: [
       ["$", "$"],
       ["\\(", "\\)"],

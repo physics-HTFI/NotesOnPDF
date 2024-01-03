@@ -49,29 +49,29 @@ const Overlay: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
       <SvgDefs />
       <Svg pageRect={pageRect}>
         {notes.map((p) => {
-          return p.type === "Polygon" ? <Polygon {...props(p)} /> : <></>;
+          return p.type === "Polygon" ? <Polygon {...props(p)} /> : undefined;
         })}
         {notes.map((p) => {
-          return p.type === "Rect" ? <Rect {...props(p)} /> : <></>;
+          return p.type === "Rect" ? <Rect {...props(p)} /> : undefined;
         })}
         {notes.map((p) => {
-          return p.type === "Marker" ? <Marker {...props(p)} /> : <></>;
+          return p.type === "Marker" ? <Marker {...props(p)} /> : undefined;
         })}
         {notes.map((p) => {
-          return p.type === "Bracket" ? <Bracket {...props(p)} /> : <></>;
+          return p.type === "Bracket" ? <Bracket {...props(p)} /> : undefined;
         })}
         {notes.map((p) => {
-          return p.type === "Arrow" ? <Arrow {...props(p)} /> : <></>;
+          return p.type === "Arrow" ? <Arrow {...props(p)} /> : undefined;
         })}
       </Svg>
       {notes.map((p) => {
-        return p.type === "Note" ? <Note {...props(p)} /> : <></>;
+        return p.type === "Note" ? <Note {...props(p)} /> : undefined;
       })}
       {notes.map((p) => {
-        return p.type === "Chip" ? <Chip {...props(p)} /> : <></>;
+        return p.type === "Chip" ? <Chip {...props(p)} /> : undefined;
       })}
       {notes.map((p) => {
-        return p.type === "PageLink" ? <PageLink {...props(p)} /> : <></>;
+        return p.type === "PageLink" ? <PageLink {...props(p)} /> : undefined;
       })}
     </>
   );
