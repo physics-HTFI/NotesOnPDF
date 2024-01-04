@@ -1,42 +1,50 @@
 import { FC, useContext, useState } from "react";
 import { MouseContext } from "@/contexts/MouseContext";
-import { Node } from "@/types/Notes";
+import {
+  Arrow,
+  Bracket,
+  Marker,
+  Node,
+  NoteType,
+  Polygon,
+  Rect,
+} from "@/types/Notes";
+import { green } from "@mui/material/colors";
 
 /**
  * `Bracket`の引数
  */
 interface Props {
-  params: Node;
+  target: Arrow | Bracket | Marker | Polygon | Rect;
+  index: number;
+  visible: boolean;
   pageRect: DOMRect;
-  onMouseDown?: () => void;
+  onMouseDown?: (p: NoteType | Node) => void;
 }
 
 /**
  * ノード編集用マーカー
  */
-const Node: FC<Props> = ({ params, pageRect, onMouseDown }) => {
+const Node: FC<Props> = ({ target, index, visible, pageRect, onMouseDown }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
-  const t = params.target;
   const [x, y] =
-    t.type === "Arrow" || t.type === "Bracket" || t.type === "Marker"
-      ? params.index === 0
-        ? [t.x1, t.y1]
-        : [t.x2, t.y2]
-      : t.type === "Polygon"
-      ? t.points[params.index] ?? [0, 0]
+    target.type === "Arrow" ||
+    target.type === "Bracket" ||
+    target.type === "Marker"
+      ? index === 0
+        ? [target.x1, target.y1]
+        : [target.x2, target.y2]
+      : target.type === "Polygon"
+      ? target.points[index] ?? [0, 0]
       : [
-          params.index % 2 === 0 ? t.x1 : t.x2,
-          params.index / 2 < 1 ? t.y1 : t.y2,
+          index % 2 === 0 ? target.x1 : target.x2,
+          index / 2 < 1 ? target.y1 : target.y2,
         ];
   return (
-    <circle
-      cx={x * pageRect.width}
-      cy={y * pageRect.height}
-      r="5"
+    <g
       style={{
-        fill: "magenta",
-        opacity: hover ? 0.5 : 1,
+        fill: visible || hover ? green.A700 : "transparent",
         cursor: "move",
       }}
       onMouseDown={(e) => {
@@ -44,7 +52,7 @@ const Node: FC<Props> = ({ params, pageRect, onMouseDown }) => {
         e.stopPropagation();
         e.preventDefault();
         setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-        onMouseDown?.();
+        onMouseDown?.({ type: "Node", target, index });
       }}
       onMouseEnter={() => {
         setHover(true);
@@ -52,7 +60,15 @@ const Node: FC<Props> = ({ params, pageRect, onMouseDown }) => {
       onMouseLeave={() => {
         setHover(false);
       }}
-    />
+    >
+      <circle cx={x * pageRect.width} cy={y * pageRect.height} r="3" />
+      <circle
+        cx={x * pageRect.width}
+        cy={y * pageRect.height}
+        r="10"
+        style={{ fill: hover ? undefined : "transparent" }}
+      />
+    </g>
   );
 };
 

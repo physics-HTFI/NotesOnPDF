@@ -1,7 +1,8 @@
-import { Arrow as ArrowType } from "@/types/Notes";
+import { Arrow as ArrowType, Node as NodeType, NoteType } from "@/types/Notes";
 import { FC, useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
+import Node from "./Node";
 
 /**
  * `Arrow`の引数
@@ -10,7 +11,7 @@ interface Props {
   params: ArrowType;
   mode?: Mode;
   pageRect: DOMRect;
-  onMouseDown?: () => void;
+  onMouseDown?: (p: NoteType | NodeType) => void;
 }
 
 /**
@@ -26,48 +27,70 @@ const Arrow: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const hasStart = ["start", "both"].includes(params.heads ?? "end");
   const hasEnd = ["end", "both"].includes(params.heads ?? "end");
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
+  const node =
+    mode === "move"
+      ? { target: params, visible: hover, pageRect, onMouseDown }
+      : undefined;
+
   return (
-    <g
-      style={{ cursor }}
-      onMouseDown={(e) => {
-        if (!mode || e.button !== 0) return;
-        e.stopPropagation();
-        e.preventDefault(); // これがないと、この要素を起点にドラッグすると、ほかの要素の文字列が選択されてしまう
-        setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-        onMouseDown?.();
-      }}
-      onMouseEnter={() => {
-        setHover(!!cursor);
-      }}
-      onMouseLeave={() => {
-        setHover(false);
-      }}
-    >
-      <line
-        x1={x1}
-        y1={y1}
-        x2={x2}
-        y2={y2}
-        style={{
-          stroke: "white",
-          opacity: 0.7,
-          strokeWidth: "10",
+    <>
+      <g
+        style={{ cursor }}
+        onMouseDown={(e) => {
+          if (!mode || e.button !== 0) return;
+          e.stopPropagation();
+          e.preventDefault(); // これがないと、この要素を起点にドラッグすると、ほかの要素の文字列が選択されてしまう
+          setMouse?.({ pageX: e.pageX, pageY: e.pageY });
+          onMouseDown?.(params);
         }}
-      />
-      <line
-        x1={x1}
-        y1={y1}
-        x2={x2}
-        y2={y2}
-        style={{
-          opacity: hover ? 0.5 : 1,
-          stroke: "red",
-          strokeWidth: "1",
-          markerStart: hasStart ? "url(#head)" : undefined,
-          markerEnd: hasEnd ? "url(#head)" : undefined,
+        onMouseEnter={() => {
+          setHover(!!cursor);
         }}
-      />
-    </g>
+        onMouseLeave={() => {
+          setHover(false);
+        }}
+      >
+        {/* 編集時につかみやすくする */}
+        <line
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          style={{
+            stroke: "transparent",
+            strokeWidth: "30",
+          }}
+        />
+        {/* 背景と混ざらないようにするための白枠 */}
+        <line
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          style={{
+            stroke: "white",
+            opacity: 0.7,
+            strokeWidth: "10",
+          }}
+        />
+        {/* 矢印本体 */}
+        <line
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          style={{
+            opacity: hover ? 0.5 : 1,
+            stroke: "red",
+            strokeWidth: "1",
+            markerStart: hasStart ? "url(#head)" : undefined,
+            markerEnd: hasEnd ? "url(#head)" : undefined,
+          }}
+        />
+      </g>
+      {node && <Node index={0} {...node} />}
+      {node && <Node index={1} {...node} />}
+    </>
   );
 };
 

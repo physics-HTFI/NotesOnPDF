@@ -12,7 +12,6 @@ import { Mode } from "./SpeedDial";
 import { useNotes } from "@/hooks/useNotes";
 import { Node as NodeType, NoteType } from "@/types/Notes";
 import SvgDefs from "./Overlay/SvgDefs";
-import Node from "./Overlay/Node";
 
 /**
  * `Overlay`の引数
@@ -32,46 +31,21 @@ const Overlay: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
   const { page, setNotes, popNote } = useNotes();
   if (!page?.notes || !setNotes || !pageRect) return <SvgDefs />;
 
-  const props = <T extends NoteType | NodeType>(p: T) => ({
-    key: JSON.stringify(p),
+  const props = <T extends NoteType | NodeType>(params: T) => ({
+    key: JSON.stringify(params),
     mode,
     pageRect,
-    onMouseDown: () => {
+    params,
+    onMouseDown: (p: NoteType | NodeType) => {
       if (mode === "move") onMove(p);
       if (p.type !== "Node") {
         if (mode === "edit") onEdit(p);
         if (mode === "delete") popNote(p);
       }
     },
-    params: p,
   });
 
-  const notes: (NoteType | NodeType)[] = page.notes.filter(
-    (n) => n !== moveNote
-  );
-  if (mode === "move" && !moveNote) {
-    for (const n of notes) {
-      switch (n.type) {
-        case "Arrow":
-        case "Bracket":
-        case "Marker":
-          notes.push({ type: "Node", target: n, index: 0 });
-          notes.push({ type: "Node", target: n, index: 1 });
-          break;
-        case "Rect":
-          notes.push({ type: "Node", target: n, index: 0 });
-          notes.push({ type: "Node", target: n, index: 1 });
-          notes.push({ type: "Node", target: n, index: 3 });
-          notes.push({ type: "Node", target: n, index: 4 });
-          break;
-        case "Polygon":
-          for (let i = 0; i < n.points.length; i++) {
-            notes.push({ type: "Node", target: n, index: i });
-          }
-          break;
-      }
-    }
-  }
+  const notes: NoteType[] = page.notes.filter((n) => n !== moveNote);
   return (
     <>
       <SvgDefs />
@@ -90,9 +64,6 @@ const Overlay: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
         })}
         {notes.map((p) => {
           return p.type === "Arrow" ? <Arrow {...props(p)} /> : undefined;
-        })}
-        {notes.map((p) => {
-          return p.type === "Node" ? <Node {...props(p)} /> : undefined;
         })}
       </Svg>
       {notes.map((p) => {

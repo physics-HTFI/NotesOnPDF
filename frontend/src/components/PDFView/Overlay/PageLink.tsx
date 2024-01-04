@@ -1,7 +1,12 @@
 import { FC, useContext, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
-import { PageLink as PageLinkType, toDisplayedPage } from "@/types/Notes";
+import {
+  Node,
+  NoteType,
+  PageLink as PageLinkType,
+  toDisplayedPage,
+} from "@/types/Notes";
 import { NotesContext } from "@/contexts/NotesContext";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -12,7 +17,7 @@ import { MouseContext } from "@/contexts/MouseContext";
 interface Props {
   params: PageLinkType;
   mode?: Mode;
-  onMouseDown?: () => void;
+  onMouseDown?: (p: NoteType | Node) => void;
 }
 
 /**
@@ -53,7 +58,7 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
             return;
           }
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          onMouseDown?.();
+          onMouseDown?.(params);
         }}
         onMouseEnter={() => {
           setHover(!!cursor);

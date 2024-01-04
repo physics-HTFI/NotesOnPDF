@@ -1,7 +1,8 @@
 import { FC, useContext, useState } from "react";
-import { Bracket as Bracket } from "@/types/Notes";
+import { Bracket as Bracket, Node as NodeType, NoteType } from "@/types/Notes";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
+import Node from "./Node";
 
 /**
  * `Bracket`の引数
@@ -10,7 +11,7 @@ interface Props {
   params: Bracket;
   mode?: Mode;
   pageRect: DOMRect;
-  onMouseDown?: () => void;
+  onMouseDown?: (p: NoteType | NodeType) => void;
 }
 
 /**
@@ -26,48 +27,70 @@ const Bracket: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const hasStart = ["start", "both"].includes(params.heads ?? "both");
   const hasEnd = ["end", "both"].includes(params.heads ?? "both");
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
+  const node =
+    mode === "move"
+      ? { target: params, visible: hover, pageRect, onMouseDown }
+      : undefined;
+
   return (
-    <g
-      style={{ cursor }}
-      onMouseDown={(e) => {
-        if (!mode || e.button !== 0) return;
-        e.stopPropagation();
-        e.preventDefault();
-        setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-        onMouseDown?.();
-      }}
-      onMouseEnter={() => {
-        setHover(!!cursor);
-      }}
-      onMouseLeave={() => {
-        setHover(false);
-      }}
-    >
-      <line
-        x1={x1}
-        y1={y1}
-        x2={x2}
-        y2={y2}
-        style={{
-          stroke: "white",
-          opacity: 0.7,
-          strokeWidth: "10",
+    <>
+      <g
+        style={{ cursor }}
+        onMouseDown={(e) => {
+          if (!mode || e.button !== 0) return;
+          e.stopPropagation();
+          e.preventDefault();
+          setMouse?.({ pageX: e.pageX, pageY: e.pageY });
+          onMouseDown?.(params);
         }}
-      />
-      <line
-        x1={x1}
-        y1={y1}
-        x2={x2}
-        y2={y2}
-        style={{
-          stroke: "red",
-          strokeWidth: "1",
-          opacity: hover ? 0.5 : 1,
-          markerStart: hasStart ? "url(#bracket)" : undefined,
-          markerEnd: hasEnd ? "url(#bracket)" : undefined,
+        onMouseEnter={() => {
+          setHover(!!cursor);
         }}
-      />
-    </g>
+        onMouseLeave={() => {
+          setHover(false);
+        }}
+      >
+        {/* 編集時につかみやすくする */}
+        <line
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          style={{
+            stroke: "transparent",
+            strokeWidth: "30",
+          }}
+        />
+        {/* 背景と混ざらないようにするための白枠 */}
+        <line
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          style={{
+            stroke: "white",
+            opacity: 0.7,
+            strokeWidth: "10",
+          }}
+        />
+        {/* 括弧本体 */}
+        <line
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          style={{
+            stroke: "red",
+            strokeWidth: "1",
+            opacity: hover ? 0.5 : 1,
+            markerStart: hasStart ? "url(#bracket)" : undefined,
+            markerEnd: hasEnd ? "url(#bracket)" : undefined,
+          }}
+        />
+      </g>
+      {node && <Node index={0} {...node} />}
+      {node && <Node index={1} {...node} />}
+    </>
   );
 };
 

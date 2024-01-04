@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from "react";
 import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
-import { Chip as ChipType } from "@/types/Notes";
+import { Chip as ChipType, Node, NoteType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
 
 /**
@@ -10,7 +10,7 @@ import { MouseContext } from "@/contexts/MouseContext";
 interface Props {
   params: ChipType;
   mode?: Mode;
-  onMouseDown?: () => void;
+  onMouseDown?: (p: NoteType | Node) => void;
 }
 
 /**
@@ -40,7 +40,7 @@ const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
         e.stopPropagation();
         e.preventDefault();
         setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-        onMouseDown?.();
+        onMouseDown?.(params);
       }}
       onMouseEnter={() => {
         setHover(!!cursor);

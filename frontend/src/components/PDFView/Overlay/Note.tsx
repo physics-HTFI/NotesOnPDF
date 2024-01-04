@@ -2,16 +2,16 @@ import { FC, useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
-import { Note as NoteType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
+import { Node, Note as NoteParams, NoteType } from "@/types/Notes";
 
 /**
  * `Note`の引数
  */
 interface Props {
-  params: NoteType;
+  params: NoteParams;
   mode?: Mode;
-  onMouseDown?: () => void;
+  onMouseDown?: (p: NoteType | Node) => void;
 }
 
 /**
@@ -44,7 +44,7 @@ const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
           e.stopPropagation();
           e.preventDefault(); // これがないと編集エディタの表示時にフォーカスが当たらない
           setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          onMouseDown?.();
+          onMouseDown?.(params);
         }}
         onMouseEnter={() => {
           setHover(!!cursor);
