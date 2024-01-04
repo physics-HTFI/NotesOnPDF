@@ -122,33 +122,6 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
   const newParams =
     params.type === "Node" ? getTransformed(params, dx, dy) : params;
 
-  const getSvg = () => {
-    switch (newParams.type) {
-      case "Arrow":
-        return <Arrow pageRect={pageRect} params={newParams} />;
-      case "Bracket":
-        return <Bracket pageRect={pageRect} params={newParams} />;
-      case "Marker":
-        return <Marker pageRect={pageRect} params={newParams} />;
-      case "Polygon":
-        return <Polygon pageRect={pageRect} params={newParams} />;
-      case "Rect":
-        return <Rect pageRect={pageRect} params={newParams} />;
-    }
-    return undefined;
-  };
-  const getHtml = () => {
-    switch (newParams.type) {
-      case "Chip":
-        return <Chip params={newParams} />;
-      case "Note":
-        return <Note params={newParams} />;
-      case "PageLink":
-        return <PageLink params={newParams} />;
-    }
-    return undefined;
-  };
-
   const handleClose = (xy: typeof mouse) => {
     const [dx, dy] = getDxy(xy);
     if (params.type === "Node") {
@@ -171,8 +144,26 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
           height: "100%",
         }}
       >
-        <Svg pageRect={pageRect}>{getSvg()}</Svg>
-        {getHtml()}
+        <Svg pageRect={pageRect}>
+          {newParams.type === "Arrow" && (
+            <Arrow pageRect={pageRect} params={newParams} />
+          )}
+          {newParams.type === "Bracket" && (
+            <Bracket pageRect={pageRect} params={newParams} />
+          )}
+          {newParams.type === "Marker" && (
+            <Marker pageRect={pageRect} params={newParams} />
+          )}
+          {newParams.type === "Polygon" && (
+            <Polygon pageRect={pageRect} params={newParams} />
+          )}
+          {newParams.type === "Rect" && (
+            <Rect pageRect={pageRect} params={newParams} />
+          )}
+        </Svg>
+        {newParams.type === "Chip" && <Chip params={newParams} />}
+        {newParams.type === "Note" && <Note params={newParams} />}
+        {newParams.type === "PageLink" && <PageLink params={newParams} />}
       </Box>
 
       {/* 右ペイン全体を覆うBox。領域外に出たかの判定用。 */}
