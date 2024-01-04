@@ -29,10 +29,10 @@ const Rect: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   return (
     <>
       <rect
-        x={params.x1 * pageRect.width}
-        y={params.y1 * pageRect.height}
-        width={(params.x2 - params.x1) * pageRect.width}
-        height={(params.y2 - params.y1) * pageRect.height}
+        x={params.x * pageRect.width}
+        y={params.y * pageRect.height}
+        width={params.width * pageRect.width}
+        height={params.height * pageRect.height}
         style={{
           fill: "red",
           stroke: params.border ? "red" : "none",

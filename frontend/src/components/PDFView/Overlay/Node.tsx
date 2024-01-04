@@ -28,19 +28,21 @@ interface Props {
 const Node: FC<Props> = ({ target, index, visible, pageRect, onMouseDown }) => {
   const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
-  const [x, y] =
-    target.type === "Arrow" ||
-    target.type === "Bracket" ||
-    target.type === "Marker"
-      ? index === 0
-        ? [target.x1, target.y1]
-        : [target.x2, target.y2]
-      : target.type === "Polygon"
-      ? target.points[index] ?? [0, 0]
-      : [
-          index % 2 === 0 ? target.x1 : target.x2,
-          index / 2 < 1 ? target.y1 : target.y2,
+  const [x, y] = (() => {
+    switch (target.type) {
+      case "Arrow":
+      case "Bracket":
+      case "Marker":
+        return index === 0 ? [target.x1, target.y1] : [target.x2, target.y2];
+      case "Polygon":
+        return target.points[index] ?? [0, 0];
+      case "Rect":
+        return [
+          target.x + (index % 2 === 0 ? 0 : target.width),
+          target.y + (index / 2 < 1 ? 0 : target.height),
         ];
+    }
+  })();
   return (
     <g
       style={{

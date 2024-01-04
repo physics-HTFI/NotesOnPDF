@@ -72,13 +72,37 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
         case "Arrow":
         case "Bracket":
         case "Marker":
-        case "Rect":
           if (params.index === 0) {
             newParams.x1 += dx;
             newParams.y1 += dy;
           } else {
             newParams.x2 += dx;
             newParams.y2 += dy;
+          }
+          break;
+        case "Rect":
+          // 上から順に 左、右、上、下
+          if ([0, 2].includes(params.index)) {
+            newParams.x += dx;
+            newParams.width -= dx;
+          }
+          if ([1, 3].includes(params.index)) {
+            newParams.width += dx;
+          }
+          if ([0, 1].includes(params.index)) {
+            newParams.y += dy;
+            newParams.height -= dy;
+          }
+          if ([2, 3].includes(params.index)) {
+            newParams.height += dy;
+          }
+          if (newParams.width < 0) {
+            newParams.width *= -1;
+            newParams.x -= newParams.width;
+          }
+          if (newParams.height < 0) {
+            newParams.height *= -1;
+            newParams.y -= newParams.height;
           }
           break;
         case "Polygon":
@@ -102,11 +126,14 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
         case "Arrow":
         case "Bracket":
         case "Marker":
-        case "Rect":
           newParams.x1 += dx;
           newParams.y1 += dy;
           newParams.x2 += dx;
           newParams.y2 += dy;
+          break;
+        case "Rect":
+          newParams.x += dx;
+          newParams.y += dy;
           break;
         case "Polygon":
           newParams.points = newParams.points.map((p) => [

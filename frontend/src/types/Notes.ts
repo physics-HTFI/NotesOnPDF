@@ -67,10 +67,10 @@ export interface Polygon {
 }
 export interface Rect {
   type: "Rect";
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
   border?: boolean; // TODO Chipに合わせて"outlined"のほうが良い?
 }
 /** ノード位置編集時のマーカー */
