@@ -14,7 +14,8 @@ import { Box } from "@mui/material";
 /**
  * 平行移動した注釈を返す
  */
-const getTranslated = (params: NoteType, dx: number, dy: number) => {
+const getTranslated = (params: NoteType, dxy: [number, number]) => {
+  const [dx, dy] = dxy;
   const newParams: NoteType = { ...params };
   switch (newParams.type) {
     case "Chip":
@@ -45,7 +46,8 @@ const getTranslated = (params: NoteType, dx: number, dy: number) => {
 /**
  * 変形した注釈を返す
  */
-const getTransformed = (params: Node, dx: number, dy: number) => {
+const getTransformed = (params: Node, dxy: [number, number]) => {
+  const [dx, dy] = dxy;
   const newParams: NoteType = { ...params.target };
   switch (newParams.type) {
     case "Arrow":
@@ -94,6 +96,49 @@ const getTransformed = (params: Node, dx: number, dy: number) => {
   return newParams;
 };
 
+const getValidatedXY = (
+  params: Node,
+  dxy: [number, number],
+  pageRect: DOMRect
+): [number, number] | undefined => {
+  const t = getTransformed(params, dxy);
+  const width = (dx: number) => pageRect.width * Math.abs(dx);
+  const height = (dy: number) => pageRect.height * Math.abs(dy);
+  switch (t.type) {
+    case "Arrow":
+      if (width(t.x2 - t.x1) < 5 && height(t.y2 - t.y1) < 5) return undefined;
+      return dxy;
+    case "Bracket": {
+      const isX = width(t.x2 - t.x1) > height(t.y2 - t.y1);
+      const t0 = params.target;
+      if (t0.type !== "Bracket") return undefined;
+      if (isX) {
+        if (width(t.x2 - t.x1) < 10) return undefined;
+        return [dxy[0], (params.index === 0 ? 1 : -1) * (t0.y2 - t0.y1)];
+      } else {
+        if (height(t.y2 - t.y1) < 10) return undefined;
+        return [(params.index === 0 ? 1 : -1) * (t0.x2 - t0.x1), dxy[1]];
+      }
+    }
+    case "Marker":
+      if (width(t.x2 - t.x1) < 20) return undefined;
+      return [dxy[0], 0];
+    case "Polygon": {
+      const P = t.points[params.index] ?? [0, 0];
+      if (
+        t.points.some(
+          (p) => p !== P && width(P[0] - p[0]) < 5 && height(P[1] - p[1]) < 5
+        )
+      )
+        return undefined;
+      return dxy;
+    }
+    case "Rect":
+      if (width(t.width) < 3 || height(t.height) < 3) return undefined;
+      return dxy;
+  }
+};
+
 /**
  * `Move`の引数
  */
@@ -108,28 +153,20 @@ interface Props {
  * PDFビュークリック時に表示されるコントロール
  */
 const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
-  const [pageXY, setPageXY] = useState<typeof mouse>();
+  const [dXY, setDXY] = useState<[number, number]>([0, 0]);
   const ref = useRef<HTMLElement>();
   if (!params || !pageRect) return <></>;
 
-  const getDxy = (xy: typeof mouse) =>
-    [
-      (xy.pageX - mouse.pageX) / pageRect.width,
-      (xy.pageY - mouse.pageY) / pageRect.height,
-    ] as const;
+  const getDxy = (xy?: typeof mouse): [number, number] =>
+    !xy
+      ? [0, 0]
+      : [
+          (xy.pageX - mouse.pageX) / pageRect.width,
+          (xy.pageY - mouse.pageY) / pageRect.height,
+        ];
 
-  const [dx, dy] = getDxy(pageXY ?? mouse);
   const newParams =
-    params.type === "Node" ? getTransformed(params, dx, dy) : params;
-
-  const handleClose = (xy: typeof mouse) => {
-    const [dx, dy] = getDxy(xy);
-    if (params.type === "Node") {
-      onClose(params.target, getTransformed(params, dx, dy));
-    } else {
-      onClose(params, getTranslated(params, dx, dy));
-    }
-  };
+    params.type === "Node" ? getTransformed(params, dXY) : params;
 
   return (
     <>
@@ -177,18 +214,34 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
           cursor: params.type === "Node" ? "none" : "move",
         }}
         onMouseUp={(e) => {
-          setPageXY(undefined);
-          handleClose({ pageX: e.pageX, pageY: e.pageY });
+          setDXY([0, 0]);
           e.preventDefault();
           e.stopPropagation();
+          const δxy =
+            params.type === "Node"
+              ? dXY
+              : getDxy({ pageX: e.pageX, pageY: e.pageY });
+          if (δxy[0] === 0 && δxy[1] === 0) {
+            onClose();
+          } else if (params.type === "Node") {
+            onClose(params.target, getTransformed(params, δxy));
+          } else {
+            onClose(params, getTranslated(params, δxy));
+          }
         }}
         onMouseLeave={() => {
-          setPageXY(undefined);
+          setDXY([0, 0]);
           onClose();
         }}
         onMouseMove={(e) => {
           if (params.type === "Node") {
-            setPageXY({ pageX: e.pageX, pageY: e.pageY });
+            const δxy = getValidatedXY(
+              params,
+              getDxy({ pageX: e.pageX, pageY: e.pageY }),
+              pageRect
+            );
+            if (!δxy) return;
+            setDXY(δxy);
           } else {
             const box = ref.current;
             if (!box) return;
