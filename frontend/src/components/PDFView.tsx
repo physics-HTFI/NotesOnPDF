@@ -259,13 +259,10 @@ const PDFView: FC<Props> = ({
               params={moveNote}
               mouse={mouse}
               pageRect={pageRect}
-              onClose={(note) => {
+              onClose={(oldNote, newNote) => {
                 setMoveNote(undefined);
-                if (!moveNote || !note) return;
-                updateNote(
-                  moveNote.type === "Node" ? moveNote.target : moveNote,
-                  note
-                );
+                if (!oldNote || !newNote) return;
+                updateNote(oldNote, newNote);
               }}
             />
           </Container>

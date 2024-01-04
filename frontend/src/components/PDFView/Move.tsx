@@ -18,7 +18,7 @@ interface Props {
   params?: NoteType | Node;
   mouse: { pageX: number; pageY: number };
   pageRect?: DOMRect;
-  onClose: (note?: NoteType) => void;
+  onClose: (newNote?: NoteType, oldNote?: NoteType) => void;
 }
 
 /**
@@ -64,31 +64,59 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
       (xy.pageX - mouse.pageX) / pageRect.width,
       (xy.pageY - mouse.pageY) / pageRect.height,
     ];
-    const newParams: NoteType | Node = { ...params };
-    switch (newParams.type) {
-      case "Chip":
-      case "Note":
-      case "PageLink":
-        newParams.x += dx;
-        newParams.y += dy;
-        break;
-      case "Arrow":
-      case "Bracket":
-      case "Marker":
-      case "Rect":
-        newParams.x1 += dx;
-        newParams.y1 += dy;
-        newParams.x2 += dx;
-        newParams.y2 += dy;
-        break;
-      case "Polygon":
-        newParams.points = newParams.points.map((p) => [p[0] + dx, p[1] + dy]);
-        break;
-      case "Node":
-        onClose(); // TODO
-        return;
+
+    if (params.type === "Node") {
+      // ノード位置の編集時
+      const newParams: NoteType = { ...params.target };
+      switch (newParams.type) {
+        case "Arrow":
+        case "Bracket":
+        case "Marker":
+        case "Rect":
+          if (params.index === 0) {
+            newParams.x1 += dx;
+            newParams.y1 += dy;
+          } else {
+            newParams.x2 += dx;
+            newParams.y2 += dy;
+          }
+          break;
+        case "Polygon":
+          newParams.points = newParams.points.map((p, i) => [
+            p[0] + (i === params.index ? dx : 0),
+            p[1] + (i === params.index ? dy : 0),
+          ]);
+          break;
+      }
+      onClose(params.target, newParams);
+    } else {
+      // 注釈の平行移動時
+      const newParams: NoteType | Node = { ...params };
+      switch (newParams.type) {
+        case "Chip":
+        case "Note":
+        case "PageLink":
+          newParams.x += dx;
+          newParams.y += dy;
+          break;
+        case "Arrow":
+        case "Bracket":
+        case "Marker":
+        case "Rect":
+          newParams.x1 += dx;
+          newParams.y1 += dy;
+          newParams.x2 += dx;
+          newParams.y2 += dy;
+          break;
+        case "Polygon":
+          newParams.points = newParams.points.map((p) => [
+            p[0] + dx,
+            p[1] + dy,
+          ]);
+          break;
+      }
+      onClose(params, newParams);
     }
-    onClose(newParams);
   };
 
   return (
