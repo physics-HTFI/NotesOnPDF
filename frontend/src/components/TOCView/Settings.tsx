@@ -57,6 +57,7 @@ const Settings: FC<Props> = ({ onClose }) => {
 
   return (
     <Box sx={{ width: "100%", fontSize: "80%" }}>
+      {/* 閉じるアイコン */}
       <IconButton
         sx={{
           position: "absolute",
@@ -69,6 +70,7 @@ const Settings: FC<Props> = ({ onClose }) => {
         <ExpandMore />
       </IconButton>
 
+      {/* タブ */}
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={tab}
