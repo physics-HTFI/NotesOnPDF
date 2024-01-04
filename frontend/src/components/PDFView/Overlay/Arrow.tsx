@@ -70,7 +70,7 @@ const Arrow: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
           style={{
             stroke: "white",
             opacity: 0.7,
-            strokeWidth: "10",
+            strokeWidth: "5",
           }}
         />
         {/* 矢印本体 */}

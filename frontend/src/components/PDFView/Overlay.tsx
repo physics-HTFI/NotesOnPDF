@@ -45,7 +45,9 @@ const Overlay: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
     },
   });
 
-  const notes: NoteType[] = page.notes.filter((n) => n !== moveNote);
+  const notes: NoteType[] = page.notes.filter((n) =>
+    moveNote?.type === "Node" ? n !== moveNote.target : n !== moveNote
+  );
   return (
     <>
       <SvgDefs />

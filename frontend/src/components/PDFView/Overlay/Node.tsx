@@ -47,7 +47,7 @@ const Node: FC<Props> = ({ target, index, visible, pageRect, onMouseDown }) => {
     <g
       style={{
         fill: visible || hover ? green.A700 : "transparent",
-        cursor: "move",
+        cursor: "grab",
       }}
       onMouseDown={(e) => {
         if (e.button !== 0) return;

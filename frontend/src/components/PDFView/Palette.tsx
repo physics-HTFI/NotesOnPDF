@@ -262,10 +262,10 @@ const Palette: FC<Props> = ({ open, onClose, onEdit }) => {
           onClose();
           pushNote({
             type: "Rect",
-            x1: x,
-            y1: y - 0.1,
-            x2: x + 0.1,
-            y2: y,
+            x: x,
+            y: y - 0.1,
+            width: 0.1,
+            height: 0.1,
           });
         }}
       >
@@ -274,10 +274,10 @@ const Palette: FC<Props> = ({ open, onClose, onEdit }) => {
             pageRect={svgRect}
             params={{
               type: "Rect",
-              x1: 0.25,
-              y1: 0.35,
-              x2: 0.8,
-              y2: 0.65,
+              x: 0.25,
+              y: 0.35,
+              width: 0.55,
+              height: 0.3,
             }}
           />
         </Svg>
