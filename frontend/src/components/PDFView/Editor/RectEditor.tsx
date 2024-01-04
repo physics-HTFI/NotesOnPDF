@@ -34,10 +34,10 @@ const RectEditor: FC<Props> = ({ params, onClose }) => {
   const pageRect = new DOMRect(0, 0, size, size);
   const rect: Rect = {
     type: "Rect",
-    x1: 0.2,
-    y1: 0.3,
-    x2: 0.8,
-    y2: 0.7,
+    x: 0.2,
+    y: 0.3,
+    width: 0.6,
+    height: 0.4,
   };
   const toggleSx = {
     width: size,
