@@ -57,6 +57,7 @@ const theme = createTheme({
 interface Props {
   mode: Mode;
   setMode: (mode: Mode) => void;
+  hidden: boolean;
   openDrawer: boolean;
   onOpenFileTree: () => void;
   onOpenSettings: () => void;
@@ -68,6 +69,7 @@ interface Props {
 const SpeedDial: FC<Props> = ({
   mode,
   setMode,
+  hidden,
   openDrawer,
   onOpenFileTree,
   onOpenSettings,
@@ -80,6 +82,7 @@ const SpeedDial: FC<Props> = ({
         position: "absolute",
         top: 0,
         left: 0,
+        visibility: hidden ? "collapse" : undefined,
       }}
       onMouseDown={(e) => {
         e.preventDefault();

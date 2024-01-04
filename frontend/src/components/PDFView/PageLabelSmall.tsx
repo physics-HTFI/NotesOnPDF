@@ -6,12 +6,13 @@ import { Chip } from "@mui/material";
  */
 interface Props {
   label?: string;
+  hidden: boolean;
 }
 
 /**
  * 画面隅のページ数表示コンポーネント
  */
-const PageLabelSmall: FC<Props> = ({ label }) => (
+const PageLabelSmall: FC<Props> = ({ label, hidden }) => (
   <Chip
     sx={{
       position: "absolute",
@@ -19,6 +20,7 @@ const PageLabelSmall: FC<Props> = ({ label }) => (
       bottom: 2,
       fontSize: "75%",
       cursor: "default",
+      visibility: hidden ? "collapse" : undefined,
     }}
     variant="outlined"
     color="success"

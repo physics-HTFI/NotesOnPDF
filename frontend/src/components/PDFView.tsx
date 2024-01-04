@@ -269,10 +269,11 @@ const PDFView: FC<Props> = ({
         </MathJaxContext>
 
         <Excluded excluded={(!mode && page?.excluded) ?? false} />
-        <PageLabelSmall label={pageLabel} />
+        <PageLabelSmall label={pageLabel} hidden={Boolean(moveNote)} />
         <SpeedDial
           mode={mode}
           setMode={setMode}
+          hidden={Boolean(moveNote)}
           openDrawer={openDrawer}
           onOpenSettings={onOpenDrawer}
           onOpenFileTree={onOpenFileTree}
