@@ -47,7 +47,7 @@ const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
           sx: {
             position: "absolute",
             borderRadius: "10px 10px 0 0",
-            overflow: "visible",
+            overflow: "visible", // 「閉じるアイコン」を表示する
           },
         }}
         onWheel={(e) => {
