@@ -25,7 +25,7 @@ interface Props {
 }
 
 /**
- * PDFビュークリック時に表示されるコントロール
+ * PDFビュークリック時に表示されるパレット型コントロール
  */
 const Palette: FC<Props> = ({ open, onClose }) => {
   const { mouse, pageRect } = useContext(MouseContext);

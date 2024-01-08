@@ -96,6 +96,9 @@ const getTransformed = (params: Node, dxy: [number, number]) => {
   return newParams;
 };
 
+/**
+ * 「不正な座標の場合の更新拒否」と「座標のスナップ」
+ */
 const getValidatedXY = (
   params: Node,
   dxy: [number, number],
@@ -150,7 +153,7 @@ interface Props {
 }
 
 /**
- * PDFビュークリック時に表示されるコントロール
+ * 移動中の注釈を表示するコンポーネント
  */
 const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
   const [dXY, setDXY] = useState<[number, number]>([0, 0]);

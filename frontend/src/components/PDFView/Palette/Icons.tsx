@@ -220,7 +220,6 @@ export const PolygonIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
         index: 1,
         target: {
           type: "Polygon",
-          border: true,
           points: [
             [x, y],
             [x, y],
