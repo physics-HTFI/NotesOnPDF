@@ -280,10 +280,11 @@ const PDFView: FC<Props> = ({
         />
         <Palette
           open={paretteOpen}
-          onClose={() => {
+          onClose={(note) => {
             setParetteOpen(false);
+            if (note.type === "Node") setMoveNote(note);
+            else setEditNote(note);
           }}
-          onEdit={setEditNote}
         />
         <Editor
           open={Boolean(editNote)}

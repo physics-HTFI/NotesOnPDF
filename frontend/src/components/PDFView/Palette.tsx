@@ -2,7 +2,7 @@ import { FC, useContext } from "react";
 import { Paper } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
 import { useNotes } from "@/hooks/useNotes";
-import { NoteType } from "@/types/Notes";
+import { Node, NoteType } from "@/types/Notes";
 import {
   ArrowIcon,
   BracketIcon,
@@ -21,16 +21,15 @@ import Divider from "./Palette/Divider";
  */
 interface Props {
   open: boolean;
-  onClose: () => void;
-  onEdit: (note: NoteType) => void;
+  onClose: (note: NoteType | Node) => void;
 }
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Palette: FC<Props> = ({ open, onClose, onEdit }) => {
+const Palette: FC<Props> = ({ open, onClose }) => {
   const { mouse, pageRect } = useContext(MouseContext);
-  const { notes, pushNote } = useNotes();
+  const { notes } = useNotes();
   const L = 50;
   const svgRect = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
   const DIVISIONS = 8;
@@ -58,9 +57,7 @@ const Palette: FC<Props> = ({ open, onClose, onEdit }) => {
     (mouse.pageY - pageRect.y) / pageRect.height,
   ];
   const iconProps: Omit<IconProps, "sx"> = {
-    onClose: onClose,
-    pushNote: pushNote,
-    onEdit,
+    onClose,
     x,
     y,
     page: notes.currentPage,
@@ -82,13 +79,13 @@ const Palette: FC<Props> = ({ open, onClose, onEdit }) => {
     >
       {/* 各アイコン */}
       <MarkerIcon sx={sx(0)} {...iconProps} />
-      <ArrowIcon sx={sx(1)} {...iconProps} />
-      <BracketIcon sx={sx(2)} {...iconProps} />
-      <NoteIcon sx={sx(3)} {...iconProps} />
+      <RectIcon sx={sx(1)} {...iconProps} />
+      <ArrowIcon sx={sx(2)} {...iconProps} />
+      <BracketIcon sx={sx(3)} {...iconProps} />
       <ChipIcon sx={sx(4)} {...iconProps} />
       <PageLinkIcon sx={sx(5)} {...iconProps} />
-      <PolygonIcon sx={sx(6)} {...iconProps} />
-      <RectIcon sx={sx(7)} {...iconProps} />
+      <NoteIcon sx={sx(6)} {...iconProps} />
+      <PolygonIcon sx={sx(7)} {...iconProps} />
 
       {/* 分割線 */}
       <Divider L={L} divisions={DIVISIONS} />
