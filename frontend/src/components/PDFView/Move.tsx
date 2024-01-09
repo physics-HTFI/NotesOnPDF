@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react";
+import { FC, useContext, useRef, useState } from "react";
 import Arrow from "./Overlay/Arrow";
 import Bracket from "./Overlay/Bracket";
 import Marker from "./Overlay/Marker";
@@ -10,6 +10,7 @@ import Svg from "./Overlay/Svg";
 import Chip from "./Overlay/Chip";
 import { Node, NoteType } from "@/types/Notes";
 import { Box } from "@mui/material";
+import { MouseContext } from "@/contexts/MouseContext";
 
 /**
  * 平行移動した注釈を返す
@@ -147,18 +148,21 @@ const getValidatedXY = (
  */
 interface Props {
   params?: NoteType | Node;
-  mouse: { pageX: number; pageY: number };
-  pageRect?: DOMRect;
-  onClose: (newNote?: NoteType, oldNote?: NoteType) => void;
+  onClose: (
+    newNote?: NoteType,
+    oldNote?: NoteType,
+    addPolygon?: boolean
+  ) => void;
 }
 
 /**
  * 移動中の注釈を表示するコンポーネント
  */
-const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
+const Move: FC<Props> = ({ params, onClose }) => {
   const [dXY, setDXY] = useState<[number, number]>([0, 0]);
   const ref = useRef<HTMLElement>();
-  if (!params || !pageRect) return <></>;
+  const { mouse, setMouse, pageRect } = useContext(MouseContext);
+  if (!params || !mouse || !setMouse || !pageRect) return <></>;
 
   const getDxy = (xy?: typeof mouse): [number, number] =>
     !xy
@@ -170,6 +174,9 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
 
   const newParams =
     params.type === "Node" ? getTransformed(params, dXY) : params;
+  if (newParams.type === "Polygon" && newParams.points.length <= 3) {
+    newParams.border = true;
+  }
 
   return (
     <>
@@ -220,14 +227,23 @@ const Move: FC<Props> = ({ params, mouse, pageRect, onClose }) => {
           setDXY([0, 0]);
           e.preventDefault();
           e.stopPropagation();
+          setMouse({ pageX: e.pageX, pageY: e.pageY });
           const δxy =
             params.type === "Node"
               ? dXY
               : getDxy({ pageX: e.pageX, pageY: e.pageY });
-          if (δxy[0] === 0 && δxy[1] === 0) {
+          const noMove = δxy[0] === 0 && δxy[1] === 0;
+          const isPolygonNode =
+            params.type === "Node" && params.target.type === "Polygon";
+
+          if (noMove && !isPolygonNode) {
             onClose();
           } else if (params.type === "Node") {
-            onClose(params.target, getTransformed(params, δxy));
+            onClose(
+              params.target,
+              getTransformed(params, δxy),
+              noMove && isPolygonNode
+            );
           } else {
             onClose(params, getTranslated(params, δxy));
           }

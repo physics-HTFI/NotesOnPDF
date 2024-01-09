@@ -124,7 +124,7 @@ const PDFView: FC<Props> = ({
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const { notes, updateNote } = useNotes();
+  const { notes, page, updateNote } = useNotes();
   const [width, height, top, bottom] =
     notes?.currentPage === undefined
       ? [undefined, undefined]
@@ -136,7 +136,6 @@ const PDFView: FC<Props> = ({
           containerRect?.width,
           containerRect?.height
         );
-  const page = notes ? notes.pages[notes.currentPage] : undefined;
   const { pageLabel } = toDisplayedPage(notes);
 
   const getPageRect = useCallback((ref: HTMLDivElement) => {
@@ -152,13 +151,14 @@ const PDFView: FC<Props> = ({
   }, [notes?.currentPage]);
 
   const base = grey[300];
-  const stripe = !mode
-    ? base
-    : mode === "edit"
-    ? "#e0e0f8"
-    : mode === "move"
-    ? "#e0e5e0"
-    : "#eae0e0";
+  const stripe =
+    mode === "edit"
+      ? "#e0e0f8"
+      : mode === "move"
+      ? "#e0e5e0"
+      : mode === "delete"
+      ? "#eae0e0"
+      : base;
 
   return (
     <MouseContext.Provider value={{ mouse, setMouse, pageRect }}>
@@ -176,7 +176,7 @@ const PDFView: FC<Props> = ({
           if (e.button !== 0) return;
           if (!pageRect) return;
           setMode(null);
-          if (mode) return;
+          if (mode ?? moveNote) return;
           setMouse({ pageX: e.pageX, pageY: e.pageY });
           setParetteOpen(true);
         }}
@@ -257,12 +257,25 @@ const PDFView: FC<Props> = ({
             />
             <Move
               params={moveNote}
-              mouse={mouse}
-              pageRect={pageRect}
-              onClose={(oldNote, newNote) => {
-                setMoveNote(undefined);
-                if (!oldNote || !newNote) return;
-                updateNote(oldNote, newNote);
+              onClose={(oldNote, newNote, addPolygon) => {
+                if (
+                  !addPolygon &&
+                  newNote?.type === "Polygon" &&
+                  page?.notes?.every((n) => n !== oldNote)
+                ) {
+                  // Polygonの追加時は点を追加して変形モードを続ける
+                  const push = newNote.points[newNote.points.length - 1];
+                  if (push) newNote.points.push([...push]);
+                  setMoveNote({
+                    type: "Node",
+                    index: newNote.points.length - 1,
+                    target: newNote,
+                  });
+                } else {
+                  setMoveNote(undefined);
+                  if (!oldNote || !newNote) return;
+                  updateNote(oldNote, newNote);
+                }
               }}
             />
           </Container>
