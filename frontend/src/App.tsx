@@ -122,7 +122,7 @@ function App() {
           </PanelResizeHandle>
 
           {/* PDFビュー */}
-          <Panel minSizePixels={300}>
+          <Panel minSizePixels={200}>
             <PDFView
               file={pdf}
               openDrawer={openBottomDrawer}
