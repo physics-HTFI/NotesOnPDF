@@ -3,6 +3,7 @@ import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
 import { Chip as ChipType, Node, NoteType } from "@/types/Notes";
 import { MouseContext } from "@/contexts/MouseContext";
+import { useNotes } from "@/hooks/useNotes";
 
 /**
  * `Chip`の引数
@@ -18,7 +19,10 @@ interface Props {
  */
 const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
-  const { setMouse } = useContext(MouseContext);
+  const { setMouse, scale } = useContext(MouseContext);
+  const { notes } = useNotes();
+  if (!notes || !scale) return <></>;
+
   const outlined = params.outlined ?? false;
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   return (
@@ -30,6 +34,8 @@ const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
         cursor,
         opacity: hover ? 0.5 : 1,
         fontSize: "75%",
+        transformOrigin: "top left",
+        transform: `scale(${scale}%)`,
       }}
       color="primary"
       variant={outlined ? "outlined" : undefined}

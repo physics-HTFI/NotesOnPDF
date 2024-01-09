@@ -19,7 +19,7 @@ interface Props {
  */
 const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
-  const { setMouse } = useContext(MouseContext);
+  const { setMouse, scale } = useContext(MouseContext);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   const html = params.html
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
@@ -37,6 +37,8 @@ const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
           fontSize: "80%",
           background: hover ? "#F881" : undefined,
           whiteSpace: "nowrap", // 画面右端においたときに改行するのを防ぐ
+          transformOrigin: "top left",
+          transform: `scale(${scale}%)`,
         }}
         dangerouslySetInnerHTML={{ __html: html }}
         onMouseDown={(e) => {

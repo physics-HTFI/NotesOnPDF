@@ -9,6 +9,7 @@ interface MouseContextType {
   mouse?: Mouse;
   setMouse?: (m: Mouse) => void;
   pageRect?: DOMRect;
+  scale?: number;
 }
 
 export const MouseContext = createContext<MouseContextType>({});

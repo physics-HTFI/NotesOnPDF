@@ -106,11 +106,7 @@ export interface Page {
  * 1つのPDFファイルの設定情報
  */
 export interface Settings {
-  colorPrimary?: string;
-  colorSecondary?: string;
-  fontSizeSmall?: number;
-  fontSizeMiddle?: number;
-  fontSizeLarge?: number;
+  fontSize: number;
   /** PDFの上側がどれだけ見切れるか[0-1] */
   offsetTop: number;
   /** PDFの下側がどれだけ見切れるか[0-1]*/
@@ -123,7 +119,7 @@ export interface Settings {
 export const createNewNotes = (title: string, numPages: number): Notes => ({
   numPages,
   currentPage: 0,
-  settings: { offsetTop: 0, offsetBottom: 0 },
+  settings: { fontSize: 70, offsetTop: 0, offsetBottom: 0 },
   pages: {
     0: {
       book: title.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined,

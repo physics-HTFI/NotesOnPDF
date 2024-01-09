@@ -78,8 +78,9 @@ const Settings: FC<Props> = ({ onClose }) => {
             setTab(i);
           }}
         >
-          <Tab label="ページ設定" />
-          <Tab label="ファイル設定" />
+          <Tab label="ページ" />
+          <Tab label="ファイル" />
+          <Tab label="アプリ" />
         </Tabs>
       </Box>
 
@@ -154,14 +155,30 @@ const Settings: FC<Props> = ({ onClose }) => {
       {tab === 1 && (
         <Box sx={{ width: "90%", m: 1 }}>
           <LabelSlider
+            label="文字サイズ"
+            value={notes.settings.fontSize}
+            minValue={30}
+            maxValue={100}
+            step={0.5}
+            onChange={(fontSize) => {
+              handleChangeSettings({ fontSize });
+            }}
+          />
+          <LabelSlider
             label="余白(上)"
             value={notes.settings.offsetTop}
+            minValue={0}
+            maxValue={0.2}
+            step={0.001}
             onChange={(offsetTop) => {
               handleChangeSettings({ offsetTop });
             }}
           />
           <LabelSlider
             label="余白(下)"
+            minValue={0}
+            maxValue={0.2}
+            step={0.001}
             value={notes.settings.offsetBottom}
             onChange={(offsetBottom) => {
               handleChangeSettings({ offsetBottom });

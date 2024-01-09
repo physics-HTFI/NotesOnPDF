@@ -26,7 +26,7 @@ interface Props {
 const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
   const { notes, setNotes } = useContext(NotesContext);
-  const { setMouse } = useContext(MouseContext);
+  const { setMouse, scale } = useContext(MouseContext);
   const { pageLabel } = toDisplayedPage(notes, params.page);
   const cursor = mode === "move" ? "move" : "pointer";
   if (!notes || !setNotes) return <></>;
@@ -41,6 +41,8 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
           opacity: mode && hover ? 0.5 : 1,
           background: !mode && hover ? "mediumseagreen" : "green",
           fontSize: "75%",
+          transformOrigin: "top left",
+          transform: `scale(${scale}%)`,
         }}
         color="success"
         icon={<Shortcut />}

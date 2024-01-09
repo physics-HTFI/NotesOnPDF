@@ -114,12 +114,13 @@ const PDFView: FC<Props> = ({
 }) => {
   const [reading, setReading] = useState(false);
   const [paretteOpen, setParetteOpen] = useState(false);
-  const sizes = useRef<{ width: number; height: number }[]>();
+  const pdfSizes = useRef<{ width: number; height: number }[]>();
   const [refContainer, setRefContainer] = useState<HTMLDivElement>();
   const [refPage, setRefPage] = useState<HTMLDivElement>();
   const [mode, setMode] = useState<Mode>(null);
   const [editNote, setEditNote] = useState<NoteType>();
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
+  const [scale, setScale] = useState(100);
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
@@ -131,8 +132,8 @@ const PDFView: FC<Props> = ({
       : preferredSize(
           notes.settings.offsetTop,
           notes.settings.offsetBottom,
-          sizes.current?.[notes.currentPage]?.width,
-          sizes.current?.[notes.currentPage]?.height,
+          pdfSizes.current?.[notes.currentPage]?.width,
+          pdfSizes.current?.[notes.currentPage]?.height,
           containerRect?.width,
           containerRect?.height
         );
@@ -150,6 +151,14 @@ const PDFView: FC<Props> = ({
     setReading(true);
   }, [notes?.currentPage]);
 
+  useEffect(() => {
+    if (notes?.currentPage === undefined) return;
+    const pageW = pageRect?.width;
+    const pdfW = pdfSizes.current?.[notes.currentPage]?.width;
+    if (!pageW || !pdfW) setScale(100);
+    else setScale((notes.settings.fontSize * pageW) / pdfW);
+  }, [notes?.currentPage, pageRect, pdfSizes, notes?.settings.fontSize]);
+
   const base = grey[300];
   const stripe =
     mode === "edit"
@@ -161,7 +170,7 @@ const PDFView: FC<Props> = ({
       : base;
 
   return (
-    <MouseContext.Provider value={{ mouse, setMouse, pageRect }}>
+    <MouseContext.Provider value={{ mouse, setMouse, pageRect, scale }}>
       <Box
         sx={{
           background: `repeating-linear-gradient(-60deg, ${stripe}, ${stripe} 5px, ${base} 5px, ${base} 10px)`,
@@ -216,14 +225,14 @@ const PDFView: FC<Props> = ({
                 if (!file) return;
                 onLoadSuccess?.(doc.numPages);
                 const getsizes = async () => {
-                  sizes.current = [];
+                  pdfSizes.current = [];
                   for (let i = 0; i < doc.numPages; i++) {
                     const page = await doc.getPage(i + 1);
                     const [width, height] = [
                       page.view[2] ?? 0,
                       page.view[3] ?? 0,
                     ];
-                    sizes.current.push({ width, height });
+                    pdfSizes.current.push({ width, height });
                   }
                 };
                 getsizes().catch(() => undefined);
@@ -264,6 +273,7 @@ const PDFView: FC<Props> = ({
                   page?.notes?.every((n) => n !== oldNote)
                 ) {
                   // Polygonの追加時は点を追加して変形モードを続ける
+                  // TODO ポリゴンを追加が終了したときにマウスカーソルがなぜか消えたままになる（Firefoxだと表示される）
                   const push = newNote.points[newNote.points.length - 1];
                   if (push) newNote.points.push([...push]);
                   setMoveNote({

@@ -120,6 +120,7 @@ export default class ModelMock implements IModel {
       numPages: 29,
       currentPage: 0,
       settings: {
+        fontSize: 70,
         offsetTop: 0.05,
         offsetBottom: 0.05,
       },
