@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Svg from "../Overlay/Svg";
+import Svg from "../Items/Svg";
 
 /**
  * `Divider`の引数

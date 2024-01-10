@@ -1,5 +1,5 @@
 import { FileTree } from "@/types/FileTree";
-import { Notes } from "@/types/Notes";
+import { PdfInfo } from "@/types/PdfInfo";
 import { Progresses } from "@/types/Progresses";
 import IModel from "./IModel";
 
@@ -113,7 +113,7 @@ export default class ModelMock implements IModel {
     */
   };
 
-  getNotes = async (path: string): Promise<Notes> => {
+  getPdfInfo = async (path: string): Promise<PdfInfo> => {
     await this.wait();
     if (path !== "文書1.pdf") throw new Error();
     return {

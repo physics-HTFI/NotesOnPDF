@@ -1,9 +1,9 @@
 import { FC, useContext } from "react";
 import { Box, Drawer } from "@mui/material";
-import { Notes } from "@/types/Notes";
+import { PdfInfo } from "@/types/PdfInfo";
 import Settings from "./TOCView/Settings";
 import getTOCData from "./TOCView/getTOCData";
-import { NotesContext } from "@/contexts/NotesContext";
+import { PdfInfoContext } from "@/contexts/PdfInfoContext";
 import { grey } from "@mui/material/colors";
 
 /**
@@ -18,9 +18,9 @@ interface Props {
  * 目次を表示するコンポーネント
  */
 const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
-  const { notes, setNotes } = useContext(NotesContext);
-  const handleChanged = (notes: Notes) => {
-    setNotes?.(notes);
+  const { pdfinfo, setPdfInfo } = useContext(PdfInfoContext);
+  const handleChanged = (pdfinfo: PdfInfo) => {
+    setPdfInfo?.(pdfinfo);
   };
 
   return (
@@ -35,7 +35,7 @@ const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
       }}
     >
       <Box sx={{ p: 0.5, lineHeight: 1 }}>
-        {getTOCData(notes, handleChanged)}
+        {getTOCData(pdfinfo, handleChanged)}
       </Box>
 
       <Drawer

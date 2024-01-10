@@ -1,7 +1,10 @@
-import { Arrow as ArrowType, Node as NodeType, NoteType } from "@/types/Notes";
-import { FC, useContext, useState } from "react";
+import {
+  Arrow as ArrowType,
+  Node as NodeType,
+  NoteType,
+} from "@/types/PdfInfo";
+import { FC, MouseEvent, useState } from "react";
 import { Mode } from "../SpeedDial";
-import { MouseContext } from "@/contexts/MouseContext";
 import Node from "./Node";
 
 /**
@@ -11,14 +14,13 @@ interface Props {
   params: ArrowType;
   mode?: Mode;
   pageRect: DOMRect;
-  onMouseDown?: (p: NoteType | NodeType) => void;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
 }
 
 /**
  * 矢印などの直線
  */
 const Arrow: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
-  const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const x1 = params.x1 * pageRect.width;
   const y1 = params.y1 * pageRect.height;
@@ -37,11 +39,7 @@ const Arrow: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
       <g
         style={{ cursor }}
         onMouseDown={(e) => {
-          if (!mode || e.button !== 0) return;
-          e.stopPropagation();
-          e.preventDefault(); // これがないと、この要素を起点にドラッグすると、ほかの要素の文字列が選択されてしまう
-          setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          onMouseDown?.(params);
+          onMouseDown?.(e, params);
         }}
         onMouseEnter={() => {
           setHover(!!cursor);

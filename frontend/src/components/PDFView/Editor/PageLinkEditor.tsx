@@ -1,8 +1,8 @@
 import { FC, useContext, useRef } from "react";
 import { TextField } from "@mui/material";
-import { PageLink, fromDisplayedPage, toDisplayedPage } from "@/types/Notes";
+import { PageLink, fromDisplayedPage, toDisplayedPage } from "@/types/PdfInfo";
 import { MouseContext } from "@/contexts/MouseContext";
-import { useNotes } from "@/hooks/useNotes";
+import { usePdfInfo } from "@/hooks/usePdfInfo";
 import EditorBase from "./EditorBase";
 
 /**
@@ -17,27 +17,27 @@ interface Props {
  * ページリンクの編集ダイアログ
  */
 const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
-  const { notes, setNotes, updateNote } = useNotes();
+  const { pdfinfo, setPdfInfo, updateNote } = usePdfInfo();
   const { mouse, pageRect } = useContext(MouseContext);
   const pageNum =
-    toDisplayedPage(notes, params.page).pageNum ??
-    toDisplayedPage(notes).pageNum ??
+    toDisplayedPage(pdfinfo, params.page).pageNum ??
+    toDisplayedPage(pdfinfo).pageNum ??
     1;
   const num = useRef<number>(pageNum);
-  const page = notes?.pages[notes.currentPage];
+  const page = pdfinfo?.pages[pdfinfo.currentPage];
 
   // 閉じたときに値を更新する
   const handleClose = () => {
     onClose();
-    if (!notes) return;
+    if (!pdfinfo) return;
     if (pageNum === num.current) return;
     updateNote(params, {
       ...params,
-      page: fromDisplayedPage(notes, num.current),
+      page: fromDisplayedPage(pdfinfo, num.current),
     });
   };
 
-  if (!notes || !setNotes || !page || !mouse || !pageRect) return <></>;
+  if (!pdfinfo || !setPdfInfo || !page || !mouse || !pageRect) return <></>;
   return (
     <EditorBase onClose={handleClose}>
       ページ番号:

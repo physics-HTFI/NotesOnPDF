@@ -5,13 +5,13 @@ import IModel from "@/models/IModel";
 import Model from "./models/Model";
 import ModelMock from "@/models/Model.Mock";
 import { Progresses } from "@/types/Progresses";
-import { Notes, createNewNotes } from "@/types/Notes";
+import { PdfInfo, createNewPdfInfo } from "@/types/PdfInfo";
 import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "./components/OpenFileDrawer";
 import PDFView from "@/components/PDFView";
 import Waiting from "@/components/Fullscreen/Waiting";
 import TOCView from "@/components/TOCView";
-import { NotesContext } from "./contexts/NotesContext";
+import { PdfInfoContext } from "./contexts/PdfInfoContext";
 import { grey } from "@mui/material/colors";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
@@ -20,24 +20,24 @@ const model: IModel = IS_MOCK ? new ModelMock() : new Model();
 function App() {
   const [progresses, setProgresses] = useState<Progresses>();
   const [pdf, setPDF] = useState<string | File>();
-  const [notes, setNotes] = useState<Notes | null>(); // 読み込み失敗時にnull
+  const [pdfinfo, setPdfInfo] = useState<PdfInfo | null>(); // 読み込み失敗時にnull
   const [numPages, setNumPages] = useState<number>();
   const pdfPath = pdf && (pdf instanceof File ? pdf.name : pdf);
 
   const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
   const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
   const [isWaitingPDF, setIsWaitingPDF] = useState(false);
-  const [isWaitingNotes, setIsWaitingNotes] = useState(false);
+  const [isWaitingPdfInfo, setIsWaitingPdfInfo] = useState(false);
 
   // ページの遷移
   const handlePageChange = (delta: number) => {
-    if (!notes) return;
+    if (!pdfinfo) return;
     const newPage = Math.max(
       0,
-      Math.min(notes.numPages - 1, notes.currentPage + delta)
+      Math.min(pdfinfo.numPages - 1, pdfinfo.currentPage + delta)
     );
-    if (notes.currentPage === newPage) return;
-    setNotes({ ...notes, currentPage: newPage });
+    if (pdfinfo.currentPage === newPage) return;
+    setPdfInfo({ ...pdfinfo, currentPage: newPage });
   };
 
   // ファイルツリーに表示する進捗情報の取得
@@ -50,28 +50,31 @@ function App() {
       .catch(() => undefined);
   }, []);
 
-  // 始めて読み込むPDFの場合、`Notes`を生成する
+  // 始めて読み込むPDFの場合、`PdfInfo`を生成する
   useEffect(() => {
-    if (isWaitingPDF || isWaitingNotes) return;
+    if (isWaitingPDF || isWaitingPdfInfo) return;
     if (!numPages || !pdf || !pdfPath) return;
-    if (notes === undefined) return;
+    if (pdfinfo === undefined) return;
 
-    if (notes === null) {
-      setNotes(createNewNotes(pdfPath, numPages));
-    } else if (notes.numPages !== numPages) {
+    if (pdfinfo === null) {
+      setPdfInfo(createNewPdfInfo(pdfPath, numPages));
+    } else if (pdfinfo.numPages !== numPages) {
       // 同じPDFでページ数が異なっている場合に対応する
-      setNotes({ ...notes, numPages });
+      setPdfInfo({ ...pdfinfo, numPages });
     }
-  }, [isWaitingPDF, isWaitingNotes, numPages, notes, pdfPath, pdf]);
+  }, [isWaitingPDF, isWaitingPdfInfo, numPages, pdfinfo, pdfPath, pdf]);
 
   return (
-    <NotesContext.Provider
-      value={{ notes: notes ?? undefined, setNotes, pdfPath }}
+    <PdfInfoContext.Provider
+      value={{ pdfinfo: pdfinfo ?? undefined, setPdfInfo, pdfPath }}
     >
       <Box
         sx={{ display: "flex" }}
         onWheel={(e) => {
           handlePageChange(e.deltaY < 0 ? -1 : 1);
+        }}
+        onMouseDown={(e) => {
+          e.preventDefault();
         }}
       >
         {/* ファイルツリー */}
@@ -88,19 +91,19 @@ function App() {
             const pdfPathNew = pdf instanceof File ? pdf.name : pdf;
             if (pdfPath === pdfPathNew || !pdfPathNew) return;
             setIsWaitingPDF(true);
-            setIsWaitingNotes(true);
-            setNotes(undefined);
+            setIsWaitingPdfInfo(true);
+            setPdfInfo(undefined);
             setPDF(pdf);
             model
-              .getNotes(pdfPathNew)
-              .then((notes) => {
-                setNotes(notes);
+              .getPdfInfo(pdfPathNew)
+              .then((pdfinfo) => {
+                setPdfInfo(pdfinfo);
               })
               .catch(() => {
-                setNotes(null);
+                setPdfInfo(null);
               })
               .finally(() => {
-                setIsWaitingNotes(false);
+                setIsWaitingPdfInfo(false);
               });
           }}
         />
@@ -148,12 +151,12 @@ function App() {
         </PanelGroup>
 
         {/* 処理中プログレス表示 */}
-        <Waiting isWaiting={isWaitingPDF || isWaitingNotes} />
+        <Waiting isWaiting={isWaitingPDF || isWaitingPdfInfo} />
 
         {/* モックモデルを使用していることを示すポップアップ表示 */}
         {IS_MOCK && <SnackbarsMock open />}
       </Box>
-    </NotesContext.Provider>
+    </PdfInfoContext.Provider>
   );
 }
 

@@ -1,5 +1,4 @@
-import { FC, useContext, useState } from "react";
-import { MouseContext } from "@/contexts/MouseContext";
+import { FC, MouseEvent, useState } from "react";
 import {
   Arrow,
   Bracket,
@@ -8,25 +7,24 @@ import {
   NoteType,
   Polygon,
   Rect,
-} from "@/types/Notes";
+} from "@/types/PdfInfo";
 import { green } from "@mui/material/colors";
 
 /**
- * `Bracket`の引数
+ * `Node`の引数
  */
 interface Props {
   target: Arrow | Bracket | Marker | Polygon | Rect;
   index: number;
   visible: boolean;
   pageRect: DOMRect;
-  onMouseDown?: (p: NoteType | Node) => void;
+  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
 }
 
 /**
  * ノード編集用マーカー
  */
 const Node: FC<Props> = ({ target, index, visible, pageRect, onMouseDown }) => {
-  const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const [x, y] = (() => {
     switch (target.type) {
@@ -50,11 +48,7 @@ const Node: FC<Props> = ({ target, index, visible, pageRect, onMouseDown }) => {
         cursor: "grab",
       }}
       onMouseDown={(e) => {
-        if (e.button !== 0) return;
-        e.stopPropagation();
-        e.preventDefault();
-        setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-        onMouseDown?.({ type: "Node", target, index });
+        onMouseDown?.(e, { type: "Node", target, index });
       }}
       onMouseEnter={() => {
         setHover(true);

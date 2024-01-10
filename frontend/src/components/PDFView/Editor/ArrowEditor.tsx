@@ -1,12 +1,12 @@
 import { FC, useContext } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { Arrow, Bracket } from "@/types/Notes";
-import { useNotes } from "@/hooks/useNotes";
+import { Arrow, Bracket } from "@/types/PdfInfo";
+import { usePdfInfo } from "@/hooks/usePdfInfo";
 import EditorBase from "./EditorBase";
-import Svg from "../Overlay/Svg";
+import Svg from "../Items/Svg";
 import { red } from "@mui/material/colors";
-import ArrowSvg from "../Overlay/Arrow";
-import BracketSvg from "../Overlay/Bracket";
+import ArrowItem from "../Items/Arrow";
+import BracketItem from "../Items/Bracket";
 import { MouseContext } from "@/contexts/MouseContext";
 
 /**
@@ -44,7 +44,7 @@ interface Props {
 const ArrowEditor: FC<Props> = ({ params, onClose }) => {
   const isArrow = params.type === "Arrow";
   const defaultHeads = isArrow ? "end" : "both";
-  const { updateNote } = useNotes();
+  const { updateNote } = usePdfInfo();
   const { pageRect } = useContext(MouseContext);
   if (!pageRect) return <></>;
 
@@ -78,9 +78,9 @@ const ArrowEditor: FC<Props> = ({ params, onClose }) => {
       <ToggleButton key={heads} value={heads} sx={toggleSx}>
         <Svg pageRect={pageRectButton}>
           {line.type === "Arrow" ? (
-            <ArrowSvg pageRect={pageRectButton} params={line} />
+            <ArrowItem pageRect={pageRectButton} params={line} />
           ) : (
-            <BracketSvg pageRect={pageRectButton} params={line} />
+            <BracketItem pageRect={pageRectButton} params={line} />
           )}
         </Svg>
       </ToggleButton>

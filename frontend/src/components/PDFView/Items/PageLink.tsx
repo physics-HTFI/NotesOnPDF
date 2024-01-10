@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, MouseEvent, useContext, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
 import {
@@ -6,8 +6,8 @@ import {
   NoteType,
   PageLink as PageLinkType,
   toDisplayedPage,
-} from "@/types/Notes";
-import { NotesContext } from "@/contexts/NotesContext";
+} from "@/types/PdfInfo";
+import { PdfInfoContext } from "@/contexts/PdfInfoContext";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
 
@@ -17,7 +17,7 @@ import { MouseContext } from "@/contexts/MouseContext";
 interface Props {
   params: PageLinkType;
   mode?: Mode;
-  onMouseDown?: (p: NoteType | Node) => void;
+  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
 }
 
 /**
@@ -25,11 +25,11 @@ interface Props {
  */
 const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
-  const { notes, setNotes } = useContext(NotesContext);
-  const { setMouse, scale } = useContext(MouseContext);
-  const { pageLabel } = toDisplayedPage(notes, params.page);
+  const { pdfinfo, setPdfInfo } = useContext(PdfInfoContext);
+  const { scale } = useContext(MouseContext);
+  const { pageLabel } = toDisplayedPage(pdfinfo, params.page);
   const cursor = mode === "move" ? "move" : "pointer";
-  if (!notes || !setNotes) return <></>;
+  if (!pdfinfo || !setPdfInfo) return <></>;
   return (
     <>
       <Chip
@@ -54,13 +54,12 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
           if (e.button !== 0) return;
           if (!mode) {
             // ページリンク先へ移動
-            if (notes.currentPage === params.page) return;
-            if (params.page < 0 || notes.numPages <= params.page) return;
-            setNotes({ ...notes, currentPage: params.page });
+            if (pdfinfo.currentPage === params.page) return;
+            if (params.page < 0 || pdfinfo.numPages <= params.page) return;
+            setPdfInfo({ ...pdfinfo, currentPage: params.page });
             return;
           }
-          setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          onMouseDown?.(params);
+          onMouseDown?.(e, params);
         }}
         onMouseEnter={() => {
           setHover(!!cursor);

@@ -1,8 +1,8 @@
 import { FC, useContext } from "react";
 import { Paper } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
-import { useNotes } from "@/hooks/useNotes";
-import { Node, NoteType } from "@/types/Notes";
+import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { Node, NoteType } from "@/types/PdfInfo";
 import {
   ArrowIcon,
   BracketIcon,
@@ -29,12 +29,12 @@ interface Props {
  */
 const Palette: FC<Props> = ({ open, onClose }) => {
   const { mouse, pageRect } = useContext(MouseContext);
-  const { notes } = useNotes();
-  const L = 50;
-  const svgRect = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
-  const DIVISIONS = 8;
-  const Θ = (2 * Math.PI) / DIVISIONS;
+  const { pdfinfo } = usePdfInfo();
+  if (!mouse || !pageRect || !pdfinfo || !open) return <></>;
+
+  const [L, DIVISIONS] = [50, 8];
   const sx = (i: number) => {
+    const Θ = (2 * Math.PI) / DIVISIONS;
     return {
       position: "absolute",
       width: L,
@@ -51,18 +51,14 @@ const Palette: FC<Props> = ({ open, onClose }) => {
     };
   };
 
-  if (!mouse || !pageRect || !notes || !open) return <></>;
-  const [x, y] = [
-    (mouse.pageX - pageRect.x) / pageRect.width,
-    (mouse.pageY - pageRect.y) / pageRect.height,
-  ];
   const iconProps: Omit<IconProps, "sx"> = {
     onClose,
-    x,
-    y,
-    page: notes.currentPage,
-    svgRect: svgRect,
+    x: (mouse.pageX - pageRect.x) / pageRect.width,
+    y: (mouse.pageY - pageRect.y) / pageRect.height,
+    page: pdfinfo.currentPage,
+    svgRect: new DOMRect(0, 0, 1.5 * L, 1.5 * L),
   };
+
   return (
     <Paper
       elevation={3}

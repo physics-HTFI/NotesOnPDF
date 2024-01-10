@@ -1,5 +1,5 @@
 import { Tooltip, Typography } from "@mui/material";
-import { Notes, Page } from "@/types/Notes";
+import { PdfInfo, Page } from "@/types/PdfInfo";
 
 /**
  * 題名を返す
@@ -121,14 +121,14 @@ const getPageColor = (isCurrent: boolean, page?: Page) => {
  * @returns 目次の内容
  */
 const getTOCData = (
-  notes?: Notes,
-  onChanged?: (notes: Notes) => void
+  pdfinfo?: PdfInfo,
+  onChanged?: (pdfinfo: PdfInfo) => void
 ): JSX.Element[] => {
-  if (!notes) return [];
+  if (!pdfinfo) return [];
   const toc: JSX.Element[] = [];
   let pageNum = 1;
-  for (let i = 0; i < notes.numPages; i++) {
-    const page = notes.pages[i];
+  for (let i = 0; i < pdfinfo.numPages; i++) {
+    const page = pdfinfo.pages[i];
 
     // 第名を追加
     if (page?.book !== undefined) {
@@ -152,11 +152,11 @@ const getTOCData = (
       getPage(
         `page-${i}`,
         pageNum,
-        i === notes.currentPage,
+        i === pdfinfo.currentPage,
         page?.sectionBreakInner,
         page,
         () => {
-          onChanged?.({ ...notes, currentPage: i });
+          onChanged?.({ ...pdfinfo, currentPage: i });
         }
       )
     );
@@ -166,11 +166,11 @@ const getTOCData = (
         getPage(
           `page-right-${i}`,
           pageNum,
-          i === notes.currentPage,
+          i === pdfinfo.currentPage,
           page.sectionBreakInner,
           page,
           () => {
-            onChanged?.({ ...notes, currentPage: i });
+            onChanged?.({ ...pdfinfo, currentPage: i });
           }
         )
       );

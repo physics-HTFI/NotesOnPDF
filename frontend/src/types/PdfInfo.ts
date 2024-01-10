@@ -1,7 +1,7 @@
 /**
  * 1つのPDFファイルに追加された全ての情報
  */
-export interface Notes {
+export interface PdfInfo {
   numPages: number;
   currentPage: number;
   pages: Record<number, Page>;
@@ -116,7 +116,7 @@ export interface Settings {
 /**
  * `Note`がまだ生成されていないPDFファイル用の初期インスタンスを返す
  */
-export const createNewNotes = (title: string, numPages: number): Notes => ({
+export const createNewPdfInfo = (title: string, numPages: number): PdfInfo => ({
   numPages,
   currentPage: 0,
   settings: { fontSize: 70, offsetTop: 0, offsetBottom: 0 },
@@ -130,19 +130,19 @@ export const createNewNotes = (title: string, numPages: number): Notes => ({
 
 /**
  * `pageNumber`の表示上のページ数を返す。
- * `pageNumber`が省略されている場合は`notes.currentPage`を対象とする。
+ * `pageNumber`が省略されている場合は`pdfinfo.currentPage`を対象とする。
  */
 export const toDisplayedPage = (
-  notes?: Notes,
+  pdfinfo?: PdfInfo,
   pageNumber?: number
 ): { pageNum?: number; pageLabel?: string } => {
-  if (!notes) return { pageLabel: "p. ???" };
-  pageNumber ??= notes.currentPage;
-  if (pageNumber < 0 || notes.numPages <= pageNumber)
+  if (!pdfinfo) return { pageLabel: "p. ???" };
+  pageNumber ??= pdfinfo.currentPage;
+  if (pageNumber < 0 || pdfinfo.numPages <= pageNumber)
     return { pageLabel: "p. ???" };
   let retval = 0;
   for (let i = pageNumber; 0 <= i; i--) {
-    const restart = notes.pages[i]?.pageNumberRestart;
+    const restart = pdfinfo.pages[i]?.pageNumberRestart;
     if (restart === undefined) {
       ++retval;
     } else {
@@ -158,21 +158,21 @@ export const toDisplayedPage = (
  * できなかった場合は、-1を返す。
  */
 export const fromDisplayedPage = (
-  notes: Notes,
+  pdfinfo: PdfInfo,
   displayedPageNumber: number
 ): number => {
-  const current = toDisplayedPage(notes).pageNum;
+  const current = toDisplayedPage(pdfinfo).pageNum;
   if (current === undefined) return -1;
   if (displayedPageNumber <= current) {
     // 現在のページより小さい場合は、遡って探す
-    for (let i = notes.currentPage; i >= 0; i--) {
-      if (displayedPageNumber === toDisplayedPage(notes, i).pageNum) {
+    for (let i = pdfinfo.currentPage; i >= 0; i--) {
+      if (displayedPageNumber === toDisplayedPage(pdfinfo, i).pageNum) {
         return i;
       }
     }
   } else {
-    for (let i = notes.currentPage + 1; i < notes.numPages; i++) {
-      if (displayedPageNumber === toDisplayedPage(notes, i).pageNum) {
+    for (let i = pdfinfo.currentPage + 1; i < pdfinfo.numPages; i++) {
+      if (displayedPageNumber === toDisplayedPage(pdfinfo, i).pageNum) {
         return i;
       }
     }

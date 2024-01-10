@@ -1,9 +1,9 @@
-import { FC, useContext, useState } from "react";
+import { FC, MouseEvent, useContext, useState } from "react";
 import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
-import { Chip as ChipType, Node, NoteType } from "@/types/Notes";
+import { Chip as ChipType, Node, NoteType } from "@/types/PdfInfo";
 import { MouseContext } from "@/contexts/MouseContext";
-import { useNotes } from "@/hooks/useNotes";
+import { usePdfInfo } from "@/hooks/usePdfInfo";
 
 /**
  * `Chip`の引数
@@ -11,7 +11,7 @@ import { useNotes } from "@/hooks/useNotes";
 interface Props {
   params: ChipType;
   mode?: Mode;
-  onMouseDown?: (p: NoteType | Node) => void;
+  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
 }
 
 /**
@@ -19,9 +19,9 @@ interface Props {
  */
 const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
-  const { setMouse, scale } = useContext(MouseContext);
-  const { notes } = useNotes();
-  if (!notes || !scale) return <></>;
+  const { scale } = useContext(MouseContext);
+  const { pdfinfo } = usePdfInfo();
+  if (!pdfinfo || !scale) return <></>;
 
   const outlined = params.outlined ?? false;
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
@@ -42,11 +42,7 @@ const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
       size="small"
       label={params.text}
       onMouseDown={(e) => {
-        if (!mode || e.button !== 0) return;
-        e.stopPropagation();
-        e.preventDefault();
-        setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-        onMouseDown?.(params);
+        onMouseDown?.(e, params);
       }}
       onMouseEnter={() => {
         setHover(!!cursor);

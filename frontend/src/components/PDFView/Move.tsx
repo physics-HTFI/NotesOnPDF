@@ -1,14 +1,14 @@
 import { FC, useContext, useRef, useState } from "react";
-import Arrow from "./Overlay/Arrow";
-import Bracket from "./Overlay/Bracket";
-import Marker from "./Overlay/Marker";
-import Note from "./Overlay/Note";
-import PageLink from "./Overlay/PageLink";
-import Rect from "./Overlay/Rect";
-import Polygon from "./Overlay/Polygon";
-import Svg from "./Overlay/Svg";
-import Chip from "./Overlay/Chip";
-import { Node, NoteType } from "@/types/Notes";
+import Arrow from "./Items/Arrow";
+import Bracket from "./Items/Bracket";
+import Marker from "./Items/Marker";
+import Note from "./Items/Note";
+import PageLink from "./Items/PageLink";
+import Rect from "./Items/Rect";
+import Polygon from "./Items/Polygon";
+import Svg from "./Items/Svg";
+import Chip from "./Items/Chip";
+import { Node, NoteType } from "@/types/PdfInfo";
 import { Box } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
 
@@ -221,7 +221,7 @@ const Move: FC<Props> = ({ params, onClose }) => {
           top: -window.screen.height,
           width: 2 * window.screen.width,
           height: 2 * window.screen.height,
-          cursor: params.type === "Node" ? "none" : "move",
+          cursor: "none",
         }}
         onMouseUp={(e) => {
           setDXY([0, 0]);

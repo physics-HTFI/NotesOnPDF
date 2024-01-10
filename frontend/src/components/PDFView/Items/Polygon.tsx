@@ -1,11 +1,10 @@
-import { FC, useContext, useState } from "react";
+import { FC, MouseEvent, useState } from "react";
 import { Mode } from "../SpeedDial";
 import {
   Polygon as PolygonType,
   Node as NodeType,
   NoteType,
-} from "@/types/Notes";
-import { MouseContext } from "@/contexts/MouseContext";
+} from "@/types/PdfInfo";
 import Node from "./Node";
 
 /**
@@ -15,14 +14,13 @@ interface Props {
   params: PolygonType;
   mode?: Mode;
   pageRect: DOMRect;
-  onMouseDown?: (p: NoteType | NodeType) => void;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
 }
 
 /**
- * PDFビュークリック時に表示されるコントロール
+ * ポリゴン
  */
 const Polygon: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
-  const { setMouse } = useContext(MouseContext);
   const [hover, setHover] = useState(false);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   const node =
@@ -45,11 +43,7 @@ const Polygon: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
           cursor,
         }}
         onMouseDown={(e) => {
-          if (!mode || e.button !== 0) return;
-          e.stopPropagation();
-          e.preventDefault();
-          setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          onMouseDown?.(params);
+          onMouseDown?.(e, params);
         }}
         onMouseEnter={() => {
           setHover(!!cursor);

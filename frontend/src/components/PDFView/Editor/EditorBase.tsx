@@ -1,6 +1,6 @@
 import { FC, ReactNode, useContext } from "react";
 import { Modal, Paper } from "@mui/material";
-import { NotesContext } from "@/contexts/NotesContext";
+import { PdfInfoContext } from "@/contexts/PdfInfoContext";
 import { MouseContext } from "@/contexts/MouseContext";
 
 /**
@@ -15,9 +15,9 @@ interface Props {
  * 画面クリック時にポップアップする編集ダイアログ
  */
 const EditorBase: FC<Props> = ({ children, onClose }) => {
-  const { notes, setNotes } = useContext(NotesContext);
+  const { pdfinfo, setPdfInfo } = useContext(PdfInfoContext);
   const { mouse } = useContext(MouseContext);
-  if (!notes || !setNotes || !mouse) return <></>;
+  if (!pdfinfo || !setPdfInfo || !mouse) return <></>;
 
   return (
     <Modal

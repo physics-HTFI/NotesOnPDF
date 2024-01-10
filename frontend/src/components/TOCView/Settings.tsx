@@ -1,12 +1,12 @@
 import { FC, useContext, useState } from "react";
 import { Box, IconButton, Tab, Tabs } from "@mui/material";
-import { Page, Settings } from "@/types/Notes";
+import { Page, Settings } from "@/types/PdfInfo";
 import CheckboxText from "./Settings/CheckboxText";
 import SectionBreak from "./Settings/SectionBreak";
 import Excluded from "./Settings/Excluded";
 import PageNumberRestart from "./Settings/PageNumberRestart";
 import LabelSlider from "./Settings/LabelSlider";
-import { NotesContext } from "@/contexts/NotesContext";
+import { PdfInfoContext } from "@/contexts/PdfInfoContext";
 import { ExpandMore } from "@mui/icons-material";
 
 interface Props {
@@ -18,18 +18,18 @@ interface Props {
  */
 const Settings: FC<Props> = ({ onClose }) => {
   const [tab, setTab] = useState(0);
-  const { notes, setNotes, pdfPath } = useContext(NotesContext);
-  if (!notes || !setNotes || !pdfPath) return <></>;
-  const page: Page | undefined = notes.pages[notes.currentPage];
+  const { pdfinfo, setPdfInfo, pdfPath } = useContext(PdfInfoContext);
+  if (!pdfinfo || !setPdfInfo || !pdfPath) return <></>;
+  const page: Page | undefined = pdfinfo.pages[pdfinfo.currentPage];
 
   // 部名・章名・ページ番号の候補
   const bookName = pdfPath.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? "";
   let partNum = 1;
   let chapterNum = 1;
   let pageNum = 1;
-  for (let i = 0; i < notes.currentPage; i++) {
+  for (let i = 0; i < pdfinfo.currentPage; i++) {
     ++pageNum;
-    const page = notes.pages[i];
+    const page = pdfinfo.pages[i];
     if (!page) continue;
     if (page.part !== undefined) ++partNum;
     if (page.chapter !== undefined) ++chapterNum;
@@ -40,18 +40,18 @@ const Settings: FC<Props> = ({ onClose }) => {
 
   // ページ設定変更
   const handleChangePage = (page: Partial<Page>) => {
-    notes.pages[notes.currentPage] = {
-      ...notes.pages[notes.currentPage],
+    pdfinfo.pages[pdfinfo.currentPage] = {
+      ...pdfinfo.pages[pdfinfo.currentPage],
       ...page,
     };
-    setNotes({ ...notes });
+    setPdfInfo({ ...pdfinfo });
   };
 
   // PDF設定変更
   const handleChangeSettings = (settings: Partial<Settings>) => {
-    setNotes({
-      ...notes,
-      settings: { ...notes.settings, ...settings },
+    setPdfInfo({
+      ...pdfinfo,
+      settings: { ...pdfinfo.settings, ...settings },
     });
   };
 
@@ -156,7 +156,7 @@ const Settings: FC<Props> = ({ onClose }) => {
         <Box sx={{ width: "90%", m: 1 }}>
           <LabelSlider
             label="文字サイズ"
-            value={notes.settings.fontSize}
+            value={pdfinfo.settings.fontSize}
             minValue={30}
             maxValue={100}
             step={0.5}
@@ -166,7 +166,7 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
           <LabelSlider
             label="余白(上)"
-            value={notes.settings.offsetTop}
+            value={pdfinfo.settings.offsetTop}
             minValue={0}
             maxValue={0.2}
             step={0.001}
@@ -179,7 +179,7 @@ const Settings: FC<Props> = ({ onClose }) => {
             minValue={0}
             maxValue={0.2}
             step={0.001}
-            value={notes.settings.offsetBottom}
+            value={pdfinfo.settings.offsetBottom}
             onChange={(offsetBottom) => {
               handleChangeSettings({ offsetBottom });
             }}

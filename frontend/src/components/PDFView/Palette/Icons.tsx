@@ -1,13 +1,13 @@
 import { FC } from "react";
 import { Box, Chip, SxProps } from "@mui/material";
-import Arrow from "../Overlay/Arrow";
-import Svg from "../Overlay/Svg";
-import Bracket from "../Overlay/Bracket";
-import Marker from "../Overlay/Marker";
-import Rect from "../Overlay/Rect";
-import Polygon from "../Overlay/Polygon";
+import Arrow from "../Items/Arrow";
+import Svg from "../Items/Svg";
+import Bracket from "../Items/Bracket";
+import Marker from "../Items/Marker";
+import Rect from "../Items/Rect";
+import Polygon from "../Items/Polygon";
 import { Shortcut } from "@mui/icons-material";
-import { Node, NoteType } from "@/types/Notes";
+import { Node, NoteType } from "@/types/PdfInfo";
 
 /**
  * パレットの各アイコンの`Props`

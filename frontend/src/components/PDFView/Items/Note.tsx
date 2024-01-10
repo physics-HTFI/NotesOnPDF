@@ -1,9 +1,9 @@
-import { FC, useContext, useState } from "react";
+import { FC, MouseEvent, useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
-import { Node, Note as NoteParams, NoteType } from "@/types/Notes";
+import { Node, Note as NoteParams, NoteType } from "@/types/PdfInfo";
 
 /**
  * `Note`の引数
@@ -11,15 +11,15 @@ import { Node, Note as NoteParams, NoteType } from "@/types/Notes";
 interface Props {
   params: NoteParams;
   mode?: Mode;
-  onMouseDown?: (p: NoteType | Node) => void;
+  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
 }
 
 /**
- * PDFビュークリック時に表示されるコントロール
+ * テキストや数式
  */
 const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
-  const { setMouse, scale } = useContext(MouseContext);
+  const { scale } = useContext(MouseContext);
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
   const html = params.html
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
@@ -42,11 +42,7 @@ const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
         }}
         dangerouslySetInnerHTML={{ __html: html }}
         onMouseDown={(e) => {
-          if (!mode || e.button !== 0) return;
-          e.stopPropagation();
-          e.preventDefault(); // これがないと編集エディタの表示時にフォーカスが当たらない
-          setMouse?.({ pageX: e.pageX, pageY: e.pageY });
-          onMouseDown?.(params);
+          onMouseDown?.(e, params);
         }}
         onMouseEnter={() => {
           setHover(!!cursor);

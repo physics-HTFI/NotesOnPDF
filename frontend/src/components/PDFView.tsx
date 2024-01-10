@@ -4,16 +4,16 @@ import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import SpeedDial, { Mode } from "./PDFView/SpeedDial";
-import { Node, NoteType, toDisplayedPage } from "@/types/Notes";
+import { Node, NoteType, toDisplayedPage } from "@/types/PdfInfo";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
-import Overlay from "./PDFView/Overlay";
+import Items from "./PDFView/Items";
 import { MouseContext } from "@/contexts/MouseContext";
 import Editor from "./PDFView/Editor";
 import { grey } from "@mui/material/colors";
 import { MathJaxContext } from "better-react-mathjax";
 import Move from "./PDFView/Move";
-import { useNotes } from "@/hooks/useNotes";
+import { usePdfInfo } from "@/hooks/usePdfInfo";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -125,19 +125,19 @@ const PDFView: FC<Props> = ({
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const { notes, page, updateNote } = useNotes();
+  const { pdfinfo, page, updateNote } = usePdfInfo();
   const [width, height, top, bottom] =
-    notes?.currentPage === undefined
+    pdfinfo?.currentPage === undefined
       ? [undefined, undefined]
       : preferredSize(
-          notes.settings.offsetTop,
-          notes.settings.offsetBottom,
-          pdfSizes.current?.[notes.currentPage]?.width,
-          pdfSizes.current?.[notes.currentPage]?.height,
+          pdfinfo.settings.offsetTop,
+          pdfinfo.settings.offsetBottom,
+          pdfSizes.current?.[pdfinfo.currentPage]?.width,
+          pdfSizes.current?.[pdfinfo.currentPage]?.height,
           containerRect?.width,
           containerRect?.height
         );
-  const { pageLabel } = toDisplayedPage(notes);
+  const { pageLabel } = toDisplayedPage(pdfinfo);
 
   const getPageRect = useCallback((ref: HTMLDivElement) => {
     setRefPage(ref);
@@ -147,17 +147,17 @@ const PDFView: FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (notes?.currentPage === undefined) return;
+    if (pdfinfo?.currentPage === undefined) return;
     setReading(true);
-  }, [notes?.currentPage]);
+  }, [pdfinfo?.currentPage]);
 
   useEffect(() => {
-    if (notes?.currentPage === undefined) return;
+    if (pdfinfo?.currentPage === undefined) return;
     const pageW = pageRect?.width;
-    const pdfW = pdfSizes.current?.[notes.currentPage]?.width;
+    const pdfW = pdfSizes.current?.[pdfinfo.currentPage]?.width;
     if (!pageW || !pdfW) setScale(100);
-    else setScale((notes.settings.fontSize * pageW) / pdfW);
-  }, [notes?.currentPage, pageRect, pdfSizes, notes?.settings.fontSize]);
+    else setScale((pdfinfo.settings.fontSize * pageW) / pdfW);
+  }, [pdfinfo?.currentPage, pageRect, pdfSizes, pdfinfo?.settings.fontSize]);
 
   const base = grey[300];
   const stripe =
@@ -244,7 +244,7 @@ const PDFView: FC<Props> = ({
               noData={""}
             >
               <PDFPage
-                pageIndex={notes?.currentPage}
+                pageIndex={pdfinfo?.currentPage}
                 width={width}
                 error={""}
                 loading={""}
@@ -257,7 +257,7 @@ const PDFView: FC<Props> = ({
               />
             </Document>
             <PageLabelLarge label={pageLabel} shown={reading} />
-            <Overlay
+            <Items
               pageRect={pageRect}
               mode={mode}
               moveNote={moveNote}
