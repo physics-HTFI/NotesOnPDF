@@ -3,11 +3,11 @@ import { Box, IconButton, Tab, Tabs } from "@mui/material";
 import { Page, Settings, toDisplayedPage } from "@/types/PdfInfo";
 import CheckboxText from "./Settings/CheckboxText";
 import SectionBreak from "./Settings/SectionBreak";
-import Excluded from "./Settings/Excluded";
 import PageNumberRestart from "./Settings/PageNumberRestart";
 import LabelSlider from "./Settings/LabelSlider";
 import { PdfInfoContext } from "@/contexts/PdfInfoContext";
 import { ExpandMore } from "@mui/icons-material";
+import Checkbox from "./Settings/Checkbox";
 
 interface Props {
   onClose: () => void;
@@ -125,10 +125,7 @@ const Settings: FC<Props> = ({ onClose }) => {
             sectionBreak={page?.sectionBreak}
             sectionBreakInner={page?.sectionBreakInner}
             onChange={(sectionBreak, sectionBreakInner) => {
-              handleChangePage({
-                sectionBreak: sectionBreak ? true : undefined,
-                sectionBreakInner: sectionBreakInner ? true : undefined,
-              });
+              handleChangePage({ sectionBreak, sectionBreakInner });
             }}
           />
 
@@ -142,10 +139,12 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
 
           {/* ページ除外 */}
-          <Excluded
-            excluded={page?.excluded}
-            onChange={(excluded) => {
-              handleChangePage({ excluded });
+          <Checkbox
+            label="このページを除外する"
+            checked={page?.excluded}
+            tooltip="このページを灰色にします"
+            onChange={(checked) => {
+              handleChangePage({ excluded: checked ? true : undefined });
             }}
           />
         </Box>

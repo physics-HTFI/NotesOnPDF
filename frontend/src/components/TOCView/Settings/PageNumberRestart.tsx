@@ -1,11 +1,6 @@
 import { FC } from "react";
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, TextField } from "@mui/material";
+import Checkbox from "./Checkbox";
 
 /**
  * `PageNumberRestart`の引数
@@ -30,23 +25,12 @@ const PageNumberRestart: FC<Props> = ({
   return (
     <Box sx={{ whiteSpace: "nowrap" }}>
       {/* ページ番号を手動で決める */}
-      <FormControlLabel
-        control={
-          <Checkbox
-            size="small"
-            checked={isManual}
-            onChange={(e) => {
-              const newVal = e.target.checked;
-              onChange(newVal ? restart : undefined);
-            }}
-          />
-        }
-        label={
-          <Typography variant="button">ページ番号を手動で決める</Typography>
-        }
-        sx={{ pt: 1 }}
-        onMouseDown={(e) => {
-          e.preventDefault();
+      <Checkbox
+        label="ページ番号を手動で決める"
+        checked={isManual}
+        tooltip="チェックを外すと、ページ番号を前のページから決めます"
+        onChange={(checked) => {
+          onChange(checked ? restart : undefined);
         }}
       />
       <br />
