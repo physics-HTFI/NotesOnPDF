@@ -12,7 +12,7 @@ import {
 interface Props {
   label: string;
   checked?: boolean;
-  tooltip: string;
+  tooltip?: string;
   onChange: (checked?: boolean) => void;
 }
 

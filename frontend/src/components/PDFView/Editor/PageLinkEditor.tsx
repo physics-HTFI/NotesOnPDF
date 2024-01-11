@@ -17,27 +17,27 @@ interface Props {
  * ページリンクの編集ダイアログ
  */
 const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
-  const { pdfinfo, setPdfInfo, updateNote } = usePdfInfo();
+  const { pdfInfo, setPdfInfo, updateNote } = usePdfInfo();
   const { mouse, pageRect } = useContext(MouseContext);
   const pageNum =
-    toDisplayedPage(pdfinfo, params.page).pageNum ??
-    toDisplayedPage(pdfinfo).pageNum ??
+    toDisplayedPage(pdfInfo, params.page).pageNum ??
+    toDisplayedPage(pdfInfo).pageNum ??
     1;
   const num = useRef<number>(pageNum);
-  const page = pdfinfo?.pages[pdfinfo.currentPage];
+  const page = pdfInfo?.pages[pdfInfo.currentPage];
 
   // 閉じたときに値を更新する
   const handleClose = () => {
     onClose();
-    if (!pdfinfo) return;
+    if (!pdfInfo) return;
     if (pageNum === num.current) return;
     updateNote(params, {
       ...params,
-      page: fromDisplayedPage(pdfinfo, num.current),
+      page: fromDisplayedPage(pdfInfo, num.current),
     });
   };
 
-  if (!pdfinfo || !setPdfInfo || !page || !mouse || !pageRect) return <></>;
+  if (!pdfInfo || !setPdfInfo || !page || !mouse || !pageRect) return <></>;
   return (
     <EditorBase onClose={handleClose}>
       ページ番号:

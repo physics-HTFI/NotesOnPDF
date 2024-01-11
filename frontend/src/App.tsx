@@ -20,7 +20,7 @@ const model: IModel = IS_MOCK ? new ModelMock() : new Model();
 function App() {
   const [progresses, setProgresses] = useState<Progresses>();
   const [pdf, setPDF] = useState<string | File>();
-  const [pdfinfo, setPdfInfo] = useState<PdfInfo | null>(); // 読み込み失敗時にnull
+  const [pdfInfo, setPdfInfo] = useState<PdfInfo | null>(); // 読み込み失敗時にnull
   const [numPages, setNumPages] = useState<number>();
   const pdfPath = pdf && (pdf instanceof File ? pdf.name : pdf);
 
@@ -31,13 +31,13 @@ function App() {
 
   // ページの遷移
   const handlePageChange = (delta: number) => {
-    if (!pdfinfo) return;
+    if (!pdfInfo) return;
     const newPage = Math.max(
       0,
-      Math.min(pdfinfo.numPages - 1, pdfinfo.currentPage + delta)
+      Math.min(pdfInfo.numPages - 1, pdfInfo.currentPage + delta)
     );
-    if (pdfinfo.currentPage === newPage) return;
-    setPdfInfo({ ...pdfinfo, currentPage: newPage });
+    if (pdfInfo.currentPage === newPage) return;
+    setPdfInfo({ ...pdfInfo, currentPage: newPage });
   };
 
   // ファイルツリーに表示する進捗情報の取得
@@ -54,19 +54,19 @@ function App() {
   useEffect(() => {
     if (isWaitingPDF || isWaitingPdfInfo) return;
     if (!numPages || !pdf || !pdfPath) return;
-    if (pdfinfo === undefined) return;
+    if (pdfInfo === undefined) return;
 
-    if (pdfinfo === null) {
+    if (pdfInfo === null) {
       setPdfInfo(createNewPdfInfo(pdfPath, numPages));
-    } else if (pdfinfo.numPages !== numPages) {
+    } else if (pdfInfo.numPages !== numPages) {
       // 同じPDFでページ数が異なっている場合に対応する
-      setPdfInfo({ ...pdfinfo, numPages });
+      setPdfInfo({ ...pdfInfo, numPages });
     }
-  }, [isWaitingPDF, isWaitingPdfInfo, numPages, pdfinfo, pdfPath, pdf]);
+  }, [isWaitingPDF, isWaitingPdfInfo, numPages, pdfInfo, pdfPath, pdf]);
 
   return (
     <PdfInfoContext.Provider
-      value={{ pdfinfo: pdfinfo ?? undefined, setPdfInfo, pdfPath }}
+      value={{ pdfInfo: pdfInfo ?? undefined, setPdfInfo, pdfPath }}
     >
       <Box
         sx={{ display: "flex" }}
@@ -93,8 +93,8 @@ function App() {
             setPDF(pdf);
             model
               .getPdfInfo(pdfPathNew)
-              .then((pdfinfo) => {
-                setPdfInfo(pdfinfo);
+              .then((pdfInfo) => {
+                setPdfInfo(pdfInfo);
               })
               .catch(() => {
                 setPdfInfo(null);

@@ -29,7 +29,6 @@ const SectionBreak: FC<Props> = ({
       <Checkbox
         label="節区切り"
         checked={sectionBreak}
-        tooltip="このページの前に節区切りを入れます"
         onChange={(checked) => {
           onChange(checked ? true : undefined, sectionBreakInner);
         }}
@@ -37,7 +36,6 @@ const SectionBreak: FC<Props> = ({
       <Checkbox
         label="(ページ内)"
         checked={sectionBreakInner}
-        tooltip="このページの途中に節区切りを入れます"
         onChange={(checked) => {
           onChange(sectionBreak, checked ? true : undefined);
         }}

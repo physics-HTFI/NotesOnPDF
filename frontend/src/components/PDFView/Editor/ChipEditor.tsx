@@ -12,12 +12,12 @@ import EditorBase from "./EditorBase";
 import { blue } from "@mui/material/colors";
 
 /**
- * `pdfinfo`に含まれているチップ注釈のうち、出現回数が多い順に並べ替えて返す。
+ * `pdfInfo`に含まれているチップ注釈のうち、出現回数が多い順に並べ替えて返す。
  */
-const getOptions = (pdfinfo?: PdfInfo): string[] => {
-  if (!pdfinfo) return [];
+const getOptions = (pdfInfo?: PdfInfo): string[] => {
+  if (!pdfInfo) return [];
   const counts: Record<string, number> = {};
-  for (const page of Object.values(pdfinfo.pages)) {
+  for (const page of Object.values(pdfInfo.pages)) {
     if (!page.notes) continue;
     for (const n of page.notes) {
       if (n.type !== "Chip") continue;
@@ -41,13 +41,13 @@ interface Props {
  * チップの編集ダイアログ
  */
 const ChipEditor: FC<Props> = ({ params, onClose }) => {
-  const { pdfinfo, updateNote } = usePdfInfo();
+  const { pdfInfo, updateNote } = usePdfInfo();
   const [type, setType] = useState(
     params.outlined ?? false ? "outlined" : "filled"
   );
   const [rawText, setRawText] = useState(params.text);
   const [open, setOpen] = useState(params.text === "");
-  const options = useMemo(() => getOptions(pdfinfo), [pdfinfo]);
+  const options = useMemo(() => getOptions(pdfInfo), [pdfInfo]);
 
   // 閉じたときに値を更新する
   const handleClose = (newText?: string) => {

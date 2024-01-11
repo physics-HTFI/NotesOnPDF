@@ -125,19 +125,19 @@ const PDFView: FC<Props> = ({
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const { pdfinfo, page, updateNote } = usePdfInfo();
+  const { pdfInfo, page, updateNote } = usePdfInfo();
   const [width, height, top, bottom] =
-    pdfinfo?.currentPage === undefined
+    pdfInfo?.currentPage === undefined
       ? [undefined, undefined]
       : preferredSize(
-          pdfinfo.settings.offsetTop,
-          pdfinfo.settings.offsetBottom,
-          pdfSizes.current?.[pdfinfo.currentPage]?.width,
-          pdfSizes.current?.[pdfinfo.currentPage]?.height,
+          pdfInfo.settings.offsetTop,
+          pdfInfo.settings.offsetBottom,
+          pdfSizes.current?.[pdfInfo.currentPage]?.width,
+          pdfSizes.current?.[pdfInfo.currentPage]?.height,
           containerRect?.width,
           containerRect?.height
         );
-  const { pageLabel } = toDisplayedPage(pdfinfo);
+  const { pageLabel } = toDisplayedPage(pdfInfo);
 
   const getPageRect = useCallback((ref: HTMLDivElement) => {
     setRefPage(ref);
@@ -147,17 +147,17 @@ const PDFView: FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (pdfinfo?.currentPage === undefined) return;
+    if (pdfInfo?.currentPage === undefined) return;
     setReading(true);
-  }, [pdfinfo?.currentPage]);
+  }, [pdfInfo?.currentPage]);
 
   useEffect(() => {
-    if (pdfinfo?.currentPage === undefined) return;
+    if (pdfInfo?.currentPage === undefined) return;
     const pageW = pageRect?.width;
-    const pdfW = pdfSizes.current?.[pdfinfo.currentPage]?.width;
+    const pdfW = pdfSizes.current?.[pdfInfo.currentPage]?.width;
     if (!pageW || !pdfW) setScale(100);
-    else setScale((pdfinfo.settings.fontSize * pageW) / pdfW);
-  }, [pdfinfo?.currentPage, pageRect, pdfSizes, pdfinfo?.settings.fontSize]);
+    else setScale((pdfInfo.settings.fontSize * pageW) / pdfW);
+  }, [pdfInfo?.currentPage, pageRect, pdfSizes, pdfInfo?.settings.fontSize]);
 
   const base = grey[300];
   const stripe =
@@ -244,7 +244,7 @@ const PDFView: FC<Props> = ({
               noData={""}
             >
               <PDFPage
-                pageIndex={pdfinfo?.currentPage}
+                pageIndex={pdfInfo?.currentPage}
                 width={width}
                 error={""}
                 loading={""}

@@ -22,29 +22,29 @@ interface Props {
  */
 const Settings: FC<Props> = ({ onClose }) => {
   const [tab, setTab] = useState(0);
-  const { pdfinfo, setPdfInfo, pdfPath } = useContext(PdfInfoContext);
-  if (!pdfinfo || !setPdfInfo || !pdfPath) return <></>;
+  const { pdfInfo, setPdfInfo, pdfPath } = useContext(PdfInfoContext);
+  if (!pdfInfo || !setPdfInfo || !pdfPath) return <></>;
 
   // 部名・章名・ページ番号の候補など
   const { page, bookName, partNum, chapterNum, pageNum } = getParams(
-    pdfinfo,
+    pdfInfo,
     pdfPath
   );
 
   // ページ設定変更
   const handleChangePage = (page: Partial<Page>) => {
-    pdfinfo.pages[pdfinfo.currentPage] = {
-      ...pdfinfo.pages[pdfinfo.currentPage],
+    pdfInfo.pages[pdfInfo.currentPage] = {
+      ...pdfInfo.pages[pdfInfo.currentPage],
       ...page,
     };
-    setPdfInfo({ ...pdfinfo });
+    setPdfInfo({ ...pdfInfo });
   };
 
   // ファイル設定変更
   const handleChangeSettings = (settings: Partial<Settings>) => {
     setPdfInfo({
-      ...pdfinfo,
-      settings: { ...pdfinfo.settings, ...settings },
+      ...pdfInfo,
+      settings: { ...pdfInfo.settings, ...settings },
     });
   };
 
@@ -56,7 +56,7 @@ const Settings: FC<Props> = ({ onClose }) => {
       {/* タブ */}
       <SettingsTabs
         tab={tab}
-        pageLabel={toDisplayedPage(pdfinfo).pageLabel}
+        pageLabel={toDisplayedPage(pdfInfo).pageLabel}
         setTab={setTab}
       />
 
@@ -66,7 +66,6 @@ const Settings: FC<Props> = ({ onClose }) => {
           {/* 題区切り */}
           <CheckboxText
             label="題区切り"
-            tooltip="このページの前に題名を追加します"
             text={page?.book}
             preferredText={bookName}
             onChange={(book) => {
@@ -76,7 +75,6 @@ const Settings: FC<Props> = ({ onClose }) => {
           {/* 部区切り */}
           <CheckboxText
             label="部区切り"
-            tooltip="このページの前に部名を追加します"
             text={page?.part}
             preferredText={`第${partNum}部`}
             onChange={(part) => {
@@ -86,7 +84,6 @@ const Settings: FC<Props> = ({ onClose }) => {
           {/* 章区切り */}
           <CheckboxText
             label="章区切り"
-            tooltip="このページの前に章名を追加します"
             text={page?.chapter}
             preferredText={`第${chapterNum}章`}
             onChange={(chapter) => {
@@ -113,7 +110,6 @@ const Settings: FC<Props> = ({ onClose }) => {
           <Checkbox
             label="このページを除外する"
             checked={page?.excluded}
-            tooltip="このページを灰色にします"
             onChange={(checked) => {
               handleChangePage({ excluded: checked ? true : undefined });
             }}
@@ -126,7 +122,7 @@ const Settings: FC<Props> = ({ onClose }) => {
         <Box sx={{ width: "90%", m: 1 }}>
           <LabelSlider
             label="文字サイズ"
-            value={pdfinfo.settings.fontSize}
+            value={pdfInfo.settings.fontSize}
             minValue={30}
             maxValue={100}
             step={0.5}
@@ -137,7 +133,7 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
           <LabelSlider
             label="余白(上)"
-            value={pdfinfo.settings.offsetTop}
+            value={pdfInfo.settings.offsetTop}
             minValue={0}
             maxValue={0.2}
             step={0.001}
@@ -148,7 +144,7 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
           <LabelSlider
             label="余白(下)"
-            value={pdfinfo.settings.offsetBottom}
+            value={pdfInfo.settings.offsetBottom}
             minValue={0}
             maxValue={0.2}
             step={0.001}
@@ -205,17 +201,17 @@ export default Settings;
 //| ローカル関数
 //|
 
-function getParams(pdfinfo: PdfInfo, pdfPath: string) {
-  const page = pdfinfo.pages[pdfinfo.currentPage];
+function getParams(pdfInfo: PdfInfo, pdfPath: string) {
+  const page = pdfInfo.pages[pdfInfo.currentPage];
 
   // 部名・章名・ページ番号の候補
   const bookName = pdfPath.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? "";
   let partNum = 1;
   let chapterNum = 1;
   let pageNum = 1;
-  for (let i = 0; i < pdfinfo.currentPage; i++) {
+  for (let i = 0; i < pdfInfo.currentPage; i++) {
     ++pageNum;
-    const page = pdfinfo.pages[i];
+    const page = pdfInfo.pages[i];
     if (!page) continue;
     if (page.part !== undefined) ++partNum;
     if (page.chapter !== undefined) ++chapterNum;

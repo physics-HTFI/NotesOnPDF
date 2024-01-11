@@ -20,8 +20,8 @@ interface Props {
 const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
   const { scale } = useContext(MouseContext);
-  const { pdfinfo } = usePdfInfo();
-  if (!pdfinfo || !scale) return <></>;
+  const { pdfInfo } = usePdfInfo();
+  if (!pdfInfo || !scale) return <></>;
 
   const outlined = params.outlined ?? false;
   const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";

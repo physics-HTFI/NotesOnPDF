@@ -25,11 +25,11 @@ interface Props {
  */
 const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
-  const { pdfinfo, setPdfInfo } = useContext(PdfInfoContext);
+  const { pdfInfo, setPdfInfo } = useContext(PdfInfoContext);
   const { scale } = useContext(MouseContext);
-  const { pageLabel } = toDisplayedPage(pdfinfo, params.page);
+  const { pageLabel } = toDisplayedPage(pdfInfo, params.page);
   const cursor = mode === "move" ? "move" : "pointer";
-  if (!pdfinfo || !setPdfInfo) return <></>;
+  if (!pdfInfo || !setPdfInfo) return <></>;
   return (
     <>
       <Chip
@@ -54,9 +54,9 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
           if (e.button !== 0) return;
           if (!mode) {
             // ページリンク先へ移動
-            if (pdfinfo.currentPage === params.page) return;
-            if (params.page < 0 || pdfinfo.numPages <= params.page) return;
-            setPdfInfo({ ...pdfinfo, currentPage: params.page });
+            if (pdfInfo.currentPage === params.page) return;
+            if (params.page < 0 || pdfInfo.numPages <= params.page) return;
+            setPdfInfo({ ...pdfInfo, currentPage: params.page });
             return;
           }
           onMouseDown?.(e, params);

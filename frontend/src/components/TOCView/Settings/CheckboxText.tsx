@@ -7,7 +7,7 @@ import Checkbox from "./Checkbox";
  */
 interface Props {
   label: string;
-  tooltip: string;
+  tooltip?: string;
   text?: string;
   preferredText: string;
   onChange: (text?: string) => void;
