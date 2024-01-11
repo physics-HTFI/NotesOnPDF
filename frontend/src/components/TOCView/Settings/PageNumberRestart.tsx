@@ -46,7 +46,7 @@ const PageNumberRestart: FC<Props> = ({
         InputProps={{ sx: { fontSize: "140%", pl: 1 } }}
         type="number"
         sx={{
-          pl: 3.6,
+          pl: 3.5,
           width: 80,
           visibility: isManual ? "visible" : "hidden",
         }}
