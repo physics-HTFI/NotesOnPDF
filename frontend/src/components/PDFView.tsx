@@ -1,4 +1,11 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Box, Container } from "@mui/material";
 import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
@@ -14,6 +21,7 @@ import { grey } from "@mui/material/colors";
 import { MathJaxContext } from "better-react-mathjax";
 import Move from "./PDFView/Move";
 import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -121,6 +129,7 @@ const PDFView: FC<Props> = ({
   const [editNote, setEditNote] = useState<NoteType>();
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
   const [scale, setScale] = useState(100);
+  const { appSettings } = useContext(AppSettingsContext);
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
@@ -184,7 +193,7 @@ const PDFView: FC<Props> = ({
           e.preventDefault();
           if (e.button !== 0) return;
           if (!pageRect) return;
-          setMode(null);
+          if (appSettings?.cancelModeWithVoidClick) setMode(null);
           if (mode ?? moveNote) return;
           setMouse({ pageX: e.pageX, pageY: e.pageY });
           setParetteOpen(true);
