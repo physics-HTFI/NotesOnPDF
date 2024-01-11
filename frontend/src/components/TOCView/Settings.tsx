@@ -1,6 +1,6 @@
 import { FC, useContext, useState } from "react";
 import { Box, IconButton, Tab, Tabs } from "@mui/material";
-import { Page, Settings } from "@/types/PdfInfo";
+import { Page, Settings, toDisplayedPage } from "@/types/PdfInfo";
 import CheckboxText from "./Settings/CheckboxText";
 import SectionBreak from "./Settings/SectionBreak";
 import Excluded from "./Settings/Excluded";
@@ -78,7 +78,7 @@ const Settings: FC<Props> = ({ onClose }) => {
             setTab(i);
           }}
         >
-          <Tab label="ページ" />
+          <Tab label={toDisplayedPage(pdfinfo).pageLabel} />
           <Tab label="ファイル" />
           <Tab label="アプリ" />
         </Tabs>
@@ -160,6 +160,7 @@ const Settings: FC<Props> = ({ onClose }) => {
             minValue={30}
             maxValue={100}
             step={0.5}
+            tooltipTitle="注釈内で使用される文字のサイズを調節します"
             onChange={(fontSize) => {
               handleChangeSettings({ fontSize });
             }}
@@ -170,16 +171,18 @@ const Settings: FC<Props> = ({ onClose }) => {
             minValue={0}
             maxValue={0.2}
             step={0.001}
+            tooltipTitle="ページ上部の余白をカットすることで表示範囲を拡大します"
             onChange={(offsetTop) => {
               handleChangeSettings({ offsetTop });
             }}
           />
           <LabelSlider
             label="余白(下)"
+            value={pdfinfo.settings.offsetBottom}
             minValue={0}
             maxValue={0.2}
             step={0.001}
-            value={pdfinfo.settings.offsetBottom}
+            tooltipTitle="ページ下部の余白をカットすることで表示範囲を拡大します"
             onChange={(offsetBottom) => {
               handleChangeSettings({ offsetBottom });
             }}

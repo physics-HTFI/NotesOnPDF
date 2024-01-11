@@ -1,8 +1,8 @@
 import { FC } from "react";
 import {
   Box,
+  Checkbox,
   FormControlLabel,
-  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -32,7 +32,7 @@ const PageNumberRestart: FC<Props> = ({
       {/* ページ番号を手動で決める */}
       <FormControlLabel
         control={
-          <Switch
+          <Checkbox
             size="small"
             checked={isManual}
             onChange={(e) => {
@@ -45,6 +45,9 @@ const PageNumberRestart: FC<Props> = ({
           <Typography variant="button">ページ番号を手動で決める</Typography>
         }
         sx={{ pt: 1 }}
+        onMouseDown={(e) => {
+          e.preventDefault();
+        }}
       />
       <br />
 

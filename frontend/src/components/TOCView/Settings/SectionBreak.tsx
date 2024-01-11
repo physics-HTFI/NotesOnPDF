@@ -1,8 +1,8 @@
 import { FC } from "react";
 import {
   Box,
+  Checkbox,
   FormControlLabel,
-  Switch,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -25,11 +25,16 @@ const SectionBreak: FC<Props> = ({
   onChange,
 }) => {
   return (
-    <Box sx={{ whiteSpace: "nowrap", display: "flex", flexDirection: "row" }}>
+    <Box
+      sx={{ whiteSpace: "nowrap", display: "flex", flexDirection: "row" }}
+      onMouseDown={(e) => {
+        e.preventDefault();
+      }}
+    >
       <Tooltip title="このページの前に節区切りを入れます" disableInteractive>
         <FormControlLabel
           control={
-            <Switch
+            <Checkbox
               size="small"
               checked={sectionBreak ?? false}
               onChange={(e) => {
@@ -43,7 +48,7 @@ const SectionBreak: FC<Props> = ({
       <Tooltip title="このページの途中に節区切りを入れます" disableInteractive>
         <FormControlLabel
           control={
-            <Switch
+            <Checkbox
               size="small"
               checked={sectionBreakInner ?? false}
               onChange={(e) => {

@@ -1,8 +1,8 @@
 import { FC } from "react";
 import {
   Box,
+  Checkbox,
   FormControlLabel,
-  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -38,7 +38,7 @@ const CheckboxText: FC<Props> = ({
       <Tooltip title={tooltip} disableInteractive>
         <FormControlLabel
           control={
-            <Switch
+            <Checkbox
               checked={checked}
               size="small"
               onChange={(e) => {
@@ -47,6 +47,9 @@ const CheckboxText: FC<Props> = ({
             />
           }
           label={<Typography variant="button">{label}</Typography>}
+          onMouseDown={(e) => {
+            e.preventDefault();
+          }}
         />
       </Tooltip>
       <TextField

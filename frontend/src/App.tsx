@@ -73,9 +73,6 @@ function App() {
         onWheel={(e) => {
           handlePageChange(e.deltaY < 0 ? -1 : 1);
         }}
-        onMouseDown={(e) => {
-          e.preventDefault();
-        }}
       >
         {/* ファイルツリー */}
         <OpenFileDrawer
