@@ -8,7 +8,9 @@ import LabelSlider from "./Settings/LabelSlider";
 import { PdfInfoContext } from "@/contexts/PdfInfoContext";
 import { ExpandMore } from "@mui/icons-material";
 import Checkbox from "./Settings/Checkbox";
-import ClickOption from "./Settings/ClickOption";
+import ClickOptionSelect from "./Settings/ClickOptionSelect";
+import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+import { AppSettings } from "@/types/AppSettings";
 
 /**
  * `Settings`の引数
@@ -21,8 +23,10 @@ interface Props {
  * 設定パネル
  */
 const Settings: FC<Props> = ({ onClose }) => {
-  const [tab, setTab] = useState(0);
+  const { appSettings, setAppSettings } = useContext(AppSettingsContext);
   const { pdfInfo, setPdfInfo, pdfPath } = useContext(PdfInfoContext);
+  const [tab, setTab] = useState(0);
+  if (!appSettings || !setAppSettings) return <></>;
   if (!pdfInfo || !setPdfInfo || !pdfPath) return <></>;
 
   // 部名・章名・ページ番号の候補など
@@ -41,10 +45,18 @@ const Settings: FC<Props> = ({ onClose }) => {
   };
 
   // ファイル設定変更
-  const handleChangeSettings = (settings: Partial<Settings>) => {
+  const handleChangeFileSettings = (newSettings: Partial<Settings>) => {
     setPdfInfo({
       ...pdfInfo,
-      settings: { ...pdfInfo.settings, ...settings },
+      settings: { ...pdfInfo.settings, ...newSettings },
+    });
+  };
+
+  // アプリ設定変更
+  const handleChangeAppSettings = (newSettings: Partial<AppSettings>) => {
+    setAppSettings({
+      ...appSettings,
+      ...newSettings,
     });
   };
 
@@ -128,7 +140,7 @@ const Settings: FC<Props> = ({ onClose }) => {
             step={0.5}
             tooltipTitle="注釈内で使用される文字のサイズを調節します"
             onChange={(fontSize) => {
-              handleChangeSettings({ fontSize });
+              handleChangeFileSettings({ fontSize });
             }}
           />
           <LabelSlider
@@ -137,9 +149,9 @@ const Settings: FC<Props> = ({ onClose }) => {
             minValue={0}
             maxValue={0.2}
             step={0.001}
-            tooltipTitle="ページ上部の余白をカットすることで表示範囲を拡大します"
+            tooltipTitle="AppSettingsットすることで表示範囲を拡大します"
             onChange={(offsetTop) => {
-              handleChangeSettings({ offsetTop });
+              handleChangeFileSettings({ offsetTop });
             }}
           />
           <LabelSlider
@@ -148,9 +160,9 @@ const Settings: FC<Props> = ({ onClose }) => {
             minValue={0}
             maxValue={0.2}
             step={0.001}
-            tooltipTitle="ページ下部の余白をカットすることで表示範囲を拡大します"
+            tooltipTitle="AppSettingsットすることで表示範囲を拡大します"
             onChange={(offsetBottom) => {
-              handleChangeSettings({ offsetBottom });
+              handleChangeFileSettings({ offsetBottom });
             }}
           />
         </Box>
@@ -162,32 +174,36 @@ const Settings: FC<Props> = ({ onClose }) => {
           {/* モード解除 */}
           <Checkbox
             label="空クリックでモードを解除する"
-            checked={true}
+            checked={appSettings.cancelModeWithVoidClick}
             tooltip="空クリックで変更／移動／削除モードを解除します"
-            onChange={(checked) => {
-              undefined;
+            onChange={(cancelModeWithVoidClick) => {
+              handleChangeAppSettings({ cancelModeWithVoidClick });
             }}
           />
           {/* スナップ */}
           <Checkbox
             label="注釈をスナップする"
-            checked={true}
+            checked={appSettings.snapNotes}
             tooltip="カッコ注釈／マーカー注釈の向きを水平／鉛直に限定します"
-            onChange={(checked) => {
-              undefined;
+            onChange={(snapNotes) => {
+              handleChangeAppSettings({ snapNotes });
             }}
           />
           {/* 右クリック */}
-          <ClickOption
+          <ClickOptionSelect
             label="注釈の右クリック"
-            value={undefined}
-            onChange={(v) => {}}
+            value={appSettings.rightClick}
+            onChange={(rightClick) => {
+              handleChangeAppSettings({ rightClick });
+            }}
           />
           {/* 中クリック */}
-          <ClickOption
+          <ClickOptionSelect
             label="注釈の中クリック"
-            value={undefined}
-            onChange={(v) => {}}
+            value={appSettings.middleClick}
+            onChange={(middleClick) => {
+              handleChangeAppSettings({ middleClick });
+            }}
           />
         </Box>
       )}

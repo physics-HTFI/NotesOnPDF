@@ -13,11 +13,14 @@ import Waiting from "@/components/Fullscreen/Waiting";
 import TOCView from "@/components/TOCView";
 import { PdfInfoContext } from "./contexts/PdfInfoContext";
 import { grey } from "@mui/material/colors";
+import { AppSettingsContext } from "./contexts/AppSettingsContext";
+import { AppSettings } from "./types/AppSettings";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 const model: IModel = IS_MOCK ? new ModelMock() : new Model();
 
 function App() {
+  const [appSettings, setAppSettings] = useState<AppSettings>();
   const [progresses, setProgresses] = useState<Progresses>();
   const [pdf, setPDF] = useState<string | File>();
   const [pdfInfo, setPdfInfo] = useState<PdfInfo | null>(); // 読み込み失敗時にnull
@@ -48,6 +51,12 @@ function App() {
         setProgresses(progresses);
       })
       .catch(() => undefined);
+    model
+      .getAppSettings()
+      .then((settings) => {
+        setAppSettings(settings);
+      })
+      .catch(() => undefined);
   }, []);
 
   // 始めて読み込むPDFの場合、`PdfInfo`を生成する
@@ -65,95 +74,97 @@ function App() {
   }, [isWaitingPDF, isWaitingPdfInfo, numPages, pdfInfo, pdfPath, pdf]);
 
   return (
-    <PdfInfoContext.Provider
-      value={{ pdfInfo: pdfInfo ?? undefined, setPdfInfo, pdfPath }}
-    >
-      <Box
-        sx={{ display: "flex" }}
-        onWheel={(e) => {
-          handlePageChange(e.deltaY < 0 ? -1 : 1);
-        }}
+    <AppSettingsContext.Provider value={{ appSettings, setAppSettings }}>
+      <PdfInfoContext.Provider
+        value={{ pdfInfo: pdfInfo ?? undefined, setPdfInfo, pdfPath }}
       >
-        {/* ファイルツリー */}
-        <OpenFileDrawer
-          model={model}
-          progresses={progresses}
-          open={openLeftDrawer}
-          onClose={() => {
-            if (!pdf) return;
-            setOpenLeftDrawer(false);
+        <Box
+          sx={{ display: "flex" }}
+          onWheel={(e) => {
+            handlePageChange(e.deltaY < 0 ? -1 : 1);
           }}
-          onSelect={(pdf) => {
-            setOpenLeftDrawer(false);
-            const pdfPathNew = pdf instanceof File ? pdf.name : pdf;
-            if (pdfPath === pdfPathNew || !pdfPathNew) return;
-            setIsWaitingPDF(true);
-            setIsWaitingPdfInfo(true);
-            setPdfInfo(undefined);
-            setPDF(pdf);
-            model
-              .getPdfInfo(pdfPathNew)
-              .then((pdfInfo) => {
-                setPdfInfo(pdfInfo);
-              })
-              .catch(() => {
-                setPdfInfo(null);
-              })
-              .finally(() => {
-                setIsWaitingPdfInfo(false);
-              });
-          }}
-        />
+        >
+          {/* ファイルツリー */}
+          <OpenFileDrawer
+            model={model}
+            progresses={progresses}
+            open={openLeftDrawer}
+            onClose={() => {
+              if (!pdf) return;
+              setOpenLeftDrawer(false);
+            }}
+            onSelect={(pdf) => {
+              setOpenLeftDrawer(false);
+              const pdfPathNew = pdf instanceof File ? pdf.name : pdf;
+              if (pdfPath === pdfPathNew || !pdfPathNew) return;
+              setIsWaitingPDF(true);
+              setIsWaitingPdfInfo(true);
+              setPdfInfo(undefined);
+              setPDF(pdf);
+              model
+                .getPdfInfo(pdfPathNew)
+                .then((pdfInfo) => {
+                  setPdfInfo(pdfInfo);
+                })
+                .catch(() => {
+                  setPdfInfo(null);
+                })
+                .finally(() => {
+                  setIsWaitingPdfInfo(false);
+                });
+            }}
+          />
 
-        <PanelGroup direction="horizontal">
-          {/* 目次 */}
-          <Panel defaultSizePixels={270} minSizePixels={40}>
-            <TOCView
-              openDrawer={openBottomDrawer}
-              onCloseDrawer={() => {
-                setOpenBottomDrawer(false);
-              }}
-            />
-          </Panel>
+          <PanelGroup direction="horizontal">
+            {/* 目次 */}
+            <Panel defaultSizePixels={270} minSizePixels={40}>
+              <TOCView
+                openDrawer={openBottomDrawer}
+                onCloseDrawer={() => {
+                  setOpenBottomDrawer(false);
+                }}
+              />
+            </Panel>
 
-          {/* リサイズハンドル */}
-          <PanelResizeHandle>
-            <Box sx={{ width: 5, height: "100vh", background: grey[400] }} />
-          </PanelResizeHandle>
+            {/* リサイズハンドル */}
+            <PanelResizeHandle>
+              <Box sx={{ width: 5, height: "100vh", background: grey[400] }} />
+            </PanelResizeHandle>
 
-          {/* PDFビュー */}
-          <Panel minSizePixels={200}>
-            <PDFView
-              file={pdf}
-              openDrawer={openBottomDrawer}
-              onOpenFileTree={() => {
-                setOpenLeftDrawer(true);
-              }}
-              onOpenDrawer={() => {
-                setOpenBottomDrawer(!openBottomDrawer);
-              }}
-              onLoadError={() => {
-                setPDF(undefined);
-                setNumPages(undefined);
-                setIsWaitingPDF(false);
-                setOpenLeftDrawer(true);
-              }}
-              onLoadSuccess={(numPages) => {
-                setNumPages(numPages);
-                setIsWaitingPDF(false);
-                setOpenLeftDrawer(false);
-              }}
-            />
-          </Panel>
-        </PanelGroup>
+            {/* PDFビュー */}
+            <Panel minSizePixels={200}>
+              <PDFView
+                file={pdf}
+                openDrawer={openBottomDrawer}
+                onOpenFileTree={() => {
+                  setOpenLeftDrawer(true);
+                }}
+                onOpenDrawer={() => {
+                  setOpenBottomDrawer(!openBottomDrawer);
+                }}
+                onLoadError={() => {
+                  setPDF(undefined);
+                  setNumPages(undefined);
+                  setIsWaitingPDF(false);
+                  setOpenLeftDrawer(true);
+                }}
+                onLoadSuccess={(numPages) => {
+                  setNumPages(numPages);
+                  setIsWaitingPDF(false);
+                  setOpenLeftDrawer(false);
+                }}
+              />
+            </Panel>
+          </PanelGroup>
 
-        {/* 処理中プログレス表示 */}
-        <Waiting isWaiting={isWaitingPDF || isWaitingPdfInfo} />
+          {/* 処理中プログレス表示 */}
+          <Waiting isWaiting={isWaitingPDF || isWaitingPdfInfo} />
 
-        {/* モックモデルを使用していることを示すポップアップ表示 */}
-        {IS_MOCK && <SnackbarsMock open />}
-      </Box>
-    </PdfInfoContext.Provider>
+          {/* モックモデルを使用していることを示すポップアップ表示 */}
+          {IS_MOCK && <SnackbarsMock open />}
+        </Box>
+      </PdfInfoContext.Provider>
+    </AppSettingsContext.Provider>
   );
 }
 
