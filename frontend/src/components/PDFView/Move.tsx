@@ -11,137 +11,7 @@ import Chip from "./Items/Chip";
 import { Node, NoteType } from "@/types/PdfInfo";
 import { Box } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
-
-/**
- * 平行移動した注釈を返す
- */
-const getTranslated = (params: NoteType, dxy: [number, number]) => {
-  const [dx, dy] = dxy;
-  const newParams: NoteType = { ...params };
-  switch (newParams.type) {
-    case "Chip":
-    case "Note":
-    case "PageLink":
-      newParams.x += dx;
-      newParams.y += dy;
-      break;
-    case "Arrow":
-    case "Bracket":
-    case "Marker":
-      newParams.x1 += dx;
-      newParams.y1 += dy;
-      newParams.x2 += dx;
-      newParams.y2 += dy;
-      break;
-    case "Rect":
-      newParams.x += dx;
-      newParams.y += dy;
-      break;
-    case "Polygon":
-      newParams.points = newParams.points.map((p) => [p[0] + dx, p[1] + dy]);
-      break;
-  }
-  return newParams;
-};
-
-/**
- * 変形した注釈を返す
- */
-const getTransformed = (params: Node, dxy: [number, number]) => {
-  const [dx, dy] = dxy;
-  const newParams: NoteType = { ...params.target };
-  switch (newParams.type) {
-    case "Arrow":
-    case "Bracket":
-    case "Marker":
-      if (params.index === 0) {
-        newParams.x1 += dx;
-        newParams.y1 += dy;
-      } else {
-        newParams.x2 += dx;
-        newParams.y2 += dy;
-      }
-      break;
-    case "Rect":
-      // 上から順に 左、右、上、下
-      if ([0, 2].includes(params.index)) {
-        newParams.x += dx;
-        newParams.width -= dx;
-      }
-      if ([1, 3].includes(params.index)) {
-        newParams.width += dx;
-      }
-      if ([0, 1].includes(params.index)) {
-        newParams.y += dy;
-        newParams.height -= dy;
-      }
-      if ([2, 3].includes(params.index)) {
-        newParams.height += dy;
-      }
-      if (newParams.width < 0) {
-        newParams.width *= -1;
-        newParams.x -= newParams.width;
-      }
-      if (newParams.height < 0) {
-        newParams.height *= -1;
-        newParams.y -= newParams.height;
-      }
-      break;
-    case "Polygon":
-      newParams.points = newParams.points.map((p, i) => [
-        p[0] + (i === params.index ? dx : 0),
-        p[1] + (i === params.index ? dy : 0),
-      ]);
-      break;
-  }
-  return newParams;
-};
-
-/**
- * 「不正な座標の場合の更新拒否」と「座標のスナップ」
- */
-const getValidatedXY = (
-  params: Node,
-  dxy: [number, number],
-  pageRect: DOMRect
-): [number, number] | undefined => {
-  const t = getTransformed(params, dxy);
-  const width = (dx: number) => pageRect.width * Math.abs(dx);
-  const height = (dy: number) => pageRect.height * Math.abs(dy);
-  switch (t.type) {
-    case "Arrow":
-      if (width(t.x2 - t.x1) < 5 && height(t.y2 - t.y1) < 5) return undefined;
-      return dxy;
-    case "Bracket": {
-      const isX = width(t.x2 - t.x1) > height(t.y2 - t.y1);
-      const t0 = params.target;
-      if (t0.type !== "Bracket") return undefined;
-      if (isX) {
-        if (width(t.x2 - t.x1) < 10) return undefined;
-        return [dxy[0], (params.index === 0 ? 1 : -1) * (t0.y2 - t0.y1)];
-      } else {
-        if (height(t.y2 - t.y1) < 10) return undefined;
-        return [(params.index === 0 ? 1 : -1) * (t0.x2 - t0.x1), dxy[1]];
-      }
-    }
-    case "Marker":
-      if (width(t.x2 - t.x1) < 20) return undefined;
-      return [dxy[0], 0];
-    case "Polygon": {
-      const P = t.points[params.index] ?? [0, 0];
-      if (
-        t.points.some(
-          (p) => p !== P && width(P[0] - p[0]) < 5 && height(P[1] - p[1]) < 5
-        )
-      )
-        return undefined;
-      return dxy;
-    }
-    case "Rect":
-      if (width(t.width) < 3 || height(t.height) < 3) return undefined;
-      return dxy;
-  }
-};
+import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 
 /**
  * `Move`の引数
@@ -162,7 +32,8 @@ const Move: FC<Props> = ({ params, onClose }) => {
   const [dXY, setDXY] = useState<[number, number]>([0, 0]);
   const ref = useRef<HTMLElement>();
   const { mouse, setMouse, pageRect } = useContext(MouseContext);
-  if (!params || !mouse || !setMouse || !pageRect) return <></>;
+  const { appSettings } = useContext(AppSettingsContext);
+  if (!params || !mouse || !setMouse || !pageRect || !appSettings) return <></>;
 
   const getDxy = (xy?: typeof mouse): [number, number] =>
     !xy
@@ -257,7 +128,8 @@ const Move: FC<Props> = ({ params, onClose }) => {
             const δxy = getValidatedXY(
               params,
               getDxy({ pageX: e.pageX, pageY: e.pageY }),
-              pageRect
+              pageRect,
+              appSettings.snapNotes
             );
             if (!δxy) return;
             setDXY(δxy);
@@ -274,3 +146,152 @@ const Move: FC<Props> = ({ params, onClose }) => {
 };
 
 export default Move;
+
+//|
+//| ローカル関数
+//|
+
+/**
+ * 平行移動した注釈を返す
+ */
+function getTranslated(params: NoteType, dxy: [number, number]) {
+  const [dx, dy] = dxy;
+  const newParams: NoteType = { ...params };
+  switch (newParams.type) {
+    case "Chip":
+    case "Note":
+    case "PageLink":
+      newParams.x += dx;
+      newParams.y += dy;
+      break;
+    case "Arrow":
+    case "Bracket":
+    case "Marker":
+      newParams.x1 += dx;
+      newParams.y1 += dy;
+      newParams.x2 += dx;
+      newParams.y2 += dy;
+      break;
+    case "Rect":
+      newParams.x += dx;
+      newParams.y += dy;
+      break;
+    case "Polygon":
+      newParams.points = newParams.points.map((p) => [p[0] + dx, p[1] + dy]);
+      break;
+  }
+  return newParams;
+}
+
+/**
+ * 変形した注釈を返す
+ */
+function getTransformed(params: Node, dxy: [number, number]) {
+  const [dx, dy] = dxy;
+  const newParams: NoteType = { ...params.target };
+  switch (newParams.type) {
+    case "Arrow":
+    case "Bracket":
+    case "Marker":
+      if (params.index === 0) {
+        newParams.x1 += dx;
+        newParams.y1 += dy;
+      } else {
+        newParams.x2 += dx;
+        newParams.y2 += dy;
+      }
+      break;
+    case "Rect":
+      // 上から順に 左、右、上、下
+      if ([0, 2].includes(params.index)) {
+        newParams.x += dx;
+        newParams.width -= dx;
+      }
+      if ([1, 3].includes(params.index)) {
+        newParams.width += dx;
+      }
+      if ([0, 1].includes(params.index)) {
+        newParams.y += dy;
+        newParams.height -= dy;
+      }
+      if ([2, 3].includes(params.index)) {
+        newParams.height += dy;
+      }
+      if (newParams.width < 0) {
+        newParams.width *= -1;
+        newParams.x -= newParams.width;
+      }
+      if (newParams.height < 0) {
+        newParams.height *= -1;
+        newParams.y -= newParams.height;
+      }
+      break;
+    case "Polygon":
+      newParams.points = newParams.points.map((p, i) => [
+        p[0] + (i === params.index ? dx : 0),
+        p[1] + (i === params.index ? dy : 0),
+      ]);
+      break;
+  }
+  return newParams;
+}
+
+/**
+ * 「不正な座標の場合の更新拒否」と「座標のスナップ」
+ */
+function getValidatedXY(
+  params: Node,
+  dxy: [number, number],
+  pageRect: DOMRect,
+  snap: boolean
+): [number, number] | undefined {
+  const t = getTransformed(params, dxy);
+  const width = (dx: number) => pageRect.width * Math.abs(dx);
+  const height = (dy: number) => pageRect.height * Math.abs(dy);
+  switch (t.type) {
+    case "Arrow":
+      if (width(t.x2 - t.x1) < 5 && height(t.y2 - t.y1) < 5) return undefined;
+      return dxy;
+    case "Bracket":
+      if (snap) {
+        const isX = width(t.x2 - t.x1) > height(t.y2 - t.y1);
+        const t0 = params.target;
+        if (t0.type !== "Bracket") return undefined;
+        if (isX) {
+          if (width(t.x2 - t.x1) < 10) return undefined;
+          return [dxy[0], (params.index === 0 ? 1 : -1) * (t0.y2 - t0.y1)];
+        } else {
+          if (height(t.y2 - t.y1) < 10) return undefined;
+          return [(params.index === 0 ? 1 : -1) * (t0.x2 - t0.x1), dxy[1]];
+        }
+      } else {
+        if (width(t.x2 - t.x1) < 10 && width(t.y2 - t.y1) < 10)
+          return undefined;
+        return dxy;
+      }
+    case "Marker":
+      if (snap) {
+        const t0 = params.target;
+        if (t0.type !== "Marker") return undefined;
+        if (width(t.x2 - t.x1) < 20) return undefined;
+        return [dxy[0], (params.index === 0 ? 1 : -1) * (t0.y2 - t0.y1)];
+      } else {
+        if (width(t.x2 - t.x1) < 20 && width(t.y2 - t.y1) < 20)
+          return undefined;
+        return dxy;
+      }
+    case "Polygon": {
+      const P = t.points[params.index] ?? [0, 0];
+      if (
+        t.points.some(
+          (p) => p !== P && width(P[0] - p[0]) < 5 && height(P[1] - p[1]) < 5
+        )
+      )
+        return undefined;
+      return dxy;
+    }
+    case "Rect":
+      if (width(t.width) < 3 || height(t.height) < 3) return undefined;
+      return dxy;
+  }
+}
