@@ -12,7 +12,7 @@ import { ClickOption } from "@/types/AppSettings";
  * `ClickOptionSelect`の引数
  */
 interface Props {
-  value?: string;
+  value: ClickOption;
   label: string;
   onChange: (option: ClickOption) => void;
 }
