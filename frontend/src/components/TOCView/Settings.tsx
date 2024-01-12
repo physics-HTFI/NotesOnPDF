@@ -120,7 +120,7 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
           {/* ページ除外 */}
           <Checkbox
-            label="このページを除外する"
+            label="このページをグレーアウトする"
             checked={page?.excluded}
             onChange={(checked) => {
               handleChangePage({ excluded: checked ? true : undefined });
@@ -149,7 +149,7 @@ const Settings: FC<Props> = ({ onClose }) => {
             minValue={0}
             maxValue={0.2}
             step={0.001}
-            tooltipTitle="AppSettingsットすることで表示範囲を拡大します"
+            tooltipTitle="ページ上部の余白をカットします"
             onChange={(offsetTop) => {
               handleChangeFileSettings({ offsetTop });
             }}
@@ -160,7 +160,7 @@ const Settings: FC<Props> = ({ onClose }) => {
             minValue={0}
             maxValue={0.2}
             step={0.001}
-            tooltipTitle="AppSettingsットすることで表示範囲を拡大します"
+            tooltipTitle="ページ上部の余白をカットします"
             onChange={(offsetBottom) => {
               handleChangeFileSettings({ offsetBottom });
             }}

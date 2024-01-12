@@ -119,7 +119,7 @@ const SpeedDial: FC<Props> = ({
         >
           {/* PDF選択パネルを開く */}
           <SpeedDialAction
-            tooltipTitle={"PDF選択パネルを開く"}
+            tooltipTitle={"PDF選択パネルを開きます"}
             icon={<KeyboardArrowRight />}
             onClick={() => {
               onOpenFileTree();
@@ -130,7 +130,7 @@ const SpeedDial: FC<Props> = ({
 
           {/* 設定パネルの開閉 */}
           <SpeedDialAction
-            tooltipTitle={`設定パネルを${openDrawer ? "閉じる" : "開く"}`}
+            tooltipTitle={`設定パネルを${openDrawer ? "閉じます" : "開きます"}`}
             icon={openDrawer ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
             onClick={() => {
               onOpenSettings();
