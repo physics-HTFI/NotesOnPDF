@@ -18,9 +18,9 @@ interface Props {
  * 目次を表示するコンポーネント
  */
 const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
-  const { pdfinfo, setPdfInfo } = useContext(PdfInfoContext);
-  const handleChanged = (pdfinfo: PdfInfo) => {
-    setPdfInfo?.(pdfinfo);
+  const { pdfInfo, setPdfInfo } = useContext(PdfInfoContext);
+  const handleChanged = (pdfInfo: PdfInfo) => {
+    setPdfInfo?.(pdfInfo);
   };
 
   return (
@@ -35,7 +35,7 @@ const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
       }}
     >
       <Box sx={{ p: 0.5, lineHeight: 1 }}>
-        {getTOCData(pdfinfo, handleChanged)}
+        {getTOCData(pdfInfo, handleChanged)}
       </Box>
 
       <Drawer

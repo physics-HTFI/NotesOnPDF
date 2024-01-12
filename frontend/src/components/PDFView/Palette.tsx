@@ -29,8 +29,8 @@ interface Props {
  */
 const Palette: FC<Props> = ({ open, onClose }) => {
   const { mouse, pageRect } = useContext(MouseContext);
-  const { pdfinfo } = usePdfInfo();
-  if (!mouse || !pageRect || !pdfinfo || !open) return <></>;
+  const { pdfInfo } = usePdfInfo();
+  if (!mouse || !pageRect || !pdfInfo || !open) return <></>;
 
   const [L, DIVISIONS] = [50, 8];
   const sx = (i: number) => {
@@ -55,7 +55,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
     onClose,
     x: (mouse.pageX - pageRect.x) / pageRect.width,
     y: (mouse.pageY - pageRect.y) / pageRect.height,
-    page: pdfinfo.currentPage,
+    page: pdfInfo.currentPage,
     svgRect: new DOMRect(0, 0, 1.5 * L, 1.5 * L),
   };
 

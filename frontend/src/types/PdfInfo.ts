@@ -130,19 +130,19 @@ export const createNewPdfInfo = (title: string, numPages: number): PdfInfo => ({
 
 /**
  * `pageNumber`の表示上のページ数を返す。
- * `pageNumber`が省略されている場合は`pdfinfo.currentPage`を対象とする。
+ * `pageNumber`が省略されている場合は`pdfInfo.currentPage`を対象とする。
  */
 export const toDisplayedPage = (
-  pdfinfo?: PdfInfo,
+  pdfInfo?: PdfInfo,
   pageNumber?: number
 ): { pageNum?: number; pageLabel?: string } => {
-  if (!pdfinfo) return { pageLabel: "p. ???" };
-  pageNumber ??= pdfinfo.currentPage;
-  if (pageNumber < 0 || pdfinfo.numPages <= pageNumber)
+  if (!pdfInfo) return { pageLabel: "p. ???" };
+  pageNumber ??= pdfInfo.currentPage;
+  if (pageNumber < 0 || pdfInfo.numPages <= pageNumber)
     return { pageLabel: "p. ???" };
   let retval = 0;
   for (let i = pageNumber; 0 <= i; i--) {
-    const restart = pdfinfo.pages[i]?.pageNumberRestart;
+    const restart = pdfInfo.pages[i]?.pageNumberRestart;
     if (restart === undefined) {
       ++retval;
     } else {
@@ -158,21 +158,21 @@ export const toDisplayedPage = (
  * できなかった場合は、-1を返す。
  */
 export const fromDisplayedPage = (
-  pdfinfo: PdfInfo,
+  pdfInfo: PdfInfo,
   displayedPageNumber: number
 ): number => {
-  const current = toDisplayedPage(pdfinfo).pageNum;
+  const current = toDisplayedPage(pdfInfo).pageNum;
   if (current === undefined) return -1;
   if (displayedPageNumber <= current) {
     // 現在のページより小さい場合は、遡って探す
-    for (let i = pdfinfo.currentPage; i >= 0; i--) {
-      if (displayedPageNumber === toDisplayedPage(pdfinfo, i).pageNum) {
+    for (let i = pdfInfo.currentPage; i >= 0; i--) {
+      if (displayedPageNumber === toDisplayedPage(pdfInfo, i).pageNum) {
         return i;
       }
     }
   } else {
-    for (let i = pdfinfo.currentPage + 1; i < pdfinfo.numPages; i++) {
-      if (displayedPageNumber === toDisplayedPage(pdfinfo, i).pageNum) {
+    for (let i = pdfInfo.currentPage + 1; i < pdfInfo.numPages; i++) {
+      if (displayedPageNumber === toDisplayedPage(pdfInfo, i).pageNum) {
         return i;
       }
     }

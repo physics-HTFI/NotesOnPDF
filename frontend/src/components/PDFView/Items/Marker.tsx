@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState } from "react";
+import { FC, MouseEvent, useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
 import {
   Marker as MarkerType,
@@ -6,6 +6,8 @@ import {
   NoteType,
 } from "@/types/PdfInfo";
 import Node from "./Node";
+import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+import { useCursor } from "./useCursor";
 
 /**
  * `Marker`の引数
@@ -22,16 +24,33 @@ interface Props {
  */
 const Marker: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const [hover, setHover] = useState(false);
+  const { isMove } = useCursor(mode);
+  const { appSettings } = useContext(AppSettingsContext);
   const x1 = params.x1 * pageRect.width;
   const y1 = params.y1 * pageRect.height;
   const x2 = params.x2 * pageRect.width;
   const y2 = params.y2 * pageRect.height;
   const cursor =
-    !mode || mode === "edit" ? undefined : mode === "move" ? "move" : "pointer";
-  const node =
     mode === "move"
-      ? { target: params, visible: hover, pageRect, onMouseDown }
+      ? "move"
+      : mode === "delete"
+      ? "pointer"
+      : appSettings?.rightClick === "move" ||
+        appSettings?.rightClick === "delete" ||
+        appSettings?.middleClick === "move" ||
+        appSettings?.middleClick === "delete"
+      ? "alias"
       : undefined;
+
+  const node = isMove
+    ? {
+        target: params,
+        visible: hover,
+        pageRect,
+        onMouseDown,
+        isGrab: mode === "move",
+      }
+    : undefined;
 
   return (
     <>

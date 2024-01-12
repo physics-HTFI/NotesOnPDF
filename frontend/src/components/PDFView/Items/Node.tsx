@@ -18,13 +18,21 @@ interface Props {
   index: number;
   visible: boolean;
   pageRect: DOMRect;
+  isGrab: boolean;
   onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
 }
 
 /**
  * ノード編集用マーカー
  */
-const Node: FC<Props> = ({ target, index, visible, pageRect, onMouseDown }) => {
+const Node: FC<Props> = ({
+  target,
+  index,
+  visible,
+  pageRect,
+  isGrab,
+  onMouseDown,
+}) => {
   const [hover, setHover] = useState(false);
   const [x, y] = (() => {
     switch (target.type) {
@@ -45,7 +53,7 @@ const Node: FC<Props> = ({ target, index, visible, pageRect, onMouseDown }) => {
     <g
       style={{
         fill: visible || hover ? green.A700 : "transparent",
-        cursor: "grab",
+        cursor: isGrab ? "grab" : "alias",
       }}
       onMouseDown={(e) => {
         onMouseDown?.(e, { type: "Node", target, index });

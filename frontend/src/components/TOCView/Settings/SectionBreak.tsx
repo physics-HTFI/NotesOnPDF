@@ -1,11 +1,6 @@
 import { FC } from "react";
-import {
-  Box,
-  FormControlLabel,
-  Switch,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box } from "@mui/material";
+import Checkbox from "./Checkbox";
 
 /**
  * `SctionBreak`の引数
@@ -25,35 +20,26 @@ const SectionBreak: FC<Props> = ({
   onChange,
 }) => {
   return (
-    <Box sx={{ whiteSpace: "nowrap", display: "flex", flexDirection: "row" }}>
-      <Tooltip title="このページの前に節区切りを入れます" disableInteractive>
-        <FormControlLabel
-          control={
-            <Switch
-              size="small"
-              checked={sectionBreak ?? false}
-              onChange={(e) => {
-                onChange(e.target.checked, sectionBreakInner);
-              }}
-            />
-          }
-          label={<Typography variant="button">節区切り</Typography>}
-        />
-      </Tooltip>
-      <Tooltip title="このページの途中に節区切りを入れます" disableInteractive>
-        <FormControlLabel
-          control={
-            <Switch
-              size="small"
-              checked={sectionBreakInner ?? false}
-              onChange={(e) => {
-                onChange(sectionBreak, e.target.checked);
-              }}
-            />
-          }
-          label={<Typography variant="button">(ページ内)</Typography>}
-        />
-      </Tooltip>
+    <Box
+      sx={{ whiteSpace: "nowrap", display: "flex", flexDirection: "row" }}
+      onMouseDown={(e) => {
+        e.preventDefault();
+      }}
+    >
+      <Checkbox
+        label="節区切り"
+        checked={sectionBreak}
+        onChange={(checked) => {
+          onChange(checked ? true : undefined, sectionBreakInner);
+        }}
+      />
+      <Checkbox
+        label="(ページ内)"
+        checked={sectionBreakInner}
+        onChange={(checked) => {
+          onChange(sectionBreak, checked ? true : undefined);
+        }}
+      />
     </Box>
   );
 };

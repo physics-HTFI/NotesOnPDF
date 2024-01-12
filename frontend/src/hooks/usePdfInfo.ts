@@ -3,33 +3,33 @@ import { NoteType } from "@/types/PdfInfo";
 import { useContext } from "react";
 
 /**
- * Context内の`pdfinfo, setPdfInfo`および更新用関数`update`を返す。
+ * Context内の`pdfInfo, setPdfInfo`および更新用関数`update`を返す。
  */
 export const usePdfInfo = () => {
-  const { pdfinfo, setPdfInfo } = useContext(PdfInfoContext);
+  const { pdfInfo, setPdfInfo } = useContext(PdfInfoContext);
 
   /**
    * `PdfInfo`オブジェクトの現在ページから注釈を消去する。
    */
   const popNote = (note: NoteType) => {
-    const page = pdfinfo?.pages[pdfinfo.currentPage];
+    const page = pdfInfo?.pages[pdfInfo.currentPage];
     if (!page || !setPdfInfo) return;
     page.notes = page.notes?.filter((n) => n !== note);
     if (!page.notes) return;
     if (page.notes.length === 0) page.notes = undefined;
-    setPdfInfo({ ...pdfinfo });
+    setPdfInfo({ ...pdfInfo });
   };
 
   /**
    * `PdfInfo`オブジェクトの現在ページに注釈を追加する。
    */
   const pushNote = (note: NoteType) => {
-    if (!pdfinfo || !setPdfInfo) return;
-    const page = pdfinfo.pages[pdfinfo.currentPage] ?? {};
+    if (!pdfInfo || !setPdfInfo) return;
+    const page = pdfInfo.pages[pdfInfo.currentPage] ?? {};
     page.notes ??= [];
     page.notes.push(note);
-    pdfinfo.pages[pdfinfo.currentPage] = page;
-    setPdfInfo({ ...pdfinfo });
+    pdfInfo.pages[pdfInfo.currentPage] = page;
+    setPdfInfo({ ...pdfInfo });
   };
 
   /**
@@ -44,9 +44,9 @@ export const usePdfInfo = () => {
   };
 
   return {
-    pdfinfo,
+    pdfInfo,
     setPdfInfo,
-    page: pdfinfo?.pages[pdfinfo.currentPage],
+    page: pdfInfo?.pages[pdfInfo.currentPage],
     popNote,
     pushNote,
     updateNote,

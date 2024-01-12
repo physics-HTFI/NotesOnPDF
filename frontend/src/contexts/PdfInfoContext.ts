@@ -2,8 +2,8 @@ import { PdfInfo } from "@/types/PdfInfo";
 import { createContext } from "react";
 
 interface PdfInfoContextType {
-  pdfinfo?: PdfInfo;
-  setPdfInfo?: (pdfinfo: PdfInfo) => void;
+  pdfInfo?: PdfInfo;
+  setPdfInfo?: (pdfInfo: PdfInfo) => void;
   pdfPath?: string;
 }
 

@@ -6,6 +6,7 @@ import {
 } from "@/types/PdfInfo";
 import { Mode } from "../SpeedDial";
 import Node from "./Node";
+import { useCursor } from "./useCursor";
 
 /**
  * `Bracket`の引数
@@ -22,17 +23,23 @@ interface Props {
  */
 const Bracket: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const [hover, setHover] = useState(false);
+  const { getCursor, isMove } = useCursor(mode);
   const x1 = params.x1 * pageRect.width;
   const y1 = params.y1 * pageRect.height;
   const x2 = params.x2 * pageRect.width;
   const y2 = params.y2 * pageRect.height;
   const hasStart = ["start", "both"].includes(params.heads ?? "both");
   const hasEnd = ["end", "both"].includes(params.heads ?? "both");
-  const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
-  const node =
-    mode === "move"
-      ? { target: params, visible: hover, pageRect, onMouseDown }
-      : undefined;
+  const cursor = getCursor();
+  const node = isMove
+    ? {
+        target: params,
+        visible: hover,
+        pageRect,
+        onMouseDown,
+        isGrab: mode === "move",
+      }
+    : undefined;
 
   return (
     <>

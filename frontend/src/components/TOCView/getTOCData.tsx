@@ -121,14 +121,14 @@ const getPageColor = (isCurrent: boolean, page?: Page) => {
  * @returns 目次の内容
  */
 const getTOCData = (
-  pdfinfo?: PdfInfo,
-  onChanged?: (pdfinfo: PdfInfo) => void
+  pdfInfo?: PdfInfo,
+  onChanged?: (pdfInfo: PdfInfo) => void
 ): JSX.Element[] => {
-  if (!pdfinfo) return [];
+  if (!pdfInfo) return [];
   const toc: JSX.Element[] = [];
   let pageNum = 1;
-  for (let i = 0; i < pdfinfo.numPages; i++) {
-    const page = pdfinfo.pages[i];
+  for (let i = 0; i < pdfInfo.numPages; i++) {
+    const page = pdfInfo.pages[i];
 
     // 第名を追加
     if (page?.book !== undefined) {
@@ -152,11 +152,11 @@ const getTOCData = (
       getPage(
         `page-${i}`,
         pageNum,
-        i === pdfinfo.currentPage,
+        i === pdfInfo.currentPage,
         page?.sectionBreakInner,
         page,
         () => {
-          onChanged?.({ ...pdfinfo, currentPage: i });
+          onChanged?.({ ...pdfInfo, currentPage: i });
         }
       )
     );
@@ -166,11 +166,11 @@ const getTOCData = (
         getPage(
           `page-right-${i}`,
           pageNum,
-          i === pdfinfo.currentPage,
+          i === pdfInfo.currentPage,
           page.sectionBreakInner,
           page,
           () => {
-            onChanged?.({ ...pdfinfo, currentPage: i });
+            onChanged?.({ ...pdfInfo, currentPage: i });
           }
         )
       );

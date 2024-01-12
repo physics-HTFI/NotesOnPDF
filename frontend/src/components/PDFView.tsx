@@ -1,4 +1,11 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Box, Container } from "@mui/material";
 import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
@@ -14,6 +21,7 @@ import { grey } from "@mui/material/colors";
 import { MathJaxContext } from "better-react-mathjax";
 import Move from "./PDFView/Move";
 import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -121,23 +129,24 @@ const PDFView: FC<Props> = ({
   const [editNote, setEditNote] = useState<NoteType>();
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
   const [scale, setScale] = useState(100);
+  const { appSettings } = useContext(AppSettingsContext);
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const { pdfinfo, page, updateNote } = usePdfInfo();
+  const { pdfInfo, page, updateNote } = usePdfInfo();
   const [width, height, top, bottom] =
-    pdfinfo?.currentPage === undefined
+    pdfInfo?.currentPage === undefined
       ? [undefined, undefined]
       : preferredSize(
-          pdfinfo.settings.offsetTop,
-          pdfinfo.settings.offsetBottom,
-          pdfSizes.current?.[pdfinfo.currentPage]?.width,
-          pdfSizes.current?.[pdfinfo.currentPage]?.height,
+          pdfInfo.settings.offsetTop,
+          pdfInfo.settings.offsetBottom,
+          pdfSizes.current?.[pdfInfo.currentPage]?.width,
+          pdfSizes.current?.[pdfInfo.currentPage]?.height,
           containerRect?.width,
           containerRect?.height
         );
-  const { pageLabel } = toDisplayedPage(pdfinfo);
+  const { pageLabel } = toDisplayedPage(pdfInfo);
 
   const getPageRect = useCallback((ref: HTMLDivElement) => {
     setRefPage(ref);
@@ -147,17 +156,17 @@ const PDFView: FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (pdfinfo?.currentPage === undefined) return;
+    if (pdfInfo?.currentPage === undefined) return;
     setReading(true);
-  }, [pdfinfo?.currentPage]);
+  }, [pdfInfo?.currentPage]);
 
   useEffect(() => {
-    if (pdfinfo?.currentPage === undefined) return;
+    if (pdfInfo?.currentPage === undefined) return;
     const pageW = pageRect?.width;
-    const pdfW = pdfSizes.current?.[pdfinfo.currentPage]?.width;
+    const pdfW = pdfSizes.current?.[pdfInfo.currentPage]?.width;
     if (!pageW || !pdfW) setScale(100);
-    else setScale((pdfinfo.settings.fontSize * pageW) / pdfW);
-  }, [pdfinfo?.currentPage, pageRect, pdfSizes, pdfinfo?.settings.fontSize]);
+    else setScale((pdfInfo.settings.fontSize * pageW) / pdfW);
+  }, [pdfInfo?.currentPage, pageRect, pdfSizes, pdfInfo?.settings.fontSize]);
 
   const base = grey[300];
   const stripe =
@@ -184,7 +193,7 @@ const PDFView: FC<Props> = ({
           e.preventDefault();
           if (e.button !== 0) return;
           if (!pageRect) return;
-          setMode(null);
+          if (appSettings?.cancelModeWithVoidClick) setMode(null);
           if (mode ?? moveNote) return;
           setMouse({ pageX: e.pageX, pageY: e.pageY });
           setParetteOpen(true);
@@ -244,7 +253,7 @@ const PDFView: FC<Props> = ({
               noData={""}
             >
               <PDFPage
-                pageIndex={pdfinfo?.currentPage}
+                pageIndex={pdfInfo?.currentPage}
                 width={width}
                 error={""}
                 loading={""}

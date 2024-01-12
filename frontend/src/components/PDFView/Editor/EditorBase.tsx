@@ -15,9 +15,9 @@ interface Props {
  * 画面クリック時にポップアップする編集ダイアログ
  */
 const EditorBase: FC<Props> = ({ children, onClose }) => {
-  const { pdfinfo, setPdfInfo } = useContext(PdfInfoContext);
+  const { pdfInfo, setPdfInfo } = useContext(PdfInfoContext);
   const { mouse } = useContext(MouseContext);
-  if (!pdfinfo || !setPdfInfo || !mouse) return <></>;
+  if (!pdfInfo || !setPdfInfo || !mouse) return <></>;
 
   return (
     <Modal

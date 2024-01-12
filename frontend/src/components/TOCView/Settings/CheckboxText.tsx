@@ -1,19 +1,13 @@
 import { FC } from "react";
-import {
-  Box,
-  FormControlLabel,
-  Switch,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, TextField } from "@mui/material";
+import Checkbox from "./Checkbox";
 
 /**
  * `CheckboxText`の`Props`
  */
 interface Props {
   label: string;
-  tooltip: string;
+  tooltip?: string;
   text?: string;
   preferredText: string;
   onChange: (text?: string) => void;
@@ -35,20 +29,14 @@ const CheckboxText: FC<Props> = ({
 
   return (
     <Box sx={{ whiteSpace: "nowrap", width: "100%", display: "flex" }}>
-      <Tooltip title={tooltip} disableInteractive>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={checked}
-              size="small"
-              onChange={(e) => {
-                onChange(e.target.checked ? textLocal : undefined);
-              }}
-            />
-          }
-          label={<Typography variant="button">{label}</Typography>}
-        />
-      </Tooltip>
+      <Checkbox
+        label={label}
+        checked={checked}
+        tooltip={tooltip}
+        onChange={(checked) => {
+          onChange(checked ? textLocal : undefined);
+        }}
+      />
       <TextField
         hidden={!checked}
         value={textLocal}

@@ -4,6 +4,7 @@ import { Mode } from "../SpeedDial";
 import { Chip as ChipType, Node, NoteType } from "@/types/PdfInfo";
 import { MouseContext } from "@/contexts/MouseContext";
 import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { useCursor } from "./useCursor";
 
 /**
  * `Chip`の引数
@@ -19,12 +20,13 @@ interface Props {
  */
 const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
+  const { getCursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
-  const { pdfinfo } = usePdfInfo();
-  if (!pdfinfo || !scale) return <></>;
+  const { pdfInfo } = usePdfInfo();
+  if (!pdfInfo || !scale) return <></>;
 
   const outlined = params.outlined ?? false;
-  const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
+  const cursor = getCursor();
   return (
     <MuiChip
       sx={{

@@ -13,6 +13,7 @@ import { usePdfInfo } from "@/hooks/usePdfInfo";
 import { Node as NodeType, NoteType } from "@/types/PdfInfo";
 import SvgDefs from "./Items/SvgDefs";
 import { MouseContext } from "@/contexts/MouseContext";
+import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 
 /**
  * `Items`の引数
@@ -30,6 +31,7 @@ interface Props {
  */
 const Items: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
   const { setMouse } = useContext(MouseContext);
+  const { appSettings } = useContext(AppSettingsContext);
   const { page, setPdfInfo, popNote } = usePdfInfo();
   if (!page?.notes || !setPdfInfo || !pageRect || !setMouse) return <SvgDefs />;
 
@@ -39,13 +41,19 @@ const Items: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
     pageRect,
     params,
     onMouseDown: (e: MouseEvent, note: NoteType | NodeType) => {
-      if (!mode || e.button !== 0) return;
+      let tmpMode: typeof mode | undefined = undefined;
+      if (mode && e.button === 0) tmpMode = mode;
+      if (appSettings?.middleClick && e.button === 1)
+        tmpMode = appSettings.middleClick;
+      if (appSettings?.rightClick && e.button === 2)
+        tmpMode = appSettings.rightClick;
+      if (!tmpMode) return;
       e.stopPropagation();
       e.preventDefault(); // これがないと`NoteEditor`の表示時にフォーカスが当たらなくなることがある
-      if (mode === "move") onMove(note);
+      if (tmpMode === "move") onMove(note);
       if (note.type !== "Node") {
-        if (mode === "edit") onEdit(note);
-        if (mode === "delete") popNote(note);
+        if (tmpMode === "edit") onEdit(note);
+        if (tmpMode === "delete") popNote(note);
       }
       setMouse({ pageX: e.pageX, pageY: e.pageY });
     },
