@@ -10,6 +10,7 @@ import {
 import { PdfInfoContext } from "@/contexts/PdfInfoContext";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
+import { useCursor } from "./useCursor";
 
 /**
  * `PageLink`の引数
@@ -25,10 +26,11 @@ interface Props {
  */
 const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
+  const { getCursor } = useCursor(mode);
   const { pdfInfo, setPdfInfo } = useContext(PdfInfoContext);
   const { scale } = useContext(MouseContext);
   const { pageLabel } = toDisplayedPage(pdfInfo, params.page);
-  const cursor = mode === "move" ? "move" : "pointer";
+  const cursor = getCursor() ?? "pointer";
   if (!pdfInfo || !setPdfInfo) return <></>;
   return (
     <>
@@ -51,8 +53,7 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
         onMouseDown={(e) => {
           e.stopPropagation();
           e.preventDefault();
-          if (e.button !== 0) return;
-          if (!mode) {
+          if (e.button === 0 && !mode) {
             // ページリンク先へ移動
             if (pdfInfo.currentPage === params.page) return;
             if (params.page < 0 || pdfInfo.numPages <= params.page) return;

@@ -4,6 +4,7 @@ import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
 import { Node, Note as NoteParams, NoteType } from "@/types/PdfInfo";
+import { useCursor } from "./useCursor";
 
 /**
  * `Note`の引数
@@ -19,8 +20,9 @@ interface Props {
  */
 const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
+  const { getCursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
-  const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
+  const cursor = getCursor();
   const html = params.html
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
     .replace(/\n/g, "<br/>");

@@ -1,7 +1,7 @@
 /**
  * 注釈の右／中クリック時の動作
  */
-export type ClickOption = "none" | "edit" | "delete";
+export type ClickOption = null | "edit" | "move" | "delete";
 
 /**
  * アプリ設定
@@ -24,6 +24,6 @@ export const AppSettings_default: AppSettings = {
   rootPath: "./PDFs",
   cancelModeWithVoidClick: true,
   snapNotes: true,
-  rightClick: "none",
-  middleClick: "none",
+  rightClick: null,
+  middleClick: null,
 };

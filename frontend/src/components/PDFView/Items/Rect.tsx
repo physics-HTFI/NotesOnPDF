@@ -2,6 +2,7 @@ import { FC, MouseEvent, useState } from "react";
 import { Mode } from "../SpeedDial";
 import { Rect as RectType, Node as NodeType, NoteType } from "@/types/PdfInfo";
 import Node from "./Node";
+import { useCursor } from "./useCursor";
 
 /**
  * `Rect`の引数
@@ -18,11 +19,17 @@ interface Props {
  */
 const Rect: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const [hover, setHover] = useState(false);
-  const cursor = !mode ? undefined : mode === "move" ? "move" : "pointer";
-  const node =
-    mode === "move"
-      ? { target: params, visible: hover, pageRect, onMouseDown }
-      : undefined;
+  const { getCursor, isMove } = useCursor(mode);
+  const cursor = getCursor();
+  const node = isMove
+    ? {
+        target: params,
+        visible: hover,
+        pageRect,
+        onMouseDown,
+        isGrab: mode === "move",
+      }
+    : undefined;
 
   return (
     <>
