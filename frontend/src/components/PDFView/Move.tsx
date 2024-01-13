@@ -96,7 +96,6 @@ const Move: FC<Props> = ({ params, onClose }) => {
         }}
         onMouseUp={(e) => {
           setDXY([0, 0]);
-          e.preventDefault();
           e.stopPropagation();
           setMouse({ pageX: e.pageX, pageY: e.pageY });
           const δxy =

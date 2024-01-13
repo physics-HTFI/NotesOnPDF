@@ -85,7 +85,6 @@ const SpeedDial: FC<Props> = ({
         visibility: hidden ? "collapse" : undefined,
       }}
       onMouseDown={(e) => {
-        e.preventDefault();
         const speeddialYMax = 50;
         const isSpeedDial = e.pageY < speeddialYMax;
         if (open || isSpeedDial) {

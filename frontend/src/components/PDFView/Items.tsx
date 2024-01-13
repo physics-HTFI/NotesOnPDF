@@ -49,7 +49,6 @@ const Items: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
         tmpMode = appSettings.rightClick;
       if (!tmpMode) return;
       e.stopPropagation();
-      e.preventDefault(); // これがないと`NoteEditor`の表示時にフォーカスが当たらなくなることがある
       if (tmpMode === "move") onMove(note);
       if (note.type !== "Node") {
         if (tmpMode === "edit") onEdit(note);

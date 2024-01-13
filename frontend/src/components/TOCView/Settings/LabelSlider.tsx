@@ -32,9 +32,6 @@ const LabelSlider: FC<Props> = ({
         <Typography
           variant="button"
           sx={{ whiteSpace: "nowrap", pr: 2, width: 110 }}
-          onMouseDown={(e) => {
-            e.preventDefault();
-          }}
         >
           {label}
         </Typography>

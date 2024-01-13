@@ -45,6 +45,8 @@ function App() {
 
   // ファイルツリーに表示する進捗情報の取得
   useEffect(() => {
+    document.onselectstart = () => false;
+    document.oncontextmenu = () => false;
     model
       .getProgresses()
       .then((progresses) => {

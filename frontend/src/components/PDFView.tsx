@@ -190,7 +190,6 @@ const PDFView: FC<Props> = ({
         }}
         ref={getContainerRect}
         onMouseDown={(e) => {
-          e.preventDefault();
           if (e.button !== 0) return;
           if (!pageRect) return;
           if (appSettings?.cancelModeWithVoidClick) setMode(null);
@@ -203,9 +202,6 @@ const PDFView: FC<Props> = ({
         }}
         onMouseLeave={() => {
           setParetteOpen(false);
-        }}
-        onContextMenu={(e) => {
-          e.preventDefault();
         }}
       >
         <MathJaxContext version={3} config={mathjaxConfig}>

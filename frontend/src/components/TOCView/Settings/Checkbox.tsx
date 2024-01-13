@@ -34,9 +34,6 @@ const Checkbox: FC<Props> = ({ label, checked, tooltip, onChange }) => {
         }
         label={<Typography variant="button">{label}</Typography>}
         sx={{ whiteSpace: "nowrap" }}
-        onMouseDown={(e) => {
-          e.preventDefault();
-        }}
       />
     </Tooltip>
   );

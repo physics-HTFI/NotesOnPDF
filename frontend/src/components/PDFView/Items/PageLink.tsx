@@ -52,7 +52,6 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
         size="small"
         onMouseDown={(e) => {
           e.stopPropagation();
-          e.preventDefault();
           if (e.button === 0 && !mode) {
             // ページリンク先へ移動
             if (pdfInfo.currentPage === params.page) return;

@@ -28,7 +28,6 @@ const PageLabelSmall: FC<Props> = ({ label, hidden }) => (
     size="small"
     onMouseDown={(e) => {
       e.stopPropagation();
-      e.preventDefault();
     }}
   />
 );

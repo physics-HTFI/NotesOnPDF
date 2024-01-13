@@ -23,13 +23,7 @@ interface Props {
 const ClickOptionSelect: FC<Props> = ({ value, label, onChange }) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", py: 0.5 }}>
-      <Typography
-        variant="button"
-        sx={{ whiteSpace: "nowrap", pr: 2 }}
-        onMouseDown={(e) => {
-          e.preventDefault();
-        }}
-      >
+      <Typography variant="button" sx={{ whiteSpace: "nowrap", pr: 2 }}>
         {label}
       </Typography>
       <Select

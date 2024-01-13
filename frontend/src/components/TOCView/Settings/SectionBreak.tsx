@@ -20,12 +20,7 @@ const SectionBreak: FC<Props> = ({
   onChange,
 }) => {
   return (
-    <Box
-      sx={{ whiteSpace: "nowrap", display: "flex", flexDirection: "row" }}
-      onMouseDown={(e) => {
-        e.preventDefault();
-      }}
-    >
+    <Box sx={{ whiteSpace: "nowrap", display: "flex", flexDirection: "row" }}>
       <Checkbox
         label="節区切り"
         checked={sectionBreak}
