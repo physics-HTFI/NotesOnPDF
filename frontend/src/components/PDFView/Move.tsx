@@ -146,6 +146,9 @@ const Move: FC<Props> = ({ params, onClose }) => {
             box.style.top = `${e.pageY - mouse.pageY}px`;
           }
         }}
+        onWheel={(e) => {
+          e.stopPropagation();
+        }}
       />
     </>
   );

@@ -4,15 +4,17 @@ import { PdfInfo, Page } from "@/types/PdfInfo";
 /**
  * 題名を返す
  */
-const getBook = (i: number, title: string) => (
+const getBook = (i: number, title: string, onClick?: () => void) => (
   <Typography
     key={`book-${i}`}
     variant="body1"
     sx={{
       whiteSpace: "nowrap",
       color: "gray",
+      cursor: "pointer",
       "&:not(:first-of-type)": { pt: 1 },
     }}
+    onClick={onClick}
   >
     {title}
   </Typography>
@@ -21,11 +23,12 @@ const getBook = (i: number, title: string) => (
 /**
  * 部名を返す
  */
-const getPart = (i: number, title: string) => (
+const getPart = (i: number, title: string, onClick?: () => void) => (
   <Typography
     key={`part-${i}`}
     variant="body2"
-    sx={{ whiteSpace: "nowrap", color: "gray", pt: 0.8 }}
+    sx={{ whiteSpace: "nowrap", color: "gray", pt: 0.8, cursor: "pointer" }}
+    onClick={onClick}
   >
     {title}
   </Typography>
@@ -34,7 +37,7 @@ const getPart = (i: number, title: string) => (
 /**
  * 章名を返す
  */
-const getChapter = (i: number, title: string) => (
+const getChapter = (i: number, title: string, onClick?: () => void) => (
   <Typography
     key={`chapter-${i}`}
     variant="body2"
@@ -45,7 +48,9 @@ const getChapter = (i: number, title: string) => (
       color: "gray",
       whiteSpace: "nowrap",
       minHeight: 6,
+      cursor: "pointer",
     }}
+    onClick={onClick}
   >
     {title}
   </Typography>
@@ -63,11 +68,10 @@ const getPage = (
   onClick?: () => void
 ) => {
   const getPageColor = (isCurrent: boolean, page?: Page) => {
-    if (page?.excluded) return "black";
     if (isCurrent) {
       return page?.notes ? "magenta" : "red";
     } else {
-      return page?.notes ? "limegreen" : "black";
+      return page?.notes && !page.excluded ? "limegreen" : "black";
     }
   };
   return (
@@ -125,18 +129,21 @@ const getTOCData = (
   let pageNum = 1;
   for (let i = 0; i < pdfInfo.numPages; i++) {
     const page = pdfInfo.pages[i];
+    const handleClick = () => {
+      onChanged?.({ ...pdfInfo, currentPage: i });
+    };
 
     // 第名を追加
     if (page?.book !== undefined) {
-      toc.push(getBook(i, page.book));
+      toc.push(getBook(i, page.book, handleClick));
     }
     // 部名を追加
     if (page?.part !== undefined) {
-      toc.push(getPart(i, page.part));
+      toc.push(getPart(i, page.part, handleClick));
     }
     // 章名を追加
     if (page?.chapter !== undefined) {
-      toc.push(getChapter(i, page.chapter));
+      toc.push(getChapter(i, page.chapter, handleClick));
     }
     // 節区切りを追加
     if (page?.sectionBreak) {
@@ -151,9 +158,7 @@ const getTOCData = (
         i === pdfInfo.currentPage,
         page?.sectionBreakInner,
         page,
-        () => {
-          onChanged?.({ ...pdfInfo, currentPage: i });
-        }
+        handleClick
       )
     );
     if (page?.sectionBreakInner) {
@@ -165,9 +170,7 @@ const getTOCData = (
           i === pdfInfo.currentPage,
           page.sectionBreakInner,
           page,
-          () => {
-            onChanged?.({ ...pdfInfo, currentPage: i });
-          }
+          handleClick
         )
       );
     }
