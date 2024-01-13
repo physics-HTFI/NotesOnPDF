@@ -296,7 +296,7 @@ const PDFView: FC<Props> = ({
           </Container>
         </MathJaxContext>
 
-        <Excluded excluded={(!mode && page?.excluded) ?? false} />
+        <Excluded excluded={(!mode && !moveNote && page?.excluded) ?? false} />
         <PageLabelSmall label={pageLabel} hidden={Boolean(moveNote)} />
         <SpeedDial
           mode={mode}

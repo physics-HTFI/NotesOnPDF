@@ -61,29 +61,40 @@ const getPage = (
   sectionBreakInner?: boolean,
   page?: Page,
   onClick?: () => void
-) => (
-  <Tooltip
-    key={key}
-    title={`p. ${pageNum}`}
-    disableInteractive
-    enterDelay={0}
-    leaveDelay={0}
-  >
-    <span
-      style={{
-        display: "inline-block",
-        width: sectionBreakInner ? 3 : 7,
-        height: 7,
-        background: getPageColor(isCurrent, page),
-        marginRight: 2,
-        marginBottom: 2,
-        marginTop: 2,
-        cursor: "pointer",
-      }}
-      onClick={onClick}
-    />
-  </Tooltip>
-);
+) => {
+  const getPageColor = (isCurrent: boolean, page?: Page) => {
+    if (page?.excluded) return "black";
+    if (isCurrent) {
+      return page?.notes ? "magenta" : "red";
+    } else {
+      return page?.notes ? "limegreen" : "black";
+    }
+  };
+  return (
+    <Tooltip
+      key={key}
+      title={`p. ${pageNum}`}
+      disableInteractive
+      enterDelay={0}
+      leaveDelay={0}
+    >
+      <span
+        style={{
+          display: "inline-block",
+          width: sectionBreakInner ? 3 : 7,
+          height: 7,
+          background: getPageColor(isCurrent, page),
+          marginRight: 2,
+          marginBottom: 2,
+          marginTop: 2,
+          opacity: page?.excluded ? 0.3 : 1,
+          cursor: "pointer",
+        }}
+        onClick={onClick}
+      />
+    </Tooltip>
+  );
+};
 
 /**
  * 節区切りを返す
@@ -101,21 +112,6 @@ const getSeparator = (key: string) => (
     }}
   />
 );
-
-/**
- * ページの色を返す
- */
-const getPageColor = (isCurrent: boolean, page?: Page) => {
-  if (isCurrent) {
-    if (page?.excluded) return "lightpink";
-    if (page?.notes) return "magenta";
-    return "red";
-  } else {
-    if (page?.excluded) return "lightgray";
-    if (page?.notes) return "limegreen";
-    return "black";
-  }
-};
 
 /**
  * @returns 目次の内容
