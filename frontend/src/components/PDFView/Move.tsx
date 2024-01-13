@@ -12,6 +12,7 @@ import { Node, NoteType } from "@/types/PdfInfo";
 import { Box } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+import { usePdfInfo } from "@/hooks/usePdfInfo";
 
 /**
  * `Move`の引数
@@ -33,6 +34,7 @@ const Move: FC<Props> = ({ params, onClose }) => {
   const ref = useRef<HTMLElement>();
   const { mouse, setMouse, pageRect } = useContext(MouseContext);
   const { appSettings } = useContext(AppSettingsContext);
+  const { page } = usePdfInfo();
   if (!params || !mouse || !setMouse || !pageRect || !appSettings) return <></>;
 
   const getDxy = (xy?: typeof mouse): [number, number] =>
@@ -45,9 +47,11 @@ const Move: FC<Props> = ({ params, onClose }) => {
 
   const newParams =
     params.type === "Node" ? getTransformed(params, dXY) : params;
-  if (newParams.type === "Polygon" && newParams.points.length <= 3) {
-    newParams.border = true;
-  }
+  const addingPolygon =
+    params.type === "Node" &&
+    newParams.type === "Polygon" &&
+    !page?.notes?.includes(params.target);
+  if (addingPolygon) newParams.border = true;
 
   return (
     <>
@@ -109,6 +113,9 @@ const Move: FC<Props> = ({ params, onClose }) => {
           if (noMove && !isPolygonNode) {
             onClose();
           } else if (params.type === "Node") {
+            if (noMove && params.target.type === "Polygon" && addingPolygon) {
+              params.target.points.pop(); // ポリゴンの追加時は最後の点が重複しているので消す
+            }
             onClose(
               params.target,
               getTransformed(params, δxy),
