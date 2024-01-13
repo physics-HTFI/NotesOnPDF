@@ -274,7 +274,7 @@ function SettingsTabs(props: {
           props.setTab(i);
         }}
       >
-        <Tooltip title="このページの設定" placement="top">
+        <Tooltip title="現在のページの設定" placement="top">
           <Tab label={props.pageLabel ?? "p. ???"} />
         </Tooltip>
         <Tooltip title="このファイルの設定" placement="top">

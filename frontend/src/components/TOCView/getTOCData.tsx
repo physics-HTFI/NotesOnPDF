@@ -59,15 +59,15 @@ const getChapter = (i: number, title: string, onClick?: () => void) => (
 /**
  * ページを返す
  */
-const getPage = (
-  key: string,
-  pageNum: number,
-  isCurrent: boolean,
+export const getPage = (
   sectionBreakInner?: boolean,
+  key?: string,
+  tooltip?: string,
+  isCurrent?: boolean,
   page?: Page,
   onClick?: () => void
 ) => {
-  const getPageColor = (isCurrent: boolean, page?: Page) => {
+  const getPageColor = (isCurrent?: boolean, page?: Page) => {
     if (isCurrent) {
       return page?.notes ? "magenta" : "red";
     } else {
@@ -77,7 +77,7 @@ const getPage = (
   return (
     <Tooltip
       key={key}
-      title={`p. ${pageNum}`}
+      title={tooltip}
       disableInteractive
       enterDelay={0}
       leaveDelay={0}
@@ -103,7 +103,7 @@ const getPage = (
 /**
  * 節区切りを返す
  */
-const getSeparator = (key: string) => (
+export const getSeparator = (key?: string) => (
   <span
     key={key}
     style={{
@@ -153,10 +153,10 @@ const getTOCData = (
     pageNum = page?.pageNumberRestart ?? pageNum;
     toc.push(
       getPage(
-        `page-${i}`,
-        pageNum,
-        i === pdfInfo.currentPage,
         page?.sectionBreakInner,
+        `page-${i}`,
+        `p. ${pageNum}`,
+        i === pdfInfo.currentPage,
         page,
         handleClick
       )
@@ -165,10 +165,10 @@ const getTOCData = (
       toc.push(getSeparator(`separator-inner-${i}`));
       toc.push(
         getPage(
-          `page-right-${i}`,
-          pageNum,
-          i === pdfInfo.currentPage,
           page.sectionBreakInner,
+          `page-right-${i}`,
+          `p. ${pageNum}`,
+          i === pdfInfo.currentPage,
           page,
           handleClick
         )
