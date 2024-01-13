@@ -11,12 +11,12 @@ const getBook = (i: number, title: string, onClick?: () => void) => (
     sx={{
       whiteSpace: "nowrap",
       color: "gray",
-      cursor: "pointer",
       "&:not(:first-of-type)": { pt: 1 },
     }}
-    onClick={onClick}
   >
-    {title}
+    <span style={{ cursor: "pointer" }} onClick={onClick}>
+      {title}
+    </span>
   </Typography>
 );
 
@@ -27,10 +27,11 @@ const getPart = (i: number, title: string, onClick?: () => void) => (
   <Typography
     key={`part-${i}`}
     variant="body2"
-    sx={{ whiteSpace: "nowrap", color: "gray", pt: 0.8, cursor: "pointer" }}
-    onClick={onClick}
+    sx={{ whiteSpace: "nowrap", color: "gray", pt: 0.8 }}
   >
-    {title}
+    <span style={{ cursor: "pointer" }} onClick={onClick}>
+      {title}
+    </span>
   </Typography>
 );
 
@@ -48,11 +49,11 @@ const getChapter = (i: number, title: string, onClick?: () => void) => (
       color: "gray",
       whiteSpace: "nowrap",
       minHeight: 6,
-      cursor: "pointer",
     }}
-    onClick={onClick}
   >
-    {title}
+    <span style={{ cursor: "pointer" }} onClick={onClick}>
+      {title}
+    </span>
   </Typography>
 );
 
