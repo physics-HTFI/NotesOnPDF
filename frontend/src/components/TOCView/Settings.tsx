@@ -170,7 +170,7 @@ const Settings: FC<Props> = ({ onClose }) => {
 
       {/* アプリ設定 */}
       {tab === 2 && (
-        <Box sx={{ width: "90%", m: 1 }}>
+        <Box sx={{ width: "95%", p: 1 }}>
           {/* モード解除 */}
           <Checkbox
             label="空クリックでモードを解除する"
@@ -182,7 +182,7 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
           {/* スナップ */}
           <Checkbox
-            label="注釈をスナップする"
+            label="注釈の向きをスナップする"
             checked={appSettings.snapNotes}
             tooltip="カッコ注釈／マーカー注釈の向きを水平／鉛直に限定します"
             onChange={(snapNotes) => {

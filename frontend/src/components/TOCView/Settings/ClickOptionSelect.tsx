@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ClickOption } from "@/types/AppSettings";
+import { Delete, Edit, OpenWith } from "@mui/icons-material";
 
 /**
  * `ClickOptionSelect`の引数
@@ -23,7 +24,7 @@ interface Props {
 const ClickOptionSelect: FC<Props> = ({ value, label, onChange }) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", py: 0.5 }}>
-      <Typography variant="button" sx={{ whiteSpace: "nowrap", pr: 2 }}>
+      <Typography variant="button" sx={{ whiteSpace: "nowrap", pr: 1 }}>
         {label}
       </Typography>
       <Select
@@ -40,9 +41,27 @@ const ClickOptionSelect: FC<Props> = ({ value, label, onChange }) => {
         sx={{ flexGrow: 1, fontSize: "160%" }}
       >
         <MenuItem value={"none"}>なし</MenuItem>
-        <MenuItem value={"edit"}>変更</MenuItem>
-        <MenuItem value={"move"}>移動・変形</MenuItem>
-        <MenuItem value={"delete"}>削除</MenuItem>
+        <MenuItem value={"edit"}>
+          <Edit
+            sx={{ color: "cornflowerblue", pr: 1, verticalAlign: "bottom" }}
+            fontSize="small"
+          />
+          <span>変更</span>
+        </MenuItem>
+        <MenuItem value={"move"}>
+          <OpenWith
+            sx={{ color: "mediumseagreen", pr: 1, verticalAlign: "bottom" }}
+            fontSize="small"
+          />
+          <span>移動・変形</span>
+        </MenuItem>
+        <MenuItem value={"delete"}>
+          <Delete
+            sx={{ color: "palevioletred", pr: 1, verticalAlign: "bottom" }}
+            fontSize="small"
+          />
+          <span>削除</span>
+        </MenuItem>
       </Select>
     </Box>
   );
