@@ -11,7 +11,7 @@ import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import SpeedDial, { Mode } from "./PDFView/SpeedDial";
-import { Node, NoteType, toDisplayedPage } from "@/types/PdfInfo";
+import { Node, NoteType } from "@/types/PdfInfo";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
 import Items from "./PDFView/Items";
@@ -146,7 +146,7 @@ const PDFView: FC<Props> = ({
           containerRect?.width,
           containerRect?.height
         );
-  const { pageLabel } = toDisplayedPage(pdfInfo);
+  const pageLabel = `p. ${pdfInfo?.pages[pdfInfo.currentPage]?.num ?? "???"}`;
 
   const getPageRect = useCallback((ref: HTMLDivElement) => {
     setRefPage(ref);

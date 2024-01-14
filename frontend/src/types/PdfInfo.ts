@@ -2,9 +2,8 @@
  * 1つのPDFファイルに追加された全ての情報
  */
 export interface PdfInfo {
-  numPages: number;
   currentPage: number;
-  pages: Record<number, Page>;
+  pages: Page[];
   settings: Settings;
 }
 
@@ -84,6 +83,7 @@ export interface Node {
  * 1つのページに追加された全ての情報
  */
 export interface Page {
+  num: number;
   /** 本のタイトル */
   book?: string;
   /** 部のタイトル */
@@ -116,42 +116,36 @@ export interface Settings {
 /**
  * `Note`がまだ生成されていないPDFファイル用の初期インスタンスを返す
  */
-export const createNewPdfInfo = (title: string, numPages: number): PdfInfo => ({
-  numPages,
-  currentPage: 0,
-  settings: { fontSize: 70, offsetTop: 0, offsetBottom: 0 },
-  pages: {
-    0: {
-      book: title.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined,
-      pageNumberRestart: 1,
-    },
-  },
-});
-
-/**
- * `pageNumber`の表示上のページ数を返す。
- * `pageNumber`が省略されている場合は`pdfInfo.currentPage`を対象とする。
- */
-export const toDisplayedPage = (
-  pdfInfo?: PdfInfo,
-  pageNumber?: number
-): { pageNum?: number; pageLabel?: string } => {
-  if (!pdfInfo) return { pageLabel: "p. ???" };
-  pageNumber ??= pdfInfo.currentPage;
-  if (pageNumber < 0 || pdfInfo.numPages <= pageNumber)
-    return { pageLabel: "p. ???" };
-  let retval = 0;
-  for (let i = pageNumber; 0 <= i; i--) {
-    const restart = pdfInfo.pages[i]?.pageNumberRestart;
-    if (restart === undefined) {
-      ++retval;
+export const createNewPdfInfo = (title: string, numPages: number): PdfInfo => {
+  const pages: Page[] = [];
+  for (let i = 0; i < numPages; i++) {
+    if (i === 0) {
+      pages.push({
+        num: i + 1,
+        book: title.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined,
+      });
     } else {
-      retval += restart;
-      break;
+      pages.push({ num: i + 1 });
     }
   }
-  return { pageNum: retval, pageLabel: `p. ${retval}` };
+  const retval: PdfInfo = {
+    currentPage: 0,
+    settings: { fontSize: 70, offsetTop: 0, offsetBottom: 0 },
+    pages,
+  };
+  return retval;
 };
+
+/**
+ * ページ番号を更新する
+ */
+export function updatePageNum(pdfInfo: PdfInfo) {
+  let num = 0;
+  for (const p of pdfInfo.pages) {
+    num = p.pageNumberRestart ?? num + 1;
+    p.num = num;
+  }
+}
 
 /**
  * `displayedPageNumber`を通し番号でのページ数に変換する。
@@ -161,18 +155,18 @@ export const fromDisplayedPage = (
   pdfInfo: PdfInfo,
   displayedPageNumber: number
 ): number => {
-  const current = toDisplayedPage(pdfInfo).pageNum;
+  const current = pdfInfo.pages[pdfInfo.currentPage]?.num;
   if (current === undefined) return -1;
   if (displayedPageNumber <= current) {
     // 現在のページより小さい場合は、遡って探す
     for (let i = pdfInfo.currentPage; i >= 0; i--) {
-      if (displayedPageNumber === toDisplayedPage(pdfInfo, i).pageNum) {
+      if (displayedPageNumber === pdfInfo.pages[i]?.num) {
         return i;
       }
     }
   } else {
-    for (let i = pdfInfo.currentPage + 1; i < pdfInfo.numPages; i++) {
-      if (displayedPageNumber === toDisplayedPage(pdfInfo, i).pageNum) {
+    for (let i = pdfInfo.currentPage + 1; i < pdfInfo.pages.length; i++) {
+      if (displayedPageNumber === pdfInfo.pages[i]?.num) {
         return i;
       }
     }

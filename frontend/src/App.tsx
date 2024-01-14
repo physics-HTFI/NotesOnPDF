@@ -37,7 +37,7 @@ function App() {
     if (!pdfInfo) return;
     const newPage = Math.max(
       0,
-      Math.min(pdfInfo.numPages - 1, pdfInfo.currentPage + delta)
+      Math.min(pdfInfo.pages.length - 1, pdfInfo.currentPage + delta)
     );
     if (pdfInfo.currentPage === newPage) return;
     setPdfInfo({ ...pdfInfo, currentPage: newPage });
@@ -65,9 +65,9 @@ function App() {
   useEffect(() => {
     if (!progresses || !pdfPath || !pdfInfo) return;
     progresses.PDFs[pdfPath] = {
-      allPages: pdfInfo.numPages,
+      allPages: pdfInfo.pages.length,
       enabledPages:
-        pdfInfo.numPages -
+        pdfInfo.pages.length -
         Object.keys(pdfInfo.pages).filter(
           (key) => pdfInfo.pages[Number(key)]?.excluded
         ).length,
@@ -88,9 +88,9 @@ function App() {
 
     if (pdfInfo === null) {
       setPdfInfo(createNewPdfInfo(pdfPath, numPages));
-    } else if (pdfInfo.numPages !== numPages) {
+    } else if (pdfInfo.pages.length !== numPages) {
       // 同じPDFでページ数が異なっている場合に対応する
-      setPdfInfo({ ...pdfInfo, numPages });
+      setPdfInfo({ ...pdfInfo });
     }
   }, [isWaitingPDF, isWaitingPdfInfo, numPages, pdfInfo, pdfPath, pdf]);
 

@@ -1,6 +1,6 @@
 import { FC, useContext, useState } from "react";
 import { Box, IconButton, Tab, Tabs, Tooltip } from "@mui/material";
-import { Page, PdfInfo, Settings, toDisplayedPage } from "@/types/PdfInfo";
+import { Page, PdfInfo, Settings, updatePageNum } from "@/types/PdfInfo";
 import CheckboxText from "./Settings/CheckboxText";
 import SectionBreak from "./Settings/SectionBreak";
 import PageNumberRestart from "./Settings/PageNumberRestart";
@@ -37,10 +37,10 @@ const Settings: FC<Props> = ({ onClose }) => {
 
   // ページ設定変更
   const handleChangePage = (page: Partial<Page>) => {
-    pdfInfo.pages[pdfInfo.currentPage] = {
-      ...pdfInfo.pages[pdfInfo.currentPage],
-      ...page,
-    };
+    const pre = pdfInfo.pages[pdfInfo.currentPage];
+    if (!pre) return;
+    pdfInfo.pages[pdfInfo.currentPage] = { ...pre, ...page };
+    if (Object.keys(page).includes("pageNumberRestart")) updatePageNum(pdfInfo);
     setPdfInfo({ ...pdfInfo });
   };
 
@@ -68,7 +68,7 @@ const Settings: FC<Props> = ({ onClose }) => {
       {/* タブ */}
       <SettingsTabs
         tab={tab}
-        pageLabel={toDisplayedPage(pdfInfo).pageLabel}
+        pageLabel={`p. ${pdfInfo.pages[pdfInfo.currentPage]?.num ?? "???"}`}
         setTab={setTab}
       />
 

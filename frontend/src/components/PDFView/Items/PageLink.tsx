@@ -1,12 +1,7 @@
 import { FC, MouseEvent, useContext, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
-import {
-  Node,
-  NoteType,
-  PageLink as PageLinkType,
-  toDisplayedPage,
-} from "@/types/PdfInfo";
+import { Node, NoteType, PageLink as PageLinkType } from "@/types/PdfInfo";
 import { PdfInfoContext } from "@/contexts/PdfInfoContext";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
@@ -29,7 +24,6 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
   const { getCursor } = useCursor(mode);
   const { pdfInfo, setPdfInfo } = useContext(PdfInfoContext);
   const { scale } = useContext(MouseContext);
-  const { pageLabel } = toDisplayedPage(pdfInfo, params.page);
   const cursor = getCursor() ?? "pointer";
   if (!pdfInfo || !setPdfInfo) return <></>;
   return (
@@ -48,14 +42,14 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
         }}
         color="success"
         icon={<Shortcut />}
-        label={pageLabel}
+        label={`p. ${pdfInfo.pages[params.page]?.num ?? "???"}`}
         size="small"
         onMouseDown={(e) => {
           e.stopPropagation();
           if (e.button === 0 && !mode) {
             // ページリンク先へ移動
             if (pdfInfo.currentPage === params.page) return;
-            if (params.page < 0 || pdfInfo.numPages <= params.page) return;
+            if (params.page < 0 || pdfInfo.pages.length <= params.page) return;
             setPdfInfo({ ...pdfInfo, currentPage: params.page });
             return;
           }

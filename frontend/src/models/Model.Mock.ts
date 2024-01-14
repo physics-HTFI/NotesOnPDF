@@ -118,15 +118,15 @@ export default class ModelMock implements IModel {
     await this.wait();
     if (path !== "文書1.pdf") throw new Error();
     return {
-      numPages: 29,
       currentPage: 0,
       settings: {
         fontSize: 70,
         offsetTop: 0.05,
         offsetBottom: 0.05,
       },
-      pages: {
-        0: {
+      pages: [
+        {
+          num: 1,
           book: "タイトル",
           notes: [
             { type: "Arrow", x1: 0.1, y1: 0.1, x2: 0.2, y2: 0.2 },
@@ -234,21 +234,35 @@ export default class ModelMock implements IModel {
             },
           ],
         },
-        1: { excluded: true },
-        2: { excluded: true },
-        3: { part: "第1部" },
-        4: { chapter: "第1章" },
-        7: { sectionBreak: true },
-        10: { chapter: "第2章" },
-        11: { sectionBreakInner: true },
-        17: { chapter: "第3章" },
-        18: { sectionBreak: true },
-        22: { part: "第2部", excluded: true },
-        23: { chapter: "第4章" },
-        25: { chapter: "第5章" },
-        27: { chapter: "", excluded: true },
-        28: { excluded: true },
-      },
+        { num: 2, excluded: true },
+        { num: 3, excluded: true },
+        { num: 4, part: "第1部" },
+        { num: 2, chapter: "第1章" },
+        { num: 2 },
+        { num: 2 },
+        { num: 2, sectionBreak: true },
+        { num: 2 },
+        { num: 2 },
+        { num: 2, chapter: "第2章" },
+        { num: 2, sectionBreakInner: true },
+        { num: 2 },
+        { num: 2 },
+        { num: 2 },
+        { num: 2 },
+        { num: 2 },
+        { num: 2, chapter: "第3章" },
+        { num: 2, sectionBreak: true },
+        { num: 2 },
+        { num: 2 },
+        { num: 2 },
+        { num: 2, part: "第2部", excluded: true },
+        { num: 2, chapter: "第4章" },
+        { num: 2 },
+        { num: 2, chapter: "第5章" },
+        { num: 2 },
+        { num: 2, chapter: "", excluded: true },
+        { num: 2, excluded: true },
+      ],
     };
   };
 

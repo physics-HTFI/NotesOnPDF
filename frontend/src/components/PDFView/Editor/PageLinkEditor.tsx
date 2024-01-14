@@ -1,6 +1,6 @@
 import { FC, useRef } from "react";
 import { TextField } from "@mui/material";
-import { PageLink, fromDisplayedPage, toDisplayedPage } from "@/types/PdfInfo";
+import { PageLink, fromDisplayedPage } from "@/types/PdfInfo";
 import { usePdfInfo } from "@/hooks/usePdfInfo";
 import EditorBase from "./EditorBase";
 
@@ -18,8 +18,8 @@ interface Props {
 const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
   const { pdfInfo, updateNote } = usePdfInfo();
   const pageNum =
-    toDisplayedPage(pdfInfo, params.page).pageNum ??
-    toDisplayedPage(pdfInfo).pageNum ??
+    pdfInfo?.pages[params.page]?.num ??
+    pdfInfo?.pages[pdfInfo.currentPage]?.num ??
     1;
   const num = useRef<number>(pageNum);
   if (!pdfInfo) return <></>;

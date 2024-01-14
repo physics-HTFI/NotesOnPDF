@@ -128,7 +128,7 @@ const getTOCData = (
   if (!pdfInfo) return [];
   const toc: JSX.Element[] = [];
   let pageNum = 1;
-  for (let i = 0; i < pdfInfo.numPages; i++) {
+  for (let i = 0; i < pdfInfo.pages.length; i++) {
     const page = pdfInfo.pages[i];
     const handleClick = () => {
       onChanged?.({ ...pdfInfo, currentPage: i });

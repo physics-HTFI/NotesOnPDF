@@ -25,7 +25,8 @@ export const usePdfInfo = () => {
    */
   const pushNote = (note: NoteType) => {
     if (!pdfInfo || !setPdfInfo) return;
-    const page = pdfInfo.pages[pdfInfo.currentPage] ?? {};
+    const page = pdfInfo.pages[pdfInfo.currentPage];
+    if (!page) return;
     page.notes ??= [];
     page.notes.push(note);
     pdfInfo.pages[pdfInfo.currentPage] = page;
