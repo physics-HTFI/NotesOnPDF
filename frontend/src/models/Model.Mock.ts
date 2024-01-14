@@ -126,7 +126,7 @@ export default class ModelMock implements IModel {
         offsetBottom: 0.05,
       },
       pages: {
-        "0": {
+        0: {
           book: "タイトル",
           notes: [
             { type: "Arrow", x1: 0.1, y1: 0.1, x2: 0.2, y2: 0.2 },
@@ -234,20 +234,20 @@ export default class ModelMock implements IModel {
             },
           ],
         },
-        "1": { excluded: true },
-        "2": { excluded: true },
-        "3": { part: "第1部" },
-        "4": { chapter: "第1章" },
-        "7": { sectionBreak: true },
-        "10": { chapter: "第2章" },
-        "11": { sectionBreakInner: true },
-        "17": { chapter: "第3章" },
-        "18": { sectionBreak: true },
-        "22": { part: "第2部", excluded: true },
-        "23": { chapter: "第4章" },
-        "25": { chapter: "第5章" },
-        "27": { chapter: "", excluded: true },
-        "28": { excluded: true },
+        1: { excluded: true },
+        2: { excluded: true },
+        3: { part: "第1部" },
+        4: { chapter: "第1章" },
+        7: { sectionBreak: true },
+        10: { chapter: "第2章" },
+        11: { sectionBreakInner: true },
+        17: { chapter: "第3章" },
+        18: { sectionBreak: true },
+        22: { part: "第2部", excluded: true },
+        23: { chapter: "第4章" },
+        25: { chapter: "第5章" },
+        27: { chapter: "", excluded: true },
+        28: { excluded: true },
       },
     };
   };

@@ -61,6 +61,25 @@ function App() {
       .catch(() => undefined);
   }, []);
 
+  // 進捗の更新
+  useEffect(() => {
+    if (!progresses || !pdfPath || !pdfInfo) return;
+    progresses.PDFs[pdfPath] = {
+      allPages: pdfInfo.numPages,
+      enabledPages:
+        pdfInfo.numPages -
+        Object.keys(pdfInfo.pages).filter(
+          (key) => pdfInfo.pages[Number(key)]?.excluded
+        ).length,
+      notedPages: Object.keys(pdfInfo.pages).filter(
+        (key) =>
+          (pdfInfo.pages[Number(key)]?.excluded
+            ? 0
+            : pdfInfo.pages[Number(key)]?.notes?.length ?? 0) > 0
+      ).length,
+    };
+  }, [pdfInfo, progresses, pdfPath]);
+
   // 始めて読み込むPDFの場合、`PdfInfo`を生成する
   useEffect(() => {
     if (isWaitingPDF || isWaitingPdfInfo) return;
@@ -103,6 +122,8 @@ function App() {
               setIsWaitingPdfInfo(true);
               setPdfInfo(undefined);
               setPDF(pdf);
+              if (progresses)
+                setProgresses({ ...progresses, recentPath: pdfPathNew });
               model
                 .getPdfInfo(pdfPathNew)
                 .then((pdfInfo) => {
