@@ -275,7 +275,7 @@ const PDFView: FC<Props> = ({
                 if (
                   !addPolygon &&
                   newNote?.type === "Polygon" &&
-                  page?.notes?.every((n) => n !== oldNote)
+                  !page?.notes?.some((n) => n === oldNote) // `!page`の場合も含んでいる
                 ) {
                   // Polygonの追加時は点を追加して変形モードを続ける
                   // TODO ポリゴンを追加が終了したときにマウスカーソルがなぜか消えたままになる（Firefoxだと表示される）

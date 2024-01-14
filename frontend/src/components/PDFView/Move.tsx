@@ -115,6 +115,10 @@ const Move: FC<Props> = ({ params, onClose }) => {
           } else if (params.type === "Node") {
             if (noMove && params.target.type === "Polygon" && addingPolygon) {
               params.target.points.pop(); // ポリゴンの追加時は最後の点が重複しているので消す
+              if (params.target.points.length <= 2) {
+                onClose();
+                return;
+              }
             }
             onClose(
               params.target,

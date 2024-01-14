@@ -1,7 +1,6 @@
-import { FC, useContext, useRef } from "react";
+import { FC, useRef } from "react";
 import { TextField } from "@mui/material";
 import { PageLink, fromDisplayedPage, toDisplayedPage } from "@/types/PdfInfo";
-import { MouseContext } from "@/contexts/MouseContext";
 import { usePdfInfo } from "@/hooks/usePdfInfo";
 import EditorBase from "./EditorBase";
 
@@ -17,19 +16,17 @@ interface Props {
  * ページリンクの編集ダイアログ
  */
 const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
-  const { pdfInfo, setPdfInfo, updateNote } = usePdfInfo();
-  const { mouse, pageRect } = useContext(MouseContext);
+  const { pdfInfo, updateNote } = usePdfInfo();
   const pageNum =
     toDisplayedPage(pdfInfo, params.page).pageNum ??
     toDisplayedPage(pdfInfo).pageNum ??
     1;
   const num = useRef<number>(pageNum);
-  const page = pdfInfo?.pages[pdfInfo.currentPage];
+  if (!pdfInfo) return <></>;
 
   // 閉じたときに値を更新する
   const handleClose = () => {
     onClose();
-    if (!pdfInfo) return;
     if (pageNum === num.current) return;
     updateNote(params, {
       ...params,
@@ -37,7 +34,6 @@ const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
     });
   };
 
-  if (!pdfInfo || !setPdfInfo || !page || !mouse || !pageRect) return <></>;
   return (
     <EditorBase onClose={handleClose}>
       ページ番号:
