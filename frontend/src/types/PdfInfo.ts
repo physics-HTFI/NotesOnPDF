@@ -83,6 +83,7 @@ export interface Node {
  * 1つのページに追加された全ての情報
  */
 export interface Page {
+  /** ページ番号 */
   num: number;
   /** 本のタイトル */
   book?: string;
@@ -90,12 +91,12 @@ export interface Page {
   part?: string;
   /** 章のタイトル */
   chapter?: string;
+  /** 新たにページ番号を振りなおす場合に数値を指定する */
+  pageNumberRestart?: number;
   /** このページの先頭で節が変わる場合`true` */
   sectionBreak?: boolean;
   /** このページの途中で節が変わる場合`true` */
   sectionBreakInner?: boolean;
-  /** 新たにページ番号を振りなおす場合に数値を指定する */
-  pageNumberRestart?: number;
   /** 無効なページの場合に`true` */
   excluded?: boolean;
   /** PDFビューに表示される注釈 */
@@ -106,6 +107,7 @@ export interface Page {
  * 1つのPDFファイルの設定情報
  */
 export interface Settings {
+  /** 注釈・チップ・ページリンクの文字サイズ */
   fontSize: number;
   /** PDFの上側がどれだけ見切れるか[0-1] */
   offsetTop: number;
