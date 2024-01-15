@@ -1,6 +1,12 @@
 import { FC, useContext, useState } from "react";
 import { Box, IconButton, Tab, Tabs, Tooltip } from "@mui/material";
-import { Page, PdfInfo, Settings, updatePageNum } from "@/types/PdfInfo";
+import {
+  Page,
+  PageStyle,
+  PdfInfo,
+  Settings,
+  updatePageNum,
+} from "@/types/PdfInfo";
 import CheckboxText from "./Settings/CheckboxText";
 import SectionBreak from "./Settings/SectionBreak";
 import PageNumberRestart from "./Settings/PageNumberRestart";
@@ -60,6 +66,19 @@ const Settings: FC<Props> = ({ onClose }) => {
     });
   };
 
+  // `page.style`の編集よう関数
+  const editStyle = (
+    arr: PageStyle[] | undefined,
+    item: PageStyle,
+    adds: boolean
+  ) => {
+    const set = new Set(arr);
+    if (adds) set.add(item);
+    else set.delete(item);
+    const retval = Array.from(set);
+    return retval.length === 0 ? undefined : retval;
+  };
+
   return (
     <Box sx={{ width: "100%", fontSize: "80%" }}>
       {/* 閉じるアイコン */}
@@ -104,10 +123,12 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
           {/* 節区切り */}
           <SectionBreak
-            sectionBreak={page?.sectionBreak}
-            sectionBreakInner={page?.sectionBreakInner}
-            onChange={(sectionBreak, sectionBreakInner) => {
-              handleChangePage({ sectionBreak, sectionBreakInner });
+            breakBefore={page?.style?.includes("break-before")}
+            breakMiddle={page?.style?.includes("break-middle")}
+            onChange={(breakBefore, breakMiddle) => {
+              let style = editStyle(page?.style, "break-before", breakBefore);
+              style = editStyle(style, "break-middle", breakMiddle);
+              handleChangePage({ style });
             }}
           />
           {/* ページ番号 */}
@@ -121,9 +142,10 @@ const Settings: FC<Props> = ({ onClose }) => {
           {/* ページ除外 */}
           <Checkbox
             label="このページをグレーアウトする"
-            checked={page?.excluded}
-            onChange={(checked) => {
-              handleChangePage({ excluded: checked ? true : undefined });
+            checked={page?.style?.includes("excluded")}
+            onChange={(excluded) => {
+              const style = editStyle(page?.style, "excluded", excluded);
+              handleChangePage({ style });
             }}
           />
         </Box>

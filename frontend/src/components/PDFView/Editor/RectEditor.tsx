@@ -22,12 +22,11 @@ const RectEditor: FC<Props> = ({ params, onClose }) => {
   const { updateNote } = usePdfInfo();
 
   // 閉じたときに値を更新する
-  const handleClose = (newType?: "border" | "filled") => {
+  const handleClose = (style?: "outlined" | "filled") => {
     onClose();
-    if (!newType) return; // キャンセル時
-    const border = newType === "border" ? true : undefined;
-    if (border === params.border) return;
-    updateNote(params, { ...params, border });
+    if (!style) return; // キャンセル時
+    if (style === params.style) return;
+    updateNote(params, { ...params, style });
   };
 
   const size = 50;
@@ -38,6 +37,7 @@ const RectEditor: FC<Props> = ({ params, onClose }) => {
     y: 0.3,
     width: 0.6,
     height: 0.4,
+    style: "filled",
   };
   const toggleSx = {
     width: size,
@@ -49,13 +49,13 @@ const RectEditor: FC<Props> = ({ params, onClose }) => {
   return (
     <EditorBase onClose={handleClose}>
       <ToggleButtonGroup
-        value={params.border === true ? "border" : "filled"}
+        value={params.style}
         exclusive
         size="small"
         sx={{ "& *:focus": { outline: "none" } }}
-        onChange={(_, newType: string | null) => {
-          if (newType === "border" || newType === "filled") {
-            handleClose(newType);
+        onChange={(_, style: string | null) => {
+          if (style === "outlined" || style === "filled") {
+            handleClose(style);
           }
         }}
       >
@@ -64,9 +64,12 @@ const RectEditor: FC<Props> = ({ params, onClose }) => {
             <RectSvg pageRect={pageRect} params={rect} />
           </Svg>
         </ToggleButton>
-        <ToggleButton value="border" sx={toggleSx}>
+        <ToggleButton value="outlined" sx={toggleSx}>
           <Svg pageRect={pageRect}>
-            <RectSvg pageRect={pageRect} params={{ ...rect, border: true }} />
+            <RectSvg
+              pageRect={pageRect}
+              params={{ ...rect, style: "outlined" }}
+            />
           </Svg>
         </ToggleButton>
       </ToggleButtonGroup>

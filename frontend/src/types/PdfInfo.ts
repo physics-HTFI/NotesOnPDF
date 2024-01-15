@@ -23,7 +23,7 @@ export interface Arrow {
   y1: number;
   x2: number;
   y2: number;
-  heads?: Heads;
+  heads: ("start" | "end")[];
 }
 export interface Bracket {
   type: "Bracket";
@@ -31,14 +31,14 @@ export interface Bracket {
   y1: number;
   x2: number;
   y2: number;
-  heads?: Heads;
+  heads: ("start" | "end")[];
 }
 export interface Chip {
   type: "Chip";
   x: number;
   y: number;
   text: string;
-  outlined?: boolean;
+  style: "filled" | "outlined";
 }
 export interface Marker {
   type: "Marker";
@@ -62,7 +62,7 @@ export interface PageLink {
 export interface Polygon {
   type: "Polygon";
   points: [number, number][];
-  border?: boolean; // TODO Chipに合わせて"outlined"のほうが良い?
+  style: "filled" | "outlined";
 }
 export interface Rect {
   type: "Rect";
@@ -70,7 +70,7 @@ export interface Rect {
   y: number;
   width: number;
   height: number;
-  border?: boolean; // TODO Chipに合わせて"outlined"のほうが良い?
+  style: "filled" | "outlined";
 }
 /** ノード位置編集時のマーカー */
 export interface Node {
@@ -78,6 +78,8 @@ export interface Node {
   target: Arrow | Bracket | Marker | Polygon | Rect;
   index: number;
 }
+
+export type PageStyle = "break-before" | "break-middle" | "excluded";
 
 /**
  * 1つのページに追加された全ての情報
@@ -91,14 +93,10 @@ export interface Page {
   part?: string;
   /** 章のタイトル */
   chapter?: string;
-  /** 新たにページ番号を振りなおす場合に数値を指定する */
+  /** 新たにページ番号を振りなおす */
   pageNumberRestart?: number;
-  /** このページの先頭で節が変わる場合`true` */
-  sectionBreak?: boolean;
-  /** このページの途中で節が変わる場合`true` */
-  sectionBreakInner?: boolean;
-  /** 無効なページの場合に`true` */
-  excluded?: boolean;
+  /** `break-before`:ページ前節区切り、"break-middle":ページ途中節区切り、"excluded":ページ除外 */
+  style?: PageStyle[];
   /** PDFビューに表示される注釈 */
   notes?: NoteType[];
 }

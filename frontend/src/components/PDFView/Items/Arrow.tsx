@@ -28,8 +28,6 @@ const Arrow: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const y1 = params.y1 * pageRect.height;
   const x2 = params.x2 * pageRect.width;
   const y2 = params.y2 * pageRect.height;
-  const hasStart = ["start", "both"].includes(params.heads ?? "end");
-  const hasEnd = ["end", "both"].includes(params.heads ?? "end");
   const cursor = getCursor();
   const node = isMove
     ? {
@@ -88,8 +86,10 @@ const Arrow: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
             opacity: hover ? 0.5 : 1,
             stroke: "red",
             strokeWidth: "1",
-            markerStart: hasStart ? "url(#head)" : undefined,
-            markerEnd: hasEnd ? "url(#head)" : undefined,
+            markerStart: params.heads.includes("start")
+              ? "url(#head)"
+              : undefined,
+            markerEnd: params.heads.includes("end") ? "url(#head)" : undefined,
           }}
         />
       </g>

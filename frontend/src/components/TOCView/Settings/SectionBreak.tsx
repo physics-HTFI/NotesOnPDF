@@ -12,24 +12,20 @@ import { getPage, getSeparator } from "../getTOCData";
  * `SctionBreak`の引数
  */
 interface Props {
-  sectionBreak?: boolean;
-  sectionBreakInner?: boolean;
-  onChange: (sectionBreak?: boolean, sectionBreakInner?: boolean) => void;
+  breakBefore?: boolean;
+  breakMiddle?: boolean;
+  onChange: (breakBefore: boolean, breakMiddle: boolean) => void;
 }
 
 /**
  * 節区切りを設定するコンポーネント
  */
-const SectionBreak: FC<Props> = ({
-  sectionBreak,
-  sectionBreakInner,
-  onChange,
-}) => {
-  const value = sectionBreak
-    ? sectionBreakInner
+const SectionBreak: FC<Props> = ({ breakBefore, breakMiddle, onChange }) => {
+  const value = breakBefore
+    ? breakMiddle
       ? "before-middle"
       : "before"
-    : sectionBreakInner
+    : breakMiddle
     ? "middle"
     : "none";
   return (
@@ -53,10 +49,7 @@ const SectionBreak: FC<Props> = ({
         sx={{ "& *:focus": { outline: "none" } }}
         onChange={(_, newValue: string | null) => {
           if (!newValue) return;
-          onChange(
-            newValue.includes("before") ? true : undefined,
-            newValue.includes("middle") ? true : undefined
-          );
+          onChange(newValue.includes("before"), newValue.includes("middle"));
         }}
       >
         <ToggleButton value="none">

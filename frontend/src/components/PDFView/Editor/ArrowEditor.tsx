@@ -43,18 +43,20 @@ interface Props {
  */
 const ArrowEditor: FC<Props> = ({ params, onClose }) => {
   const isArrow = params.type === "Arrow";
-  const defaultHeads = isArrow ? "end" : "both";
   const { updateNote } = usePdfInfo();
   const { pageRect } = useContext(MouseContext);
   if (!pageRect) return <></>;
 
+  const start = params.heads.includes("start");
+  const end = params.heads.includes("end");
+  const heads = start && end ? "both" : start ? "start" : end ? "end" : "none";
+
   // 閉じたときに値を更新する
-  const handleClose = (newType?: typeof params.heads) => {
+  const handleClose = (newHeads?: "start" | "end" | "both" | "none") => {
     onClose();
-    if (!newType) return; // キャンセル時
-    const heads = newType === defaultHeads ? undefined : newType;
-    if (heads === params.heads) return;
-    updateNote(params, { ...params, heads });
+    if (!newHeads) return; // キャンセル時
+    if (newHeads === heads) return;
+    updateNote(params, { ...params, heads: getHeads(newHeads) });
   };
 
   const size = 50;
@@ -68,10 +70,10 @@ const ArrowEditor: FC<Props> = ({ params, onClose }) => {
   };
 
   /** 1つの`ToggleButton`を返す */
-  const getButton = (heads: NonNullable<typeof params.heads>) => {
+  const getButton = (heads: "start" | "end" | "both" | "none") => {
     const line: Arrow | Bracket = {
       type: params.type,
-      heads,
+      heads: getHeads(heads),
       ...getVector(params, pageRect, 0.8),
     };
     return (
@@ -90,18 +92,18 @@ const ArrowEditor: FC<Props> = ({ params, onClose }) => {
   return (
     <EditorBase onClose={handleClose}>
       <ToggleButtonGroup
-        value={params.heads ?? defaultHeads}
+        value={heads}
         exclusive
         size="small"
         sx={{ "& *:focus": { outline: "none" } }}
-        onChange={(_, newType: string | null) => {
+        onChange={(_, heads: string | null) => {
           if (
-            newType === "end" ||
-            newType === "both" ||
-            newType === "start" ||
-            newType === "none"
+            heads === "end" ||
+            heads === "both" ||
+            heads === "start" ||
+            heads === "none"
           ) {
-            handleClose(newType);
+            handleClose(heads);
           }
         }}
       >
@@ -115,3 +117,17 @@ const ArrowEditor: FC<Props> = ({ params, onClose }) => {
 };
 
 export default ArrowEditor;
+
+//|
+//| ローカル関数
+//|
+
+function getHeads(headsStr: string): ("start" | "end")[] {
+  return headsStr === "start"
+    ? ["start"]
+    : headsStr === "end"
+    ? ["end"]
+    : headsStr === "both"
+    ? ["start", "end"]
+    : [];
+}

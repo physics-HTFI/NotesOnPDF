@@ -13,7 +13,7 @@ interface Props {
   label: string;
   checked?: boolean;
   tooltip?: string;
-  onChange: (checked?: boolean) => void;
+  onChange: (checked: boolean) => void;
 }
 
 /**

@@ -25,7 +25,6 @@ const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
   const { pdfInfo } = usePdfInfo();
   if (!pdfInfo || !scale) return <></>;
 
-  const outlined = params.outlined ?? false;
   const cursor = getCursor();
   return (
     <MuiChip
@@ -40,7 +39,7 @@ const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
         transform: `scale(${scale}%)`,
       }}
       color="primary"
-      variant={outlined ? "outlined" : undefined}
+      variant={params.style === "outlined" ? "outlined" : undefined}
       size="small"
       label={params.text}
       onMouseDown={(e) => {

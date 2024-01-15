@@ -44,8 +44,8 @@ const Polygon: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
           .join(" ")}
         style={{
           fill: "red",
-          stroke: params.border ? "red" : "none",
-          fillOpacity: params.border ? 0 : hover ? 0.2 : 0.3,
+          stroke: params.style === "outlined" ? "red" : "none",
+          fillOpacity: params.style === "outlined" ? 0 : hover ? 0.2 : 0.3,
           strokeOpacity: hover ? 0.5 : 1,
           cursor,
         }}

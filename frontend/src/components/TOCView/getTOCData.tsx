@@ -72,7 +72,9 @@ export const getPage = (
     if (isCurrent) {
       return page?.notes ? "magenta" : "red";
     } else {
-      return page?.notes && !page.excluded ? "limegreen" : "black";
+      return page?.notes && !page.style?.includes("excluded")
+        ? "limegreen"
+        : "black";
     }
   };
   return (
@@ -92,7 +94,7 @@ export const getPage = (
           marginRight: 2,
           marginBottom: 2,
           marginTop: 2,
-          opacity: page?.excluded ? 0.3 : 1,
+          opacity: page?.style?.includes("excluded") ? 0.3 : 1,
           cursor: "pointer",
         }}
         onClick={onClick}
@@ -147,14 +149,14 @@ const getTOCData = (
       toc.push(getChapter(i, page.chapter, handleClick));
     }
     // 節区切りを追加
-    if (page?.sectionBreak) {
+    if (page?.style?.includes("break-before")) {
       toc.push(getSeparator(`separator-${i}`));
     }
     // ページを追加
     pageNum = page?.pageNumberRestart ?? pageNum;
     toc.push(
       getPage(
-        page?.sectionBreakInner,
+        page?.style?.includes("break-middle"),
         `page-${i}`,
         `p. ${pageNum}`,
         i === pdfInfo.currentPage,
@@ -162,11 +164,11 @@ const getTOCData = (
         handleClick
       )
     );
-    if (page?.sectionBreakInner) {
+    if (page?.style?.includes("break-middle")) {
       toc.push(getSeparator(`separator-inner-${i}`));
       toc.push(
         getPage(
-          page.sectionBreakInner,
+          page.style.includes("break-middle"),
           `page-right-${i}`,
           `p. ${pageNum}`,
           i === pdfInfo.currentPage,

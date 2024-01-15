@@ -51,7 +51,7 @@ const Move: FC<Props> = ({ params, onClose }) => {
     params.type === "Node" &&
     newParams.type === "Polygon" &&
     !page?.notes?.includes(params.target);
-  if (addingPolygon) newParams.border = true;
+  if (addingPolygon) newParams.style = "outlined";
 
   return (
     <>

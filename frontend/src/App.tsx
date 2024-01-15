@@ -68,12 +68,12 @@ function App() {
       allPages: pdfInfo.pages.length,
       enabledPages:
         pdfInfo.pages.length -
-        Object.keys(pdfInfo.pages).filter(
-          (key) => pdfInfo.pages[Number(key)]?.excluded
+        Object.keys(pdfInfo.pages).filter((key) =>
+          pdfInfo.pages[Number(key)]?.style?.includes("excluded")
         ).length,
       notedPages: Object.keys(pdfInfo.pages).filter(
         (key) =>
-          (pdfInfo.pages[Number(key)]?.excluded
+          (pdfInfo.pages[Number(key)]?.style?.includes("excluded")
             ? 0
             : pdfInfo.pages[Number(key)]?.notes?.length ?? 0) > 0
       ).length,

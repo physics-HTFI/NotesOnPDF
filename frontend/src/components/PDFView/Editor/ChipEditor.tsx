@@ -42,9 +42,7 @@ interface Props {
  */
 const ChipEditor: FC<Props> = ({ params, onClose }) => {
   const { pdfInfo, updateNote } = usePdfInfo();
-  const [type, setType] = useState(
-    params.outlined ?? false ? "outlined" : "filled"
-  );
+  const [style, setStyle] = useState(params.style);
   const [rawText, setRawText] = useState(params.text);
   const [open, setOpen] = useState(params.text === "");
   const options = useMemo(() => getOptions(pdfInfo), [pdfInfo]);
@@ -52,11 +50,10 @@ const ChipEditor: FC<Props> = ({ params, onClose }) => {
   // 閉じたときに値を更新する
   const handleClose = (newText?: string) => {
     onClose();
-    const outlined = type === "outlined" ? true : undefined;
     const text = newText ?? rawText.trim();
-    if (outlined === params.outlined && text === params.text) return;
+    if (style === params.style && text === params.text) return;
     if (text === "") return;
-    updateNote(params, { ...params, outlined, text });
+    updateNote(params, { ...params, style, text });
   };
 
   const toggleSx = {
@@ -92,13 +89,13 @@ const ChipEditor: FC<Props> = ({ params, onClose }) => {
         }}
       />
       <ToggleButtonGroup
-        value={type}
+        value={style}
         sx={{ pl: 1 }}
         size="small"
         exclusive
-        onChange={(_, newType: string | null) => {
-          if (!newType) return;
-          setType(newType);
+        onChange={(_, style: string | null) => {
+          if (!style || (style !== "filled" && style !== "outlined")) return;
+          setStyle(style);
         }}
       >
         <ToggleButton value="filled" sx={toggleSx}>

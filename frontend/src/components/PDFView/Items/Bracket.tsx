@@ -28,8 +28,6 @@ const Bracket: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const y1 = params.y1 * pageRect.height;
   const x2 = params.x2 * pageRect.width;
   const y2 = params.y2 * pageRect.height;
-  const hasStart = ["start", "both"].includes(params.heads ?? "both");
-  const hasEnd = ["end", "both"].includes(params.heads ?? "both");
   const cursor = getCursor();
   const node = isMove
     ? {
@@ -88,8 +86,12 @@ const Bracket: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
             stroke: "red",
             strokeWidth: "1",
             opacity: hover ? 0.5 : 1,
-            markerStart: hasStart ? "url(#bracket)" : undefined,
-            markerEnd: hasEnd ? "url(#bracket)" : undefined,
+            markerStart: params.heads.includes("start")
+              ? "url(#bracket)"
+              : undefined,
+            markerEnd: params.heads.includes("end")
+              ? "url(#bracket)"
+              : undefined,
           }}
         />
       </g>

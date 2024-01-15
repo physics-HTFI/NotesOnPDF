@@ -72,6 +72,7 @@ export const ArrowIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
           y1: y,
           x2: x,
           y2: y,
+          heads: ["end"],
         },
       });
     }}
@@ -85,6 +86,7 @@ export const ArrowIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
           y1: 0.25,
           x2: 0.5,
           y2: 0.75,
+          heads: ["end"],
         }}
       />
     </Svg>
@@ -107,6 +109,7 @@ export const BracketIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
           y1: y,
           x2: x,
           y2: y,
+          heads: ["start", "end"],
         },
       });
     }}
@@ -120,6 +123,7 @@ export const BracketIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
           y1: 0.2,
           x2: 0.5,
           y2: 0.8,
+          heads: ["start", "end"],
         }}
       />
     </Svg>
@@ -165,6 +169,7 @@ export const ChipIcon: FC<IconProps> = ({ sx, onClose, x, y }) => (
         x,
         y,
         text: "",
+        style: "filled",
       });
     }}
   >
@@ -224,6 +229,7 @@ export const PolygonIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
             [x, y],
             [x, y],
           ],
+          style: "filled",
         },
       });
     }}
@@ -239,6 +245,7 @@ export const PolygonIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
             [0.7, 0.3],
             [0.4, 0.2],
           ],
+          style: "filled",
         }}
       />
     </Svg>
@@ -261,6 +268,7 @@ export const RectIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
           y: y,
           width: 0,
           height: 0,
+          style: "filled",
         },
       });
     }}
@@ -274,6 +282,7 @@ export const RectIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
           y: 0.35,
           width: 0.55,
           height: 0.3,
+          style: "filled",
         }}
       />
     </Svg>
