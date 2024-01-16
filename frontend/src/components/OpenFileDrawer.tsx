@@ -8,7 +8,7 @@ import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
-import IconButtons from "@/components/OpenFileDrawer/IconButtons";
+import HeaderIcons from "@/components/OpenFileDrawer/HeaderIcons";
 
 /**
  * `OpenFileDrawer`の引数
@@ -76,7 +76,7 @@ const OpenFileDrawer: FC<Props> = ({
         e.stopPropagation();
       }}
     >
-      <IconButtons
+      <HeaderIcons
         onOpenFile={(file: string | File) => {
           onSelect(file);
         }}

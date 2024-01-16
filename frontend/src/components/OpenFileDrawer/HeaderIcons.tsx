@@ -1,10 +1,16 @@
 import { FC, useRef } from "react";
 import { Box, Divider, IconButton, Tooltip } from "@mui/material";
-import { FolderOpen, GitHub, Language, MenuBook } from "@mui/icons-material";
+import {
+  FolderOpen,
+  GitHub,
+  Language,
+  MenuBook,
+  Settings,
+} from "@mui/icons-material";
 import OpenUrlDialog from "./OpenUrlDialog";
 
 /**
- * `IconButtons`の引数
+ * `HeaderIcons`の引数
  */
 interface Props {
   onOpenFile: (file: File) => void;
@@ -13,7 +19,7 @@ interface Props {
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
-const IconButtons: FC<Props> = ({ onOpenFile }) => {
+const HeaderIcons: FC<Props> = ({ onOpenFile }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -74,6 +80,20 @@ const IconButtons: FC<Props> = ({ onOpenFile }) => {
       />
       <Divider orientation="vertical" variant="middle" flexItem />
 
+      {/* 設定 */}
+      <Tooltip title="ファイルツリーのルートフォルダを指定します">
+        <IconButton
+          sx={{
+            "&:focus": { outline: "none" },
+            color: "slategray",
+          }}
+          onClick={() => undefined}
+          size="small"
+        >
+          <Settings />
+        </IconButton>
+      </Tooltip>
+
       {/* マニュアル */}
       <IconButton disabled>
         <MenuBook />
@@ -87,4 +107,4 @@ const IconButtons: FC<Props> = ({ onOpenFile }) => {
   );
 };
 
-export default IconButtons;
+export default HeaderIcons;
