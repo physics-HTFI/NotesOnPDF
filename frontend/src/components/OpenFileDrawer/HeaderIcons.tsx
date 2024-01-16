@@ -7,7 +7,7 @@ import {
   MenuBook,
   Settings,
 } from "@mui/icons-material";
-import OpenUrlDialog from "./OpenUrlDialog";
+import OpenUrlDialog from "./HeaderIcons/OpenUrlDialog";
 
 /**
  * `HeaderIcons`の引数
