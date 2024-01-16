@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import {
   Button,
   Dialog,
@@ -9,46 +9,46 @@ import {
 } from "@mui/material";
 
 /**
- * `OpenUrlDialog`の引数
+ * `InputStringDialog`の引数
  */
 interface Props {
-  open: boolean;
-  onClose: (url?: string) => void;
+  defaultValue?: string;
+  title: string;
+  label: string;
+  onClose: (value?: string) => void;
 }
 
 /**
- * URLを指定するダイアログ
+ * 文字列を入力するダイアログ
  */
-const OpenUrlDialog: FC<Props> = ({ open, onClose }) => {
-  const [url, setURL] = useState("");
-  const [disabled, setDisabled] = useState(true);
-
-  useEffect(() => {
-    setURL("");
-  }, [open]);
+const InputStringDialog: FC<Props> = ({
+  defaultValue,
+  title,
+  label,
+  onClose,
+}) => {
+  const [value, setValue] = useState(defaultValue ?? "");
 
   return (
     <Dialog
-      open={open}
+      open
       onClose={() => {
         onClose();
       }}
       fullWidth
     >
-      <DialogTitle>URLからPDFファイルを開く</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <TextField
           margin="dense"
           id="name"
-          label="URL"
-          value={url}
+          label={label}
+          value={value}
           type="email"
           fullWidth
           variant="standard"
           onChange={(e) => {
-            const url = e.target.value;
-            setURL(url);
-            setDisabled(!url);
+            setValue(e.target.value);
           }}
         />
       </DialogContent>
@@ -61,16 +61,16 @@ const OpenUrlDialog: FC<Props> = ({ open, onClose }) => {
           キャンセル
         </Button>
         <Button
-          disabled={disabled}
+          disabled={!value}
           onClick={() => {
-            onClose(url);
+            onClose(value);
           }}
         >
-          開く
+          OK
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default OpenUrlDialog;
+export default InputStringDialog;

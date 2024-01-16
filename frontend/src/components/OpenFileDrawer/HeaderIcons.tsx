@@ -1,13 +1,7 @@
 import { FC, useRef } from "react";
 import { Box, Divider, IconButton, Tooltip } from "@mui/material";
-import {
-  FolderOpen,
-  GitHub,
-  Language,
-  MenuBook,
-  Settings,
-} from "@mui/icons-material";
-import OpenUrlDialog from "./HeaderIcons/OpenUrlDialog";
+import { FolderOpen, GitHub, Language, MenuBook } from "@mui/icons-material";
+import InputStringDialog from "../Fullscreen/InputStringDialog";
 
 /**
  * `HeaderIcons`の引数
@@ -21,6 +15,7 @@ interface Props {
  */
 const HeaderIcons: FC<Props> = ({ onOpenFile }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const openUrl = false as boolean;
 
   return (
     <Box
@@ -72,27 +67,16 @@ const HeaderIcons: FC<Props> = ({ onOpenFile }) => {
           <Language />
         </IconButton>
       </Tooltip>
-      <OpenUrlDialog
-        open={false}
-        onClose={(url) => {
-          if (!url) return;
-        }}
-      />
-      <Divider orientation="vertical" variant="middle" flexItem />
-
-      {/* 設定 */}
-      <Tooltip title="ファイルツリーのルートフォルダを指定します">
-        <IconButton
-          sx={{
-            "&:focus": { outline: "none" },
-            color: "slategray",
+      {openUrl && (
+        <InputStringDialog
+          title="URLからPDFファイルを開く"
+          label="URL"
+          onClose={() => {
+            return;
           }}
-          onClick={() => undefined}
-          size="small"
-        >
-          <Settings />
-        </IconButton>
-      </Tooltip>
+        />
+      )}
+      <Divider orientation="vertical" variant="middle" flexItem />
 
       {/* マニュアル */}
       <IconButton disabled>
