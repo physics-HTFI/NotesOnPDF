@@ -7,29 +7,35 @@ import { useContext } from "react";
  */
 export const usePdfInfo = () => {
   const { pdfInfo, setPdfInfo } = useContext(PdfInfoContext);
+  const page = pdfInfo?.pages[pdfInfo.currentPage];
 
   /**
    * `PdfInfo`オブジェクトの現在ページから注釈を消去する。
    */
-  const popNote = (note: NoteType) => {
-    const page = pdfInfo?.pages[pdfInfo.currentPage];
-    if (!page || !setPdfInfo) return;
+  const _popNote = (note: NoteType) => {
+    if (!page) return;
     page.notes = page.notes?.filter((n) => n !== note);
     if (!page.notes) return;
     if (page.notes.length === 0) page.notes = undefined;
+  };
+  const popNote = (note: NoteType) => {
+    if (!pdfInfo || !setPdfInfo) return;
+    _popNote(note);
     setPdfInfo({ ...pdfInfo });
   };
 
   /**
    * `PdfInfo`オブジェクトの現在ページに注釈を追加する。
    */
-  const pushNote = (note: NoteType) => {
-    if (!pdfInfo || !setPdfInfo) return;
-    const page = pdfInfo.pages[pdfInfo.currentPage];
+  const _pushNote = (note: NoteType) => {
     if (!page) return;
     page.notes ??= [];
     page.notes.push(note);
     pdfInfo.pages[pdfInfo.currentPage] = page;
+  };
+  const pushNote = (note: NoteType) => {
+    if (!pdfInfo || !setPdfInfo) return;
+    _pushNote(note);
     setPdfInfo({ ...pdfInfo });
   };
 
@@ -39,9 +45,10 @@ export const usePdfInfo = () => {
    */
   const updateNote = (pop: NoteType, push: NoteType) => {
     // if (JSON.stringify(pop) === JSON.stringify(push)) return; // Polygonの追加時はtrueになるのでまずい
-    // TODO ↓setPdfInfoが2回呼ばれるので、2回レンダリングしている可能性がある
-    popNote(pop);
-    pushNote(push);
+    if (!pdfInfo || !setPdfInfo) return;
+    _popNote(pop);
+    _pushNote(push);
+    setPdfInfo({ ...pdfInfo });
   };
 
   return {
