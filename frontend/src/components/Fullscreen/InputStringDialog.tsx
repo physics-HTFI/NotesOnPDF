@@ -44,9 +44,9 @@ const InputStringDialog: FC<Props> = ({
           id="name"
           label={label}
           value={value}
-          type="email"
           fullWidth
           variant="standard"
+          spellCheck={false}
           onChange={(e) => {
             setValue(e.target.value);
           }}
@@ -61,7 +61,7 @@ const InputStringDialog: FC<Props> = ({
           キャンセル
         </Button>
         <Button
-          disabled={!value}
+          disabled={!value || value === defaultValue}
           onClick={() => {
             onClose(value);
           }}

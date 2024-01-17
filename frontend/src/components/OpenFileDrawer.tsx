@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { Box, Drawer, IconButton, Tooltip } from "@mui/material";
 import { Progresses } from "@/types/Progresses";
 import IModel from "@/models/IModel";
@@ -14,6 +14,7 @@ import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
 import HeaderIcons from "@/components/OpenFileDrawer/HeaderIcons";
 import InputStringDialog from "./Fullscreen/InputStringDialog";
+import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 
 /**
  * `OpenFileDrawer`の引数
@@ -22,6 +23,7 @@ interface Props {
   open: boolean;
   progresses?: Progresses;
   model: IModel;
+  rootPath?: string;
   onClose: () => void;
   onSelect: (pdf: string | File) => void;
 }
@@ -33,6 +35,7 @@ const OpenFileDrawer: FC<Props> = ({
   open,
   progresses,
   model,
+  rootPath,
   onClose,
   onSelect,
 }) => {
@@ -40,16 +43,18 @@ const OpenFileDrawer: FC<Props> = ({
   const [expanded, setExpanded] = useState<string[]>([]);
   const [selected, setSelected] = useState<string>("");
   const [openChangeRoot, setOpenChangeRoot] = useState(false);
+  const { appSettings, setAppSettings } = useContext(AppSettingsContext);
 
   // ファイル一覧を取得
   useEffect(() => {
+    if (!rootPath) return;
     model
-      .getFileTree()
+      .getFileTree(rootPath)
       .then((files) => {
         setFileTree(files);
       })
       .catch(() => undefined);
-  }, [model]);
+  }, [model, rootPath]);
 
   // 前回のファイルを選択した状態にする
   useEffect(() => {
@@ -82,12 +87,15 @@ const OpenFileDrawer: FC<Props> = ({
         e.stopPropagation();
       }}
     >
+      {/* ヘッダーアイコン */}
       <HeaderIcons
         onOpenFile={(file: string | File) => {
           onSelect(file);
         }}
       />
+
       <Box sx={{ position: "relative" }}>
+        {/* ツリービュー */}
         <TreeView
           expanded={expanded}
           selected={selected}
@@ -105,8 +113,9 @@ const OpenFileDrawer: FC<Props> = ({
         >
           {getTreeItems(fileTree, progresses)}
         </TreeView>
-        {/* 設定 */}
-        <Tooltip title="ファイルツリーのルートフォルダを指定します">
+
+        {/* ルートフォルダの設定 */}
+        <Tooltip title="ファイルツリーのルートフォルダを設定します">
           <IconButton
             sx={{
               "&:focus": { outline: "none" },
@@ -125,12 +134,13 @@ const OpenFileDrawer: FC<Props> = ({
         </Tooltip>
         {openChangeRoot && (
           <InputStringDialog
-            defaultValue={"aaa"}
+            defaultValue={appSettings?.rootPath ?? ""}
             title="ルートディレクトリを変更する"
             label="ディレクトリのパス"
-            onClose={(path) => {
-              console.log(path);
+            onClose={(rootPath) => {
               setOpenChangeRoot(false);
+              if (!rootPath || !setAppSettings || !appSettings) return;
+              setAppSettings({ ...appSettings, rootPath });
             }}
           />
         )}
