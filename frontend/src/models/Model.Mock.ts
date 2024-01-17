@@ -75,43 +75,10 @@ export default class ModelMock implements IModel {
         },
       },
     };
-    /*
-    return {
-      recentPath: "dir1/file12",
-      PDFs: {
-        "dir1/dir2/file121": {
-          allPages: 110,
-          enabledPages: 100,
-          notedPages: 100,
-        },
-        "dir1/dir2/file122": {
-          allPages: 110,
-          enabledPages: 100,
-          notedPages: 99,
-        },
-        "dir1/dir2/file123": {
-          allPages: 110,
-          enabledPages: 100,
-          notedPages: 80,
-        },
-        "dir1/file11": {
-          allPages: 110,
-          enabledPages: 100,
-          notedPages: 50,
-        },
-        "dir1/file12": {
-          allPages: 110,
-          enabledPages: 100,
-          notedPages: 10,
-        },
-        file1: {
-          allPages: 100,
-          enabledPages: 100,
-          notedPages: 1,
-        },
-      },
-    };
-    */
+  };
+  putProgresses = async (): Promise<void> => {
+    await this.wait();
+    throw new Error();
   };
 
   getPdfInfo = async (path: string): Promise<PdfInfo> => {
@@ -300,9 +267,17 @@ export default class ModelMock implements IModel {
       ],
     };
   };
+  putPdfInfo = async (): Promise<void> => {
+    await this.wait();
+    throw new Error();
+  };
 
   getAppSettings = async (): Promise<AppSettings> => {
     await this.wait();
     return { ...AppSettings_default };
+  };
+  putAppSettings = async (): Promise<void> => {
+    await this.wait();
+    throw new Error();
   };
 }

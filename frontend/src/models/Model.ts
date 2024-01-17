@@ -16,13 +16,25 @@ export default class Model implements IModel {
     await this.wait();
     throw new Error();
   };
+  putProgresses = async (): Promise<void> => {
+    await this.wait();
+    throw new Error();
+  };
 
   getPdfInfo = async (): Promise<PdfInfo> => {
     await this.wait();
     throw new Error();
   };
+  putPdfInfo = async (): Promise<void> => {
+    await this.wait();
+    throw new Error();
+  };
 
   getAppSettings = async (): Promise<AppSettings> => {
+    await this.wait();
+    throw new Error();
+  };
+  putAppSettings = async (): Promise<void> => {
     await this.wait();
     throw new Error();
   };

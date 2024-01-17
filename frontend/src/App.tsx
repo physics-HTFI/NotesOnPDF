@@ -43,6 +43,12 @@ function App() {
     setPdfInfo({ ...pdfInfo, currentPage: newPage });
   };
 
+  // クリック系のイベントを無効にする
+  useEffect(() => {
+    document.onselectstart = () => false;
+    document.oncontextmenu = () => false;
+  }, []);
+
   // ファイルツリーに表示する進捗情報の取得
   useEffect(() => {
     document.onselectstart = () => false;
@@ -78,7 +84,16 @@ function App() {
             : pdfInfo.pages[Number(key)]?.notes?.length ?? 0) > 0
       ).length,
     };
+    model.putProgresses(progresses).catch(() => undefined);
   }, [pdfInfo, progresses, pdfPath]);
+  useEffect(() => {
+    if (!appSettings) return;
+    model.putAppSettings(appSettings).catch(() => undefined);
+  }, [appSettings]);
+  useEffect(() => {
+    if (!pdfInfo || !pdfPath) return;
+    model.putPdfInfo(pdfPath, pdfInfo).catch(() => undefined);
+  }, [pdfPath, pdfInfo]);
 
   // 始めて読み込むPDFの場合、`PdfInfo`を生成する
   useEffect(() => {
