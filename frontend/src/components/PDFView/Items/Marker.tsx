@@ -85,7 +85,7 @@ const Marker: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
           y2={y2}
           style={{
             stroke: "yellow",
-            opacity: hover ? 0.3 : 0.5,
+            opacity: hover ? 0.2 : 0.4,
             strokeWidth: "8",
           }}
         />
