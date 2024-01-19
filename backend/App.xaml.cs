@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using System.Windows;
 using System.Windows.Forms;
 
 namespace backend
@@ -38,6 +39,14 @@ namespace backend
                     // TODO アプリを複数起動できないようにする: 
                 }
             };
+
+            // https://learn.microsoft.com/ja-jp/windows/apps/design/shell/tiles-and-notifications/adaptive-interactive-toasts?tabs=appsdk
+            new ToastContentBuilder()
+                .AddArgument("action", "viewConversation")
+                .AddArgument("conversationId", 9813)
+                .AddText("Andrew sent you a picture")
+                .AddText("Check this out, The Enchantments in Washington!")
+                .Show();
         }
 
         /// <summary>
