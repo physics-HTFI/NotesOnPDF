@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Forms;
 
 namespace backend
@@ -39,7 +38,6 @@ namespace backend
                 }
             };
 
-            Toast.Show();
         }
 
         /// <summary>
@@ -49,7 +47,6 @@ namespace backend
         {
             _menu?.Dispose();
             _notifyIcon?.Dispose();
-            ToastNotificationManagerCompat.Uninstall();
             base.OnExit(e);
         }
     }
