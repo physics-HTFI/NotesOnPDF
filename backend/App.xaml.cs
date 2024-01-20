@@ -9,7 +9,6 @@ namespace backend
     {
         private ContextMenuStrip? _menu;
         private NotifyIcon? _notifyIcon;
-        private MainWindow? _win = null;
 
         /// <summary>
         /// 常駐開始時の初期化処理
@@ -40,13 +39,7 @@ namespace backend
                 }
             };
 
-            // https://learn.microsoft.com/ja-jp/windows/apps/design/shell/tiles-and-notifications/adaptive-interactive-toasts?tabs=appsdk
-            new ToastContentBuilder()
-                .AddArgument("action", "viewConversation")
-                .AddArgument("conversationId", 9813)
-                .AddText("Andrew sent you a picture")
-                .AddText("Check this out, The Enchantments in Washington!")
-                .Show();
+            Toast.Show();
         }
 
         /// <summary>
@@ -56,6 +49,7 @@ namespace backend
         {
             _menu?.Dispose();
             _notifyIcon?.Dispose();
+            ToastNotificationManagerCompat.Uninstall();
             base.OnExit(e);
         }
     }
