@@ -26,11 +26,22 @@ namespace backend
             Left = SystemParameters.WorkArea.Width - Width;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void OnHide(object sender, RoutedEventArgs e)
         {
-//            WindowState = WindowState.Minimized;
             Visibility = Visibility.Collapsed;
-//            Close();
+        }
+
+        private void OnExit(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void OnOpenSettings(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void OnOpenBrowser(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

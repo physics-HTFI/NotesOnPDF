@@ -1,39 +1,60 @@
-﻿<Window x:Class="backend.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:backend"
-        mc:Ignorable="d"
-        Title="NotesOnPDF" Height="212" Width="347"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        Background="#00000000"
-        TextElement.FontWeight="Medium"
-        TextElement.FontSize="14"
-        BorderThickness="10px"
-        FontFamily="{materialDesign:MaterialDesignFont}"
-        ShowInTaskbar="False"
-        WindowStyle="None"
-        AllowsTransparency="True">
+﻿<Window x:Class="backend.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:backend" mc:Ignorable="d" Title="NotesOnPDF" Height="240" Width="320" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" Background="#00000000" TextElement.FontWeight="Medium" TextElement.FontSize="14" BorderThickness="10px" FontFamily="{materialDesign:MaterialDesignFont}" ShowInTaskbar="False" WindowStyle="None" AllowsTransparency="True">
     <Window.Effect>
-        <DropShadowEffect Opacity="0.75" BlurRadius="10" ShadowDepth="0"/>
+        <DropShadowEffect Opacity="0.75" BlurRadius="10" ShadowDepth="0" />
     </Window.Effect>
     <Grid>
-        <Rectangle Fill="AliceBlue" RadiusX="10" RadiusY="10"/>
+        <Rectangle Fill="AliceBlue" RadiusX="10" RadiusY="10" />
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="35" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <Button Content="1" Click="Button_Click" Grid.Column="0" Grid.Row="0" Height="32" Width="73"/>
-            <Button Content="2" Click="Button_Click" Grid.Column="1" Grid.Row="0" Height="32" Width="73"/>
-            <Button Content="3" Click="Button_Click" Grid.Column="0" Grid.Row="1" Height="32" Width="73"/>
-            <Button Content="4" Click="Button_Click" Grid.Column="1" Grid.Row="1" Height="32" Width="73"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Row, Column = 0, 0 -->
+            <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                <Image Width="15" Height="15" Source="icon.ico" />
+                <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Text="NotesOnPDF" Margin="8,0,0,0" />
+            </StackPanel>
+
+            <!-- Row, Column = 0, 1 -->
+            <Button Grid.Row="0" Grid.Column="1" Click="OnHide" ToolTip="ウィンドウを隠します" Width="30" Height="30" Margin="0,0,10,0" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignIconButton}" VerticalAlignment="Center">
+                <materialDesign:PackIcon Width="30" Height="30" Kind="ChevronDown" />
+            </Button>
+
+            <!-- Row, Column = 1, 0 -->
+            <Button Grid.Row="1" Grid.Column="0" Click="OnOpenBrowser" Width="100" Height="70">
+                <StackPanel>
+                    <materialDesign:PackIcon Width="30" Height="30" Kind="OpenInApp" HorizontalAlignment="Center" />
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="ブラウザで開く" HorizontalAlignment="Center" />
+                </StackPanel>
+            </Button>
+
+            <!-- Row, Column = 1, 1 -->
+            <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource MaterialDesignCaptionTextBlock}">
+                    NotesOnPDFは<LineBreak />タスクトレイに常駐しています
+            </TextBlock>
+
+            <!-- Row, Column = 2, 0 -->
+            <Button Grid.Row="2" Grid.Column="0" Click="OnOpenSettings" Width="100" Height="70" Style="{StaticResource MaterialDesignOutlinedButton}">
+                <StackPanel>
+                    <materialDesign:PackIcon Width="30" Height="30" Kind="Settings" HorizontalAlignment="Center" />
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="設定" HorizontalAlignment="Center" />
+                </StackPanel>
+            </Button>
+
+            <!-- Row, Column = 2, 1 -->
+            <Button Grid.Row="2" Grid.Column="1" Click="OnExit" Width="100" Height="70" Style="{StaticResource MaterialDesignOutlinedButton}">
+                <StackPanel>
+                    <materialDesign:PackIcon Width="30" Height="30" Kind="Close" HorizontalAlignment="Center" />
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="終了" HorizontalAlignment="Center" />
+                </StackPanel>
+            </Button>
+
         </Grid>
     </Grid>
 </Window>
