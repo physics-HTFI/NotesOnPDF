@@ -8,27 +8,27 @@ namespace backend
 
     public partial class App : System.Windows.Application
     {
-        private Mutex? _mutex;
-        private MainWindow? _mainWindow;
-        private TaskTrayIcon? _taskTrayIcon;
+        private Mutex? mutex;
+        private MainWindow? mainWindow;
+        private TaskTrayIcon? taskTrayIcon;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
             // 二重起動防止
-            _mutex = new Mutex(true, "NotesOnPDF", out bool isNew);
+            mutex = new Mutex(true, "NotesOnPDF", out bool isNew);
             if (!isNew)
             {
-                _mutex?.Dispose();
+                mutex?.Dispose();
                 Shutdown();
                 return;
             }
 
-            _mainWindow = new MainWindow();
-            _mainWindow.Show();
+            mainWindow = new MainWindow();
+            mainWindow.Show();
 
-            _taskTrayIcon = new(
+            taskTrayIcon = new(
                 onClick: ToggleWindowVisibility,
                 onExit: Shutdown
                 );
@@ -36,9 +36,9 @@ namespace backend
 
         protected override void OnExit(ExitEventArgs e)
         {
-            _mutex?.Dispose();
-            _mainWindow?.Close();
-            _taskTrayIcon?.Dispose();
+            mutex?.Dispose();
+            mainWindow?.Close();
+            taskTrayIcon?.Dispose();
             base.OnExit(e);
         }
 
@@ -49,14 +49,14 @@ namespace backend
 
         void ToggleWindowVisibility()
         {
-            if (_mainWindow == null) return;
-            if (_mainWindow.Visibility == Visibility.Collapsed)
+            if (mainWindow == null) return;
+            if (mainWindow.Visibility == Visibility.Collapsed)
             {
-                _mainWindow.Visibility = Visibility.Visible;
+                mainWindow.Visibility = Visibility.Visible;
             }
             else
             {
-                _mainWindow.Visibility = Visibility.Collapsed;
+                mainWindow.Visibility = Visibility.Collapsed;
             }
         }
 

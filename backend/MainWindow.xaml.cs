@@ -36,10 +36,6 @@ namespace backend
             Close();
         }
 
-        private void OnOpenSettings(object sender, RoutedEventArgs e)
-        {
-        }
-
         private void OnOpenBrowser(object sender, RoutedEventArgs e)
         {
         }

@@ -1,60 +1,262 @@
-﻿<Window x:Class="backend.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local="clr-namespace:backend" mc:Ignorable="d" Title="NotesOnPDF" Height="240" Width="320" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" TextElement.Foreground="{DynamicResource MaterialDesignBody}" Background="#00000000" TextElement.FontWeight="Medium" TextElement.FontSize="14" BorderThickness="10px" FontFamily="{materialDesign:MaterialDesignFont}" ShowInTaskbar="False" WindowStyle="None" AllowsTransparency="True">
+﻿<Window
+    x:Class="backend.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:backend"
+    mc:Ignorable="d"
+    Title="NotesOnPDF"
+    Height="260"
+    Width="340"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    Background="#00000000"
+    TextElement.FontWeight="Medium"
+    TextElement.FontSize="14"
+    BorderThickness="10px"
+    FontFamily="{materialDesign:MaterialDesignFont}"
+    ShowInTaskbar="False"
+    WindowStyle="None"
+    AllowsTransparency="True">
+
+    <Window.DataContext>
+        <local:MainWindowVM />
+    </Window.DataContext>
     <Window.Effect>
-        <DropShadowEffect Opacity="0.75" BlurRadius="10" ShadowDepth="0" />
+        <DropShadowEffect
+            Opacity="0.75"
+            BlurRadius="10"
+            ShadowDepth="0" />
     </Window.Effect>
     <Grid>
-        <Rectangle Fill="AliceBlue" RadiusX="10" RadiusY="10" />
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="35" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
+        <Rectangle
+            Fill="AliceBlue"
+            RadiusX="10"
+            RadiusY="10" />
+        <materialDesign:Flipper
+            Margin="15,15,15,15">
+            <materialDesign:Flipper.FrontContent>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition
+                            Height="30" />
+                        <RowDefinition
+                            Height="1*" />
+                        <RowDefinition
+                            Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="1*" />
+                        <ColumnDefinition
+                            Width="1*" />
+                    </Grid.ColumnDefinitions>
 
-            <!-- Row, Column = 0, 0 -->
-            <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
-                <Image Width="15" Height="15" Source="icon.ico" />
-                <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}" Text="NotesOnPDF" Margin="8,0,0,0" />
-            </StackPanel>
+                    <!-- タイトル -->
+                    <StackPanel
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        Margin="10,0,0,0"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Top">
+                        <Image
+                            Width="15"
+                            Height="15"
+                            Source="icon.ico" />
+                        <TextBlock
+                            Style="{StaticResource MaterialDesignBody2TextBlock}"
+                            Text="NotesOnPDF"
+                            Margin="8,0,0,0" />
+                    </StackPanel>
 
-            <!-- Row, Column = 0, 1 -->
-            <Button Grid.Row="0" Grid.Column="1" Click="OnHide" ToolTip="ウィンドウを隠します" Width="30" Height="30" Margin="0,0,10,0" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignIconButton}" VerticalAlignment="Center">
-                <materialDesign:PackIcon Width="30" Height="30" Kind="ChevronDown" />
-            </Button>
+                    <!-- ウィンドウを隠す -->
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Click="OnHide"
+                        ToolTip="ウィンドウを隠します"
+                        Width="30"
+                        Height="30"
+                        Margin="0,-5,10,0"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource MaterialDesignIconButton}"
+                        VerticalAlignment="Top">
+                        <materialDesign:PackIcon
+                            Width="30"
+                            Height="30"
+                            Kind="ChevronDown" />
+                    </Button>
 
-            <!-- Row, Column = 1, 0 -->
-            <Button Grid.Row="1" Grid.Column="0" Click="OnOpenBrowser" Width="100" Height="70">
-                <StackPanel>
-                    <materialDesign:PackIcon Width="30" Height="30" Kind="OpenInApp" HorizontalAlignment="Center" />
-                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="ブラウザで開く" HorizontalAlignment="Center" />
-                </StackPanel>
-            </Button>
+                    <!-- ブラウザで開く -->
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Click="OnOpenBrowser"
+                        Width="100"
+                        Height="70">
+                        <StackPanel>
+                            <materialDesign:PackIcon
+                                Width="30"
+                                Height="30"
+                                Kind="OpenInApp"
+                                HorizontalAlignment="Center" />
+                            <TextBlock
+                                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                Text="ブラウザで開く"
+                                HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
 
-            <!-- Row, Column = 1, 1 -->
-            <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource MaterialDesignCaptionTextBlock}">
+                    <!-- メッセージ -->
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignCaptionTextBlock}">
                     NotesOnPDFは<LineBreak />タスクトレイに常駐しています
-            </TextBlock>
+                    </TextBlock>
 
-            <!-- Row, Column = 2, 0 -->
-            <Button Grid.Row="2" Grid.Column="0" Click="OnOpenSettings" Width="100" Height="70" Style="{StaticResource MaterialDesignOutlinedButton}">
-                <StackPanel>
-                    <materialDesign:PackIcon Width="30" Height="30" Kind="Settings" HorizontalAlignment="Center" />
-                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="設定" HorizontalAlignment="Center" />
-                </StackPanel>
-            </Button>
+                    <!-- 設定 -->
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Width="100"
+                        Height="70"
+                        Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}">
+                        <StackPanel>
+                            <materialDesign:PackIcon
+                                Width="30"
+                                Height="30"
+                                Kind="Settings"
+                                HorizontalAlignment="Center" />
+                            <TextBlock
+                                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                Text="設定"
+                                HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
 
-            <!-- Row, Column = 2, 1 -->
-            <Button Grid.Row="2" Grid.Column="1" Click="OnExit" Width="100" Height="70" Style="{StaticResource MaterialDesignOutlinedButton}">
-                <StackPanel>
-                    <materialDesign:PackIcon Width="30" Height="30" Kind="Close" HorizontalAlignment="Center" />
-                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="終了" HorizontalAlignment="Center" />
-                </StackPanel>
-            </Button>
+                    <!-- 終了 -->
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Click="OnExit"
+                        Width="100"
+                        Height="70"
+                        Style="{StaticResource MaterialDesignOutlinedButton}">
+                        <StackPanel>
+                            <materialDesign:PackIcon
+                                Width="30"
+                                Height="30"
+                                Kind="Close"
+                                HorizontalAlignment="Center" />
+                            <TextBlock
+                                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                Text="終了"
+                                HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
 
-        </Grid>
+                </Grid>
+            </materialDesign:Flipper.FrontContent>
+
+            <!-- 設定パネル -->
+            <materialDesign:Flipper.BackContent>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition
+                            Height="50" />
+                        <RowDefinition
+                            Height="50" />
+                        <RowDefinition
+                            Height="50" />
+                        <RowDefinition
+                            Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="1*" />
+                        <ColumnDefinition
+                            Width="35" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- ルートフォルダー -->
+                    <TextBox
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Height="40"
+                        Margin="0,0,0,5"
+                        Text="{Binding Name}"
+                        materialDesign:HintAssist.Hint="PDF一覧のルートフォルダー"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Width="35"
+                        Height="35"
+                        Content="{materialDesign:PackIcon Folder}"
+                        Style="{StaticResource MaterialDesignIconButton}" />
+
+                    <!-- 注釈フォルダー -->
+                    <TextBox
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Height="40"
+                        Margin="0,0,0,5"
+                        Text="{Binding Name}"
+                        materialDesign:HintAssist.Hint="注釈の保存先"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Width="35"
+                        Height="35"
+                        Content="{materialDesign:PackIcon Folder}"
+                        Style="{StaticResource MaterialDesignIconButton}" />
+
+                    <!-- ポート番号 -->
+                    <ComboBox
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Height="40"
+                        materialDesign:HintAssist.Hint="ポート番号"
+                        materialDesign:HintAssist.IsFloating="True">
+                        <ComboBoxItem
+                            Content="8080" />
+                        <ComboBoxItem
+                            Content="8081" />
+                        <ComboBoxItem
+                            Content="8082" />
+                        <ComboBoxItem
+                            Content="8083" />
+                        <ComboBoxItem
+                            Content="8084" />
+                        <ComboBoxItem
+                            Content="8085" />
+                    </ComboBox>
+
+                    <!-- OK, キャンセルボタン -->
+                    <StackPanel
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                        <Button
+                            Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                            Content="キャンセル"
+                            Style="{StaticResource MaterialDesignFlatButton}" />
+
+                        <Button
+                            Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                            Content="OK"
+                            Style="{StaticResource MaterialDesignFlatButton}" />
+                    </StackPanel>
+                </Grid>
+            </materialDesign:Flipper.BackContent>
+        </materialDesign:Flipper>
     </Grid>
 </Window>
