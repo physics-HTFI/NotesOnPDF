@@ -5,19 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:backend"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="NotesOnPDF" Height="212" Width="347"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        Background="{DynamicResource MaterialDesignPaper}"
+        Background="#00000000"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
-        FontFamily="{materialDesign:MaterialDesignFont}">
+        BorderThickness="10px"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        ShowInTaskbar="False"
+        WindowStyle="None"
+        AllowsTransparency="True">
+    <Window.Effect>
+        <DropShadowEffect Opacity="0.75" BlurRadius="10" ShadowDepth="0"/>
+    </Window.Effect>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="231*"/>
-            <ColumnDefinition Width="569*"/>
-        </Grid.ColumnDefinitions>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="76,81,0,0" VerticalAlignment="Top"/>
-
+        <Rectangle Fill="AliceBlue" RadiusX="10" RadiusY="10"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Button Content="1" Click="Button_Click" Grid.Column="0" Grid.Row="0" Height="32" Width="73"/>
+            <Button Content="2" Click="Button_Click" Grid.Column="1" Grid.Row="0" Height="32" Width="73"/>
+            <Button Content="3" Click="Button_Click" Grid.Column="0" Grid.Row="1" Height="32" Width="73"/>
+            <Button Content="4" Click="Button_Click" Grid.Column="1" Grid.Row="1" Height="32" Width="73"/>
+        </Grid>
     </Grid>
 </Window>

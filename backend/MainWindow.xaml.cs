@@ -19,6 +19,16 @@ namespace backend
         public MainWindow()
         {
             InitializeComponent();
+
+            WindowStartupLocation = WindowStartupLocation.Manual;
+
+            Top = SystemParameters.WorkArea.Height - Height;
+            Left = SystemParameters.WorkArea.Width - Width;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
