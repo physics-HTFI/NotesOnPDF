@@ -28,7 +28,9 @@ namespace backend
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+//            WindowState = WindowState.Minimized;
+            Visibility = Visibility.Collapsed;
+//            Close();
         }
     }
 }
