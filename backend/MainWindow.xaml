@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:backend"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     mc:Ignorable="d"
     Title="NotesOnPDF"
     Height="260"
@@ -120,6 +121,7 @@
 
                     <!-- 設定 -->
                     <Button
+                        Name="Settings"
                         Grid.Row="2"
                         Grid.Column="0"
                         Width="100"
@@ -189,7 +191,7 @@
                         Grid.Column="0"
                         Height="40"
                         Margin="0,0,0,5"
-                        Text="{Binding Name}"
+                        Text="{Binding RootDirectory}"
                         materialDesign:HintAssist.Hint="PDF一覧のルートフォルダー"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                     <Button
@@ -206,7 +208,7 @@
                         Grid.Column="0"
                         Height="40"
                         Margin="0,0,0,5"
-                        Text="{Binding Name}"
+                        Text="{Binding NotesDirectory}"
                         materialDesign:HintAssist.Hint="注釈の保存先"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                     <Button
@@ -222,6 +224,7 @@
                         Grid.Row="2"
                         Grid.Column="0"
                         Height="40"
+                        SelectedIndex="{Binding PortIndex}"
                         materialDesign:HintAssist.Hint="ポート番号"
                         materialDesign:HintAssist.IsFloating="True">
                         <ComboBoxItem
@@ -246,14 +249,33 @@
                         Orientation="Horizontal"
                         HorizontalAlignment="Right">
                         <Button
-                            Command="{x:Static materialDesign:Flipper.FlipCommand}"
                             Content="キャンセル"
-                            Style="{StaticResource MaterialDesignFlatButton}" />
+                            Style="{StaticResource MaterialDesignFlatButton}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger
+                                    EventName="Click">
+                                    <i:InvokeCommandAction
+                                        Command="{x:Static materialDesign:Flipper.FlipCommand}" />
+                                    <i:InvokeCommandAction
+                                        Command="{Binding ResetSettingsCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Button>
 
                         <Button
-                            Command="{x:Static materialDesign:Flipper.FlipCommand}"
                             Content="OK"
-                            Style="{StaticResource MaterialDesignFlatButton}" />
+                            Style="{StaticResource MaterialDesignFlatButton}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger
+                                    EventName="Click">
+                                    <i:InvokeCommandAction
+                                        Command="{x:Static materialDesign:Flipper.FlipCommand}" />
+                                    <i:InvokeCommandAction
+                                        Command="{Binding UpdateSettingsCommand}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+
+                        </Button>
                     </StackPanel>
                 </Grid>
             </materialDesign:Flipper.BackContent>
