@@ -36,6 +36,7 @@
             RadiusX="10"
             RadiusY="10" />
         <materialDesign:Flipper
+            IsFlipped="{Binding IsFlipped}"
             Margin="15,15,15,15">
             <materialDesign:Flipper.FrontContent>
                 <Grid>
@@ -126,7 +127,7 @@
                         Grid.Column="0"
                         Width="100"
                         Height="70"
-                        Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                        Command="{Binding OpenSettingsCommand}"
                         Style="{StaticResource MaterialDesignOutlinedButton}">
                         <StackPanel>
                             <materialDesign:PackIcon
@@ -199,6 +200,7 @@
                         Grid.Column="1"
                         Width="35"
                         Height="35"
+                        Command="{Binding SelectRootDirectoryCommand}"
                         Content="{materialDesign:PackIcon Folder}"
                         Style="{StaticResource MaterialDesignIconButton}" />
 
@@ -216,6 +218,7 @@
                         Grid.Column="1"
                         Width="35"
                         Height="35"
+                        Command="{Binding SelectNotesDirectoryCommand}"
                         Content="{materialDesign:PackIcon Folder}"
                         Style="{StaticResource MaterialDesignIconButton}" />
 
@@ -250,31 +253,14 @@
                         HorizontalAlignment="Right">
                         <Button
                             Content="キャンセル"
+                            Command="{Binding ResetSettingsCommand}"
                             Style="{StaticResource MaterialDesignFlatButton}">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger
-                                    EventName="Click">
-                                    <i:InvokeCommandAction
-                                        Command="{x:Static materialDesign:Flipper.FlipCommand}" />
-                                    <i:InvokeCommandAction
-                                        Command="{Binding ResetSettingsCommand}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
                         </Button>
 
                         <Button
                             Content="OK"
+                            Command="{Binding UpdateSettingsCommand}"
                             Style="{StaticResource MaterialDesignFlatButton}">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger
-                                    EventName="Click">
-                                    <i:InvokeCommandAction
-                                        Command="{x:Static materialDesign:Flipper.FlipCommand}" />
-                                    <i:InvokeCommandAction
-                                        Command="{Binding UpdateSettingsCommand}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-
                         </Button>
                     </StackPanel>
                 </Grid>
