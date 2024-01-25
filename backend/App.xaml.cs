@@ -25,12 +25,16 @@ namespace backend
                 return;
             }
 
-            mainWindow = new MainWindow();
+            var mainWindowVM = new MainWindowVM();
+            mainWindow = new MainWindow
+            {
+                DataContext = mainWindowVM
+            };
             mainWindow.Show();
 
             taskTrayIcon = new(
                 "icon.ico",
-                onClick: ToggleWindowVisibility,
+                onClick: () => mainWindowVM.ToggleWindowVisibility(),
                 onExit: Shutdown
                 );
         }
@@ -42,25 +46,5 @@ namespace backend
             taskTrayIcon?.Dispose();
             base.OnExit(e);
         }
-
-
-        //|
-        //| private
-        //|
-
-        void ToggleWindowVisibility()
-        {
-            if (mainWindow == null) return;
-            if (mainWindow.Visibility == Visibility.Collapsed)
-            {
-                mainWindow.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                mainWindow.Visibility = Visibility.Collapsed;
-            }
-        }
-
     }
-
 }

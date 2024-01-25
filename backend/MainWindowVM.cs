@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace backend
 {
@@ -22,42 +23,67 @@ namespace backend
             ResetSettings();
         }
 
+        static readonly List<string> Ports = ["8080", "8081", "8082", "8083", "8084", "8085"];
+
         //|
         //| プロパティ
         //|
 
+
         [ObservableProperty]
-        [NotifyDataErrorInfo]
-        [DirectoryExists]
-        [NotifyCanExecuteChangedFor(nameof(UpdateSettingsCommand))]
-        private string rootDirectory = "";
+        private Visibility _Visibility = Visibility.Visible;
+
+        [ObservableProperty]
+        private bool _IsSettingsOpen = false;
 
         [ObservableProperty]
         [NotifyDataErrorInfo]
         [DirectoryExists]
         [NotifyCanExecuteChangedFor(nameof(UpdateSettingsCommand))]
-        private string notesDirectory = "";
+        private string _RootDirectory = "";
 
         [ObservableProperty]
-        private int portIndex = 0;
+        [NotifyDataErrorInfo]
+        [DirectoryExists]
+        [NotifyCanExecuteChangedFor(nameof(UpdateSettingsCommand))]
+        private string _NotesDirectory = "";
 
         [ObservableProperty]
-        private bool isFlipped = false;
+        private int _PortIndex = 0;
 
         //|
         //| コマンド
         //|
 
         [RelayCommand]
-        private void OpenSettings()
+        public void ToggleWindowVisibility()
         {
-            IsFlipped = true;
+            if (Visibility == Visibility.Collapsed)
+            {
+                Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Visibility = Visibility.Collapsed;
+            }
         }
 
-        [RelayCommand(CanExecute = nameof(CanUpdateSettings))]
-        private void UpdateSettings()
+        /// <summary>
+        /// 設定パネルを開くコマンド
+        /// </summary>
+        [RelayCommand]
+        void OpenSettings()
         {
-            IsFlipped = false;
+            IsSettingsOpen = true;
+        }
+
+        /// <summary>
+        /// 設定パネル設定OKコマンド
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanUpdateSettings))]
+        void UpdateSettings()
+        {
+            IsSettingsOpen = false;
             Properties.Settings.Default.RootDirectory = RootDirectory;
             Properties.Settings.Default.NotesDirectory = NotesDirectory;
             Properties.Settings.Default.Port = Ports[(int)PortIndex];
@@ -68,10 +94,13 @@ namespace backend
             return !HasErrors;
         }
 
+        /// <summary>
+        /// 設定パネル設定キャンセルコマンド
+        /// </summary>
         [RelayCommand]
-        private void ResetSettings()
+        void ResetSettings()
         {
-            IsFlipped = false;
+            IsSettingsOpen = false;
             RootDirectory = Properties.Settings.Default.RootDirectory;
             NotesDirectory = Properties.Settings.Default.NotesDirectory;
             PortIndex = Ports.IndexOf(Properties.Settings.Default.Port);
@@ -81,39 +110,22 @@ namespace backend
             }
         }
 
+        /// <summary>
+        /// ルートディレクトリ設定コマンド
+        /// </summary>
         [RelayCommand]
-        private void SelectRootDirectory()
+        void SelectRootDirectory()
         {
             RootDirectory = PathUtils.SelectDirectory(RootDirectory, Properties.Settings.Default.RootDirectory);
         }
 
+        /// <summary>
+        /// 注釈保存ディレクトリ設定コマンド
+        /// </summary>
         [RelayCommand]
-        private void SelectNotesDirectory()
+        void SelectNotesDirectory()
         {
             NotesDirectory = PathUtils.SelectDirectory(NotesDirectory, Properties.Settings.Default.NotesDirectory);
         }
-
-
-        public static ValidationResult? Validate(string value, ValidationContext _)
-        {
-            try
-            {
-                if (Path.Exists(Path.GetFullPath((string)value)))
-                {
-                    return ValidationResult.Success;
-                }
-            }
-            catch
-            {
-            }
-            return new("ディレクトリが存在しません");
-        }
-
-        //|
-        //| private
-        //|
-
-        static readonly List<string> Ports = ["8080", "8081", "8082", "8083", "8084", "8085"];
-
     }
 }

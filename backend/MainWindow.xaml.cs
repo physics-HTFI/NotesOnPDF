@@ -21,14 +21,8 @@ namespace backend
             InitializeComponent();
 
             WindowStartupLocation = WindowStartupLocation.Manual;
-
             Top = SystemParameters.WorkArea.Height - Height;
             Left = SystemParameters.WorkArea.Width - Width;
-        }
-
-        private void OnHide(object sender, RoutedEventArgs e)
-        {
-            Visibility = Visibility.Collapsed;
         }
 
         private void OnExit(object sender, RoutedEventArgs e)
