@@ -24,14 +24,5 @@ namespace backend
             Top = SystemParameters.WorkArea.Height - Height;
             Left = SystemParameters.WorkArea.Width - Width;
         }
-
-        private void OnExit(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void OnOpenBrowser(object sender, RoutedEventArgs e)
-        {
-        }
     }
 }

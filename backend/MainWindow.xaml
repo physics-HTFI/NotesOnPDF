@@ -94,7 +94,7 @@
                     <Button
                         Grid.Row="1"
                         Grid.Column="0"
-                        Click="OnOpenBrowser"
+                        Command="{Binding OpenWithBrowserCommand}"
                         Width="100"
                         Height="70">
                         <StackPanel>
@@ -145,7 +145,7 @@
                     <Button
                         Grid.Row="2"
                         Grid.Column="1"
-                        Click="OnExit"
+                        Command="{Binding ExitCommand}"
                         Width="100"
                         Height="70"
                         Style="{StaticResource MaterialDesignOutlinedButton}">

@@ -55,17 +55,22 @@ namespace backend
         //| コマンド
         //|
 
+        /// <summary>
+        /// ウィンドウの表示／非表示切替コマンド
+        /// </summary>
         [RelayCommand]
         public void ToggleWindowVisibility()
         {
-            if (Visibility == Visibility.Collapsed)
-            {
-                Visibility = Visibility.Visible;
-            }
-            else
-            {
-                Visibility = Visibility.Collapsed;
-            }
+            Visibility = Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// 終了コマンド
+        /// </summary>
+        [RelayCommand]
+        void Exit()
+        {
+            System.Windows.Application.Current.Shutdown();
         }
 
         /// <summary>
@@ -75,6 +80,14 @@ namespace backend
         void OpenSettings()
         {
             IsSettingsOpen = true;
+        }
+
+        /// <summary>
+        /// ブラウザで開くコマンド
+        /// </summary>
+        [RelayCommand]
+        void OpenWithBrowser()
+        {
         }
 
         /// <summary>
