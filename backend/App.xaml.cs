@@ -29,6 +29,7 @@ namespace backend
             mainWindow.Show();
 
             taskTrayIcon = new(
+                "icon.ico",
                 onClick: ToggleWindowVisibility,
                 onExit: Shutdown
                 );

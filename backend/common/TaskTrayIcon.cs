@@ -6,15 +6,18 @@ using System.Threading.Tasks;
 
 namespace backend
 {
+    /// <summary>
+    /// タスクトレイにアイコンを追加する
+    /// </summary>
     class TaskTrayIcon : IDisposable
     {
         private readonly ContextMenuStrip _menu;
         private readonly NotifyIcon _notifyIcon;
 
-        public TaskTrayIcon(Action onClick, Action onExit)
+        public TaskTrayIcon(string icon, Action onClick, Action onExit)
         {
             _menu = GetMenu(onExit);
-            _notifyIcon = GetNotifyIcon("icon.ico", _menu, onClick);
+            _notifyIcon = GetNotifyIcon(icon, _menu, onClick);
         }
 
         public void Dispose()

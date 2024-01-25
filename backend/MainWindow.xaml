@@ -192,7 +192,7 @@
                         Grid.Column="0"
                         Height="40"
                         Margin="0,0,0,5"
-                        Text="{Binding RootDirectory}"
+                        Text="{Binding RootDirectory, UpdateSourceTrigger=PropertyChanged}"
                         materialDesign:HintAssist.Hint="PDF一覧のルートフォルダー"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                     <Button
@@ -210,7 +210,7 @@
                         Grid.Column="0"
                         Height="40"
                         Margin="0,0,0,5"
-                        Text="{Binding NotesDirectory}"
+                        Text="{Binding NotesDirectory, UpdateSourceTrigger=PropertyChanged}"
                         materialDesign:HintAssist.Hint="注釈の保存先"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                     <Button

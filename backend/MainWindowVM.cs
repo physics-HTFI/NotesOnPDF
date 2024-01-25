@@ -3,7 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,10 +14,8 @@ using System.Threading.Tasks;
 namespace backend
 {
     // TODO ポートが変わったら、サーバーに再起動が必要
-    // フォルダが存在するかのバリデーションが必要
 
-
-    internal partial class MainWindowVM : ObservableObject
+    internal partial class MainWindowVM : ObservableValidator
     {
         public MainWindowVM()
         {
@@ -27,9 +27,15 @@ namespace backend
         //|
 
         [ObservableProperty]
+        [NotifyDataErrorInfo]
+        [DirectoryExists]
+        [NotifyCanExecuteChangedFor(nameof(UpdateSettingsCommand))]
         private string rootDirectory = "";
 
         [ObservableProperty]
+        [NotifyDataErrorInfo]
+        [DirectoryExists]
+        [NotifyCanExecuteChangedFor(nameof(UpdateSettingsCommand))]
         private string notesDirectory = "";
 
         [ObservableProperty]
@@ -48,7 +54,7 @@ namespace backend
             IsFlipped = true;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanUpdateSettings))]
         private void UpdateSettings()
         {
             IsFlipped = false;
@@ -56,6 +62,10 @@ namespace backend
             Properties.Settings.Default.NotesDirectory = NotesDirectory;
             Properties.Settings.Default.Port = Ports[(int)PortIndex];
             Properties.Settings.Default.Save();
+        }
+        bool CanUpdateSettings()
+        {
+            return !HasErrors;
         }
 
         [RelayCommand]
@@ -65,19 +75,38 @@ namespace backend
             RootDirectory = Properties.Settings.Default.RootDirectory;
             NotesDirectory = Properties.Settings.Default.NotesDirectory;
             PortIndex = Ports.IndexOf(Properties.Settings.Default.Port);
-            if (PortIndex == -1) { PortIndex = 0; }
+            if (PortIndex == -1)
+            {
+                PortIndex = 0;
+            }
         }
 
         [RelayCommand]
         private void SelectRootDirectory()
         {
-            RootDirectory = SelectDirectory(RootDirectory, Properties.Settings.Default.RootDirectory);
+            RootDirectory = PathUtils.SelectDirectory(RootDirectory, Properties.Settings.Default.RootDirectory);
         }
 
         [RelayCommand]
         private void SelectNotesDirectory()
         {
-            NotesDirectory = SelectDirectory(NotesDirectory, Properties.Settings.Default.NotesDirectory);
+            NotesDirectory = PathUtils.SelectDirectory(NotesDirectory, Properties.Settings.Default.NotesDirectory);
+        }
+
+
+        public static ValidationResult? Validate(string value, ValidationContext _)
+        {
+            try
+            {
+                if (Path.Exists(Path.GetFullPath((string)value)))
+                {
+                    return ValidationResult.Success;
+                }
+            }
+            catch
+            {
+            }
+            return new("ディレクトリが存在しません");
         }
 
         //|
@@ -86,23 +115,5 @@ namespace backend
 
         static readonly List<string> Ports = ["8080", "8081", "8082", "8083", "8084", "8085"];
 
-        static string SelectDirectory(string path, string fallbackPath)
-        {
-            var initialDirectory = Path.GetFullPath(path);
-            if (!Path.Exists(initialDirectory))
-            {
-                initialDirectory = Path.GetFullPath(fallbackPath);
-            }
-
-            var dialog = new OpenFolderDialog()
-            {
-                InitialDirectory = initialDirectory
-            };
-            if (dialog.ShowDialog() == true)
-            {
-                return dialog.FolderName;
-            }
-            return path;
-        }
     }
 }
