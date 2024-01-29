@@ -37,6 +37,8 @@ namespace backend
                 onClick: () => mainWindowVM.ToggleWindowVisibility(),
                 onExit: Shutdown
                 );
+
+            HttpServer.StartListener();
         }
 
         protected override void OnExit(ExitEventArgs e)
