@@ -1,32 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Contacts;
 
 namespace backend
 {
     class HttpServer
     {
-        public static void StartListener()
+        public string Port { get; set; } = "8080";
+
+        public Task StartAsync()
         {
-            using var listener = new HttpListener();
-            listener.Prefixes.Add("http://localhost:8080/");
-            listener.Start();
+            return Task.Run(Start);
+        }
 
-            while (true)
+        void Start()
+        {
+            try
             {
-                HttpListenerContext context = listener.GetContext();
-                HttpListenerRequest request = context.Request;
+                using var listener = new HttpListener();
+                listener.Prefixes.Add($"http://localhost:{Port}/");
+                listener.Start();
 
-                using HttpListenerResponse response = context.Response;
-                using System.IO.Stream output = response.OutputStream;
-                string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
-                byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-                response.ContentLength64 = buffer.Length;
-                output.Write(buffer, 0, buffer.Length);
+                while (true)
+                {
+                    try
+                    {
+                        // リクエストを待つ
+                        HttpListenerContext context = listener.GetContext();
+
+                        // リクエストを取得
+                        HttpListenerRequest request = context.Request;
+
+                        // ファイルの中身を返す
+                        using HttpListenerResponse response = context.Response;
+                        using System.IO.Stream output = response.OutputStream;
+                        byte[] bytes = Router(request.RawUrl);
+                        output.Write(bytes, 0, bytes.Length);
+                    }
+                    catch
+                    {
+                    }
+                }
             }
+            catch
+            {
+
+            }
+        }
+
+        static byte[] Router(string? url)
+        {
+            Debug.WriteLine(url);
+            ArgumentNullException.ThrowIfNull(url);
+
+            string path = Path.GetFullPath("." + url);
+            if (File.Exists(path))
+            {
+                return File.ReadAllBytes(path);
+            }
+            else
+            {
+                return Encoding.UTF8.GetBytes($"not found: \"{url}\"");
+            }
+
         }
     }
 }

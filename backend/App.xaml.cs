@@ -8,9 +8,10 @@ namespace backend
 
     public partial class App : System.Windows.Application
     {
-        private Mutex? mutex;
-        private MainWindow? mainWindow;
-        private TaskTrayIcon? taskTrayIcon;
+        Mutex? mutex;
+        MainWindow? mainWindow;
+        TaskTrayIcon? taskTrayIcon;
+        HttpServer httpServer = new();
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -25,6 +26,7 @@ namespace backend
                 return;
             }
 
+            // ウィンドウ表示
             var mainWindowVM = new MainWindowVM();
             mainWindow = new MainWindow
             {
@@ -32,13 +34,15 @@ namespace backend
             };
             mainWindow.Show();
 
+            // タスクトレイアイコン表示
             taskTrayIcon = new(
                 "icon.ico",
                 onClick: () => mainWindowVM.ToggleWindowVisibility(),
                 onExit: Shutdown
                 );
 
-            HttpServer.StartListener();
+            // サーバー起動
+            httpServer.StartAsync();
         }
 
         protected override void OnExit(ExitEventArgs e)
