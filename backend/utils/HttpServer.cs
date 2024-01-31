@@ -3,22 +3,23 @@ using System.IO;
 using System.Net;
 using System.Text;
 
+// `listener.GetContex`の並列化
+// https://stackoverflow.com/questions/28273345/how-to-process-multiple-connections-simultaneously-with-httplistener
+// https://yryr.me/programming/local-http-server.html
+
 namespace backend
 {
     class HttpServer
     {
-        public Task StartAsync()
-        {
-            return Task.Run(Start);
-        }
+        HttpListener? listener;
 
-        void Start()
+        public async Task StartAsync()
         {
             while (true)
             {
                 try
                 {
-                    using var listener = new HttpListener();
+                    listener = new HttpListener();
                     listener.Prefixes.Add(Settings.Url);
                     listener.Start();
 
@@ -27,10 +28,8 @@ namespace backend
                         try
                         {
                             // リクエストを待つ
-                            HttpListenerContext context = listener.GetContext();
-                            // 非同期
-                            // https://stackoverflow.com/questions/28273345/how-to-process-multiple-connections-simultaneously-with-httplistener
-                            // https://yryr.me/programming/local-http-server.html
+                            HttpListenerContext context = await listener.GetContextAsync();
+                            if (!listener.IsListening) break;
 
                             // リクエストを取得
                             HttpListenerRequest request = context.Request;
@@ -45,11 +44,42 @@ namespace backend
                                 {
                                     response.ContentLength64 = bytes.Length;
                                     response.ContentType = mime;
-                                    output.Write(bytes, 0, bytes.Length);
+                                    response.ContentEncoding = Encoding.UTF8;
+                                    await output.WriteAsync(bytes);
                                 }
                                 else
                                 {
                                     response.StatusCode = 400;
+                                }
+
+                                if (request.RawUrl == "/api/app-settings")
+                                {
+                                }
+                                if (request.RawUrl == "/api/notes/{id}")
+                                {
+                                }
+                                if (request.RawUrl == "/api/coverage")
+                                {
+                                }
+                                if (request.RawUrl == "/images/{pdf-id}/{page}?size=xxx")
+                                {
+                                }
+                                if (request.RawUrl == "/file-tree")
+                                {
+                                }
+                            }
+
+                            // 
+                            if (request.HttpMethod == "POST")
+                            {
+                                if (request.RawUrl == "/api/app-settings")
+                                {
+                                }
+                                if (request.RawUrl == "/api/notes/{id}")
+                                {
+                                }
+                                if (request.RawUrl == "/api/coverage")
+                                {
                                 }
                             }
                         }
@@ -61,10 +91,21 @@ namespace backend
                 catch
                 {
                 }
+                finally
+                {
+                    Stop();
+                }
             }
         }
 
-        static Response? Get(string? request)
+        void Stop()
+        {
+            listener?.Stop();
+            listener?.Close();
+        }
+
+
+        Response? Get(string? request)
         {
             ArgumentNullException.ThrowIfNull(request);
             Debug.WriteLine(request);
@@ -74,7 +115,6 @@ namespace backend
             // string[] queries = parsed[1..];
 
             if (url.Contains("..")) return null;
-
             string path = string.IsNullOrEmpty(url) ? "index.html" : Path.GetFullPath(url);
             if (File.Exists(path))
             {
