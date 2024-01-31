@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ABI.System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using System;
@@ -8,6 +9,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -88,6 +90,12 @@ namespace backend
         [RelayCommand]
         void OpenWithBrowser()
         {
+            ProcessStartInfo pi = new()
+            {
+                FileName = Settings.Url,
+                UseShellExecute = true,
+            };
+            Process.Start(pi);
         }
 
         /// <summary>

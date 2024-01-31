@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Contacts;
 
 namespace backend
 {
     class HttpServer
     {
-        public string Port { get; set; } = "8080";
-
         public Task StartAsync()
         {
             return Task.Run(Start);
@@ -21,54 +14,104 @@ namespace backend
 
         void Start()
         {
-            try
+            while (true)
             {
-                using var listener = new HttpListener();
-                listener.Prefixes.Add($"http://localhost:{Port}/");
-                listener.Start();
-
-                while (true)
+                try
                 {
-                    try
-                    {
-                        // リクエストを待つ
-                        HttpListenerContext context = listener.GetContext();
+                    using var listener = new HttpListener();
+                    listener.Prefixes.Add(Settings.Url);
+                    listener.Start();
 
-                        // リクエストを取得
-                        HttpListenerRequest request = context.Request;
-
-                        // ファイルの中身を返す
-                        using HttpListenerResponse response = context.Response;
-                        using System.IO.Stream output = response.OutputStream;
-                        byte[] bytes = Router(request.RawUrl);
-                        output.Write(bytes, 0, bytes.Length);
-                    }
-                    catch
+                    while (listener.IsListening)
                     {
+                        try
+                        {
+                            // リクエストを待つ
+                            HttpListenerContext context = listener.GetContext();
+                            // 非同期
+                            // https://stackoverflow.com/questions/28273345/how-to-process-multiple-connections-simultaneously-with-httplistener
+                            // https://yryr.me/programming/local-http-server.html
+
+                            // リクエストを取得
+                            HttpListenerRequest request = context.Request;
+
+                            // ファイルの中身を返す
+                            if (request.HttpMethod == "GET")
+                            {
+                                using HttpListenerResponse response = context.Response;
+                                response.ContentLength64 = 0;
+                                using System.IO.Stream output = response.OutputStream;
+                                if (Get(request.RawUrl) is (byte[] bytes, string mime))
+                                {
+                                    response.ContentLength64 = bytes.Length;
+                                    response.ContentType = mime;
+                                    output.Write(bytes, 0, bytes.Length);
+                                }
+                                else
+                                {
+                                    response.StatusCode = 400;
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
                     }
                 }
-            }
-            catch
-            {
-
+                catch
+                {
+                }
             }
         }
 
-        static byte[] Router(string? url)
+        static Response? Get(string? request)
         {
-            Debug.WriteLine(url);
-            ArgumentNullException.ThrowIfNull(url);
+            ArgumentNullException.ThrowIfNull(request);
+            Debug.WriteLine(request);
+            string[] parsed = request.Split('?', '&');
 
-            string path = Path.GetFullPath("." + url);
+            string url = WebUtility.UrlDecode(parsed[0].TrimStart('/'));
+            // string[] queries = parsed[1..];
+
+            if (url.Contains("..")) return null;
+
+            string path = string.IsNullOrEmpty(url) ? "index.html" : Path.GetFullPath(url);
             if (File.Exists(path))
             {
-                return File.ReadAllBytes(path);
+                return new(File.ReadAllBytes(path), MimeType(path));
             }
             else
             {
-                return Encoding.UTF8.GetBytes($"not found: \"{url}\"");
+                return new(Encoding.UTF8.GetBytes($"not found: \"{url}\""), "");
             }
 
+        }
+
+        record Response(byte[] Bytes, string Mime);
+
+        static string MimeType(string path)
+        {
+            return Path.GetExtension(path) switch
+            {
+                ".css" => "text/css",
+                ".gif" => "image/gif",
+                ".gz" => "application/x-gzip",
+                ".htm" => "text/html",
+                ".html" => "text/html",
+                ".ico" => "image/x-icon",
+                ".jpeg" => "image/jpeg",
+                ".jpg" => "image/jpeg",
+                ".js" => "application/x-javascript",
+                ".json" => "application/json",
+                ".pdf" => "application/pdf",
+                ".png" => "image/png",
+                ".svg" => "image/svg+xml",
+                ".tar" => "application/x-tar",
+                ".tgz" => "application/x-compressed",
+                ".txt" => "text/plain",
+                ".zip" => "application/zip",
+                _ => "application/octet-stream",
+            };
         }
     }
 }
