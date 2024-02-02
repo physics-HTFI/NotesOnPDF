@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 
 // `listener.GetContex`の並列化
@@ -12,6 +13,7 @@ namespace backend
     class HttpServer
     {
         HttpListener? listener;
+        NotePaths notePaths = new();
 
         public async Task StartAsync()
         {
@@ -40,7 +42,7 @@ namespace backend
                                 using HttpListenerResponse response = context.Response;
                                 response.ContentLength64 = 0;
                                 using System.IO.Stream output = response.OutputStream;
-                                if (Get(request.RawUrl) is (byte[] bytes, string mime))
+                                if (ProcessGet(request.RawUrl) is (byte[] bytes, string mime))
                                 {
                                     response.ContentLength64 = bytes.Length;
                                     response.ContentType = mime;
@@ -51,36 +53,12 @@ namespace backend
                                 {
                                     response.StatusCode = 400;
                                 }
-
-                                if (request.RawUrl == "/api/app-settings")
-                                {
-                                }
-                                if (request.RawUrl == "/api/notes/{id}")
-                                {
-                                }
-                                if (request.RawUrl == "/api/coverage")
-                                {
-                                }
-                                if (request.RawUrl == "/images/{pdf-id}/{page}?size=xxx")
-                                {
-                                }
-                                if (request.RawUrl == "/file-tree")
-                                {
-                                }
                             }
 
                             // 
                             if (request.HttpMethod == "POST")
                             {
-                                if (request.RawUrl == "/api/app-settings")
-                                {
-                                }
-                                if (request.RawUrl == "/api/notes/{id}")
-                                {
-                                }
-                                if (request.RawUrl == "/api/coverage")
-                                {
-                                }
+                                ProcessPost(request);
                             }
                         }
                         catch
@@ -105,7 +83,7 @@ namespace backend
         }
 
 
-        Response? Get(string? request)
+        Response? ProcessGet(string? request)
         {
             ArgumentNullException.ThrowIfNull(request);
             Debug.WriteLine(request);
@@ -113,6 +91,33 @@ namespace backend
 
             string url = WebUtility.UrlDecode(parsed[0].TrimStart('/'));
             // string[] queries = parsed[1..];
+
+
+            if (url == "/api/app-settings")
+            {
+                // TODO
+                return new(Encoding.UTF8.GetBytes(""), "application/json");
+            }
+            if (url == "/api/notes/{id}")
+            {
+                // TODO
+                return new(Encoding.UTF8.GetBytes(""), "application/json");
+            }
+            if (url == "/api/coverage")
+            {
+                // TODO
+                return new(Encoding.UTF8.GetBytes(""), "application/json");
+            }
+            if (url == "/images/{pdf-id}/{page}?size=xxx")
+            {
+                // TODO
+                return new(Encoding.UTF8.GetBytes(""), "application/json");
+            }
+            if (url == "/file-tree")
+            {
+                // TODO
+                return new(Encoding.UTF8.GetBytes(""), "application/json");
+            }
 
             if (url.Contains("..")) return null;
             string path = string.IsNullOrEmpty(url) ? "index.html" : Path.GetFullPath(url);
@@ -124,8 +129,22 @@ namespace backend
             {
                 return new(Encoding.UTF8.GetBytes($"not found: \"{url}\""), "");
             }
-
         }
+
+        void ProcessPost(HttpListenerRequest request)
+        {
+            string path = request.RawUrl switch
+            {
+                "/api/app-settings" => Settings.SettingsPath,
+                "/api/coverage" => Settings.CoveragePath,
+                string s when s.StartsWith("/api/notes/") => notePaths.GetPath(s.Replace("/api/notes/", "")) ?? throw new Exception(),
+                _ => throw new Exception()
+            };
+
+            using var stream = new StreamReader(request.InputStream, request.ContentEncoding);
+            File.WriteAllText(path, stream.ReadToEnd());
+        }
+
 
         record Response(byte[] Bytes, string Mime);
 
