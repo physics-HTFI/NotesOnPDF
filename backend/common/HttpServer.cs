@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Security.Cryptography;
 using System.Text;
+
+// https://rikoubou.hatenablog.com/entry/2023/11/09/130144
+// https://qiita.com/washikawau/items/bfcd8babcffab30e6d26
+// https://stackprobe.hateblo.jp/entry/2021/10/12/004217
 
 // `listener.GetContex`の並列化
 // https://stackoverflow.com/questions/28273345/how-to-process-multiple-connections-simultaneously-with-httplistener
@@ -22,7 +25,7 @@ namespace backend
                 try
                 {
                     listener = new HttpListener();
-                    listener.Prefixes.Add(Settings.Url);
+                    listener.Prefixes.Add(SettingsUtils.Url);
                     listener.Start();
 
                     while (listener.IsListening)
@@ -135,8 +138,8 @@ namespace backend
         {
             string path = request.RawUrl switch
             {
-                "/api/app-settings" => Settings.SettingsPath,
-                "/api/coverage" => Settings.CoveragePath,
+                "/api/app-settings" => SettingsUtils.SettingsPath,
+                "/api/coverage" => SettingsUtils.CoveragePath,
                 string s when s.StartsWith("/api/notes/") => notePaths.GetPath(s.Replace("/api/notes/", "")) ?? throw new Exception(),
                 _ => throw new Exception()
             };

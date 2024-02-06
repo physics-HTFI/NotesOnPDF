@@ -1,12 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
 
 namespace backend
 {
@@ -27,8 +21,8 @@ namespace backend
 
             WeakReferenceMessenger.Default.Register<Message_SettingsChanged>(this, (_, _) =>
             {
-                if (notesDirectory == Settings.NotesDirectory) return;
-                notesDirectory = Settings.NotesDirectory;
+                if (notesDirectory == SettingsUtils.NotesDirectory) return;
+                notesDirectory = SettingsUtils.NotesDirectory;
                 SetPath();
             });
             WeakReferenceMessenger.Default.Register<Message_PdfChanged>(this, (_, value) =>
@@ -50,7 +44,7 @@ namespace backend
         /// </summary>
         readonly ConcurrentDictionary<string, string> paths = [];
 
-        string notesDirectory = Settings.NotesDirectory;
+        string notesDirectory = SettingsUtils.NotesDirectory;
 
         void SetPath()
         {

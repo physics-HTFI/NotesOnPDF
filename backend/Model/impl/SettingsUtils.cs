@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace backend
 {
-    internal class Settings
+    internal class SettingsUtils
     {
         static public string Url => $"http://localhost:{Properties.Settings.Default.Port}/";
         static public string SettingsPath => Path.Combine(Properties.Settings.Default.NotesDirectory, "settings.json");

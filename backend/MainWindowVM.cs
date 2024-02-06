@@ -1,17 +1,6 @@
-﻿using ABI.System;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace backend
@@ -92,7 +81,7 @@ namespace backend
         {
             ProcessStartInfo pi = new()
             {
-                FileName = Settings.Url,
+                FileName = SettingsUtils.Url,
                 UseShellExecute = true,
             };
             Process.Start(pi);

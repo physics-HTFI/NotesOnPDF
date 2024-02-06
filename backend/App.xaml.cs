@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using System.Threading;
-using System.Windows;
-using System.Windows.Forms;
+﻿using System.Windows;
 
 namespace backend
 {
