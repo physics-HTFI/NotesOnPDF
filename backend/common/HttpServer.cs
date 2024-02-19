@@ -2,6 +2,8 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 // https://rikoubou.hatenablog.com/entry/2023/11/09/130144
 // https://qiita.com/washikawau/items/bfcd8babcffab30e6d26
@@ -16,7 +18,8 @@ namespace backend
     class HttpServer
     {
         HttpListener? listener;
-        NotePaths notePaths = new();
+        readonly NotePaths notePaths = new();
+        readonly Model model = new();
 
         public async Task StartAsync()
         {
@@ -39,13 +42,13 @@ namespace backend
                             // リクエストを取得
                             HttpListenerRequest request = context.Request;
 
-                            // ファイルの中身を返す
+                            // GET
                             if (request.HttpMethod == "GET")
                             {
                                 using HttpListenerResponse response = context.Response;
                                 response.ContentLength64 = 0;
                                 using System.IO.Stream output = response.OutputStream;
-                                if (ProcessGet(request.RawUrl) is (byte[] bytes, string mime))
+                                if (await ProcessGet(request.Url) is (byte[] bytes, string mime))
                                 {
                                     response.ContentLength64 = bytes.Length;
                                     response.ContentType = mime;
@@ -58,7 +61,7 @@ namespace backend
                                 }
                             }
 
-                            // 
+                            // POST
                             if (request.HttpMethod == "POST")
                             {
                                 ProcessPost(request);
@@ -86,51 +89,65 @@ namespace backend
         }
 
 
-        Response? ProcessGet(string? request)
+        async Task<Response?> ProcessGet(Uri? uri)
         {
-            ArgumentNullException.ThrowIfNull(request);
-            Debug.WriteLine(request);
-            string[] parsed = request.Split('?', '&');
+            ArgumentNullException.ThrowIfNull(uri);
+            string url = uri.AbsolutePath;
+            if (url.Contains("..")) return null; // 上の階層にアクセスできなくする
 
-            string url = WebUtility.UrlDecode(parsed[0].TrimStart('/'));
-            // string[] queries = parsed[1..];
-
-
+            // API
+            if (url == "/api/file-tree")
+            {
+                return getJsonResponse(model.GetPdfPaths());
+            }
             if (url == "/api/app-settings")
             {
-                // TODO
-                return new(Encoding.UTF8.GetBytes(""), "application/json");
-            }
-            if (url == "/api/notes/{id}")
-            {
-                // TODO
-                return new(Encoding.UTF8.GetBytes(""), "application/json");
+                return getJsonResponse(model.GetFrontendSettings());
             }
             if (url == "/api/coverage")
             {
-                // TODO
-                return new(Encoding.UTF8.GetBytes(""), "application/json");
+                return getJsonResponse(model.GetCoverage());
             }
-            if (url == "/images/{pdf-id}/{page}?size=xxx")
+            if (url.StartsWith("/api/notes/"))
             {
-                // TODO
-                return new(Encoding.UTF8.GetBytes(""), "application/json");
+                if (uri.Segments.Length != 4) return null;
+                string id = uri.Segments[3]; // ["/", "api/", "notes/", "{id}"]
+                var body = await model.OpenPdf(id);
+                if (body is null) return null;
+                return getJsonResponse(body);
             }
-            if (url == "/file-tree")
+            if (url.StartsWith("/api/images/"))
             {
-                // TODO
-                return new(Encoding.UTF8.GetBytes(""), "application/json");
+                try
+                {
+                    byte[]? png = await model.GetPagePng(
+                        id: uri.Segments[3][..^1],  // ["/", "api/", "images/", "{id}/", "{page}"]
+                        pageNum: uint.Parse(uri.Segments[4]),
+                        width: uint.Parse(Regex.Match(uri.Query, @"size=([^&]+)").Groups[1].Value)
+                        );
+                    if (png == null) return null;
+                    return new(png, MimeType(".png"));
+                }
+                catch
+                {
+                    return null;
+                }
             }
+            Response getJsonResponse<T>(T body) => new(
+                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(body)),
+                MimeType(".json")
+                );
 
-            if (url.Contains("..")) return null;
-            string path = string.IsNullOrEmpty(url) ? "index.html" : Path.GetFullPath(url);
+
+            // ファイル
+            string path = url == "/" ? "index.html" : Path.GetFullPath(url);
             if (File.Exists(path))
             {
                 return new(File.ReadAllBytes(path), MimeType(path));
             }
             else
             {
-                return new(Encoding.UTF8.GetBytes($"not found: \"{url}\""), "");
+                return new(Encoding.UTF8.GetBytes($"not found: \"{uri}\""), "");
             }
         }
 

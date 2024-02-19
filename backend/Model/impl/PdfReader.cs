@@ -25,11 +25,13 @@ namespace backend
             Size[] sizes = Enumerable.Range(0, (int)pageNum).Select(i =>
             {
                 using var page = pdf.GetPage((uint)i);
-                return page.Size;
+                return new Size(page.Size.Width, page.Size.Height);
             }).ToArray();
             currentPath = path;
             return new(md5, pageNum, sizes);
         }
+
+        public record Size(double Width, double Height);
 
         /// <summary>
         /// 画像ファイルを返す。失敗したら`throw`。

@@ -4,16 +4,19 @@ namespace backend
 {
     internal class Model
     {
-        readonly PdfPaths pdfPaths = new();
-        readonly NotesPaths notesPaths = new();
-        readonly PdfReader pdfReader = new();
-        readonly List<(string Id, string MD5)> openedPdfs = [];
-
-        record OpenPdfResult(string? Notes, int PageNum, List<Size> Sizes);
-
+        /// <summary>
+        /// 現在のルートフォルダ内のPDF一覧を取得。
+        /// ルートフォルダが変更されている場合は、呼びなおせば最新のものになる。
+        /// `throw`しない。
+        /// </summary>
         public PdfPaths.PdfInfo[] GetPdfPaths() => pdfPaths.GetPaths();
 
-        public async Task<(uint pageNum, Size[] sizes)?> OpenPdf(string id)
+        /// <summary>
+        /// PDFファイルを開く。
+        /// `throw`しない。
+        /// </summary>
+        // TODO ルートフォルダ以外のPDFを開けるようにする
+        public async Task<OpenPdfResult?> OpenPdf(string id)
         {
             try
             {
@@ -22,7 +25,8 @@ namespace backend
                 notesPaths.AddItem(path, md5);
                 openedPdfs.RemoveAll(i => i.Id == id);
                 openedPdfs.Add(new(id, md5));
-                return (pageNum, sizes);
+                string? notes = PathUtils.ReadAllText(GetNotesPath(id));
+                return new(pageNum, sizes, notes);
             }
             catch
             {
@@ -30,7 +34,13 @@ namespace backend
             }
         }
 
-        async Task<byte[]?> GetPagePng(string id, uint pageNum, uint width)
+        public record OpenPdfResult(uint PageNum, PdfReader.Size[] Sizes, string? Notes);
+
+        /// <summary>
+        /// ページのPNGデータを取得する。
+        /// `throw`しない。
+        /// </summary>
+        public async Task<byte[]?> GetPagePng(string id, uint pageNum, uint width)
         {
             try
             {
@@ -42,7 +52,6 @@ namespace backend
 
         public string? GetFrontendSettings() => PathUtils.ReadAllText(SettingsUtils.SettingsPath);
         public string? GetCoverage() => PathUtils.ReadAllText(SettingsUtils.CoveragePath);
-        public string? GetNotes(string id) => PathUtils.ReadAllText(GetNotesPath(id));
 
         public void SaveFrontendSettings(string body) => PathUtils.WriteAllText(SettingsUtils.SettingsPath, body);
         public void SaveCoverage(string body) => PathUtils.WriteAllText(SettingsUtils.CoveragePath, body);
@@ -50,6 +59,11 @@ namespace backend
 
 
         #region private
+
+        readonly PdfPaths pdfPaths = new();
+        readonly NotesPaths notesPaths = new();
+        readonly PdfReader pdfReader = new();
+        readonly List<(string Id, string MD5)> openedPdfs = [];
 
         private string? GetNotesPath(string id)
         {

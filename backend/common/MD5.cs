@@ -16,7 +16,7 @@ namespace backend
 
         public static string FromBytes(byte[] bytes)
         {
-            return BitConverter.ToString(System.Security.Cryptography.MD5.HashData(bytes)).Replace("-", "")[..5].ToLower();
+            return BitConverter.ToString(System.Security.Cryptography.MD5.HashData(bytes)).Replace("-", "")[..10].ToLower();
         }
 
         public static string FromString(string str)

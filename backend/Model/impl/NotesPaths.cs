@@ -40,10 +40,15 @@ namespace backend
         /// <summary>
         /// PDFファイルの選択時の処理
         /// </summary>
-        public void AddItem(string path, string md5)
+        public void AddItem(string pdfPath, string md5)
         {
             if (items.Any(i => i.MD5 == md5)) return;
-            items.Add(new(path, md5));
+            Regex regex = new(@".*\.([^/\\\.]+)\.json");
+            string notesPath = Path.Combine(
+                SettingsUtils.NotesDirectory,
+                Regex.Replace(pdfPath, @"\.pdf", $".{md5}.json", RegexOptions.IgnoreCase)
+                );
+            items.Add(new(notesPath, md5));
         }
 
         /// <summary>

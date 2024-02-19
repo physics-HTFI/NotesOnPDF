@@ -7,7 +7,7 @@ namespace backend
     {
 
         /// <summary>
-        /// フロントエンドに渡す情報
+        /// ルートフォルダ内の1つのファイル／フォルダの情報（フロントエンドに渡す情報）
         /// </summary>
         public record PdfInfo(string Id, string Path, string[] Children);
 
@@ -21,7 +21,7 @@ namespace backend
         }
 
         /// <summary>
-        /// フロントエンドに渡す情報
+        /// ルートフォルダ内のPDFファイル一覧（フロントエンドに渡す情報）
         /// </summary>
         public PdfInfo[] GetPaths() => items.Select(i => new PdfInfo(i.Id, i.Path, i.Children)).ToArray();
 
@@ -29,22 +29,6 @@ namespace backend
         /// `id`をPDFファイルパスに変換する。失敗したら`throw`。
         /// </summary>
         public string GetPath(string id) => items.First(i => i.Id == id).Path;
-
-        public string Json
-        {
-            get
-            {
-                try
-                {
-                    return JsonSerializer.Serialize(items);
-                }
-                catch
-                {
-                    return "[]";
-                }
-
-            }
-        }
 
 
         #region private
@@ -86,7 +70,7 @@ namespace backend
                 // `dir`内のファイルを追加
                 foreach (var f in files)
                 {
-                    items.Add(new(MD5.FromString(dir), f, f, []));
+                    items.Add(new(MD5.FromString(f), f, f, []));
                 }
                 // `dir`内のフォルダを追加
                 foreach (var d in dirs)
