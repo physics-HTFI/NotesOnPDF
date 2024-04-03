@@ -23,7 +23,7 @@ namespace backend
         /// <summary>
         /// ルートフォルダ内のPDFファイル一覧（フロントエンドに渡す情報）
         /// </summary>
-        public PdfInfo[] GetPaths() => items.Select(i => new PdfInfo(i.Id, i.Path, i.Children)).ToArray();
+        public PdfInfo[] GetPaths() => items.Select(i => new PdfInfo(i.Id, i.Path, i.Children ?? [])).ToArray();
 
         /// <summary>
         /// `id`をPDFファイルパスに変換する。失敗したら`throw`。
@@ -36,7 +36,7 @@ namespace backend
         /// <summary>
         /// 1つのPDFファイルを表す
         /// </summary>
-        record Item(string Id, string Path, string FullPath, string[] Children);
+        record Item(string Id, string Path, string FullPath, string[]? Children);
 
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace backend
                 // `dir`内のファイルを追加
                 foreach (var f in files)
                 {
-                    items.Add(new(MD5.FromString(f), f, f, []));
+                    items.Add(new(MD5.FromString(f), f, f, null));
                 }
                 // `dir`内のフォルダを追加
                 foreach (var d in dirs)

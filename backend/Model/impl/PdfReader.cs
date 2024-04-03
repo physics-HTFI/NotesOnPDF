@@ -50,7 +50,7 @@ namespace backend
             using var memStream = new MemoryStream();
             using var renderStream = memStream.AsRandomAccessStream();
             {
-                await page.RenderToStreamAsync(renderStream);
+                await page.RenderToStreamAsync(renderStream, new PdfPageRenderOptions { DestinationWidth=width });
                 return memStream.ToArray();
             }
         }
