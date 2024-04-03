@@ -140,7 +140,7 @@ namespace backend
 
 
             // ファイル
-            string path = url == "/" ? "index.html" : Path.GetFullPath(url);
+            string path = url == "/" ? "index.html" : Path.GetFullPath(url.TrimStart('/'));
             if (File.Exists(path))
             {
                 return new(File.ReadAllBytes(path), MimeType(path));
