@@ -7,8 +7,6 @@ export type ClickOption = null | "edit" | "move" | "delete";
  * アプリ設定
  */
 export interface AppSettings {
-  /** PDFファイルリスト生成時のルートディレクトリ */
-  rootPath: string;
   /** 空クリックでモードを解除する */
   cancelModeWithVoidClick: boolean;
   /** 注釈をスナップする */
@@ -21,7 +19,6 @@ export interface AppSettings {
 
 /** デフォルトのアプリ設定 */
 export const AppSettings_default: AppSettings = {
-  rootPath: "./PDFs",
   cancelModeWithVoidClick: true,
   snapNotes: true,
   rightClick: null,

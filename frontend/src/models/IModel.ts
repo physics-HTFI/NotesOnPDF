@@ -4,7 +4,7 @@ import { PdfInfo } from "@/types/PdfInfo";
 import { AppSettings } from "@/types/AppSettings";
 
 export default interface IModel {
-  getFileTree(rootPath: string): Promise<FileTree>;
+  getFileTree(): Promise<FileTree>;
 
   getProgresses(): Promise<Progresses>;
   putProgresses(progress: Progresses): Promise<void>;

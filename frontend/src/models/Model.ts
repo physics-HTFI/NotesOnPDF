@@ -6,10 +6,12 @@ import { AppSettings } from "@/types/AppSettings";
 
 export default class Model implements IModel {
   private wait = () => new Promise((resolve) => setTimeout(resolve, 300));
+  //  private base = () => window.location.href.match(/.*:\d+/)?.[0];
+  private base = () => "http://localhost:8080";
 
   public getFileTree = async (): Promise<FileTree> => {
-    await this.wait();
-    throw new Error();
+    const res = await fetch(this.base() + "/api/file-tree");
+    return (await res.json()) as FileTree;
   };
 
   public getProgresses = async (): Promise<Progresses> => {

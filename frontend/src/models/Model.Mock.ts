@@ -10,42 +10,20 @@ export default class ModelMock implements IModel {
   public getFileTree = async (): Promise<FileTree> => {
     await this.wait();
     return [
-      [
-        "dummy1/",
-        [
-          [
-            "dummy1/dummy11/",
-            [
-              "dummy1/dummy11/dummy11A.pdf",
-              "dummy1/dummy11/dummy11B.pdf",
-              "dummy1/dummy11/dummy11C.pdf",
-            ],
-          ],
-          "dummy1/dummy1A.pdf",
-          "dummy1/dummy1B.pdf",
-          "dummy1/dummy1C.pdf",
-        ],
-      ],
-      ["dummy2/", ["dummy2/dummy2A.pdf", "dummy1/dummy2B.pdf"]],
-      "文書1.pdf",
+      { title: "", id: "root", children: ["1", "9", "12"] },
+      { title: "dummy1/", id: "1", children: ["2", "6", "7", "8"] },
+      { title: "dummy1/dummy11/", id: "2", children: ["3", "4", "5"] },
+      { title: "dummy1/dummy11/11A.pdf", id: "3", children: null },
+      { title: "dummy1/dummy11/11B.pdf", id: "4", children: null },
+      { title: "dummy1/dummy11/11C.pdf", id: "5", children: null },
+      { title: "dummy1/dummy1A.pdf", id: "6", children: null },
+      { title: "dummy1/dummy1B.pdf", id: "7", children: null },
+      { title: "dummy1/dummy1C.pdf", id: "8", children: null },
+      { title: "dummy2/dummy2/", id: "9", children: ["10", "11"] },
+      { title: "dummy2/dummy2A.pdf", id: "10", children: null },
+      { title: "dummy2/dummy2B.pdf", id: "11", children: null },
+      { title: "文書1.pdf", id: "12", children: null },
     ];
-    /*
-    return [
-      [
-        "dir1/",
-        [
-          [
-            "dir1/dir2/",
-            ["dir1/dir2/file121", "dir1/dir2/file122", "dir1/dir2/file123"],
-          ],
-          "dir1/file11",
-          "dir1/file12",
-        ],
-      ],
-      "file1",
-      "file2",
-    ];
-    */
   };
 
   public getProgresses = async (): Promise<Progresses> => {

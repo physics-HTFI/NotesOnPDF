@@ -9,7 +9,7 @@ namespace backend
         /// <summary>
         /// ルートフォルダ内の1つのファイル／フォルダの情報（フロントエンドに渡す情報）
         /// </summary>
-        public record PdfInfo(string Id, string Path, string[] Children);
+        public record PdfInfo(string id, string path, string[]? children);
 
         /// <summary>
         /// コンストラクタ
@@ -23,7 +23,7 @@ namespace backend
         /// <summary>
         /// ルートフォルダ内のPDFファイル一覧（フロントエンドに渡す情報）
         /// </summary>
-        public PdfInfo[] GetPaths() => items.Select(i => new PdfInfo(i.Id, i.Path, i.Children ?? [])).ToArray();
+        public PdfInfo[] GetPaths() => items.Select(i => new PdfInfo(i.Id, i.Path, i.Children)).ToArray();
 
         /// <summary>
         /// `id`をPDFファイルパスに変換する。失敗したら`throw`。
@@ -58,6 +58,9 @@ namespace backend
 
             void addDirectory(string dir)
             {
+                // ファイルがないフォルダは無視する（フロントエンド側で空フォルダを表示するのが面倒なため）
+                if (Directory.GetFiles(dir, "*.pdf", SearchOption.AllDirectories).Length == 0) return;
+
                 string[] dirs = Directory.GetDirectories(dir);
                 string[] files = Directory.GetFiles(dir, "*.pdf");
 

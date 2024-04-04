@@ -46,6 +46,7 @@ namespace backend
                             if (request.HttpMethod == "GET")
                             {
                                 using HttpListenerResponse response = context.Response;
+                                response.AppendHeader("Access-Control-Allow-Origin", "*"); // 開発時にloclhost:5173からアクセスする必要があるため
                                 response.ContentLength64 = 0;
                                 using System.IO.Stream output = response.OutputStream;
                                 if (await ProcessGet(request.Url) is (byte[] bytes, string mime))
