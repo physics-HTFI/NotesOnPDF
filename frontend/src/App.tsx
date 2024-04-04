@@ -123,7 +123,6 @@ function App() {
           {/* ファイルツリー */}
           <OpenFileDrawer
             model={model}
-            rootPath={appSettings?.rootPath}
             progresses={progresses}
             open={openLeftDrawer}
             onClose={() => {
