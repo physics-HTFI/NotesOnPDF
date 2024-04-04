@@ -109,13 +109,14 @@ namespace backend
             {
                 return getJsonResponse(model.GetCoverage());
             }
-            if (url.StartsWith("/api/notes/"))
+            if (url.StartsWith("/api/pdf-notes/"))
             {
                 if (uri.Segments.Length != 4) return null;
-                string id = uri.Segments[3]; // ["/", "api/", "notes/", "{id}"]
+                string id = uri.Segments[3]; // ["/", "api/", "pdf-notes/", "{id}"]
                 var body = await model.OpenPdf(id);
                 if (body is null) return null;
-                return getJsonResponse(body);
+                // 注釈ファイルがあればそれを、なければ各ページのサイズからなる配列を返す
+                return body.Notes is not null ? getJsonResponse(body.Notes) : getJsonResponse(body.Sizes);
             }
             if (url.StartsWith("/api/images/"))
             {
@@ -158,7 +159,7 @@ namespace backend
             {
                 "/api/app-settings" => SettingsUtils.SettingsPath,
                 "/api/coverage" => SettingsUtils.CoveragePath,
-                string s when s.StartsWith("/api/notes/") => notePaths.GetPath(s.Replace("/api/notes/", "")) ?? throw new Exception(),
+                string s when s.StartsWith("/api/pdf-notes/") => notePaths.GetPath(s.Replace("/api/pdf-notes/", "")) ?? throw new Exception(),
                 _ => throw new Exception()
             };
 

@@ -41,7 +41,6 @@ const OpenFileDrawer: FC<Props> = ({
       .getFileTree()
       .then((files) => {
         setFileTree(files);
-        console.log(files);
       })
       .catch(() => undefined);
   }, [model]);
@@ -96,7 +95,7 @@ const OpenFileDrawer: FC<Props> = ({
             const isDirectory = fileTree.some(
               (i) => i.id === nodeIds && i.children !== null
             );
-            if (isDirectory) return; // フォルダの時は何もしない
+            if (isDirectory) return;
             setSelected(nodeIds);
             onSelect(nodeIds);
           }}

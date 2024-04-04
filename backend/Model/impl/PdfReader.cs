@@ -31,7 +31,7 @@ namespace backend
             return new(md5, pageNum, sizes);
         }
 
-        public record Size(double Width, double Height);
+        public record Size(double width, double height);
 
         /// <summary>
         /// 画像ファイルを返す。失敗したら`throw`。
