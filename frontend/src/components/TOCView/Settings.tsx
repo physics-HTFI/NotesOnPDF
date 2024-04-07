@@ -46,7 +46,7 @@ const Settings: FC<Props> = ({ onClose }) => {
     const pre = pdfInfo.pages[pdfInfo.currentPage];
     if (!pre) return;
     pdfInfo.pages[pdfInfo.currentPage] = { ...pre, ...page };
-    if (Object.keys(page).includes("pageNumberRestart")) updatePageNum(pdfInfo);
+    if (Object.keys(page).includes("numberRestart")) updatePageNum(pdfInfo);
     setPdfInfo({ ...pdfInfo });
   };
 
@@ -133,10 +133,10 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
           {/* ページ番号 */}
           <PageNumberRestart
-            pageNumberRestart={page?.pageNumberRestart}
+            numberRestart={page?.numberRestart}
             preferredPageNumber={pageNum}
-            onChange={(pageNumberRestart) => {
-              handleChangePage({ pageNumberRestart });
+            onChange={(numberRestart) => {
+              handleChangePage({ numberRestart });
             }}
           />
           {/* ページ除外 */}
@@ -253,8 +253,8 @@ function getParams(pdfInfo: PdfInfo, pdfPath: string) {
     if (!page) continue;
     if (page.part !== undefined) ++partNum;
     if (page.chapter !== undefined) ++chapterNum;
-    if (page.pageNumberRestart) {
-      pageNum = 1 + page.pageNumberRestart;
+    if (page.numberRestart) {
+      pageNum = 1 + page.numberRestart;
     }
   }
 

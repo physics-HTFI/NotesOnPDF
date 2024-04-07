@@ -21,12 +21,12 @@ namespace backend
             try
             {
                 string path = pdfPaths.GetPath(id);
-                var (md5, pageNum, sizes) = await pdfReader.Open(path);
+                var (md5, sizes) = await pdfReader.Open(path);
                 notesPaths.AddItem(path, md5);
                 openedPdfs.RemoveAll(i => i.Id == id);
                 openedPdfs.Add(new(id, md5));
                 string? notes = PathUtils.ReadAllText(GetNotesPath(id));
-                return new(pageNum, sizes, notes);
+                return new(sizes, notes);
             }
             catch
             {
@@ -34,7 +34,7 @@ namespace backend
             }
         }
 
-        public record OpenPdfResult(uint PageNum, PdfReader.Size[] Sizes, string? Notes);
+        public record OpenPdfResult(PdfReader.Size[] sizes, string? notes);
 
         /// <summary>
         /// ページのPNGデータを取得する。

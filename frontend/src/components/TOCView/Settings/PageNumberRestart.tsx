@@ -6,21 +6,21 @@ import Checkbox from "./Checkbox";
  * `PageNumberRestart`の引数
  */
 interface Props {
-  pageNumberRestart?: number;
+  numberRestart?: number;
   preferredPageNumber?: number;
-  onChange: (pageNumberRestart?: number) => void;
+  onChange: (numberRestart?: number) => void;
 }
 
 /**
  * ページ番号を設定するコンポーネント
  */
 const PageNumberRestart: FC<Props> = ({
-  pageNumberRestart,
+  numberRestart,
   preferredPageNumber,
   onChange,
 }) => {
-  const isManual = pageNumberRestart !== undefined;
-  const restart = pageNumberRestart ?? preferredPageNumber ?? 1;
+  const isManual = numberRestart !== undefined;
+  const restart = numberRestart ?? preferredPageNumber ?? 1;
 
   return (
     <Box sx={{ whiteSpace: "nowrap" }}>

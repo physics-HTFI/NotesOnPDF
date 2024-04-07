@@ -18,7 +18,7 @@ interface Props {
   progresses?: Progresses;
   model: IModel;
   onClose: () => void;
-  onSelect: (pdf: string | File) => void;
+  onSelect: (pdf: string | File, path: string) => void;
 }
 
 /**
@@ -78,8 +78,8 @@ const OpenFileDrawer: FC<Props> = ({
     >
       {/* ヘッダーアイコン */}
       <HeaderIcons
-        onOpenFile={(file: string | File) => {
-          onSelect(file);
+        onOpenFile={(file: File) => {
+          onSelect(file, file.name);
         }}
       />
 
@@ -96,8 +96,9 @@ const OpenFileDrawer: FC<Props> = ({
               (i) => i.id === nodeIds && i.children !== null
             );
             if (isDirectory) return;
+            const path = fileTree.find((f) => f.id === nodeIds)?.path ?? "";
             setSelected(nodeIds);
-            onSelect(nodeIds);
+            onSelect(nodeIds, path);
           }}
           onNodeToggle={(_, nodeIds) => {
             setExpanded(nodeIds);

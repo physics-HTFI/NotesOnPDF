@@ -5,7 +5,7 @@ import IModel from "@/models/IModel";
 import Model from "./models/Model";
 import ModelMock from "@/models/Model.Mock";
 import { Progresses } from "@/types/Progresses";
-import { PdfInfo, createNewPdfInfo } from "@/types/PdfInfo";
+import { PdfInfo } from "@/types/PdfInfo";
 import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "./components/OpenFileDrawer";
 import PDFView from "@/components/PDFView";
@@ -24,7 +24,7 @@ function App() {
   const [progresses, setProgresses] = useState<Progresses>();
   const [pdf, setPDF] = useState<string | File>();
   const [pdfInfo, setPdfInfo] = useState<PdfInfo | null>(); // 読み込み失敗時にnull
-  const [numPages, setNumPages] = useState<number>();
+  const [pageRatios, setPageRatios] = useState<number[]>();
   const pdfPath = pdf && (pdf instanceof File ? pdf.name : pdf);
 
   const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
@@ -98,16 +98,17 @@ function App() {
   // 始めて読み込むPDFの場合、`PdfInfo`を生成する
   useEffect(() => {
     if (isWaitingPDF || isWaitingPdfInfo) return;
-    if (!numPages || !pdf || !pdfPath) return;
+    if (!pageRatios || !pdf || !pdfPath) return;
     if (pdfInfo === undefined) return;
-
+    /*
     if (pdfInfo === null) {
-      setPdfInfo(createNewPdfInfo(pdfPath, numPages));
-    } else if (pdfInfo.pages.length !== numPages) {
+      setPdfInfo(createNewPdfInfo(pageRatios));
+    } else if (pdfInfo.pages.length !== pageRatios.length) {
       // 同じPDFでページ数が異なっている場合に対応する
       setPdfInfo({ ...pdfInfo });
     }
-  }, [isWaitingPDF, isWaitingPdfInfo, numPages, pdfInfo, pdfPath, pdf]);
+    */
+  }, [isWaitingPDF, isWaitingPdfInfo, pageRatios, pdfInfo, pdfPath, pdf]);
 
   return (
     <AppSettingsContext.Provider value={{ appSettings, setAppSettings }}>
@@ -129,7 +130,7 @@ function App() {
               if (!pdf) return;
               setOpenLeftDrawer(false);
             }}
-            onSelect={(pdf) => {
+            onSelect={(pdf, path) => {
               setOpenLeftDrawer(false);
               const pdfPathNew = pdf instanceof File ? pdf.name : pdf;
               if (pdfPath === pdfPathNew || !pdfPathNew) return;
@@ -142,6 +143,15 @@ function App() {
               model
                 .getPdfInfo(pdfPathNew)
                 .then((pdfInfo) => {
+                  // 初回生成時にタイトルを設定する
+                  if (
+                    pdfInfo?.pages.every((p) => Object.keys(p).length === 2)
+                  ) {
+                    if (pdfInfo.pages[0] !== undefined) {
+                      pdfInfo.pages[0].book =
+                        path.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined;
+                    }
+                  }
                   setPdfInfo(pdfInfo);
                 })
                 .catch(() => {
@@ -182,12 +192,12 @@ function App() {
                 }}
                 onLoadError={() => {
                   setPDF(undefined);
-                  setNumPages(undefined);
+                  setPageRatios(undefined);
                   setIsWaitingPDF(false);
                   setOpenLeftDrawer(true);
                 }}
-                onLoadSuccess={(numPages) => {
-                  setNumPages(numPages);
+                onLoadSuccess={(pageRatios) => {
+                  setPageRatios(pageRatios);
                   setIsWaitingPDF(false);
                   setOpenLeftDrawer(false);
                 }}

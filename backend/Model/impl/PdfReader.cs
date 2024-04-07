@@ -10,7 +10,7 @@ namespace backend
         /// <summary>
         /// PDFファイルを開く。失敗したら`throw`。
         /// </summary>
-        public async Task<(string md5, uint pageNum, Size[] sizes)> Open(string path)
+        public async Task<(string md5, Size[] sizes)> Open(string path)
         {
             currentPath = null;
             CloseStream();
@@ -28,7 +28,7 @@ namespace backend
                 return new Size(page.Size.Width, page.Size.Height);
             }).ToArray();
             currentPath = path;
-            return new(md5, pageNum, sizes);
+            return new(md5, sizes);
         }
 
         public record Size(double width, double height);

@@ -104,7 +104,7 @@ interface Props {
   file?: string | File;
   openDrawer: boolean;
   onLoadError?: () => void;
-  onLoadSuccess?: (numPages: number) => void;
+  onLoadSuccess?: (pageRatios: number[]) => void;
   onOpenFileTree: () => void;
   onOpenDrawer: () => void;
 }
@@ -115,8 +115,8 @@ interface Props {
 const PDFView: FC<Props> = ({
   file,
   openDrawer,
-  onLoadError,
-  onLoadSuccess,
+  onLoadError, // 不要では？
+  onLoadSuccess, // 不要では？成功失敗にかかわらずドロワーを閉じてしまってもよい気がする。
   onOpenFileTree,
   onOpenDrawer,
 }) => {
@@ -220,47 +220,68 @@ const PDFView: FC<Props> = ({
             disableGutters
             ref={getPageRect}
           >
-            <Document
-              file={
-                file instanceof File
-                  ? file
-                  : `${import.meta.env.VITE_PDF_ROOT}${file}`
-              }
-              onLoadSuccess={(doc) => {
-                if (!file) return;
-                onLoadSuccess?.(doc.numPages);
-                const getsizes = async () => {
-                  pdfSizes.current = [];
-                  for (let i = 0; i < doc.numPages; i++) {
-                    const page = await doc.getPage(i + 1);
-                    const [width, height] = [
-                      page.view[2] ?? 0,
-                      page.view[3] ?? 0,
-                    ];
-                    pdfSizes.current.push({ width, height });
-                  }
-                };
-                getsizes().catch(() => undefined);
-              }}
-              onLoadError={onLoadError}
-              options={options}
-              error={""}
-              loading={""}
-              noData={""}
-            >
-              <PDFPage
-                pageIndex={pdfInfo?.currentPage}
-                width={width}
+            {import.meta.env.VITE_IS_MOCK === "true" ? (
+              <Document
+                file={
+                  file instanceof File
+                    ? file
+                    : `${import.meta.env.VITE_PDF_ROOT}${file}`
+                }
+                onLoadSuccess={(doc) => {
+                  if (!file) return;
+                  const getsizes = async () => {
+                    pdfSizes.current = [];
+                    for (let i = 0; i < doc.numPages; i++) {
+                      const page = await doc.getPage(i + 1);
+                      const [width, height] = [
+                        page.view[2] ?? 0,
+                        page.view[3] ?? 0,
+                      ];
+                      pdfSizes.current.push({ width, height });
+                    }
+                  };
+                  getsizes()
+                    .then(() => {
+                      if (!pdfSizes.current) return;
+                      onLoadSuccess?.(
+                        pdfSizes.current.map((s) => s.width / s.height)
+                      );
+                    })
+                    .catch(() => undefined);
+                }}
+                onLoadError={onLoadError}
+                options={options}
                 error={""}
                 loading={""}
                 noData={""}
-                renderAnnotationLayer={false}
-                renderTextLayer={false}
-                onRenderSuccess={() => {
-                  setReading(false);
-                }}
-              />
-            </Document>
+              >
+                <PDFPage
+                  pageIndex={pdfInfo?.currentPage}
+                  width={width}
+                  error={""}
+                  loading={""}
+                  noData={""}
+                  renderAnnotationLayer={false}
+                  renderTextLayer={false}
+                  onRenderSuccess={() => {
+                    setReading(false);
+                  }}
+                />
+              </Document>
+            ) : (
+              file && (
+                <img
+                  src={
+                    "https://upload.wikimedia.org/wikipedia/commons/7/70/Example.png"
+                  }
+                  onLoad={() => {
+                    onLoadSuccess?.([]);
+                    setReading(false);
+                  }}
+                  onError={onLoadError}
+                />
+              )
+            )}
             <PageLabelLarge label={pageLabel} shown={reading} />
             <Items
               pageRect={pageRect}

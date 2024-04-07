@@ -115,8 +115,7 @@ namespace backend
                 string id = uri.Segments[3]; // ["/", "api/", "pdf-notes/", "{id}"]
                 var body = await model.OpenPdf(id);
                 if (body is null) return null;
-                // 注釈ファイルがあればそれを、なければ各ページのサイズからなる配列を返す
-                return body.Notes is not null ? getJsonResponse(body.Notes) : getJsonResponse(body.Sizes);
+                return getJsonResponse(body);
             }
             if (url.StartsWith("/api/images/"))
             {

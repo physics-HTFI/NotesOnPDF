@@ -87,6 +87,8 @@ export type PageStyle = "break-before" | "break-middle" | "excluded";
 export interface Page {
   /** ページ番号 */
   num: number;
+  /** ページサイズ比（= width/height） */
+  sizeRatio: number;
   /** 本のタイトル */
   book?: string;
   /** 部のタイトル */
@@ -94,7 +96,7 @@ export interface Page {
   /** 章のタイトル */
   chapter?: string;
   /** 新たにページ番号を振りなおす */
-  pageNumberRestart?: number;
+  numberRestart?: number;
   /** `break-before`:ページ前節区切り、"break-middle":ページ途中節区切り、"excluded":ページ除外 */
   style?: PageStyle[];
   /** PDFビューに表示される注釈 */
@@ -116,24 +118,12 @@ export interface Settings {
 /**
  * `Note`がまだ生成されていないPDFファイル用の初期インスタンスを返す
  */
-export const createNewPdfInfo = (title: string, numPages: number): PdfInfo => {
-  const pages: Page[] = [];
-  for (let i = 0; i < numPages; i++) {
-    if (i === 0) {
-      pages.push({
-        num: i + 1,
-        book: title.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined,
-      });
-    } else {
-      pages.push({ num: i + 1 });
-    }
-  }
-  const retval: PdfInfo = {
+export const createNewPdfInfo = (sizeRatios: number[]): PdfInfo => {
+  return {
     currentPage: 0,
     settings: { fontSize: 70, offsetTop: 0, offsetBottom: 0 },
-    pages,
+    pages: sizeRatios.map<Page>((r, i) => ({ num: i + 1, sizeRatio: r })),
   };
-  return retval;
 };
 
 /**
@@ -142,7 +132,7 @@ export const createNewPdfInfo = (title: string, numPages: number): PdfInfo => {
 export function updatePageNum(pdfInfo: PdfInfo) {
   let num = 0;
   for (const p of pdfInfo.pages) {
-    num = p.pageNumberRestart ?? num + 1;
+    num = p.numberRestart ?? num + 1;
     p.num = num;
   }
 }

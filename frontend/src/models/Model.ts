@@ -1,5 +1,5 @@
 import { FileTree } from "@/types/FileTree";
-import { Page, PdfInfo } from "@/types/PdfInfo";
+import { PdfInfo, createNewPdfInfo } from "@/types/PdfInfo";
 import { Progresses } from "@/types/Progresses";
 import IModel from "./IModel";
 import { AppSettings } from "@/types/AppSettings";
@@ -25,20 +25,14 @@ export default class Model implements IModel {
 
   getPdfInfo = async (id: string): Promise<PdfInfo> => {
     const res = await fetch(this.base() + `/api/pdf-notes/${id}`);
-    // 注釈ファイルが存在する場合はそれを、しない場合はPDFのページサイズの配列を受け取る
-    const pdfInfoOrPageSizes = (await res.json()) as
-      | PdfInfo
-      | { width: number; height: number }[];
-    if ("pages" in pdfInfoOrPageSizes) return pdfInfoOrPageSizes;
-    return {
-      currentPage: 0,
-      settings: {
-        fontSize: 70,
-        offsetTop: 0.0,
-        offsetBottom: 0.0,
-      },
-      pages: pdfInfoOrPageSizes.map<Page>((_, j) => ({ num: j + 1 })),
+    const pdfInfoAndSizes = (await res.json()) as {
+      sizes: { width: number; height: number }[];
+      notes?: PdfInfo;
     };
+    if (pdfInfoAndSizes.notes) return pdfInfoAndSizes.notes;
+    return createNewPdfInfo(
+      pdfInfoAndSizes.sizes.map((s) => s.width / s.height)
+    );
   };
   putPdfInfo = async (): Promise<void> => {
     await this.wait();

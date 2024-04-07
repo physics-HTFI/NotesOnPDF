@@ -153,7 +153,7 @@ const getTOCData = (
       toc.push(getSeparator(`separator-${i}`));
     }
     // ページを追加
-    pageNum = page?.pageNumberRestart ?? pageNum;
+    pageNum = page?.numberRestart ?? pageNum;
     toc.push(
       getPage(
         page?.style?.includes("break-middle"),

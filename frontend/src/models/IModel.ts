@@ -9,8 +9,8 @@ export default interface IModel {
   getProgresses(): Promise<Progresses>;
   putProgresses(progress: Progresses): Promise<void>;
 
-  getPdfInfo(path: string): Promise<PdfInfo | null>;
-  putPdfInfo(path: string, pdfInfo: PdfInfo): Promise<void>;
+  getPdfInfo(id: string): Promise<PdfInfo | null>;
+  putPdfInfo(id: string, pdfInfo: PdfInfo): Promise<void>;
 
   getAppSettings(): Promise<AppSettings>;
   putAppSettings(appSettings: AppSettings): Promise<void>;
