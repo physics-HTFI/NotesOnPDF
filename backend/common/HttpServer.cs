@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 // https://rikoubou.hatenablog.com/entry/2023/11/09/130144
 // https://qiita.com/washikawau/items/bfcd8babcffab30e6d26
@@ -97,17 +98,19 @@ namespace backend
             if (url.Contains("..")) return null; // 上の階層にアクセスできなくする
 
             // API
+            // 致命的なエラーの場合は`return null`。
+            // 設定ファイルが存在しないなど、通常のエラーの場合は文字列で返る：`return "null"`。
             if (url == "/api/file-tree")
             {
-                return getJsonResponse(model.GetPdfPaths());
+                return getResponse(JsonSerializer.Serialize(model.GetPdfPaths()));
             }
             if (url == "/api/app-settings")
             {
-                return getJsonResponse(model.GetFrontendSettings());
+                return getResponse(model.GetFrontendSettings());
             }
             if (url == "/api/coverage")
             {
-                return getJsonResponse(model.GetCoverage());
+                return getResponse(model.GetCoverage());
             }
             if (url.StartsWith("/api/pdf-notes/"))
             {
@@ -115,7 +118,7 @@ namespace backend
                 string id = uri.Segments[3]; // ["/", "api/", "pdf-notes/", "{id}"]
                 var body = await model.OpenPdf(id);
                 if (body is null) return null;
-                return getJsonResponse(body);
+                return getResponse(JsonSerializer.Serialize(body));
             }
             if (url.StartsWith("/api/images/"))
             {
@@ -134,8 +137,8 @@ namespace backend
                     return null;
                 }
             }
-            Response getJsonResponse<T>(T body) => new(
-                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(body)),
+            Response getResponse(string? body) => new(
+                Encoding.UTF8.GetBytes(body ?? "null"),
                 MimeType(".json")
                 );
 

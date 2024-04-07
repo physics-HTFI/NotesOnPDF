@@ -21,4 +21,4 @@ export interface Progresses {
 }
 
 /** 始めて開いたPDFファイル用 */
-export const Progresses_empty: Progresses = { PDFs: {} };
+export const GetProgresses_empty: () => Progresses = () => ({ PDFs: {} });

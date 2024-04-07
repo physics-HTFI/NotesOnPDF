@@ -18,9 +18,9 @@ export interface AppSettings {
 }
 
 /** デフォルトのアプリ設定 */
-export const AppSettings_default: AppSettings = {
+export const GetAppSettings_default: () => AppSettings = () => ({
   cancelModeWithVoidClick: true,
   snapNotes: true,
   rightClick: null,
   middleClick: null,
-};
+});

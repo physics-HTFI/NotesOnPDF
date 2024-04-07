@@ -2,7 +2,7 @@ import { FileTree } from "@/types/FileTree";
 import { PdfInfo } from "@/types/PdfInfo";
 import { Progresses } from "@/types/Progresses";
 import IModel from "./IModel";
-import { AppSettings, AppSettings_default } from "@/types/AppSettings";
+import { AppSettings, GetAppSettings_default } from "@/types/AppSettings";
 
 export default class ModelMock implements IModel {
   private wait = () => new Promise((resolve) => setTimeout(resolve, 300));
@@ -255,7 +255,7 @@ export default class ModelMock implements IModel {
 
   getAppSettings = async (): Promise<AppSettings> => {
     await this.wait();
-    return { ...AppSettings_default };
+    return GetAppSettings_default();
   };
   putAppSettings = async (): Promise<void> => {
     await this.wait();

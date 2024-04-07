@@ -13,6 +13,7 @@ namespace backend
 
         /// <summary>
         /// PDFファイルを開く。
+        /// 開けないときは`null`が返る。
         /// `throw`しない。
         /// </summary>
         // TODO ルートフォルダ以外のPDFを開けるようにする
