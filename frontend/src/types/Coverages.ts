@@ -1,7 +1,7 @@
 /**
  * 1つのPDFファイルの進捗情報
  */
-export interface Progress {
+export interface Coverage {
   /** 総ページ数 */
   allPages: number;
   /** 有効なページ数 */
@@ -13,12 +13,12 @@ export interface Progress {
 /**
  * 開いたことのあるPDFの進捗情報を保持する
  */
-export interface Progresses {
+export interface Coverages {
   /** 前回開いたPDFファイル */
   recentPath?: string;
   /** 各PDFの進捗率 */
-  PDFs: Record<string, Progress>;
+  PDFs: Record<string, Coverage>;
 }
 
 /** 始めて開いたPDFファイル用 */
-export const GetProgresses_empty: () => Progresses = () => ({ PDFs: {} });
+export const GetCoverages_empty: () => Coverages = () => ({ PDFs: {} });

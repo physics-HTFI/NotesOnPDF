@@ -132,7 +132,7 @@
                             </StackPanel>
                         </Button>
 
-                        <!-- アプリ設定 -->
+                        <!-- 入出力設定 -->
                         <Button
                             Name="Settings"
                             Grid.Row="1"
@@ -150,7 +150,7 @@
                                     HorizontalAlignment="Center" />
                                 <TextBlock
                                     Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                                    Text="アプリ設定"
+                                    Text="入出力設定"
                                     HorizontalAlignment="Center" />
                             </StackPanel>
                         </Button>

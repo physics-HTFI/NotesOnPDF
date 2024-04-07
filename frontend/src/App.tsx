@@ -4,7 +4,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import IModel from "@/models/IModel";
 import Model from "./models/Model";
 import ModelMock from "@/models/Model.Mock";
-import { Progresses } from "@/types/Progresses";
+import { Coverages } from "@/types/Coverages";
 import { PdfInfo } from "@/types/PdfInfo";
 import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "./components/OpenFileDrawer";
@@ -21,7 +21,7 @@ const model: IModel = IS_MOCK ? new ModelMock() : new Model();
 
 function App() {
   const [appSettings, setAppSettings] = useState<AppSettings>();
-  const [progresses, setProgresses] = useState<Progresses>();
+  const [coverages, setCoverages] = useState<Coverages>();
   const [pdf, setPDF] = useState<string | File>();
   const [pdfInfo, setPdfInfo] = useState<PdfInfo | null>(); // 読み込み失敗時にnull
   const [pageRatios, setPageRatios] = useState<number[]>();
@@ -54,9 +54,9 @@ function App() {
     document.onselectstart = () => false;
     document.oncontextmenu = () => false;
     model
-      .getProgresses()
-      .then((progresses) => {
-        setProgresses(progresses);
+      .getCoverages()
+      .then((coverages) => {
+        setCoverages(coverages);
       })
       .catch(() => undefined);
     model
@@ -69,8 +69,9 @@ function App() {
 
   // 進捗の更新
   useEffect(() => {
-    if (!progresses || !pdfPath || !pdfInfo) return;
-    progresses.PDFs[pdfPath] = {
+    if (!coverages || !pdfPath || !pdfInfo) return;
+    // TODO ページを切り替えるだけで更新されている
+    coverages.PDFs[pdfPath] = {
       allPages: pdfInfo.pages.length,
       enabledPages:
         pdfInfo.pages.length -
@@ -84,8 +85,8 @@ function App() {
             : pdfInfo.pages[Number(key)]?.notes?.length ?? 0) > 0
       ).length,
     };
-    model.putProgresses(progresses).catch(() => undefined);
-  }, [pdfInfo, progresses, pdfPath]);
+    model.putCoverages(coverages).catch(() => undefined);
+  }, [pdfInfo, coverages, pdfPath]);
   useEffect(() => {
     if (!appSettings) return;
     model.putAppSettings(appSettings).catch(() => undefined);
@@ -124,7 +125,7 @@ function App() {
           {/* ファイルツリー */}
           <OpenFileDrawer
             model={model}
-            progresses={progresses}
+            coverages={coverages}
             open={openLeftDrawer}
             onClose={() => {
               if (!pdf) return;
@@ -138,8 +139,8 @@ function App() {
               setIsWaitingPdfInfo(true);
               setPdfInfo(undefined);
               setPDF(pdf);
-              if (progresses)
-                setProgresses({ ...progresses, recentPath: pdfPathNew });
+              if (coverages)
+                setCoverages({ ...coverages, recentPath: pdfPathNew });
               model
                 .getPdfInfo(pdfPathNew)
                 .then((pdfInfo) => {

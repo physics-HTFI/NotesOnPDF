@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Box, Drawer } from "@mui/material";
-import { Progresses } from "@/types/Progresses";
+import { Coverages } from "@/types/Coverages";
 import IModel from "@/models/IModel";
 import { FileTree } from "@/types/FileTree";
 import { TreeView } from "@mui/x-tree-view";
@@ -15,7 +15,7 @@ import HeaderIcons from "@/components/OpenFileDrawer/HeaderIcons";
  */
 interface Props {
   open: boolean;
-  progresses?: Progresses;
+  coverages?: Coverages;
   model: IModel;
   onClose: () => void;
   onSelect: (pdf: string | File, path: string) => void;
@@ -26,7 +26,7 @@ interface Props {
  */
 const OpenFileDrawer: FC<Props> = ({
   open,
-  progresses,
+  coverages,
   model,
   onClose,
   onSelect,
@@ -46,16 +46,18 @@ const OpenFileDrawer: FC<Props> = ({
   }, [model]);
 
   // 前回のファイルを選択した状態にする
+  // TODO 効いていない
+  // TODO coveragesの数値が、ファイル名の横につかない
   useEffect(() => {
-    if (selected !== "" || !progresses?.recentPath) return;
-    const path = progresses.recentPath;
+    if (selected !== "" || !coverages?.recentPath) return;
+    const path = coverages.recentPath;
     setSelected(path);
     setExpanded(
       [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
         path.substring(0, m.index ?? 0)
       )
     );
-  }, [selected, progresses]);
+  }, [selected, coverages]);
 
   return (
     <Drawer
@@ -104,7 +106,7 @@ const OpenFileDrawer: FC<Props> = ({
             setExpanded(nodeIds);
           }}
         >
-          {getTreeItems(fileTree, progresses)}
+          {getTreeItems(fileTree, coverages)}
         </TreeView>
       </Box>
     </Drawer>

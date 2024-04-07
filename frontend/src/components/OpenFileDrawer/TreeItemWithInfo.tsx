@@ -2,7 +2,7 @@ import { FC } from "react";
 import { alpha, styled } from "@mui/material/styles";
 import { Box, Tooltip, Typography } from "@mui/material";
 import { TreeItem, TreeItemProps, treeItemClasses } from "@mui/x-tree-view";
-import { Progress } from "@/types/Progresses";
+import { Coverage } from "@/types/Coverages";
 
 /**
  * `TreeItem`を「開閉アイコンの下に鉛直線が入る」様にしたもの
@@ -20,7 +20,7 @@ const StyledTreeItem = styled(TreeItem)(({ theme }) => ({
  */
 interface Props extends TreeItemProps {
   label: string;
-  progress?: Progress;
+  progress?: Coverage;
 }
 
 /**

@@ -66,6 +66,8 @@ namespace backend
                             // POST
                             if (request.HttpMethod == "POST")
                             {
+                                using HttpListenerResponse response = context.Response;
+                                response.AppendHeader("Access-Control-Allow-Origin", "*"); // 開発時にloclhost:5173からアクセスする必要があるため
                                 ProcessPost(request);
                             }
                         }

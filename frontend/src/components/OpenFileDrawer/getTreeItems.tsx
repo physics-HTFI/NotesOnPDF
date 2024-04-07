@@ -1,6 +1,6 @@
 import { FileTree } from "@/types/FileTree";
 import TreeItemWithInfo from "./TreeItemWithInfo";
-import { Progresses } from "@/types/Progresses";
+import { Coverages } from "@/types/Coverages";
 
 /**
  * `<TreeView>`の中身を取得する。
@@ -9,7 +9,7 @@ import { Progresses } from "@/types/Progresses";
  */
 const getTreeItems = (
   fileTree: FileTree,
-  Progresses?: Progresses,
+  Coverages?: Coverages,
   id?: string
 ): JSX.Element | JSX.Element[] => {
   if (fileTree.length === 0) return <></>;
@@ -19,7 +19,7 @@ const getTreeItems = (
     return (
       <>
         {fileTree[0]?.children?.map((id) =>
-          getTreeItems(fileTree, Progresses, id)
+          getTreeItems(fileTree, Coverages, id)
         )}
       </>
     );
@@ -36,7 +36,7 @@ const getTreeItems = (
         return (
           <TreeItemWithInfo
             label={getFileName(i.path)}
-            progress={Progresses?.PDFs[i.path]}
+            progress={Coverages?.PDFs[i.path]}
             nodeId={i.id}
             key={i.id}
           />
@@ -45,7 +45,7 @@ const getTreeItems = (
       // サブディレクトリの場合
       return (
         <TreeItemWithInfo label={getFileName(i.path)} nodeId={i.id} key={i.id}>
-          {i.children.map((id) => getTreeItems(fileTree, Progresses, id))}
+          {i.children.map((id) => getTreeItems(fileTree, Coverages, id))}
         </TreeItemWithInfo>
       );
     });

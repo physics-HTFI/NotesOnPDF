@@ -1,13 +1,18 @@
 import { FileTree } from "@/types/FileTree";
 import { PdfInfo, createNewPdfInfo } from "@/types/PdfInfo";
-import { GetProgresses_empty, Progresses } from "@/types/Progresses";
+import { GetCoverages_empty, Coverages } from "@/types/Coverages";
 import IModel from "./IModel";
 import { AppSettings, GetAppSettings_default } from "@/types/AppSettings";
 
 export default class Model implements IModel {
-  private wait = () => new Promise((resolve) => setTimeout(resolve, 300));
   //  private base = () => window.location.href.match(/.*:\d+/)?.[0];
   private base = () => "http://localhost:8080";
+  private getPutOptions = () =>
+    ({
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+    } as RequestInit);
 
   public getFileTree = async (): Promise<FileTree> => {
     const res = await fetch(this.base() + "/api/file-tree");
@@ -15,13 +20,15 @@ export default class Model implements IModel {
     return fileTree;
   };
 
-  public getProgresses = async (): Promise<Progresses> => {
+  public getCoverages = async (): Promise<Coverages> => {
     const res = await fetch(this.base() + "/api/coverage");
-    return ((await res.json()) ?? GetProgresses_empty()) as Progresses;
+    return ((await res.json()) ?? GetCoverages_empty()) as Coverages;
   };
-  putProgresses = async (): Promise<void> => {
-    await this.wait();
-    throw new Error();
+  putCoverages = async (progresses: Coverages): Promise<void> => {
+    await fetch(this.base() + "/api/coverage", {
+      ...this.getPutOptions(),
+      body: JSON.stringify(progresses),
+    });
   };
 
   getPdfInfo = async (id: string): Promise<PdfInfo> => {
@@ -35,9 +42,11 @@ export default class Model implements IModel {
       pdfInfoAndSizes.sizes.map((s) => s.width / s.height)
     );
   };
-  putPdfInfo = async (): Promise<void> => {
-    await this.wait();
-    throw new Error();
+  putPdfInfo = async (id: string, pdfNotes: PdfInfo): Promise<void> => {
+    await fetch(this.base() + `/api/pdf-notes/${id}`, {
+      ...this.getPutOptions(),
+      body: JSON.stringify(pdfNotes),
+    });
   };
 
   getPageImage = (id: string, page: number, width: number) =>
@@ -51,9 +60,7 @@ export default class Model implements IModel {
   };
   putAppSettings = async (appSettings: AppSettings): Promise<void> => {
     await fetch(this.base() + "/api/app-settings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      mode: "no-cors",
+      ...this.getPutOptions(),
       body: JSON.stringify(appSettings),
     });
   };

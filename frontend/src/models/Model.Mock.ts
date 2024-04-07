@@ -1,6 +1,6 @@
 import { FileTree } from "@/types/FileTree";
 import { PdfInfo } from "@/types/PdfInfo";
-import { Progresses } from "@/types/Progresses";
+import { Coverages } from "@/types/Coverages";
 import IModel from "./IModel";
 import { AppSettings, GetAppSettings_default } from "@/types/AppSettings";
 
@@ -26,7 +26,7 @@ export default class ModelMock implements IModel {
     ];
   };
 
-  public getProgresses = async (): Promise<Progresses> => {
+  public getCoverages = async (): Promise<Coverages> => {
     await this.wait();
     return {
       recentPath: "文書1.pdf",
@@ -54,7 +54,7 @@ export default class ModelMock implements IModel {
       },
     };
   };
-  putProgresses = async (): Promise<void> => {
+  putCoverages = async (): Promise<void> => {
     await this.wait();
     throw new Error();
   };
