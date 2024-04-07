@@ -2,7 +2,7 @@ import { FileTree } from "@/types/FileTree";
 import { PdfInfo, createNewPdfInfo } from "@/types/PdfInfo";
 import { Progresses } from "@/types/Progresses";
 import IModel from "./IModel";
-import { AppSettings } from "@/types/AppSettings";
+import { AppSettings, AppSettings_default } from "@/types/AppSettings";
 
 export default class Model implements IModel {
   private wait = () => new Promise((resolve) => setTimeout(resolve, 300));
@@ -44,7 +44,7 @@ export default class Model implements IModel {
 
   getAppSettings = async (): Promise<AppSettings> => {
     const res = await fetch(this.base() + "/api/app-settings");
-    return (await res.json()) as AppSettings;
+    return ((await res.json()) ?? { ...AppSettings_default }) as AppSettings;
   };
   putAppSettings = async (): Promise<void> => {
     await this.wait();
