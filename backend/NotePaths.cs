@@ -27,9 +27,7 @@ namespace backend
             });
             WeakReferenceMessenger.Default.Register<Message_PdfChanged>(this, (_, value) =>
             {
-                string? md5 = MD5.FromFile(value.pdfPath);
-                if (md5 is null) return;
-                AddPath($"{value.pdfPath[..^4]}.{md5}.json");
+                AddPath($"{Path.GetFileNameWithoutExtension(value.pdfPath)}.{value.md5}.json");
             });
         }
 
@@ -64,12 +62,13 @@ namespace backend
         /// </summary>
         void AddPath(string path)
         {
-            if (path.Count(c => c == '.') < 3) return;
-            var md5 = path.Split('.')[^2];
-            paths[md5] = path;
+            string file = Path.GetFileName(path);
+            if (file.Count(c => c == '.') <= 1) return;
+            var md5 = file.Split('.')[^2];
+            paths[md5] = file;
         }
 
         public record Message_SettingsChanged();
-        public record Message_PdfChanged(string pdfPath);
+        public record Message_PdfChanged(string pdfPath, string md5);
     }
 }

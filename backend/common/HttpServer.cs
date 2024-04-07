@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 // https://rikoubou.hatenablog.com/entry/2023/11/09/130144
 // https://qiita.com/washikawau/items/bfcd8babcffab30e6d26
@@ -19,7 +17,6 @@ namespace backend
     class HttpServer
     {
         HttpListener? listener;
-        readonly NotePaths notePaths = new();
         readonly Model model = new();
 
         public async Task StartAsync()
@@ -159,16 +156,23 @@ namespace backend
 
         void ProcessPost(HttpListenerRequest request)
         {
-            string path = request.RawUrl switch
-            {
-                "/api/app-settings" => SettingsUtils.SettingsPath,
-                "/api/coverage" => SettingsUtils.CoveragePath,
-                string s when s.StartsWith("/api/pdf-notes/") => notePaths.GetPath(s.Replace("/api/pdf-notes/", "")) ?? throw new Exception(),
-                _ => throw new Exception()
-            };
-
             using var stream = new StreamReader(request.InputStream, request.ContentEncoding);
-            File.WriteAllText(path, stream.ReadToEnd());
+            var content = stream.ReadToEnd();
+
+            switch(request.RawUrl)
+            {
+                case "/api/app-settings":
+                    model.SaveFrontendSettings(content);
+                    break;
+                case "/api/coverage":
+                    model.SaveCoverage(content);
+                    break;
+                case string s when s.StartsWith("/api/pdf-notes/"):
+                    model.SaveNotes(s.Replace("/api/pdf-notes/", ""), content);
+                    break;
+                default:
+                    throw new Exception();
+            }
         }
 
 

@@ -43,10 +43,9 @@ namespace backend
         public void AddItem(string pdfPath, string md5)
         {
             if (items.Any(i => i.MD5 == md5)) return;
-            Regex regex = new(@".*\.([^/\\\.]+)\.json");
             string notesPath = Path.Combine(
                 SettingsUtils.NotesDirectory,
-                Regex.Replace(pdfPath, @"\.pdf", $".{md5}.json", RegexOptions.IgnoreCase)
+                Path.GetFileNameWithoutExtension(pdfPath)+ $".{md5}.json"
                 );
             items.Add(new(notesPath, md5));
         }

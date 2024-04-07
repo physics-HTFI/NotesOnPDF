@@ -1,14 +1,15 @@
-﻿using System.IO;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using System.IO;
 using Windows.Data.Pdf;
 using Windows.Storage.Streams;
-using Size = Windows.Foundation.Size;
+using static backend.NotePaths;
 
 namespace backend
 {
     internal class PdfReader
     {
         /// <summary>
-        /// PDFファイルを開く。失敗したら`throw`。
+        /// PDFファイルを開く。ついでに、MD5と各ページのサイズを返す。失敗したら`throw`。
         /// </summary>
         public async Task<(string md5, Size[] sizes)> Open(string path)
         {

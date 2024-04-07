@@ -35,9 +35,10 @@ export default class Model implements IModel {
     const res = await fetch(this.base() + `/api/pdf-notes/${id}`);
     const pdfInfoAndSizes = (await res.json()) as {
       sizes: { width: number; height: number }[];
-      notes?: PdfInfo;
+      notes?: string;
     };
-    if (pdfInfoAndSizes.notes) return pdfInfoAndSizes.notes;
+    if (pdfInfoAndSizes.notes)
+      return JSON.parse(pdfInfoAndSizes.notes) as PdfInfo;
     return createNewPdfInfo(
       pdfInfoAndSizes.sizes.map((s) => s.width / s.height)
     );

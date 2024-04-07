@@ -1,4 +1,6 @@
-﻿using Size = Windows.Foundation.Size;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using static backend.NotePaths;
+using Size = Windows.Foundation.Size;
 
 namespace backend
 {
@@ -24,6 +26,7 @@ namespace backend
                 string path = pdfPaths.GetPath(id);
                 var (md5, sizes) = await pdfReader.Open(path);
                 notesPaths.AddItem(path, md5);
+
                 openedPdfs.RemoveAll(i => i.Id == id);
                 openedPdfs.Add(new(id, md5));
                 string? notes = PathUtils.ReadAllText(GetNotesPath(id));
