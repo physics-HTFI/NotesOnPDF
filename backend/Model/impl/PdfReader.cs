@@ -2,7 +2,6 @@
 using System.IO;
 using Windows.Data.Pdf;
 using Windows.Storage.Streams;
-using static backend.NotePaths;
 
 namespace backend
 {

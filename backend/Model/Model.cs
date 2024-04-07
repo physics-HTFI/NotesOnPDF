@@ -1,8 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using static backend.NotePaths;
-using Size = Windows.Foundation.Size;
-
-namespace backend
+﻿namespace backend
 {
     internal class Model
     {
