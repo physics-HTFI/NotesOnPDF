@@ -22,6 +22,7 @@ import { MathJaxContext } from "better-react-mathjax";
 import Move from "./PDFView/Move";
 import { usePdfInfo } from "@/hooks/usePdfInfo";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+import IModel from "@/models/IModel";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -76,14 +77,13 @@ const mathjaxConfig = {
 const preferredSize = (
   offsetTop: number,
   offsetBottom: number,
-  pdfW?: number,
-  pdfH?: number,
+  pdfRatio?: number, // width / height
   viewW?: number,
   viewH?: number
 ): readonly [number | undefined, number | undefined, number, number] => {
-  if (!pdfW || !pdfH || !viewW || !viewH) return [undefined, undefined, 0, 0];
+  if (!pdfRatio || !viewW || !viewH) return [undefined, undefined, 0, 0];
   const H = viewH / (1 - offsetTop - offsetBottom);
-  const W = (pdfW * H) / pdfH;
+  const W = pdfRatio * H;
   const ratio = Math.min(1, viewW / W);
   const top = H * offsetTop;
   const bottom = H * offsetBottom;
@@ -102,6 +102,7 @@ const preferredSize = (
  */
 interface Props {
   file?: string | File;
+  model: IModel;
   openDrawer: boolean;
   onLoadError?: () => void;
   onLoadSuccess?: (pageRatios: number[]) => void;
@@ -114,6 +115,7 @@ interface Props {
  */
 const PDFView: FC<Props> = ({
   file,
+  model,
   openDrawer,
   onLoadError, // 不要では？
   onLoadSuccess, // 不要では？成功失敗にかかわらずドロワーを閉じてしまってもよい気がする。
@@ -141,8 +143,7 @@ const PDFView: FC<Props> = ({
       : preferredSize(
           pdfInfo.settings.offsetTop,
           pdfInfo.settings.offsetBottom,
-          pdfSizes.current?.[pdfInfo.currentPage]?.width,
-          pdfSizes.current?.[pdfInfo.currentPage]?.height,
+          pdfInfo.pages[pdfInfo.currentPage]?.sizeRatio,
           containerRect?.width,
           containerRect?.height
         );
@@ -269,11 +270,12 @@ const PDFView: FC<Props> = ({
                 />
               </Document>
             ) : (
-              file && (
+              typeof file === "string" &&
+              pdfInfo &&
+              width && (
                 <img
-                  src={
-                    "https://upload.wikimedia.org/wikipedia/commons/7/70/Example.png"
-                  }
+                  src={model.getPageImage(file, pdfInfo.currentPage, width)}
+                  style={{ width: "100%", height: "100%" }}
                   onLoad={() => {
                     onLoadSuccess?.([]);
                     setReading(false);

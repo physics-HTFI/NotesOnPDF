@@ -12,6 +12,8 @@ export default interface IModel {
   getPdfInfo(id: string): Promise<PdfInfo | null>;
   putPdfInfo(id: string, pdfInfo: PdfInfo): Promise<void>;
 
+  getPageImage(id: string, page: number, width: number): string;
+
   getAppSettings(): Promise<AppSettings>;
   putAppSettings(appSettings: AppSettings): Promise<void>;
 }

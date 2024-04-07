@@ -124,7 +124,7 @@ namespace backend
                     byte[]? png = await model.GetPagePng(
                         id: uri.Segments[3][..^1],  // ["/", "api/", "images/", "{id}/", "{page}"]
                         pageNum: uint.Parse(uri.Segments[4]),
-                        width: uint.Parse(Regex.Match(uri.Query, @"size=([^&]+)").Groups[1].Value)
+                        width: uint.Parse(Regex.Match(uri.Query, @"width=([^&]+)").Groups[1].Value)
                         );
                     if (png == null) return null;
                     return new(png, MimeType(".png"));

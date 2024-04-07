@@ -183,6 +183,7 @@ function App() {
             <Panel minSizePixels={200}>
               <PDFView
                 file={pdf}
+                model={model}
                 openDrawer={openBottomDrawer}
                 onOpenFileTree={() => {
                   setOpenLeftDrawer(true);

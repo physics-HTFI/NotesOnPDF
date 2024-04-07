@@ -39,6 +39,9 @@ export default class Model implements IModel {
     throw new Error();
   };
 
+  getPageImage = (id: string, page: number, width: number) =>
+    this.base() + `/api/images/${id}/${page}?width=${Math.floor(1.5 * width)}`;
+
   getAppSettings = async (): Promise<AppSettings> => {
     const res = await fetch(this.base() + "/api/app-settings");
     return (await res.json()) as AppSettings;
