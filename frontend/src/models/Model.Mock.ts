@@ -4,6 +4,8 @@ import { Coverages } from "@/types/Coverages";
 import IModel from "./IModel";
 import { AppSettings, GetAppSettings_default } from "@/types/AppSettings";
 
+export const sampleId2Path = (id?: string) => (id === "12" ? "文書1.pdf" : "");
+
 export default class ModelMock implements IModel {
   private wait = () => new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -59,9 +61,9 @@ export default class ModelMock implements IModel {
     throw new Error();
   };
 
-  getPdfInfo = async (path: string): Promise<PdfInfo> => {
+  getPdfInfo = async (id: string): Promise<PdfInfo> => {
     await this.wait();
-    if (path !== "文書1.pdf") throw new Error();
+    if (id !== "12") throw new Error();
     return {
       currentPage: 0,
       settings: {

@@ -4,7 +4,7 @@ import {
   Page,
   PageStyle,
   PdfInfo,
-  Settings,
+  Settings as PdfSettings,
   updatePageNum,
 } from "@/types/PdfInfo";
 import CheckboxText from "./Settings/CheckboxText";
@@ -51,7 +51,8 @@ const Settings: FC<Props> = ({ onClose }) => {
   };
 
   // ファイル設定変更
-  const handleChangeFileSettings = (newSettings: Partial<Settings>) => {
+  // TODO 線の太さを変更できるようにしてもよい
+  const handleChangeFileSettings = (newSettings: Partial<PdfSettings>) => {
     setPdfInfo({
       ...pdfInfo,
       settings: { ...pdfInfo.settings, ...newSettings },

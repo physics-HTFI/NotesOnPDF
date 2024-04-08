@@ -23,6 +23,7 @@ import Move from "./PDFView/Move";
 import { usePdfInfo } from "@/hooks/usePdfInfo";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import IModel from "@/models/IModel";
+import { sampleId2Path } from "@/models/Model.Mock";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -226,7 +227,7 @@ const PDFView: FC<Props> = ({
                 file={
                   file instanceof File
                     ? file
-                    : `${import.meta.env.VITE_PDF_ROOT}${file}`
+                    : `${import.meta.env.VITE_PDF_ROOT}${sampleId2Path(file)}`
                 }
                 onLoadSuccess={(doc) => {
                   if (!file) return;

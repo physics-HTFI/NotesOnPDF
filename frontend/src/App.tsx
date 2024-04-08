@@ -70,7 +70,7 @@ function App() {
   // 進捗の更新
   useEffect(() => {
     if (!coverages || !pdfPath || !pdfInfo) return;
-    // TODO ページを切り替えるだけで更新されている
+    // TODO ページを切り替えるだけで更新されてしまう
     coverages.PDFs[pdfPath] = {
       allPages: pdfInfo.pages.length,
       enabledPages:
