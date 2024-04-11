@@ -8,10 +8,10 @@
         private readonly ContextMenuStrip _menu;
         private readonly NotifyIcon _notifyIcon;
 
-        public TaskTrayIcon(string icon, Action onClick, Action onExit)
+        public TaskTrayIcon(string text, string icon, Action onClick, Action onExit)
         {
             _menu = GetMenu(onExit);
-            _notifyIcon = GetNotifyIcon(icon, _menu, onClick);
+            _notifyIcon = GetNotifyIcon(text, icon, _menu, onClick);
         }
 
         public void Dispose()
@@ -32,14 +32,14 @@
             return menu;
         }
 
-        static NotifyIcon GetNotifyIcon(string iconFile, ContextMenuStrip menu, Action onClick)
+        static NotifyIcon GetNotifyIcon(string text, string iconFile, ContextMenuStrip menu, Action onClick)
         {
             var icon = System.Windows.Application.GetResourceStream(new Uri(iconFile, UriKind.Relative)).Stream;
             var notifyIcon = new NotifyIcon()
             {
                 Visible = true,
                 Icon = new Icon(icon),
-                Text = "NotesOnPDF",
+                Text = text,
                 ContextMenuStrip = menu,
             };
             notifyIcon.MouseClick += (s, e) =>

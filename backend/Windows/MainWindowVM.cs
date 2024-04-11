@@ -5,8 +5,6 @@ using System.Windows;
 
 namespace backend
 {
-    // TODO ポートが変わったら、サーバーに再起動が必要
-
     internal partial class MainWindowVM : ObservableValidator
     {
         public MainWindowVM()
@@ -37,7 +35,7 @@ namespace backend
         [NotifyDataErrorInfo]
         [DirectoryExists]
         [NotifyCanExecuteChangedFor(nameof(UpdateSettingsCommand))]
-        private string _NotesDirectory = "";
+        private string _OutputDirectory = "";
 
         [ObservableProperty]
         private int _PortIndex = 0;
@@ -79,12 +77,30 @@ namespace backend
         [RelayCommand]
         void OpenWithBrowser()
         {
-            ProcessStartInfo pi = new()
+            try
             {
-                FileName = SettingsUtils.Url,
-                UseShellExecute = true,
-            };
-            Process.Start(pi);
+                ProcessStartInfo pi = new()
+                {
+                    FileName = SettingsUtils.Url,
+                    UseShellExecute = true,
+                };
+                Process.Start(pi);
+                ToggleWindowVisibility();
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// ウィンドウで開くコマンド
+        /// </summary>
+        [RelayCommand]
+        void OpenWithWindow()
+        {
+            try
+            {
+                ToggleWindowVisibility();
+            }
+            catch { }
         }
 
         /// <summary>
@@ -95,7 +111,7 @@ namespace backend
         {
             IsSettingsOpen = false;
             Properties.Settings.Default.RootDirectory = RootDirectory;
-            Properties.Settings.Default.NotesDirectory = NotesDirectory;
+            Properties.Settings.Default.OutputDirectory = OutputDirectory;
             Properties.Settings.Default.Port = Ports[(int)PortIndex];
             Properties.Settings.Default.Save();
         }
@@ -112,7 +128,7 @@ namespace backend
         {
             IsSettingsOpen = false;
             RootDirectory = Properties.Settings.Default.RootDirectory;
-            NotesDirectory = Properties.Settings.Default.NotesDirectory;
+            OutputDirectory = Properties.Settings.Default.OutputDirectory;
             PortIndex = Ports.IndexOf(Properties.Settings.Default.Port);
             if (PortIndex == -1)
             {
@@ -121,7 +137,7 @@ namespace backend
         }
 
         /// <summary>
-        /// ルートディレクトリ設定コマンド
+        /// ルートディレクトリ選択コマンド
         /// </summary>
         [RelayCommand]
         void SelectRootDirectory()
@@ -130,12 +146,12 @@ namespace backend
         }
 
         /// <summary>
-        /// 注釈保存ディレクトリ設定コマンド
+        /// 保存ディレクトリ選択コマンド
         /// </summary>
         [RelayCommand]
-        void SelectNotesDirectory()
+        void SelectOutputDirectory()
         {
-            NotesDirectory = PathUtils.SelectDirectory(NotesDirectory, Properties.Settings.Default.NotesDirectory);
+            OutputDirectory = PathUtils.SelectDirectory(OutputDirectory, Properties.Settings.Default.OutputDirectory);
         }
     }
 }

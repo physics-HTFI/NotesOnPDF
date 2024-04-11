@@ -19,6 +19,7 @@ namespace backend
             if (!isNew)
             {
                 mutex?.Dispose();
+                System.Windows.MessageBox.Show("すでに起動しています。\nタスクトレイ内を探してください。", "NotesOnPDF");
                 Shutdown();
                 return;
             }
@@ -33,6 +34,7 @@ namespace backend
 
             // タスクトレイアイコン表示
             taskTrayIcon = new(
+                "NotesOnPDF",
                 "icon.ico",
                 onClick: () => mainWindowVM.ToggleWindowVisibility(),
                 onExit: Shutdown

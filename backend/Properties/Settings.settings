@@ -8,8 +8,8 @@
     <Setting Name="RootDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">./PDFs</Value>
     </Setting>
-    <Setting Name="NotesDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">./notes</Value>
+    <Setting Name="OutputDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">./output</Value>
     </Setting>
   </Settings>
 </SettingsFile>

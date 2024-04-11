@@ -49,13 +49,13 @@ namespace backend.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("./notes")]
-        public string NotesDirectory {
+        [global::System.Configuration.DefaultSettingValueAttribute("./output")]
+        public string OutputDirectory {
             get {
-                return ((string)(this["NotesDirectory"]));
+                return ((string)(this["OutputDirectory"]));
             }
             set {
-                this["NotesDirectory"] = value;
+                this["OutputDirectory"] = value;
             }
         }
     }

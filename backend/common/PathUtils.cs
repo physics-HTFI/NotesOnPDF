@@ -3,12 +3,18 @@ using System.IO;
 
 namespace backend
 {
+    /// <summary>
+    /// パスの選択やファイルの入出力を行う
+    /// </summary>
     public static class PathUtils
     {
 
         /// <summary>
         /// フォルダダイアログを表示してフォルダパスを取得する
         /// </summary>
+        /// <param name="path">初期ディレクトリ</param>
+        /// <param name="fallbackPath"><c>path</c>が存在しないときの初期ディレクトリ</param>
+        /// <returns>選択されたパス。キャンセル時は<c>path</c>がそのまま返る。</returns>
         static public string SelectDirectory(string path, string fallbackPath)
         {
             // 初期ディレクトリのパスを取得
@@ -40,7 +46,7 @@ namespace backend
         }
 
         /// <summary>
-        /// テキストを読み込んで返す。失敗したら`null。
+        /// テキストファイルを読み込んで返す。失敗したら<c>null</c>。
         /// </summary>
         static public string? ReadAllText(string? path)
         {
@@ -56,18 +62,14 @@ namespace backend
         }
 
         /// <summary>
-        /// テキストを出力する。`throw`しない。
+        /// テキストを出力する。失敗したら<c>throw</c>する。
         /// </summary>
         static public void WriteAllText(string? path, string body)
         {
-            try
-            {
-                if (path is null) return;
-                File.WriteAllText(path, body);
-            }
-            catch
-            {
-            }
+            if (path is null) throw new Exception();
+            if (Path.GetDirectoryName(path) is not string dir) throw new Exception();
+            Directory.CreateDirectory(dir);
+            File.WriteAllText(path, body);
         }
 
     }

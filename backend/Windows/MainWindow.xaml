@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:backend"
-    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     mc:Ignorable="d"
     Title="NotesOnPDF"
@@ -48,12 +47,14 @@
                             DockPanel.Dock="Left"
                             Width="15"
                             Height="15"
-                            Source="icon.ico" />
+                            Source="../icon.ico" />
                         <!-- ウィンドウを隠す -->
                         <Button
                             DockPanel.Dock="Right"
                             Command="{Binding ToggleWindowVisibilityCommand}"
-                            ToolTip="ウィンドウを隠します"
+                            ToolTip="このウィンドウを隠してタスクトレイに常駐します"
+                            ToolTipService.InitialShowDelay="0"
+                            ToolTipService.Placement="Top"
                             Width="30"
                             Height="30"
                             Style="{StaticResource MaterialDesignIconButton}"
@@ -76,7 +77,7 @@
                         DockPanel.Dock="Bottom"
                         Margin="5 0 0 0"
                         Style="{StaticResource MaterialDesignCaptionTextBlock}">
-                            NotesOnPDFはタスクトレイに常駐しています
+                            ※アプリ画面を開いた後もタスクトレイに常駐します
                     </TextBlock>
 
                     <!-- ボタン群 -->
@@ -115,7 +116,7 @@
                         <Button
                             Grid.Row="0"
                             Grid.Column="1"
-                            Command="{Binding OpenWithBrowserCommand}"
+                            Command="{Binding OpenWithWindowCommand}"
                             Margin="15 10"
                             Width="Auto"
                             Height="Auto">
@@ -163,6 +164,9 @@
                             Margin="15 10"
                             Width="Auto"
                             Height="Auto"
+                            ToolTip="アプリを完全に終了します"
+                            ToolTipService.InitialShowDelay="0"
+                            ToolTipService.Placement="Bottom"
                             Style="{StaticResource MaterialDesignOutlinedButton}">
                             <StackPanel>
                                 <materialDesign:PackIcon
@@ -221,6 +225,9 @@
                                 Margin="0,0,0,5"
                                 Text="{Binding RootDirectory, UpdateSourceTrigger=PropertyChanged}"
                                 materialDesign:HintAssist.Hint="PDF一覧のルートフォルダー"
+                                ToolTip="アプリ画面左のPDFツリーの起点を指定します。変更後はアプリ画面を開き直してください。"
+                                ToolTipService.InitialShowDelay="0"
+                                ToolTipService.Placement="Left"
                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                         </DockPanel>
 
@@ -230,14 +237,17 @@
                                 DockPanel.Dock="Right"
                                 Width="35"
                                 Height="35"
-                                Command="{Binding SelectNotesDirectoryCommand}"
+                                Command="{Binding SelectOutputDirectoryCommand}"
                                 Content="{materialDesign:PackIcon Folder}"
                                 Style="{StaticResource MaterialDesignIconButton}" />
                             <TextBox
                                 Height="40"
                                 Margin="0,0,0,5"
-                                Text="{Binding NotesDirectory, UpdateSourceTrigger=PropertyChanged}"
-                                materialDesign:HintAssist.Hint="注釈の保存先フォルダー"
+                                Text="{Binding OutputDirectory, UpdateSourceTrigger=PropertyChanged}"
+                                materialDesign:HintAssist.Hint="注釈などの保存先フォルダー"
+                                ToolTip="アプリ上で生成される全てのファイルがここに保存されます"
+                                ToolTipService.InitialShowDelay="0"
+                                ToolTipService.Placement="Left"
                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                         </DockPanel>
 
@@ -247,7 +257,10 @@
                             Margin="0 0 35 0"
                             SelectedIndex="{Binding PortIndex}"
                             materialDesign:HintAssist.Hint="ポート番号"
-                            materialDesign:HintAssist.IsFloating="True">
+                            materialDesign:HintAssist.IsFloating="True"
+                            ToolTip="基本的に変える必要はありません。変更後はアプリを再起動してください。"
+                            ToolTipService.InitialShowDelay="0"
+                            ToolTipService.Placement="Left">
                             <ComboBoxItem
                                 Content="8080" />
                             <ComboBoxItem
