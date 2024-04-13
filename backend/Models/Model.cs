@@ -13,22 +13,17 @@
 
         /// <summary>
         /// PDFファイルを開く。
-        /// 開けないときは<c>null</c>が返る。
+        /// 注釈ファイルがないときは<c>retval.notes = null</c>になる。
         /// 失敗したら<c>throw</c>する。
         /// </summary>
-        public async Task<OpenPdfResult> OpenPdf(string id)
+        public async Task<HttpServer.OpenPdfResult> OpenPdf(string id)
         {
-            string path = pdfTree.GetPath(id);
+            string path = GetPath(id);
             var sizes = await pdfReader.Open(path);
             string? notes = PathUtils.ReadAllText(await GetNotesPath(id));
+            history.Add(id, path);
             return new(sizes, notes);
         }
-
-
-        /// <summary>
-        /// PDFを開いたときにフロントエンドに渡す情報
-        /// </summary>
-        public record OpenPdfResult(PdfReader.Size[] sizes, string? notes);
 
 
         /// <summary>
@@ -37,9 +32,15 @@
         /// </summary>
         public async Task<byte[]> GetPagePng(string id, uint pageNum, uint width)
         {
-            string path = pdfTree.GetPath(id);
+            string path = GetPath(id);
             return await pdfReader.GetPagePng(path, pageNum, width);
         }
+
+
+        /// <summary>
+        /// 過去に開いたファイルの<c>id</c>とファイル名のリストを返す
+        /// </summary>
+        public HttpServer.HistoryItem[] GetHistory() => history.GetHistory();
 
 
         /// <summary>
@@ -68,15 +69,21 @@
         readonly PdfTree pdfTree = new();
         readonly NotesPaths notesPaths = new();
         readonly PdfReader pdfReader = new();
+        readonly History history = new();
 
         /// <summary>
         /// 注釈ファイルのパスを返す。失敗したら<c>throw</c>。
         /// </summary>
-        private async Task<string> GetNotesPath(string id)
+        async Task<string> GetNotesPath(string id)
         {
-            string pdfPath = pdfTree.GetPath(id);
+            string pdfPath = GetPath(id);
             string md5 = await pdfReader.GetMD5(pdfPath);
             return notesPaths.GetNotesPath(pdfPath, md5);
+        }
+
+        string GetPath(string id)
+        {
+            return pdfTree.GetPath(id) ?? history.GetPath(id) ?? throw new Exception();
         }
     }
 }

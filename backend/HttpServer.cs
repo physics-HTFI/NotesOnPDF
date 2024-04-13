@@ -16,6 +16,17 @@ namespace backend
 {
     class HttpServer
     {
+        /// <summary>
+        /// PDFを開いたときにフロントエンドに渡す情報
+        /// </summary>
+        public record OpenPdfResult(PdfReader.Size[] sizes, string? notes);
+
+        /// <summary>
+        /// 履歴をフロントエンドに渡すときの1ファイル分の情報
+        /// </summary>
+        public record HistoryItem(string id, string name);
+
+
         HttpListener? listener;
         readonly Model model = new();
 
@@ -101,6 +112,10 @@ namespace backend
             if (url == "/api/file-tree")
             {
                 return getResponse(JsonSerializer.Serialize(model.GetPdfTree()));
+            }
+            if (url == "/api/history")
+            {
+                return getResponse(JsonSerializer.Serialize(model.GetHistory()));
             }
             if (url == "/api/app-settings")
             {

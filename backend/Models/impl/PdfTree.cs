@@ -23,16 +23,16 @@ namespace backend
         /// </summary>
         /// <param name="id">ファイル／フォルダのID</param>
         /// <param name="path">ファイル／フォルダのパス</param>
-        /// <param name="children"></param>
+        /// <param name="children">フォルダ中の子要素のID、ファイルの場合はnull</param>
         public record Item(string id, string path, string[]? children);
 
         /// <summary>
-        /// `id`をPDFファイルパスに変換する。失敗したら<c>throw</c>。
+        /// <c>id</c>をPDFファイルパスに変換する。失敗したら<c>null</c>。
         /// </summary>
-        public string GetPath(string id)
+        public string? GetPath(string id)
         {
             if(items.Count == 0) ReadItems();
-            return items.First(i => i.id == id).path;
+            return items.FirstOrDefault(i => i.id == id)?.path;
         }
 
 
