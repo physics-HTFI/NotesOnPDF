@@ -98,6 +98,8 @@ namespace backend
         {
             try
             {
+                var window = new Browser();
+                window.Show();
                 ToggleWindowVisibility();
             }
             catch { }

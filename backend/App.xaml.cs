@@ -8,7 +8,7 @@ namespace backend
         Mutex? mutex;
         MainWindow? mainWindow;
         TaskTrayIcon? taskTrayIcon;
-        HttpServer httpServer = new();
+        readonly HttpServer httpServer = new();
 
         protected override async void OnStartup(StartupEventArgs e)
         {
