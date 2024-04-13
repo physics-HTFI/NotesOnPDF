@@ -79,12 +79,7 @@ namespace backend
         {
             try
             {
-                ProcessStartInfo pi = new()
-                {
-                    FileName = SettingsUtils.Url,
-                    UseShellExecute = true,
-                };
-                Process.Start(pi);
+                OpenUrl.OpenInBrowser(SettingsUtils.Url);
                 ToggleWindowVisibility();
             }
             catch { }
@@ -99,6 +94,7 @@ namespace backend
             try
             {
                 var window = new Browser();
+                window.Closed += (_, _) => Visibility = Visibility.Visible;
                 window.Show();
                 ToggleWindowVisibility();
             }

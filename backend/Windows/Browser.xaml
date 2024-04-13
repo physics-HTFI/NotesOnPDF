@@ -10,12 +10,28 @@
         WindowStartupLocation="CenterScreen"
         Title="NotesOnPDF"
         Icon="../icon.ico"
-        Width="{x:Static local:Browser.PreferredWidth}"
-        Height="{x:Static local:Browser.PreferredHeight}">
-    <DockPanel>
-        <wv2:WebView2
-            Name="webView"
-            Source="{x:Static local:Browser.Url}"
-            DataContext="{Binding ElementName=this}"/>
-    </DockPanel>
+        Width="{x:Static local:Browser.PreferredWidth}" d:Width="600"
+        Height="{x:Static local:Browser.PreferredHeight}" d:Height="800">
+    <Grid>
+        <DockPanel>
+            <wv2:WebView2
+                Name="webView"
+                Source="{x:Static local:Browser.Url}"
+                DataContext="{Binding ElementName=this}" />
+        </DockPanel>
+        <TextBlock
+            Name="textNoWebView2"
+            FontSize="15"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Visibility="Collapsed">
+            WebView2が必要です。<LineBreak />
+            以下のサイトからインストールした後、開きなおしてください。<LineBreak />
+                <Hyperlink
+                NavigateUri="https://developer.microsoft.com/ja-jp/microsoft-edge/webview2"
+                RequestNavigate="Hyperlink_RequestNavigate">
+        https://developer.microsoft.com/ja-jp/microsoft-edge/webview2
+    </Hyperlink>
+        </TextBlock>
+    </Grid>
 </Window>
