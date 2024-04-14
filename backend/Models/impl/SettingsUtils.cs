@@ -11,5 +11,6 @@ namespace backend
         static public string OutputDirectory => Properties.Settings.Default.OutputDirectory;
         static public string NotesDirectory => Path.Combine(OutputDirectory, "notes");
         static public string RootDirectory => Properties.Settings.Default.RootDirectory;
+        static public string DownloadDirectory => Properties.Settings.Default.DownloadDirectory;
     }
 }

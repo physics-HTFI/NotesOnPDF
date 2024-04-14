@@ -103,13 +103,13 @@ namespace backend
         async Task<Response> ProcessGet(Uri? uri)
         {
             ArgumentNullException.ThrowIfNull(uri);
-            string url = uri.AbsolutePath;
+            string url = uri.AbsolutePath; // クエリーを含まない
             if (url.Contains("..")) throw new Exception(); // 上の階層にアクセスできなくする
 
             // API
             // 致命的なエラーの場合は<c>return null</c>。
             // ファイルが未作成なだけの場合は文字列"null"が返る：<c>return "null"</c>。
-            if (url == "/api/file-tree")
+            if (url == "/api/files")
             {
                 return getResponse(JsonSerializer.Serialize(model.GetPdfTree()));
             }
@@ -117,7 +117,7 @@ namespace backend
             {
                 return getResponse(JsonSerializer.Serialize(model.GetHistory()));
             }
-            if (url == "/api/app-settings")
+            if (url == "/api/settings")
             {
                 return getResponse(model.GetFrontendSettings());
             }
@@ -125,21 +125,22 @@ namespace backend
             {
                 return getResponse(model.GetCoverage());
             }
-            if (url == "/api/select-external-pdf")
+            if (url == "/api/select-pdf")
             {
                 return getResponse(JsonSerializer.Serialize(model.GetExternalPdfId()));
             }
-            if (url == "/api/select-web-pdf")
+            if (url == "/api/download-pdf")
             {
-                return getResponse(JsonSerializer.Serialize(model.GetWebPdfId()));
+                string query = uri.GetComponents(UriComponents.Query, UriFormat.Unescaped);
+                return getResponse(JsonSerializer.Serialize(await model.GetWebPdfId(query)));
             }
-            if (Regex.IsMatch(url, @"/api/pdf-notes/[^/]+"))
+            if (Regex.IsMatch(url, @"/api/notes/[^/]+$"))
             {
                 string id = url.Split('/')[3];
                 var body = await model.OpenPdf(id);
                 return getResponse(JsonSerializer.Serialize(body));
             }
-            if (Regex.IsMatch(url, @"/api/images/[^/]+/[^/]+"))
+            if (Regex.IsMatch(url, @"/api/images/[^/]+/[^/]+$"))
             {
                 byte[] png = await model.GetPagePng(
                     id: url.Split('/')[3],
@@ -155,8 +156,8 @@ namespace backend
 
 
             // ファイル
-            string path = url == "/" ? "index.html" : Path.GetFullPath(url.TrimStart('/'));
-            return new(File.ReadAllBytes(path), MimeType(path));
+            string file = url == "/" ? "index.html" : Path.GetFullPath(url.TrimStart('/'));
+            return new(File.ReadAllBytes(file), MimeType(file));
         }
 
         async Task ProcessPost(HttpListenerRequest request)
@@ -166,13 +167,13 @@ namespace backend
 
             switch(request.RawUrl)
             {
-                case "/api/app-settings":
+                case "/api/settings":
                     model.SaveFrontendSettings(body);
                     return;
                 case "/api/coverage":
                     model.SaveCoverage(body);
                     return;
-                case string s when Regex.IsMatch(s, @"/api/pdf-notes/[^/]+"):
+                case string s when Regex.IsMatch(s, @"/api/notes/[^/]+"):
                     await model.SaveNotes(id: s.Split('/')[^1], body);
                     return;
                 default:

@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Title="NotesOnPDF"
     Visibility="{Binding Visibility, Mode=TwoWay}"
-    Height="260"
+    Height="280"
     Width="340"
     d:DataContext="{d:DesignInstance Type=local:MainWindowVM}"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -246,6 +246,26 @@
                                 Text="{Binding OutputDirectory, UpdateSourceTrigger=PropertyChanged}"
                                 materialDesign:HintAssist.Hint="注釈などの保存先フォルダー"
                                 ToolTip="アプリ上で生成される全てのファイルがここに保存されます"
+                                ToolTipService.InitialShowDelay="0"
+                                ToolTipService.Placement="Left"
+                                Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+                        </DockPanel>
+
+                        <!-- ダウンロードフォルダー -->
+                        <DockPanel>
+                            <Button
+                                DockPanel.Dock="Right"
+                                Width="35"
+                                Height="35"
+                                Command="{Binding SelectDownloadDirectoryCommand}"
+                                Content="{materialDesign:PackIcon Folder}"
+                                Style="{StaticResource MaterialDesignIconButton}" />
+                            <TextBox
+                                Height="40"
+                                Margin="0,0,0,5"
+                                Text="{Binding DownloadDirectory, UpdateSourceTrigger=PropertyChanged}"
+                                materialDesign:HintAssist.Hint="ダウンロードフォルダー"
+                                ToolTip="ダウンロードされたPDFファイルがここに保存されます"
                                 ToolTipService.InitialShowDelay="0"
                                 ToolTipService.Placement="Left"
                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" />

@@ -15,14 +15,14 @@ namespace backend
         /// <summary>
         /// <c>throw</c>しない
         /// </summary>
-        public void Add(string id, string path, FileFrom? type = null) {
+        public void Add(string id, string path, NotesPaths.PdfOrigin? type = null) {
             try
             {
                 if (Items.FirstOrDefault()?.Id == id) return;
                 Item item = new(
                     id,
                     Path.GetFullPath(path),
-                    type ?? FileFrom.InsideTree
+                    type ?? NotesPaths.PdfOrigin.InsideTree
                 );
                 Items.RemoveAll(i => i.Id == id);
                 Items.Insert(0, item);
@@ -31,8 +31,6 @@ namespace backend
             }
             catch { }
         }
-
-        public enum FileFrom { InsideTree, OutsideTree, Web }
 
         /// <summary>
         /// <c>throw</c>しない
@@ -45,12 +43,7 @@ namespace backend
 
                 static string getName(Item item)
                 {
-                    string prefix = item.Type switch
-                    {
-                        FileFrom.OutsideTree => "[ツリー外] ",
-                        FileFrom.Web => "[ウェブ] ",
-                        _ => ""
-                    };
+                    string prefix = NotesPaths.Prefix(item.Origin);
                     string name = Path.GetFileName(item.Path);
                     return $"{prefix}{name}";
                 }
@@ -64,7 +57,9 @@ namespace backend
         /// <summary>
         /// <c>id</c>をPDFファイルパスに変換する。失敗したら<c>null</c>。
         /// </summary>
-        public string? GetPath(string id) => Items.FirstOrDefault(i => i.Id == id)?.Path;        
+        public Item? GetItem(string id) => Items.FirstOrDefault(i => i.Id == id);
+
+        public record Item(string Id, string Path, NotesPaths.PdfOrigin Origin);
 
 
         //|
@@ -72,7 +67,6 @@ namespace backend
         //|
 
         List<Item> Items = Read();
-        public record Item(string Id, string Path, FileFrom Type);
 
         /// <summary>
         /// 失敗したら<c>throw</c>

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
+using static backend.History;
 
 namespace backend
 {
@@ -8,19 +9,30 @@ namespace backend
         /// <summary>
         /// MD5 を注釈ファイルパスに変換する。失敗したら<c>throw</c>。
         /// </summary>
-        public string GetNotesPath(string pdfPath, string md5)
+        public string GetNotesPath(string md5, string pdfPath, PdfOrigin origin)
         {
             if (items.FirstOrDefault(i => i.MD5 == md5) is Item item) return item.Path;
 
             // 注釈ファイルを新規作成する場合のパス
+            string prefix = Prefix(origin);
+            string name = Path.GetFileNameWithoutExtension(pdfPath);
             string notesPath = Path.Combine(
                 SettingsUtils.NotesDirectory,
-                Path.GetFileNameWithoutExtension(pdfPath) + $".{md5}.json"
+                $"{prefix}{name}.{md5}.json"
             );
             items.Add(new(notesPath, md5));
             return notesPath;
 
         }
+
+        public enum PdfOrigin { InsideTree, OutsideTree, Web }
+
+        public static string Prefix(PdfOrigin origin) => origin switch
+        {
+            PdfOrigin.OutsideTree => "[ツリー外] ",
+            PdfOrigin.Web => "[ウェブ] ",
+            _ => ""
+        };
 
         //|
         //| コンストラクタ
