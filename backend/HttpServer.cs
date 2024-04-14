@@ -19,12 +19,12 @@ namespace backend
         /// <summary>
         /// PDFを開いたときにフロントエンドに渡す情報
         /// </summary>
-        public record OpenPdfResult(PdfReader.Size[] sizes, string? notes);
+        public record OpenPdfResult(string name, PdfReader.Size[] sizes, string? notes);
 
         /// <summary>
-        /// 履歴をフロントエンドに渡すときの1ファイル分の情報
+        /// フロントエンドに渡す1ファイル分の情報
         /// </summary>
-        public record HistoryItem(string id, string name);
+        public record FileItem(string id, string name);
 
 
         HttpListener? listener;
@@ -124,6 +124,14 @@ namespace backend
             if (url == "/api/coverage")
             {
                 return getResponse(model.GetCoverage());
+            }
+            if (url == "/api/select-external-pdf")
+            {
+                return getResponse(JsonSerializer.Serialize(model.GetExternalPdfId()));
+            }
+            if (url == "/api/select-web-pdf")
+            {
+                return getResponse(JsonSerializer.Serialize(model.GetWebPdfId()));
             }
             if (Regex.IsMatch(url, @"/api/pdf-notes/[^/]+"))
             {

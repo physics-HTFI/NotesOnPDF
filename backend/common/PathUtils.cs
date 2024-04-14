@@ -32,7 +32,6 @@ namespace backend
                 initialDirectory = "";
             }
 
-
             // ダイアログを表示し、ディレクトリが選択されたらそのパスを返す
             var dialog = new OpenFolderDialog()
             {
@@ -44,6 +43,29 @@ namespace backend
             }
             return path;
         }
+
+        /// <summary>
+        /// ダイアログを表示してPDFファイルパスを取得する。キャンセル時は<c>null</c>。
+        /// </summary>
+        static public string? SelectPdf()
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog()
+            {
+                Title = "PDFファイルを開く",
+                DefaultExt = ".pdf",
+                Filter = "PDFファイル (.pdf)|*.pdf",
+            };
+
+            if(dialog.ShowDialog() == true)
+            {
+                return dialog.FileName;
+            }
+            return null;
+        }
+
+        static public string Path2Id(string path) => MD5.FromString(path);
+
+
 
         /// <summary>
         /// テキストファイルを読み込んで返す。失敗したら<c>null</c>。

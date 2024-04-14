@@ -1,4 +1,6 @@
-﻿namespace backend
+﻿using System.IO;
+
+namespace backend
 {
     internal class Model
     {
@@ -22,7 +24,36 @@
             var sizes = await pdfReader.Open(path);
             string? notes = PathUtils.ReadAllText(await GetNotesPath(id));
             history.Add(id, path);
-            return new(sizes, notes);
+            return new(Path.GetFileName(path), sizes, notes);
+        }
+
+
+        /// <summary>
+        /// ツリー外のPDFファイルの<c>id</c>をダイアログから取得する。
+        /// 失敗したら<c>throw</c>する。
+        /// </summary>
+        public HttpServer.FileItem GetExternalPdfId()
+        {
+            string path = PathUtils.SelectPdf() ?? throw new Exception();
+            string id = PathUtils.Path2Id(path);
+            history.Add(id, path, History.FileFrom.OutsideTree);
+            return new(id, Path.GetFileName(path));
+        }
+
+
+        /// <summary>
+        /// URLからPDFファイルをダウンロードした後<c>id</c>を取得する。
+        /// 失敗したら<c>throw</c>する。
+        /// </summary>
+        public Task<HttpServer.FileItem> GetWebPdfId()
+        {
+            throw new NotImplementedException();
+            /*
+            string id = ;
+            string path = ;
+            history.Add(id, path);
+            return new(id, Path.GetFileName(path));
+            */
         }
 
 
@@ -40,7 +71,7 @@
         /// <summary>
         /// 過去に開いたファイルの<c>id</c>とファイル名のリストを返す
         /// </summary>
-        public HttpServer.HistoryItem[] GetHistory() => history.GetHistory();
+        public HttpServer.FileItem[] GetHistory() => history.GetHistory();
 
 
         /// <summary>
