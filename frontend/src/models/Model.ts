@@ -21,7 +21,7 @@ export default class Model implements IModel {
     } as RequestInit);
 
   public getFileTree = async (): Promise<FileTree> => {
-    const res = await fetch(ORIGIN + "/api/file-tree");
+    const res = await fetch(ORIGIN + "/api/files");
     const fileTree = (await res.json()) as FileTree;
     return fileTree;
   };
@@ -38,7 +38,7 @@ export default class Model implements IModel {
   };
 
   getPdfInfo = async (id: string): Promise<PdfInfo> => {
-    const res = await fetch(ORIGIN + `/api/pdf-notes/${id}`);
+    const res = await fetch(ORIGIN + `/api/notes/${id}`);
     const pdfInfoAndSizes = (await res.json()) as {
       sizes: { width: number; height: number }[];
       notes?: string;
@@ -50,7 +50,7 @@ export default class Model implements IModel {
     );
   };
   putPdfInfo = async (id: string, pdfNotes: PdfInfo): Promise<void> => {
-    await fetch(ORIGIN + `/api/pdf-notes/${id}`, {
+    await fetch(ORIGIN + `/api/notes/${id}`, {
       ...this.getPutOptions(),
       body: JSON.stringify(pdfNotes),
     });
@@ -60,13 +60,13 @@ export default class Model implements IModel {
     ORIGIN + `/api/images/${id}/${page}?width=${Math.floor(1.5 * width)}`;
 
   getAppSettings = async (): Promise<AppSettings> => {
-    const res = await fetch(ORIGIN + "/api/app-settings");
+    const res = await fetch(ORIGIN + "/api/settings");
     const appSettings = ((await res.json()) ??
       GetAppSettings_default()) as AppSettings;
     return appSettings;
   };
   putAppSettings = async (appSettings: AppSettings): Promise<void> => {
-    await fetch(ORIGIN + "/api/app-settings", {
+    await fetch(ORIGIN + "/api/settings", {
       ...this.getPutOptions(),
       body: JSON.stringify(appSettings),
     });
