@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { NoteType } from "@/types/PdfInfo";
+import { NoteType } from "@/types/PdfNotes";
 import ChipEditor from "./Editor/ChipEditor";
 import RectEditor from "./Editor/RectEditor";
 import PageLinkEditor from "./Editor/PageLinkEditor";

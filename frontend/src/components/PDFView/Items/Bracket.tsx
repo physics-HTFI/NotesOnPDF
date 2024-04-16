@@ -3,7 +3,7 @@ import {
   Bracket as Bracket,
   Node as NodeType,
   NoteType,
-} from "@/types/PdfInfo";
+} from "@/types/PdfNotes";
 import { Mode } from "../SpeedDial";
 import Node from "./Node";
 import { useCursor } from "./useCursor";

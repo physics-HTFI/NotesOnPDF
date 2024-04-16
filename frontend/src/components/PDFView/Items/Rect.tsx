@@ -1,6 +1,6 @@
 import { FC, MouseEvent, useState } from "react";
 import { Mode } from "../SpeedDial";
-import { Rect as RectType, Node as NodeType, NoteType } from "@/types/PdfInfo";
+import { Rect as RectType, Node as NodeType, NoteType } from "@/types/PdfNotes";
 import Node from "./Node";
 import { useCursor } from "./useCursor";
 

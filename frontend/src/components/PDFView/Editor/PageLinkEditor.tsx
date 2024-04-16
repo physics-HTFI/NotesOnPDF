@@ -1,7 +1,7 @@
 import { FC, useRef } from "react";
 import { TextField } from "@mui/material";
-import { PageLink, fromDisplayedPage } from "@/types/PdfInfo";
-import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { PageLink, fromDisplayedPage } from "@/types/PdfNotes";
+import { usePdfNotes } from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 
 /**
@@ -16,13 +16,13 @@ interface Props {
  * ページリンクの編集ダイアログ
  */
 const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
-  const { pdfInfo, updateNote } = usePdfInfo();
+  const { pdfNotes, updateNote } = usePdfNotes();
   const pageNum =
-    pdfInfo?.pages[params.page]?.num ??
-    pdfInfo?.pages[pdfInfo.currentPage]?.num ??
+    pdfNotes?.pages[params.page]?.num ??
+    pdfNotes?.pages[pdfNotes.currentPage]?.num ??
     1;
   const num = useRef<number>(pageNum);
-  if (!pdfInfo) return <></>;
+  if (!pdfNotes) return <></>;
 
   // 閉じたときに値を更新する
   const handleClose = () => {
@@ -30,7 +30,7 @@ const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
     if (pageNum === num.current) return;
     updateNote(params, {
       ...params,
-      page: fromDisplayedPage(pdfInfo, num.current),
+      page: fromDisplayedPage(pdfNotes, num.current),
     });
   };
 

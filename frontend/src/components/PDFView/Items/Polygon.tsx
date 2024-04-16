@@ -4,7 +4,7 @@ import {
   Polygon as PolygonType,
   Node as NodeType,
   NoteType,
-} from "@/types/PdfInfo";
+} from "@/types/PdfNotes";
 import Node from "./Node";
 import { useCursor } from "./useCursor";
 

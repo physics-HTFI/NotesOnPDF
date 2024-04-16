@@ -9,8 +9,8 @@ import Polygon from "./Items/Polygon";
 import Chip from "./Items/Chip";
 import Svg from "./Items/Svg";
 import { Mode } from "./SpeedDial";
-import { usePdfInfo } from "@/hooks/usePdfInfo";
-import { Node as NodeType, NoteType } from "@/types/PdfInfo";
+import { usePdfNotes } from "@/hooks/usePdfNotes";
+import { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./Items/SvgDefs";
 import { MouseContext } from "@/contexts/MouseContext";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
@@ -32,8 +32,9 @@ interface Props {
 const Items: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
   const { setMouse } = useContext(MouseContext);
   const { appSettings } = useContext(AppSettingsContext);
-  const { page, setPdfInfo, popNote } = usePdfInfo();
-  if (!page?.notes || !setPdfInfo || !pageRect || !setMouse) return <SvgDefs />;
+  const { page, setPdfNotes, popNote } = usePdfNotes();
+  if (!page?.notes || !setPdfNotes || !pageRect || !setMouse)
+    return <SvgDefs />;
 
   const props = <T extends NoteType | NodeType>(params: T) => ({
     key: JSON.stringify(params),

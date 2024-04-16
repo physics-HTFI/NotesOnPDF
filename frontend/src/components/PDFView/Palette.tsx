@@ -1,8 +1,8 @@
 import { FC, useContext } from "react";
 import { Paper } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
-import { usePdfInfo } from "@/hooks/usePdfInfo";
-import { Node, NoteType } from "@/types/PdfInfo";
+import { usePdfNotes } from "@/hooks/usePdfNotes";
+import { Node, NoteType } from "@/types/PdfNotes";
 import {
   ArrowIcon,
   BracketIcon,
@@ -29,8 +29,8 @@ interface Props {
  */
 const Palette: FC<Props> = ({ open, onClose }) => {
   const { mouse, pageRect } = useContext(MouseContext);
-  const { pdfInfo } = usePdfInfo();
-  if (!mouse || !pageRect || !pdfInfo || !open) return <></>;
+  const { pdfNotes } = usePdfNotes();
+  if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
 
   const [L, DIVISIONS] = [50, 8];
   const sx = (i: number) => {
@@ -55,7 +55,7 @@ const Palette: FC<Props> = ({ open, onClose }) => {
     onClose,
     x: (mouse.pageX - pageRect.x) / pageRect.width,
     y: (mouse.pageY - pageRect.y) / pageRect.height,
-    page: pdfInfo.currentPage,
+    page: pdfNotes.currentPage,
     svgRect: new DOMRect(0, 0, 1.5 * L, 1.5 * L),
   };
 

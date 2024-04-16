@@ -8,11 +8,11 @@ import Rect from "./Items/Rect";
 import Polygon from "./Items/Polygon";
 import Svg from "./Items/Svg";
 import Chip from "./Items/Chip";
-import { Node, NoteType } from "@/types/PdfInfo";
+import { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
-import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { usePdfNotes } from "@/hooks/usePdfNotes";
 
 /**
  * `Move`の引数
@@ -34,7 +34,7 @@ const Move: FC<Props> = ({ params, onClose }) => {
   const ref = useRef<HTMLElement>();
   const { mouse, setMouse, pageRect } = useContext(MouseContext);
   const { appSettings } = useContext(AppSettingsContext);
-  const { page } = usePdfInfo();
+  const { page } = usePdfNotes();
   if (!params || !mouse || !setMouse || !pageRect || !appSettings) return <></>;
 
   const getDxy = (xy?: typeof mouse): [number, number] =>

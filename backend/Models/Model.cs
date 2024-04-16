@@ -33,12 +33,12 @@ namespace backend
         /// ツリー外のPDFファイルの<c>id</c>をダイアログから取得する。
         /// 失敗したら<c>throw</c>する。
         /// </summary>
-        public HttpServer.FileItem GetExternalPdfId()
+        public string GetExternalPdfId()
         {
             string path = PathUtils.SelectPdf() ?? throw new Exception();
             string id = PathUtils.Path2Id(path);
             history.Add(id, path, NotesPaths.PdfOrigin.OutsideTree);
-            return new(id, Path.GetFileName(path));
+            return id;
         }
 
 
@@ -46,12 +46,12 @@ namespace backend
         /// URLからPDFファイルをダウンロードした後<c>id</c>を取得する。
         /// 失敗したら<c>throw</c>する。
         /// </summary>
-        public async Task<HttpServer.FileItem> GetWebPdfId(string url)
+        public async Task<string> GetWebPdfId(string url)
         {
             string path = await Download.FromUrl(url);
             string id = PathUtils.Path2Id(path);
             history.Add(id, path, NotesPaths.PdfOrigin.Web);
-            return new(id, Path.GetFileName(path));
+            return id;
         }
 
 

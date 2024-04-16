@@ -2,7 +2,7 @@ import {
   Arrow as ArrowType,
   Node as NodeType,
   NoteType,
-} from "@/types/PdfInfo";
+} from "@/types/PdfNotes";
 import { FC, MouseEvent, useState } from "react";
 import { Mode } from "../SpeedDial";
 import Node from "./Node";

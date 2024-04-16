@@ -1,5 +1,5 @@
 import { Tooltip, Typography } from "@mui/material";
-import { PdfInfo, Page } from "@/types/PdfInfo";
+import { PdfNotes, Page } from "@/types/PdfNotes";
 
 /**
  * 題名を返す
@@ -124,16 +124,16 @@ export const getSeparator = (key?: string) => (
  * @returns 目次の内容
  */
 const getTOCData = (
-  pdfInfo?: PdfInfo,
-  onChanged?: (pdfInfo: PdfInfo) => void
+  pdfNotes?: PdfNotes,
+  onChanged?: (pdfNotes: PdfNotes) => void
 ): JSX.Element[] => {
-  if (!pdfInfo) return [];
+  if (!pdfNotes) return [];
   const toc: JSX.Element[] = [];
   let pageNum = 1;
-  for (let i = 0; i < pdfInfo.pages.length; i++) {
-    const page = pdfInfo.pages[i];
+  for (let i = 0; i < pdfNotes.pages.length; i++) {
+    const page = pdfNotes.pages[i];
     const handleClick = () => {
-      onChanged?.({ ...pdfInfo, currentPage: i });
+      onChanged?.({ ...pdfNotes, currentPage: i });
     };
 
     // 第名を追加
@@ -159,7 +159,7 @@ const getTOCData = (
         page?.style?.includes("break-middle"),
         `page-${i}`,
         `p. ${pageNum}`,
-        i === pdfInfo.currentPage,
+        i === pdfNotes.currentPage,
         page,
         handleClick
       )
@@ -171,7 +171,7 @@ const getTOCData = (
           page.style.includes("break-middle"),
           `page-right-${i}`,
           `p. ${pageNum}`,
-          i === pdfInfo.currentPage,
+          i === pdfNotes.currentPage,
           page,
           handleClick
         )

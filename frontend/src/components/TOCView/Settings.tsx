@@ -3,15 +3,15 @@ import { Box, IconButton, Tab, Tabs, Tooltip } from "@mui/material";
 import {
   Page,
   PageStyle,
-  PdfInfo,
+  PdfNotes,
   Settings as PdfSettings,
   updatePageNum,
-} from "@/types/PdfInfo";
+} from "@/types/PdfNotes";
 import CheckboxText from "./Settings/CheckboxText";
 import SectionBreak from "./Settings/SectionBreak";
 import PageNumberRestart from "./Settings/PageNumberRestart";
 import LabelSlider from "./Settings/LabelSlider";
-import { PdfInfoContext } from "@/contexts/PdfInfoContext";
+import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { ExpandMore } from "@mui/icons-material";
 import Checkbox from "./Settings/Checkbox";
 import ClickOptionSelect from "./Settings/ClickOptionSelect";
@@ -30,32 +30,32 @@ interface Props {
  */
 const Settings: FC<Props> = ({ onClose }) => {
   const { appSettings, setAppSettings } = useContext(AppSettingsContext);
-  const { pdfInfo, setPdfInfo, pdfPath } = useContext(PdfInfoContext);
+  const { pdfNotes, setPdfNotes, pdfPath } = useContext(PdfNotesContext);
   const [tab, setTab] = useState(0);
   if (!appSettings || !setAppSettings) return <></>;
-  if (!pdfInfo || !setPdfInfo || !pdfPath) return <></>;
+  if (!pdfNotes || !setPdfNotes || !pdfPath) return <></>;
 
   // 部名・章名・ページ番号の候補など
   const { page, bookName, partNum, chapterNum, pageNum } = getParams(
-    pdfInfo,
+    pdfNotes,
     pdfPath
   );
 
   // ページ設定変更
   const handleChangePage = (page: Partial<Page>) => {
-    const pre = pdfInfo.pages[pdfInfo.currentPage];
+    const pre = pdfNotes.pages[pdfNotes.currentPage];
     if (!pre) return;
-    pdfInfo.pages[pdfInfo.currentPage] = { ...pre, ...page };
-    if (Object.keys(page).includes("numberRestart")) updatePageNum(pdfInfo);
-    setPdfInfo({ ...pdfInfo });
+    pdfNotes.pages[pdfNotes.currentPage] = { ...pre, ...page };
+    if (Object.keys(page).includes("numberRestart")) updatePageNum(pdfNotes);
+    setPdfNotes({ ...pdfNotes });
   };
 
   // ファイル設定変更
   // TODO 線の太さを変更できるようにしてもよい
   const handleChangeFileSettings = (newSettings: Partial<PdfSettings>) => {
-    setPdfInfo({
-      ...pdfInfo,
-      settings: { ...pdfInfo.settings, ...newSettings },
+    setPdfNotes({
+      ...pdfNotes,
+      settings: { ...pdfNotes.settings, ...newSettings },
     });
   };
 
@@ -88,7 +88,7 @@ const Settings: FC<Props> = ({ onClose }) => {
       {/* タブ */}
       <SettingsTabs
         tab={tab}
-        pageLabel={`p. ${pdfInfo.pages[pdfInfo.currentPage]?.num ?? "???"}`}
+        pageLabel={`p. ${pdfNotes.pages[pdfNotes.currentPage]?.num ?? "???"}`}
         setTab={setTab}
       />
 
@@ -157,7 +157,7 @@ const Settings: FC<Props> = ({ onClose }) => {
         <Box sx={{ width: "90%", m: 1 }}>
           <LabelSlider
             label="文字サイズ"
-            value={pdfInfo.settings.fontSize}
+            value={pdfNotes.settings.fontSize}
             minValue={30}
             maxValue={100}
             step={0.5}
@@ -168,7 +168,7 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
           <LabelSlider
             label="余白(上)"
-            value={pdfInfo.settings.offsetTop}
+            value={pdfNotes.settings.offsetTop}
             minValue={0}
             maxValue={0.2}
             step={0.001}
@@ -179,7 +179,7 @@ const Settings: FC<Props> = ({ onClose }) => {
           />
           <LabelSlider
             label="余白(下)"
-            value={pdfInfo.settings.offsetBottom}
+            value={pdfNotes.settings.offsetBottom}
             minValue={0}
             maxValue={0.2}
             step={0.001}
@@ -240,17 +240,17 @@ export default Settings;
 //| ローカル関数
 //|
 
-function getParams(pdfInfo: PdfInfo, pdfPath: string) {
-  const page = pdfInfo.pages[pdfInfo.currentPage];
+function getParams(pdfNotes: PdfNotes, pdfPath: string) {
+  const page = pdfNotes.pages[pdfNotes.currentPage];
 
   // 部名・章名・ページ番号の候補
   const bookName = pdfPath.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? "";
   let partNum = 1;
   let chapterNum = 1;
   let pageNum = 1;
-  for (let i = 0; i < pdfInfo.currentPage; i++) {
+  for (let i = 0; i < pdfNotes.currentPage; i++) {
     ++pageNum;
-    const page = pdfInfo.pages[i];
+    const page = pdfNotes.pages[i];
     if (!page) continue;
     if (page.part !== undefined) ++partNum;
     if (page.chapter !== undefined) ++chapterNum;

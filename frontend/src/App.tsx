@@ -5,13 +5,13 @@ import IModel from "@/models/IModel";
 import Model from "./models/Model";
 import ModelMock from "@/models/Model.Mock";
 import { Coverages } from "@/types/Coverages";
-import { PdfInfo } from "@/types/PdfInfo";
+import { PdfNotes } from "@/types/PdfNotes";
 import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "./components/OpenFileDrawer";
 import PDFView from "@/components/PDFView";
 import Waiting from "@/components/Fullscreen/Waiting";
 import TOCView from "@/components/TOCView";
-import { PdfInfoContext } from "./contexts/PdfInfoContext";
+import { PdfNotesContext } from "./contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 import { AppSettingsContext } from "./contexts/AppSettingsContext";
 import { AppSettings } from "./types/AppSettings";
@@ -23,24 +23,24 @@ function App() {
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const [coverages, setCoverages] = useState<Coverages>();
   const [pdf, setPDF] = useState<string | File>();
-  const [pdfInfo, setPdfInfo] = useState<PdfInfo | null>(); // 読み込み失敗時にnull
+  const [pdfNotes, setPdfNotes] = useState<PdfNotes | null>(); // 読み込み失敗時にnull
   const [pageRatios, setPageRatios] = useState<number[]>();
   const pdfPath = pdf && (pdf instanceof File ? pdf.name : pdf);
 
   const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
   const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
   const [isWaitingPDF, setIsWaitingPDF] = useState(false);
-  const [isWaitingPdfInfo, setIsWaitingPdfInfo] = useState(false);
+  const [isWaitingPdfNotes, setIsWaitingPdfNotes] = useState(false);
 
   // ページの遷移
   const handlePageChange = (delta: number) => {
-    if (!pdfInfo) return;
+    if (!pdfNotes) return;
     const newPage = Math.max(
       0,
-      Math.min(pdfInfo.pages.length - 1, pdfInfo.currentPage + delta)
+      Math.min(pdfNotes.pages.length - 1, pdfNotes.currentPage + delta)
     );
-    if (pdfInfo.currentPage === newPage) return;
-    setPdfInfo({ ...pdfInfo, currentPage: newPage });
+    if (pdfNotes.currentPage === newPage) return;
+    setPdfNotes({ ...pdfNotes, currentPage: newPage });
   };
 
   // クリック系のイベントを無効にする
@@ -69,52 +69,52 @@ function App() {
 
   // 進捗の更新
   useEffect(() => {
-    if (!coverages || !pdfPath || !pdfInfo) return;
+    if (!coverages || !pdfPath || !pdfNotes) return;
     // TODO ページを切り替えるだけで更新されてしまう
     coverages.PDFs[pdfPath] = {
-      allPages: pdfInfo.pages.length,
+      allPages: pdfNotes.pages.length,
       enabledPages:
-        pdfInfo.pages.length -
-        Object.keys(pdfInfo.pages).filter((key) =>
-          pdfInfo.pages[Number(key)]?.style?.includes("excluded")
+        pdfNotes.pages.length -
+        Object.keys(pdfNotes.pages).filter((key) =>
+          pdfNotes.pages[Number(key)]?.style?.includes("excluded")
         ).length,
-      notedPages: Object.keys(pdfInfo.pages).filter(
+      notedPages: Object.keys(pdfNotes.pages).filter(
         (key) =>
-          (pdfInfo.pages[Number(key)]?.style?.includes("excluded")
+          (pdfNotes.pages[Number(key)]?.style?.includes("excluded")
             ? 0
-            : pdfInfo.pages[Number(key)]?.notes?.length ?? 0) > 0
+            : pdfNotes.pages[Number(key)]?.notes?.length ?? 0) > 0
       ).length,
     };
     model.putCoverages(coverages).catch(() => undefined);
-  }, [pdfInfo, coverages, pdfPath]);
+  }, [pdfNotes, coverages, pdfPath]);
   useEffect(() => {
     if (!appSettings) return;
     model.putAppSettings(appSettings).catch(() => undefined);
   }, [appSettings]);
   useEffect(() => {
-    if (!pdfInfo || !pdfPath) return;
-    model.putPdfInfo(pdfPath, pdfInfo).catch(() => undefined);
-  }, [pdfPath, pdfInfo]);
+    if (!pdfNotes || !pdfPath) return;
+    model.putPdfNotes(pdfPath, pdfNotes).catch(() => undefined);
+  }, [pdfPath, pdfNotes]);
 
-  // 始めて読み込むPDFの場合、`PdfInfo`を生成する
+  // 始めて読み込むPDFの場合、`PdfNotes`を生成する
   useEffect(() => {
-    if (isWaitingPDF || isWaitingPdfInfo) return;
+    if (isWaitingPDF || isWaitingPdfNotes) return;
     if (!pageRatios || !pdf || !pdfPath) return;
-    if (pdfInfo === undefined) return;
+    if (pdfNotes === undefined) return;
     /*
-    if (pdfInfo === null) {
-      setPdfInfo(createNewPdfInfo(pageRatios));
-    } else if (pdfInfo.pages.length !== pageRatios.length) {
+    if (pdfNotes === null) {
+      setPdfNotes(createNewPdfNotes(pageRatios));
+    } else if (pdfNotes.pages.length !== pageRatios.length) {
       // 同じPDFでページ数が異なっている場合に対応する
-      setPdfInfo({ ...pdfInfo });
+      setPdfNotes({ ...pdfNotes });
     }
     */
-  }, [isWaitingPDF, isWaitingPdfInfo, pageRatios, pdfInfo, pdfPath, pdf]);
+  }, [isWaitingPDF, isWaitingPdfNotes, pageRatios, pdfNotes, pdfPath, pdf]);
 
   return (
     <AppSettingsContext.Provider value={{ appSettings, setAppSettings }}>
-      <PdfInfoContext.Provider
-        value={{ pdfInfo: pdfInfo ?? undefined, setPdfInfo, pdfPath }}
+      <PdfNotesContext.Provider
+        value={{ pdfNotes: pdfNotes ?? undefined, setPdfNotes, pdfPath }}
       >
         <Box
           sx={{ display: "flex" }}
@@ -136,30 +136,30 @@ function App() {
               const pdfPathNew = pdf instanceof File ? pdf.name : pdf;
               if (pdfPath === pdfPathNew || !pdfPathNew) return;
               setIsWaitingPDF(true);
-              setIsWaitingPdfInfo(true);
-              setPdfInfo(undefined);
+              setIsWaitingPdfNotes(true);
+              setPdfNotes(undefined);
               setPDF(pdf);
               if (coverages)
                 setCoverages({ ...coverages, recentPath: pdfPathNew });
               model
-                .getPdfInfo(pdfPathNew)
-                .then((pdfInfo) => {
+                .getPdfNotes(pdfPathNew)
+                .then((pdfNotes) => {
                   // 初回生成時にタイトルを設定する
                   if (
-                    pdfInfo?.pages.every((p) => Object.keys(p).length === 2)
+                    pdfNotes?.pages.every((p) => Object.keys(p).length === 2)
                   ) {
-                    if (pdfInfo.pages[0] !== undefined) {
-                      pdfInfo.pages[0].book =
+                    if (pdfNotes.pages[0] !== undefined) {
+                      pdfNotes.pages[0].book =
                         path.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined;
                     }
                   }
-                  setPdfInfo(pdfInfo);
+                  setPdfNotes(pdfNotes);
                 })
                 .catch(() => {
-                  setPdfInfo(null);
+                  setPdfNotes(null);
                 })
                 .finally(() => {
-                  setIsWaitingPdfInfo(false);
+                  setIsWaitingPdfNotes(false);
                 });
             }}
           />
@@ -208,12 +208,12 @@ function App() {
           </PanelGroup>
 
           {/* 処理中プログレス表示 */}
-          <Waiting isWaiting={isWaitingPDF || isWaitingPdfInfo} />
+          <Waiting isWaiting={isWaitingPDF || isWaitingPdfNotes} />
 
           {/* モックモデルを使用していることを示すポップアップ表示 */}
           {IS_MOCK && <SnackbarsMock open />}
         </Box>
-      </PdfInfoContext.Provider>
+      </PdfNotesContext.Provider>
     </AppSettingsContext.Provider>
   );
 }

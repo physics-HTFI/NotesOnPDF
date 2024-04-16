@@ -10,6 +10,8 @@ import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
 import HeaderIcons from "@/components/OpenFileDrawer/HeaderIcons";
 
+const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
+
 /**
  * `OpenFileDrawer`の引数
  */
@@ -80,8 +82,16 @@ const OpenFileDrawer: FC<Props> = ({
     >
       {/* ヘッダーアイコン */}
       <HeaderIcons
-        onOpenFile={(file: File) => {
-          onSelect(file, file.name);
+        model={model}
+        onSelectPdfFromFile={
+          IS_MOCK
+            ? (file) => {
+                onSelect(file, file.name);
+              }
+            : undefined
+        }
+        onSelectPdfFromId={(id) => {
+          alert(id);
         }}
       />
 

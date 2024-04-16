@@ -22,9 +22,10 @@ namespace backend
         public record OpenPdfResult(string name, PdfReader.Size[] sizes, string? notes);
 
         /// <summary>
-        /// フロントエンドに渡す1ファイル分の情報
+        /// フロントエンドに渡す1ファイル分の情報。
+        /// <c>origin</c>は0:ツリー内のファイル、1:ツリー外のファイル、2:ウェブから取得したファイル
         /// </summary>
-        public record FileItem(string id, string name);
+        public record FileItem(string id, string name, int origin, string accessDate);
 
 
         HttpListener? listener;
@@ -125,11 +126,11 @@ namespace backend
             {
                 return getResponse(model.GetCoverage());
             }
-            if (url == "/api/select-pdf")
+            if (url == "/api/external-pdf-id")
             {
                 return getResponse(JsonSerializer.Serialize(model.GetExternalPdfId()));
             }
-            if (url == "/api/download-pdf")
+            if (url == "/api/web-pdf-id")
             {
                 string query = uri.GetComponents(UriComponents.Query, UriFormat.Unescaped);
                 return getResponse(JsonSerializer.Serialize(await model.GetWebPdfId(query)));

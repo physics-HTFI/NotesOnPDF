@@ -1,10 +1,18 @@
 /**
  * 1つのPDFファイルに追加された全ての情報
  */
-export interface PdfInfo {
+export interface PdfNotes {
   currentPage: number;
   pages: Page[];
   settings: Settings;
+}
+
+/**
+ * PDFを開くときに必要な情報
+ */
+export interface PdfInfo {
+  name: string;
+  notes: PdfNotes;
 }
 
 export type NoteType =
@@ -118,7 +126,7 @@ export interface Settings {
 /**
  * `Note`がまだ生成されていないPDFファイル用の初期インスタンスを返す
  */
-export const createNewPdfInfo = (sizeRatios: number[]): PdfInfo => {
+export const createNewPdfNotes = (sizeRatios: number[]): PdfNotes => {
   return {
     currentPage: 0,
     settings: { fontSize: 70, offsetTop: 0, offsetBottom: 0 },
@@ -129,9 +137,9 @@ export const createNewPdfInfo = (sizeRatios: number[]): PdfInfo => {
 /**
  * ページ番号を更新する
  */
-export function updatePageNum(pdfInfo: PdfInfo) {
+export function updatePageNum(pdfNotes: PdfNotes) {
   let num = 0;
-  for (const p of pdfInfo.pages) {
+  for (const p of pdfNotes.pages) {
     num = p.numberRestart ?? num + 1;
     p.num = num;
   }
@@ -142,21 +150,21 @@ export function updatePageNum(pdfInfo: PdfInfo) {
  * できなかった場合は、-1を返す。
  */
 export const fromDisplayedPage = (
-  pdfInfo: PdfInfo,
+  pdfNotes: PdfNotes,
   displayedPageNumber: number
 ): number => {
-  const current = pdfInfo.pages[pdfInfo.currentPage]?.num;
+  const current = pdfNotes.pages[pdfNotes.currentPage]?.num;
   if (current === undefined) return -1;
   if (displayedPageNumber <= current) {
     // 現在のページより小さい場合は、遡って探す
-    for (let i = pdfInfo.currentPage; i >= 0; i--) {
-      if (displayedPageNumber === pdfInfo.pages[i]?.num) {
+    for (let i = pdfNotes.currentPage; i >= 0; i--) {
+      if (displayedPageNumber === pdfNotes.pages[i]?.num) {
         return i;
       }
     }
   } else {
-    for (let i = pdfInfo.currentPage + 1; i < pdfInfo.pages.length; i++) {
-      if (displayedPageNumber === pdfInfo.pages[i]?.num) {
+    for (let i = pdfNotes.currentPage + 1; i < pdfNotes.pages.length; i++) {
+      if (displayedPageNumber === pdfNotes.pages[i]?.num) {
         return i;
       }
     }

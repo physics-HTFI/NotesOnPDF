@@ -6,8 +6,8 @@ import {
   styled,
   tooltipClasses,
 } from "@mui/material";
-import { Note } from "@/types/PdfInfo";
-import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { Note } from "@/types/PdfNotes";
+import { usePdfNotes } from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
 import { blue, grey } from "@mui/material/colors";
@@ -53,7 +53,7 @@ interface Props {
  * 注釈コメントの編集ダイアログ
  */
 const NoteEditor: FC<Props> = ({ params, onClose }) => {
-  const { updateNote } = usePdfInfo();
+  const { updateNote } = usePdfNotes();
   const [text, setText] = useState(params.html);
 
   // 閉じたときに値を更新する

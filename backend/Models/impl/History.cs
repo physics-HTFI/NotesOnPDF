@@ -22,7 +22,8 @@ namespace backend
                 Item item = new(
                     id,
                     Path.GetFullPath(path),
-                    type ?? NotesPaths.PdfOrigin.InsideTree
+                    type ?? NotesPaths.PdfOrigin.InsideTree,
+                    DateTime.Now
                 );
                 Items.RemoveAll(i => i.Id == id);
                 Items.Insert(0, item);
@@ -39,7 +40,9 @@ namespace backend
         {
             try
             {
-                return Items.Select(i => new HttpServer.FileItem(i.Id, getName(i))).ToArray();
+                return Items.Select(i => 
+                    new HttpServer.FileItem(i.Id, getName(i), (int)i.Origin, i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
+                ).ToArray();
 
                 static string getName(Item item)
                 {
@@ -59,7 +62,7 @@ namespace backend
         /// </summary>
         public Item? GetItem(string id) => Items.FirstOrDefault(i => i.Id == id);
 
-        public record Item(string Id, string Path, NotesPaths.PdfOrigin Origin);
+        public record Item(string Id, string Path, NotesPaths.PdfOrigin Origin, DateTime AccessDate);
 
 
         //|

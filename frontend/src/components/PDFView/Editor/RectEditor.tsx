@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { Rect, Polygon } from "@/types/PdfInfo";
-import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { Rect, Polygon } from "@/types/PdfNotes";
+import { usePdfNotes } from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import Svg from "../Items/Svg";
 import RectSvg from "../Items/Rect";
@@ -19,7 +19,7 @@ interface Props {
  * 直方体、ポリゴンの編集ダイアログ
  */
 const RectEditor: FC<Props> = ({ params, onClose }) => {
-  const { updateNote } = usePdfInfo();
+  const { updateNote } = usePdfNotes();
 
   // 閉じたときに値を更新する
   const handleClose = (style?: "outlined" | "filled") => {

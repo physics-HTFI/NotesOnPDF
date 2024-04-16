@@ -1,7 +1,7 @@
 import { FC, useContext } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { Arrow, Bracket } from "@/types/PdfInfo";
-import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { Arrow, Bracket } from "@/types/PdfNotes";
+import { usePdfNotes } from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import Svg from "../Items/Svg";
 import { red } from "@mui/material/colors";
@@ -43,7 +43,7 @@ interface Props {
  */
 const ArrowEditor: FC<Props> = ({ params, onClose }) => {
   const isArrow = params.type === "Arrow";
-  const { updateNote } = usePdfInfo();
+  const { updateNote } = usePdfNotes();
   const { pageRect } = useContext(MouseContext);
   if (!pageRect) return <></>;
 

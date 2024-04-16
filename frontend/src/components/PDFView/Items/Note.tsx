@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
-import { Node, Note as NoteParams, NoteType } from "@/types/PdfInfo";
+import { Node, Note as NoteParams, NoteType } from "@/types/PdfNotes";
 import { useCursor } from "./useCursor";
 
 /**

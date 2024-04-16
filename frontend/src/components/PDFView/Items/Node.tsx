@@ -7,7 +7,7 @@ import {
   NoteType,
   Polygon,
   Rect,
-} from "@/types/PdfInfo";
+} from "@/types/PdfNotes";
 import { green } from "@mui/material/colors";
 
 /**

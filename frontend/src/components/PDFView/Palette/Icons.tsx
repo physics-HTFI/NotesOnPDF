@@ -7,7 +7,7 @@ import Marker from "../Items/Marker";
 import Rect from "../Items/Rect";
 import Polygon from "../Items/Polygon";
 import { Shortcut } from "@mui/icons-material";
-import { Node, NoteType } from "@/types/PdfInfo";
+import { Node, NoteType } from "@/types/PdfNotes";
 
 /**
  * パレットの各アイコンの`Props`

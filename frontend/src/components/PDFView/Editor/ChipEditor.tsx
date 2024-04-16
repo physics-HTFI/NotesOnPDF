@@ -6,18 +6,18 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { Chip, PdfInfo } from "@/types/PdfInfo";
-import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { Chip, PdfNotes } from "@/types/PdfNotes";
+import { usePdfNotes } from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import { blue } from "@mui/material/colors";
 
 /**
- * `pdfInfo`に含まれているチップ注釈のうち、出現回数が多い順に並べ替えて返す。
+ * `pdfNotes`に含まれているチップ注釈のうち、出現回数が多い順に並べ替えて返す。
  */
-const getOptions = (pdfInfo?: PdfInfo): string[] => {
-  if (!pdfInfo) return [];
+const getOptions = (pdfNotes?: PdfNotes): string[] => {
+  if (!pdfNotes) return [];
   const counts: Record<string, number> = {};
-  for (const page of Object.values(pdfInfo.pages)) {
+  for (const page of Object.values(pdfNotes.pages)) {
     if (!page.notes) continue;
     for (const n of page.notes) {
       if (n.type !== "Chip") continue;
@@ -41,11 +41,11 @@ interface Props {
  * チップの編集ダイアログ
  */
 const ChipEditor: FC<Props> = ({ params, onClose }) => {
-  const { pdfInfo, updateNote } = usePdfInfo();
+  const { pdfNotes, updateNote } = usePdfNotes();
   const [style, setStyle] = useState(params.style);
   const [rawText, setRawText] = useState(params.text);
   const [open, setOpen] = useState(params.text === "");
-  const options = useMemo(() => getOptions(pdfInfo), [pdfInfo]);
+  const options = useMemo(() => getOptions(pdfNotes), [pdfNotes]);
 
   // 閉じたときに値を更新する
   const handleClose = (newText?: string) => {

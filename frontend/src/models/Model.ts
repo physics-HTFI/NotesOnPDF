@@ -1,8 +1,9 @@
 import { FileTree } from "@/types/FileTree";
-import { PdfInfo, createNewPdfInfo } from "@/types/PdfInfo";
+import { PdfInfo, PdfNotes, createNewPdfNotes } from "@/types/PdfNotes";
 import { GetCoverages_empty, Coverages } from "@/types/Coverages";
 import IModel from "./IModel";
 import { AppSettings, GetAppSettings_default } from "@/types/AppSettings";
+import { History } from "@/types/History";
 
 const ORIGIN = import.meta.env.DEV
   ? "http://localhost:8080"
@@ -26,6 +27,26 @@ export default class Model implements IModel {
     return fileTree;
   };
 
+  getHistory = async (): Promise<History> => {
+    const res = await fetch(ORIGIN + "/api/history");
+    const history = (await res.json()) as History;
+    return history;
+  };
+
+  getIdFromExternalFile = async (): Promise<string> => {
+    const res = await fetch(ORIGIN + "/api/external-pdf-id");
+    const id = (await res.json()) as string;
+    return id;
+  };
+
+  getIdFromUrl = async (url: string): Promise<string> => {
+    const res = await fetch(
+      ORIGIN + `/api/web-pdf-id?${encodeURIComponent(url)}`
+    );
+    const id = (await res.json()) as string;
+    return id;
+  };
+
   public getCoverages = async (): Promise<Coverages> => {
     const res = await fetch(ORIGIN + "/api/coverage");
     return ((await res.json()) ?? GetCoverages_empty()) as Coverages;
@@ -37,19 +58,21 @@ export default class Model implements IModel {
     });
   };
 
-  getPdfInfo = async (id: string): Promise<PdfInfo> => {
+  getPdfNotes = async (id: string): Promise<PdfInfo> => {
     const res = await fetch(ORIGIN + `/api/notes/${id}`);
-    const pdfInfoAndSizes = (await res.json()) as {
+    const pdfNotes = (await res.json()) as {
+      name: string;
       sizes: { width: number; height: number }[];
-      notes?: string;
+      notes?: PdfNotes;
     };
-    if (pdfInfoAndSizes.notes)
-      return JSON.parse(pdfInfoAndSizes.notes) as PdfInfo;
-    return createNewPdfInfo(
-      pdfInfoAndSizes.sizes.map((s) => s.width / s.height)
-    );
+    return {
+      name: pdfNotes.name,
+      notes:
+        pdfNotes.notes ??
+        createNewPdfNotes(pdfNotes.sizes.map((s) => s.width / s.height)),
+    };
   };
-  putPdfInfo = async (id: string, pdfNotes: PdfInfo): Promise<void> => {
+  putPdfNotes = async (id: string, pdfNotes: PdfNotes): Promise<void> => {
     await fetch(ORIGIN + `/api/notes/${id}`, {
       ...this.getPutOptions(),
       body: JSON.stringify(pdfNotes),

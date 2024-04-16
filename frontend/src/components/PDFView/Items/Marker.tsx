@@ -4,7 +4,7 @@ import {
   Marker as MarkerType,
   Node as NodeType,
   NoteType,
-} from "@/types/PdfInfo";
+} from "@/types/PdfNotes";
 import Node from "./Node";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import { useCursor } from "./useCursor";

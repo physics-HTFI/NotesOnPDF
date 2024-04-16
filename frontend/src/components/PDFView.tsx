@@ -11,7 +11,7 @@ import { pdfjs, Document, Page as PDFPage } from "react-pdf";
 import PageLabelSmall from "./PDFView/PageLabelSmall";
 import PageLabelLarge from "./PDFView/PageLabelLarge";
 import SpeedDial, { Mode } from "./PDFView/SpeedDial";
-import { Node, NoteType } from "@/types/PdfInfo";
+import { Node, NoteType } from "@/types/PdfNotes";
 import Palette from "./PDFView/Palette";
 import Excluded from "./PDFView/Excluded";
 import Items from "./PDFView/Items";
@@ -20,7 +20,7 @@ import Editor from "./PDFView/Editor";
 import { grey } from "@mui/material/colors";
 import { MathJaxContext } from "better-react-mathjax";
 import Move from "./PDFView/Move";
-import { usePdfInfo } from "@/hooks/usePdfInfo";
+import { usePdfNotes } from "@/hooks/usePdfNotes";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import IModel from "@/models/IModel";
 import { sampleId2Path } from "@/models/Model.Mock";
@@ -137,18 +137,18 @@ const PDFView: FC<Props> = ({
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const { pdfInfo, page, updateNote } = usePdfInfo();
+  const { pdfNotes, page, updateNote } = usePdfNotes();
   const [width, height, top, bottom] =
-    pdfInfo?.currentPage === undefined
+    pdfNotes?.currentPage === undefined
       ? [undefined, undefined]
       : preferredSize(
-          pdfInfo.settings.offsetTop,
-          pdfInfo.settings.offsetBottom,
-          pdfInfo.pages[pdfInfo.currentPage]?.sizeRatio,
+          pdfNotes.settings.offsetTop,
+          pdfNotes.settings.offsetBottom,
+          pdfNotes.pages[pdfNotes.currentPage]?.sizeRatio,
           containerRect?.width,
           containerRect?.height
         );
-  const pageLabel = `p. ${pdfInfo?.pages[pdfInfo.currentPage]?.num ?? "???"}`;
+  const pageLabel = `p. ${pdfNotes?.pages[pdfNotes.currentPage]?.num ?? "???"}`;
 
   const getPageRect = useCallback((ref: HTMLDivElement) => {
     setRefPage(ref);
@@ -158,17 +158,17 @@ const PDFView: FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (pdfInfo?.currentPage === undefined) return;
+    if (pdfNotes?.currentPage === undefined) return;
     setReading(true);
-  }, [pdfInfo?.currentPage]);
+  }, [pdfNotes?.currentPage]);
 
   useEffect(() => {
-    if (pdfInfo?.currentPage === undefined) return;
+    if (pdfNotes?.currentPage === undefined) return;
     const pageW = pageRect?.width;
-    const pdfW = pdfSizes.current?.[pdfInfo.currentPage]?.width;
+    const pdfW = pdfSizes.current?.[pdfNotes.currentPage]?.width;
     if (!pageW || !pdfW) setScale(100);
-    else setScale((pdfInfo.settings.fontSize * pageW) / pdfW);
-  }, [pdfInfo?.currentPage, pageRect, pdfSizes, pdfInfo?.settings.fontSize]);
+    else setScale((pdfNotes.settings.fontSize * pageW) / pdfW);
+  }, [pdfNotes?.currentPage, pageRect, pdfSizes, pdfNotes?.settings.fontSize]);
 
   const base = grey[300];
   const stripe =
@@ -258,7 +258,7 @@ const PDFView: FC<Props> = ({
                 noData={""}
               >
                 <PDFPage
-                  pageIndex={pdfInfo?.currentPage}
+                  pageIndex={pdfNotes?.currentPage}
                   width={width}
                   error={""}
                   loading={""}
@@ -272,10 +272,10 @@ const PDFView: FC<Props> = ({
               </Document>
             ) : (
               typeof file === "string" &&
-              pdfInfo &&
+              pdfNotes &&
               width && (
                 <img
-                  src={model.getPageImage(file, pdfInfo.currentPage, width)}
+                  src={model.getPageImage(file, pdfNotes.currentPage, width)}
                   style={{ width: "100%", height: "100%" }}
                   onLoad={() => {
                     onLoadSuccess?.([]);
