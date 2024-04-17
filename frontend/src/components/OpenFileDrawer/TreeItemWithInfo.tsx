@@ -46,7 +46,7 @@ const TreeItemWithInfo: FC<Props> = (props: Props) => {
   const tooltip = progress ? (
     <>
       <div>総ページ： {`${progress.allPages}`} ページ</div>
-      {progress.allPages === progress.enabledPages ? undefined : (
+      {progress.allPages !== progress.enabledPages && (
         <div>有効ページ： {`${progress.enabledPages}`} ページ</div>
       )}
       <div>ノート付き： {`${progress.notedPages}`} ページ</div>
@@ -73,15 +73,10 @@ const TreeItemWithInfo: FC<Props> = (props: Props) => {
 
             {/* 進捗 */}
             {percent !== undefined && (
-              <Box
-                sx={{
-                  background: `linear-gradient(to right, gray ${percent}%, white ${percent}%)`,
-                  borderRadius: 1,
-                  border: "solid 1px",
-                  width: 20,
-                  height: 6,
-                  ml: 2,
-                }}
+              <progress
+                max="100"
+                value={percent}
+                style={{ width: 20, height: 12, marginLeft: 8 }}
               />
             )}
           </Box>

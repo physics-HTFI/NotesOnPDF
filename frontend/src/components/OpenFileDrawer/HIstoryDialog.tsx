@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from "react";
 import {
   Backdrop,
   Box,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -12,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import IModel from "@/models/IModel";
-import { History, HistoryFileOrigin2String } from "@/types/History";
+import { History, historyFileOrigin2String } from "@/types/History";
 
 /**
  * `History`の引数
@@ -28,10 +27,8 @@ interface Props {
  */
 const HistoryDialog: FC<Props> = ({ model, open, onClose }) => {
   const [history, setHistory] = useState<History>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
-    setSelectedId(null);
     if (!open) return;
     model
       .getHistory()
@@ -59,6 +56,7 @@ const HistoryDialog: FC<Props> = ({ model, open, onClose }) => {
           component={Box}
           sx={{
             maxWidth: 1000,
+            minHeight: 200,
             maxHeight: "calc(100vh - 100px)",
             background: "white",
           }}
@@ -66,11 +64,11 @@ const HistoryDialog: FC<Props> = ({ model, open, onClose }) => {
           <Table size="small">
             <TableHead sx={{ background: "lightsteelblue" }}>
               <TableRow>
-                <TableCell>ファイル名</TableCell>
-                <TableCell align="right" sx={{ width: 80 }}>
+                <TableCell sx={{ minWidth: 150 }}>ファイル名</TableCell>
+                <TableCell align="center" sx={{ width: 80 }}>
                   場所
                 </TableCell>
-                <TableCell align="right" sx={{ width: 150 }}>
+                <TableCell align="center" sx={{ width: 130 }}>
                   アクセス日時
                 </TableCell>
               </TableRow>
@@ -78,55 +76,25 @@ const HistoryDialog: FC<Props> = ({ model, open, onClose }) => {
             <TableBody>
               {history.map((row) => (
                 <TableRow
-                  selected={selectedId == row.id}
                   hover
                   key={row.id}
+                  sx={{ cursor: "pointer" }}
                   onClick={() => {
-                    setSelectedId(row.id);
+                    onClose(row.id);
                   }}
                 >
                   <TableCell component="th" scope="row">
                     {row.name}
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="center">
                     {historyFileOrigin2String(row.origin)}
                   </TableCell>
-                  <TableCell align="right">{row.accsessDate}</TableCell>
+                  <TableCell align="center">{row.accsessDate}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
-        <Box
-          sx={{
-            mb: 0.5,
-            display: "flex",
-            justifyContent: "flex-end",
-            background: "white",
-          }}
-        >
-          <Button
-            variant="contained"
-            sx={{ color: "white", m: 1 }}
-            size="small"
-            onClick={() => {
-              onClose();
-            }}
-          >
-            キャンセル
-          </Button>
-          <Button
-            disabled={!selectedId}
-            variant="contained"
-            sx={{ color: "white", m: 1 }}
-            size="small"
-            onClick={() => {
-              onClose(selectedId ?? undefined);
-            }}
-          >
-            開く
-          </Button>
-        </Box>
       </Box>
     </Backdrop>
   );

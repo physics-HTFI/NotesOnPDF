@@ -10,8 +10,6 @@ import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
 import HeaderIcons from "@/components/OpenFileDrawer/HeaderIcons";
 
-const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
-
 /**
  * `OpenFileDrawer`の引数
  */
@@ -20,7 +18,8 @@ interface Props {
   coverages?: Coverages;
   model: IModel;
   onClose: () => void;
-  onSelect: (pdf: string | File, path: string) => void;
+  onSelectPdfById?: (id: string) => void;
+  onSelectPdfByFile?: (file: File) => void;
 }
 
 /**
@@ -31,11 +30,12 @@ const OpenFileDrawer: FC<Props> = ({
   coverages,
   model,
   onClose,
-  onSelect,
+  onSelectPdfById,
+  onSelectPdfByFile,
 }) => {
   const [fileTree, setFileTree] = useState<FileTree>([]);
   const [expanded, setExpanded] = useState<string[]>([]);
-  const [selected, setSelected] = useState<string>("");
+  const [selectedPath, setSelectedPath] = useState<string>("");
 
   // ファイル一覧を取得
   useEffect(() => {
@@ -48,22 +48,22 @@ const OpenFileDrawer: FC<Props> = ({
   }, [model]);
 
   // 前回のファイルを選択した状態にする
-  // TODO 効いていない
   // TODO coveragesの数値が、ファイル名の横につかない
+  // TODO coveragesからfileTreeにないファイルを消去する
   useEffect(() => {
-    if (selected !== "" || !coverages?.recentPath) return;
-    const path = coverages.recentPath;
-    setSelected(path);
+    const path = coverages?.recentPath;
+    if (path === undefined) return;
+    setSelectedPath(path);
     setExpanded(
       [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
-        path.substring(0, m.index ?? 0)
+        path.substring(0, m.index - 1)
       )
     );
-  }, [selected, coverages]);
+  }, [fileTree, selectedPath, coverages]);
 
   return (
     <Drawer
-      anchor={"left"}
+      anchor="left"
       open={open}
       onClose={onClose}
       PaperProps={{
@@ -83,34 +83,27 @@ const OpenFileDrawer: FC<Props> = ({
       {/* ヘッダーアイコン */}
       <HeaderIcons
         model={model}
-        onSelectPdfFromFile={
-          IS_MOCK
-            ? (file) => {
-                onSelect(file, file.name);
-              }
-            : undefined
-        }
-        onSelectPdfFromId={(id) => {
-          alert(id);
-        }}
+        onSelectPdfByFile={onSelectPdfByFile}
+        onSelectPdfById={onSelectPdfById}
       />
 
       <Box sx={{ position: "relative" }}>
         {/* ツリービュー */}
         <TreeView
           expanded={expanded}
-          selected={selected}
+          selected={selectedPath}
           defaultCollapseIcon={<KeyboardArrowDown />}
           defaultEndIcon={<FontAwesomeIcon icon={faFilePdf} />}
           defaultExpandIcon={<KeyboardArrowRight />}
-          onNodeSelect={(_, nodeIds) => {
+          onNodeSelect={(_, path) => {
             const isDirectory = fileTree.some(
-              (i) => i.id === nodeIds && i.children !== null
+              (i) => i.path === path && i.children !== null
             );
             if (isDirectory) return;
-            const path = fileTree.find((f) => f.id === nodeIds)?.path ?? "";
-            setSelected(nodeIds);
-            onSelect(nodeIds, path);
+            setSelectedPath(path);
+            const id = fileTree.find((i) => i.path === path)?.id;
+            if (id === undefined) return;
+            onSelectPdfById?.(path);
           }}
           onNodeToggle={(_, nodeIds) => {
             setExpanded(nodeIds);

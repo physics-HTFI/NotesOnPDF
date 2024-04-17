@@ -12,8 +12,8 @@ const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
  */
 interface Props {
   model: IModel;
-  onSelectPdfFromId: (id: string) => void;
-  onSelectPdfFromFile?: (file: File) => void;
+  onSelectPdfById?: (id: string) => void;
+  onSelectPdfByFile?: (file: File) => void;
 }
 
 const sxButton = { "&:focus": { outline: "none" }, color: "slategray" };
@@ -23,8 +23,8 @@ const sxButton = { "&:focus": { outline: "none" }, color: "slategray" };
  */
 const HeaderIcons: FC<Props> = ({
   model,
-  onSelectPdfFromId,
-  onSelectPdfFromFile,
+  onSelectPdfById,
+  onSelectPdfByFile,
 }) => {
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
@@ -45,7 +45,7 @@ const HeaderIcons: FC<Props> = ({
         })
           .then((file) => {
             if (!file) return;
-            onSelectPdfFromFile?.(file);
+            onSelectPdfByFile?.(file);
           })
           .catch(() => undefined);
       }
@@ -53,7 +53,7 @@ const HeaderIcons: FC<Props> = ({
         model
           .getIdFromExternalFile()
           .then((id) => {
-            onSelectPdfFromId(id);
+            onSelectPdfById?.(id);
           })
           .catch(() => undefined);
       };
@@ -68,10 +68,9 @@ const HeaderIcons: FC<Props> = ({
       }}
     >
       {/* アクセス履歴からPDFファイルを開く */}
-      <Tooltip title="アクセス履歴からPDFファイルを開く">
+      <Tooltip title="アクセス履歴からPDFファイルを開きます">
         <span>
           <IconButton
-            disabled={IS_MOCK}
             sx={sxButton}
             onClick={() => {
               setOpenHistory(true);
@@ -84,20 +83,19 @@ const HeaderIcons: FC<Props> = ({
       </Tooltip>
       <HistoryDialog
         model={model}
-        open={openHistory && !IS_MOCK}
+        open={openHistory}
         onClose={(id) => {
           setOpenHistory(false);
           if (!id) return;
-          onSelectPdfFromId(id);
+          onSelectPdfById?.(id);
         }}
       />
       <Divider orientation="vertical" variant="middle" flexItem />
 
       {/* PC内のPDFファイルを開く */}
-      <Tooltip title="ファイルツリー外のPDFファイルを開く">
+      <Tooltip title="ファイルツリー外のPDFファイルを開きます">
         <span>
           <IconButton
-            disabled={IS_MOCK}
             sx={sxButton}
             size="small"
             onClick={handleSelectExternalPdf}
@@ -108,7 +106,7 @@ const HeaderIcons: FC<Props> = ({
       </Tooltip>
 
       {/* URLから開く */}
-      <Tooltip title="URLからPDFファイルを開く">
+      <Tooltip title="URLからPDFファイルを開きます">
         <span>
           <IconButton
             disabled={IS_MOCK}
@@ -130,7 +128,7 @@ const HeaderIcons: FC<Props> = ({
                 model
                   .getIdFromUrl(url)
                   .then((id) => {
-                    onSelectPdfFromId(id);
+                    onSelectPdfById?.(id);
                   })
                   .catch(() => undefined);
               }}

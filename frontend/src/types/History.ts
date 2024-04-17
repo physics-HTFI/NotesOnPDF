@@ -11,7 +11,7 @@ export enum HistoryFileOrigin {
   web = 2,
 }
 
-export const HistoryFileOrigin2String = (origin: HistoryFileOrigin) => {
+export const historyFileOrigin2String = (origin: HistoryFileOrigin) => {
   switch (origin) {
     case HistoryFileOrigin.insideTree:
       return "ツリー内";

@@ -14,9 +14,9 @@ export interface Coverage {
  * 開いたことのあるPDFの進捗情報を保持する
  */
 export interface Coverages {
-  /** 前回開いたPDFファイル */
+  /** 前回開いたPDFファイルのパス */
   recentPath?: string;
-  /** 各PDFの進捗率 */
+  /** 各PDFの進捗率。keyはパス */
   PDFs: Record<string, Coverage>;
 }
 
