@@ -35,7 +35,7 @@ const OpenFileDrawer: FC<Props> = ({
 }) => {
   const [fileTree, setFileTree] = useState<FileTree>([]);
   const [expanded, setExpanded] = useState<string[]>([]);
-  const [selectedPath, setSelectedPath] = useState<string>("");
+  const [selectedPath, setSelectedPath] = useState<string>();
 
   // ファイル一覧を取得
   useEffect(() => {
@@ -48,10 +48,10 @@ const OpenFileDrawer: FC<Props> = ({
   }, [model]);
 
   // 前回のファイルを選択した状態にする
-  // TODO coveragesの数値が、ファイル名の横につかない
-  // TODO coveragesからfileTreeにないファイルを消去する
   useEffect(() => {
-    const path = coverages?.recentPath;
+    if (selectedPath !== undefined) return;
+    if (fileTree.length === 0 || coverages === undefined) return;
+    const path = coverages.recentPath;
     if (path === undefined) return;
     setSelectedPath(path);
     setExpanded(
@@ -59,6 +59,12 @@ const OpenFileDrawer: FC<Props> = ({
         path.substring(0, m.index - 1)
       )
     );
+    // ファイルツリー内に存在しないファイルの情報を削除する
+    for (const [key] of coverages.PDFs) {
+      if (fileTree.some((f) => f.path === key)) {
+        coverages.PDFs.delete(key);
+      }
+    }
   }, [fileTree, selectedPath, coverages]);
 
   return (

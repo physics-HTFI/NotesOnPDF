@@ -6,6 +6,7 @@ export interface PdfNotes {
   pages: Page[];
   settings: Settings;
 }
+// TODO バージョンを含めるようにしたほうがよい
 
 /**
  * PDFを開くときに必要な情報

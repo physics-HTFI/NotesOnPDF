@@ -17,8 +17,8 @@ export interface Coverages {
   /** 前回開いたPDFファイルのパス */
   recentPath?: string;
   /** 各PDFの進捗率。keyはパス */
-  PDFs: Record<string, Coverage>;
+  PDFs: Map<string, Coverage>;
 }
 
 /** 始めて開いたPDFファイル用 */
-export const GetCoverages_empty: () => Coverages = () => ({ PDFs: {} });
+export const GetCoverages_empty: () => Coverages = () => ({ PDFs: new Map() });
