@@ -4,7 +4,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import IModel from "@/models/IModel";
 import Model from "./models/Model";
 import ModelMock from "@/models/Model.Mock";
-import { Coverages } from "@/types/Coverages";
+import { Coverage, Coverages } from "@/types/Coverages";
 import { PdfNotes } from "@/types/PdfNotes";
 import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "./components/OpenFileDrawer";
@@ -71,7 +71,7 @@ function App() {
   useEffect(() => {
     if (!coverages || !pdfPath || !pdfNotes) return;
     // TODO ページを切り替えるだけで更新されてしまう
-    coverages.PDFs[pdfPath] = {
+    const coverage: Coverage = {
       allPages: pdfNotes.pages.length,
       enabledPages:
         pdfNotes.pages.length -
@@ -85,6 +85,7 @@ function App() {
             : pdfNotes.pages[Number(key)]?.notes?.length ?? 0) > 0
       ).length,
     };
+    coverages.PDFs.set(pdfPath, coverage);
     model.putCoverages(coverages).catch(() => undefined);
   }, [pdfNotes, coverages, pdfPath]);
   useEffect(() => {
@@ -131,9 +132,38 @@ function App() {
               if (!pdf) return;
               setOpenLeftDrawer(false);
             }}
-            onSelect={(pdf, path) => {
+            onSelectPdfById={(id) => {
               setOpenLeftDrawer(false);
-              const pdfPathNew = pdf instanceof File ? pdf.name : pdf;
+              setIsWaitingPDF(true);
+              setIsWaitingPdfNotes(true);
+              setPdfNotes(undefined);
+              setPDF(pdf);
+              if (coverages)
+                setCoverages({ ...coverages, recentPath: pdfPathNew });
+              model
+                .getPdfNotes(pdfPathNew)
+                .then((pdfNotes) => {
+                  // 初回生成時にタイトルを設定する
+                  if (
+                    pdfNotes?.pages.every((p) => Object.keys(p).length === 2)
+                  ) {
+                    if (pdfNotes.pages[0] !== undefined) {
+                      pdfNotes.pages[0].book =
+                        path.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined;
+                    }
+                  }
+                  setPdfNotes(pdfNotes);
+                })
+                .catch(() => {
+                  setPdfNotes(null);
+                })
+                .finally(() => {
+                  setIsWaitingPdfNotes(false);
+                });
+            }}
+            onSelectPdfByFile={(file) => {
+              setOpenLeftDrawer(false);
+              const pdfPathNew = file.name;
               if (pdfPath === pdfPathNew || !pdfPathNew) return;
               setIsWaitingPDF(true);
               setIsWaitingPdfNotes(true);

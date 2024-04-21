@@ -58,28 +58,40 @@ export default class ModelMock implements IModel {
     await this.wait();
     return {
       recentPath: "文書1.pdf",
-      PDFs: {
-        "文書1.pdf": {
-          allPages: 29,
-          enabledPages: 23,
-          notedPages: 0,
-        },
-        "dummy1/dummy1A.pdf": {
-          allPages: 100,
-          enabledPages: 100,
-          notedPages: 20,
-        },
-        "dummy1/dummy1B.pdf": {
-          allPages: 100,
-          enabledPages: 100,
-          notedPages: 50,
-        },
-        "dummy1/dummy1C.pdf": {
-          allPages: 100,
-          enabledPages: 100,
-          notedPages: 100,
-        },
-      },
+      PDFs: new Map([
+        [
+          "文書1.pdf",
+          {
+            allPages: 29,
+            enabledPages: 23,
+            notedPages: 0,
+          },
+        ],
+        [
+          "dummy1/dummy1A.pdf",
+          {
+            allPages: 100,
+            enabledPages: 100,
+            notedPages: 20,
+          },
+        ],
+        [
+          "dummy1/dummy1B.pdf",
+          {
+            allPages: 100,
+            enabledPages: 100,
+            notedPages: 50,
+          },
+        ],
+        [
+          "dummy1/dummy1C.pdf",
+          {
+            allPages: 100,
+            enabledPages: 100,
+            notedPages: 100,
+          },
+        ],
+      ]),
     };
   };
   putCoverages = async (): Promise<void> => {
