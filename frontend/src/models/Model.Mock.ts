@@ -1,7 +1,6 @@
 import { FileTree } from "@/types/FileTree";
-import { PdfInfo } from "@/types/PdfNotes";
 import { Coverages } from "@/types/Coverages";
-import IModel from "./IModel";
+import IModel, { ResultGetPdfNotes } from "./IModel";
 import { AppSettings, GetAppSettings_default } from "@/types/AppSettings";
 import { History } from "@/types/History";
 
@@ -57,41 +56,29 @@ export default class ModelMock implements IModel {
   public getCoverages = async (): Promise<Coverages> => {
     await this.wait();
     return {
-      recentPath: "文書1.pdf",
-      PDFs: new Map([
-        [
-          "文書1.pdf",
-          {
-            allPages: 29,
-            enabledPages: 23,
-            notedPages: 0,
-          },
-        ],
-        [
-          "dummy1/dummy1A.pdf",
-          {
-            allPages: 100,
-            enabledPages: 100,
-            notedPages: 20,
-          },
-        ],
-        [
-          "dummy1/dummy1B.pdf",
-          {
-            allPages: 100,
-            enabledPages: 100,
-            notedPages: 50,
-          },
-        ],
-        [
-          "dummy1/dummy1C.pdf",
-          {
-            allPages: 100,
-            enabledPages: 100,
-            notedPages: 100,
-          },
-        ],
-      ]),
+      recentId: "12",
+      pdfs: {
+        "12": {
+          allPages: 29,
+          enabledPages: 23,
+          notedPages: 0,
+        },
+        "6": {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 20,
+        },
+        "7": {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 50,
+        },
+        "8": {
+          allPages: 100,
+          enabledPages: 100,
+          notedPages: 100,
+        },
+      },
     };
   };
   putCoverages = async (): Promise<void> => {
@@ -99,12 +86,17 @@ export default class ModelMock implements IModel {
     throw new Error();
   };
 
-  getPdfNotes = async (id: string): Promise<PdfInfo> => {
+  getPdfNotes = async (id: string): Promise<ResultGetPdfNotes> => {
     await this.wait();
     if (id !== "12") throw new Error();
     return {
       name: "文書1.pdf",
+      sizes: new Array<{ width: number; height: number }>(28).fill({
+        width: 0.705,
+        height: 1,
+      }),
       notes: {
+        version: "1.0",
         currentPage: 0,
         settings: {
           fontSize: 70,

@@ -123,7 +123,7 @@ export const getSeparator = (key?: string) => (
 /**
  * @returns 目次の内容
  */
-const getTOCData = (
+const getTocData = (
   pdfNotes?: PdfNotes,
   onChanged?: (pdfNotes: PdfNotes) => void
 ): JSX.Element[] => {
@@ -182,4 +182,4 @@ const getTOCData = (
   return toc;
 };
 
-export default getTOCData;
+export default getTocData;

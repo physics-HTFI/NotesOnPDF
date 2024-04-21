@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { Box, Drawer } from "@mui/material";
-import { Coverages } from "@/types/Coverages";
+import { Coverage } from "@/types/Coverages";
 import IModel from "@/models/IModel";
 import { FileTree } from "@/types/FileTree";
 import { TreeView } from "@mui/x-tree-view";
@@ -9,13 +9,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
 import HeaderIcons from "@/components/OpenFileDrawer/HeaderIcons";
+import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 
 /**
  * `OpenFileDrawer`の引数
  */
 interface Props {
   open: boolean;
-  coverages?: Coverages;
   model: IModel;
   onClose: () => void;
   onSelectPdfById?: (id: string) => void;
@@ -27,44 +27,50 @@ interface Props {
  */
 const OpenFileDrawer: FC<Props> = ({
   open,
-  coverages,
   model,
   onClose,
   onSelectPdfById,
   onSelectPdfByFile,
 }) => {
+  const { coverages, setCoverages } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>([]);
   const [expanded, setExpanded] = useState<string[]>([]);
   const [selectedPath, setSelectedPath] = useState<string>();
 
   // ファイル一覧を取得
   useEffect(() => {
-    model
-      .getFileTree()
-      .then((files) => {
-        setFileTree(files);
-      })
-      .catch(() => undefined);
-  }, [model]);
+    load().catch(() => undefined);
+    async function load() {
+      // データ読み込み
+      const files = await model.getFileTree();
+      const covs = await model.getCoverages();
+      // ファイルツリー内に存在しないファイルの情報を削除する
+      const pdfs: Record<string, Coverage> = {};
+      for (const pdf of Object.entries(covs.pdfs)) {
+        const entry = files.find((f) => f.id === pdf[0]);
+        if (!entry) continue;
+        pdfs[pdf[0]] = pdf[1];
+      }
+      covs.pdfs = pdfs;
+      // 読み込んだ値を設定
+      setFileTree(files);
+      setCoverages(covs);
+    }
+  }, [model, setCoverages]);
 
   // 前回のファイルを選択した状態にする
   useEffect(() => {
     if (selectedPath !== undefined) return;
-    if (fileTree.length === 0 || coverages === undefined) return;
-    const path = coverages.recentPath;
-    if (path === undefined) return;
+    if (fileTree.length === 0 || !coverages) return;
+    const file = fileTree.find((i) => i.id === coverages.recentId);
+    if (!file) return;
+    const path = file.path;
     setSelectedPath(path);
     setExpanded(
       [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
         path.substring(0, m.index - 1)
       )
     );
-    // ファイルツリー内に存在しないファイルの情報を削除する
-    for (const [key] of coverages.PDFs) {
-      if (fileTree.some((f) => f.path === key)) {
-        coverages.PDFs.delete(key);
-      }
-    }
   }, [fileTree, selectedPath, coverages]);
 
   return (
@@ -106,10 +112,12 @@ const OpenFileDrawer: FC<Props> = ({
               (i) => i.path === path && i.children !== null
             );
             if (isDirectory) return;
+            if (!coverages) return;
             setSelectedPath(path);
-            const id = fileTree.find((i) => i.path === path)?.id;
-            if (id === undefined) return;
-            onSelectPdfById?.(path);
+            const recentId = fileTree.find((i) => i.path === path)?.id;
+            if (!recentId) return;
+            setCoverages({ ...coverages, recentId });
+            onSelectPdfById?.(recentId);
           }}
           onNodeToggle={(_, nodeIds) => {
             setExpanded(nodeIds);

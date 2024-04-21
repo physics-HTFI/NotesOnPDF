@@ -1,13 +1,13 @@
 import { FC, useContext } from "react";
 import { Box, Drawer } from "@mui/material";
 import { PdfNotes } from "@/types/PdfNotes";
-import Settings from "./TOCView/Settings";
-import getTOCData from "./TOCView/getTOCData";
+import Settings from "./TocView/Settings";
+import getTocData from "./TocView/getTocData";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 
 /**
- * `TOCView`の引数
+ * `TocView`の引数
  */
 interface Props {
   openDrawer: boolean;
@@ -17,10 +17,10 @@ interface Props {
 /**
  * 目次を表示するコンポーネント
  */
-const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
+const TocView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
   const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
   const handleChanged = (pdfNotes: PdfNotes) => {
-    setPdfNotes?.(pdfNotes);
+    setPdfNotes(pdfNotes);
   };
 
   return (
@@ -35,7 +35,7 @@ const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
       }}
     >
       <Box sx={{ p: 0.5, lineHeight: 1 }}>
-        {getTOCData(pdfNotes, handleChanged)}
+        {getTocData(pdfNotes, handleChanged)}
       </Box>
 
       <Drawer
@@ -60,4 +60,4 @@ const TOCView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
   );
 };
 
-export default TOCView;
+export default TocView;

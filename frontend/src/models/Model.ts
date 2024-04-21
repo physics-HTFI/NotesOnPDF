@@ -1,7 +1,7 @@
 import { FileTree } from "@/types/FileTree";
-import { PdfInfo, PdfNotes, createNewPdfNotes } from "@/types/PdfNotes";
+import { PdfNotes } from "@/types/PdfNotes";
 import { GetCoverages_empty, Coverages } from "@/types/Coverages";
-import IModel from "./IModel";
+import IModel, { ResultGetPdfNotes } from "./IModel";
 import { AppSettings, GetAppSettings_default } from "@/types/AppSettings";
 import { History } from "@/types/History";
 
@@ -58,18 +58,17 @@ export default class Model implements IModel {
     });
   };
 
-  getPdfNotes = async (id: string): Promise<PdfInfo> => {
+  getPdfNotes = async (id: string): Promise<ResultGetPdfNotes> => {
     const res = await fetch(ORIGIN + `/api/notes/${id}`);
-    const pdfNotes = (await res.json()) as {
+    const { name, sizes, notes } = (await res.json()) as {
       name: string;
       sizes: { width: number; height: number }[];
-      notes?: PdfNotes;
+      notes?: string;
     };
     return {
-      name: pdfNotes.name,
-      notes:
-        pdfNotes.notes ??
-        createNewPdfNotes(pdfNotes.sizes.map((s) => s.width / s.height)),
+      name,
+      sizes,
+      notes: notes ? (JSON.parse(notes) as PdfNotes) : undefined,
     };
   };
   putPdfNotes = async (id: string, pdfNotes: PdfNotes): Promise<void> => {

@@ -19,7 +19,7 @@ export const usePdfNotes = () => {
     if (page.notes.length === 0) page.notes = undefined;
   };
   const popNote = (note: NoteType) => {
-    if (!pdfNotes || !setPdfNotes) return;
+    if (!pdfNotes) return;
     _popNote(note);
     setPdfNotes({ ...pdfNotes });
   };
@@ -34,7 +34,7 @@ export const usePdfNotes = () => {
     pdfNotes.pages[pdfNotes.currentPage] = page;
   };
   const pushNote = (note: NoteType) => {
-    if (!pdfNotes || !setPdfNotes) return;
+    if (!pdfNotes) return;
     _pushNote(note);
     setPdfNotes({ ...pdfNotes });
   };
@@ -45,7 +45,7 @@ export const usePdfNotes = () => {
    */
   const updateNote = (pop: NoteType, push: NoteType) => {
     // if (JSON.stringify(pop) === JSON.stringify(push)) return; // Polygonの追加時はtrueになるのでまずい
-    if (!pdfNotes || !setPdfNotes) return;
+    if (!pdfNotes) return;
     _popNote(pop);
     _pushNote(push);
     setPdfNotes({ ...pdfNotes });

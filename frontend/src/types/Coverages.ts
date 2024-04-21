@@ -14,11 +14,11 @@ export interface Coverage {
  * 開いたことのあるPDFの進捗情報を保持する
  */
 export interface Coverages {
-  /** 前回開いたPDFファイルのパス */
-  recentPath?: string;
-  /** 各PDFの進捗率。keyはパス */
-  PDFs: Map<string, Coverage>;
+  /** 前回開いたPDFファイルのID */
+  recentId?: string;
+  /** 各PDFの進捗率。keyはID */
+  pdfs: Record<string, Coverage>;
 }
 
-/** 始めて開いたPDFファイル用 */
-export const GetCoverages_empty: () => Coverages = () => ({ PDFs: new Map() });
+/** `coverages.json`がない場合の初期値 */
+export const GetCoverages_empty: () => Coverages = () => ({ pdfs: {} });

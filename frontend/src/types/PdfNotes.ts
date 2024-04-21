@@ -1,19 +1,13 @@
+import { ResultGetPdfNotes } from "@/models/IModel";
+
 /**
  * 1つのPDFファイルに追加された全ての情報
  */
 export interface PdfNotes {
+  version: string;
   currentPage: number;
   pages: Page[];
   settings: Settings;
-}
-// TODO バージョンを含めるようにしたほうがよい
-
-/**
- * PDFを開くときに必要な情報
- */
-export interface PdfInfo {
-  name: string;
-  notes: PdfNotes;
 }
 
 export type NoteType =
@@ -125,14 +119,24 @@ export interface Settings {
 }
 
 /**
- * `Note`がまだ生成されていないPDFファイル用の初期インスタンスを返す
+ * `PdfNotes`がまだ生成されていないファイルの場合、新規作成して返す。
+ * 既存の場合はそのまま返す。
  */
-export const createNewPdfNotes = (sizeRatios: number[]): PdfNotes => {
-  return {
+export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
+  if (result.notes) return result.notes;
+  const notes: PdfNotes = {
+    version: "1.0",
     currentPage: 0,
     settings: { fontSize: 70, offsetTop: 0, offsetBottom: 0 },
-    pages: sizeRatios.map<Page>((r, i) => ({ num: i + 1, sizeRatio: r })),
+    pages: result.sizes.map<Page>((s, i) => ({
+      num: i + 1,
+      sizeRatio: s.width / s.height,
+    })),
   };
+  if (notes.pages[0]) {
+    notes.pages[0].book = result.name;
+  }
+  return notes;
 };
 
 /**

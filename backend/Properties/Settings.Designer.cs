@@ -37,7 +37,7 @@ namespace backend.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("./PDFs")]
+        [global::System.Configuration.DefaultSettingValueAttribute("./pdfs")]
         public string RootDirectory {
             get {
                 return ((string)(this["RootDirectory"]));

@@ -7,19 +7,19 @@ import {
   useState,
 } from "react";
 import { Box, Container } from "@mui/material";
-import { pdfjs, Document, Page as PDFPage } from "react-pdf";
-import PageLabelSmall from "./PDFView/PageLabelSmall";
-import PageLabelLarge from "./PDFView/PageLabelLarge";
-import SpeedDial, { Mode } from "./PDFView/SpeedDial";
+import { pdfjs, Document, Page as PdfPage } from "react-pdf";
+import PageLabelSmall from "./PdfView/PageLabelSmall";
+import PageLabelLarge from "./PdfView/PageLabelLarge";
+import SpeedDial, { Mode } from "./PdfView/SpeedDial";
 import { Node, NoteType } from "@/types/PdfNotes";
-import Palette from "./PDFView/Palette";
-import Excluded from "./PDFView/Excluded";
-import Items from "./PDFView/Items";
+import Palette from "./PdfView/Palette";
+import Excluded from "./PdfView/Excluded";
+import Items from "./PdfView/Items";
 import { MouseContext } from "@/contexts/MouseContext";
-import Editor from "./PDFView/Editor";
+import Editor from "./PdfView/Editor";
 import { grey } from "@mui/material/colors";
 import { MathJaxContext } from "better-react-mathjax";
-import Move from "./PDFView/Move";
+import Move from "./PdfView/Move";
 import { usePdfNotes } from "@/hooks/usePdfNotes";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import IModel from "@/models/IModel";
@@ -74,7 +74,7 @@ const mathjaxConfig = {
   },
 };
 
-/** [width, height, deltaY（＝view中心とPDF中心の差）] */
+/** [width, height, deltaY（＝view中心とPdf中心の差）] */
 const preferredSize = (
   offsetTop: number,
   offsetBottom: number,
@@ -99,7 +99,7 @@ const preferredSize = (
 };
 
 /**
- * `PDFView`の引数
+ * `PdfView`の引数
  */
 interface Props {
   file?: string | File;
@@ -112,9 +112,9 @@ interface Props {
 }
 
 /**
- * PDFを表示するコンポーネント
+ * Pdfを表示するコンポーネント
  */
-const PDFView: FC<Props> = ({
+const PdfView: FC<Props> = ({
   file,
   model,
   openDrawer,
@@ -227,7 +227,7 @@ const PDFView: FC<Props> = ({
                 file={
                   file instanceof File
                     ? file
-                    : `${import.meta.env.VITE_PDF_ROOT}${sampleId2Path(file)}`
+                    : `${import.meta.env.VITE_Pdf_ROOT}${sampleId2Path(file)}`
                 }
                 onLoadSuccess={(doc) => {
                   if (!file) return;
@@ -257,7 +257,7 @@ const PDFView: FC<Props> = ({
                 loading={""}
                 noData={""}
               >
-                <PDFPage
+                <PdfPage
                   pageIndex={pdfNotes?.currentPage}
                   width={width}
                   error={""}
@@ -354,4 +354,4 @@ const PDFView: FC<Props> = ({
   );
 };
 
-export default PDFView;
+export default PdfView;

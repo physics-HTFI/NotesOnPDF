@@ -33,7 +33,7 @@ const getTreeItems = (
     return (
       <TreeItemWithInfo
         label={getFileName(entry.path)}
-        progress={coverages?.PDFs.get(entry.path)}
+        progress={coverages?.pdfs[entry.id]}
         nodeId={entry.path}
         key={entry.path}
       />

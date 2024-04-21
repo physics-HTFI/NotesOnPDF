@@ -6,7 +6,7 @@
       <Value Profile="(Default)">8080</Value>
     </Setting>
     <Setting Name="RootDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">./PDFs</Value>
+      <Value Profile="(Default)">./pdfs</Value>
     </Setting>
     <Setting Name="OutputDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">./output</Value>

@@ -5,12 +5,12 @@ import IModel from "@/models/IModel";
 import Model from "./models/Model";
 import ModelMock from "@/models/Model.Mock";
 import { Coverage, Coverages } from "@/types/Coverages";
-import { PdfNotes } from "@/types/PdfNotes";
+import { PdfNotes, createOrGetPdfNotes } from "@/types/PdfNotes";
 import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "./components/OpenFileDrawer";
-import PDFView from "@/components/PDFView";
+import PdfView from "@/components/PdfView";
 import Waiting from "@/components/Fullscreen/Waiting";
-import TOCView from "@/components/TOCView";
+import TocView from "@/components/TocView";
 import { PdfNotesContext } from "./contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 import { AppSettingsContext } from "./contexts/AppSettingsContext";
@@ -23,8 +23,8 @@ function App() {
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const [coverages, setCoverages] = useState<Coverages>();
   const [pdf, setPDF] = useState<string | File>();
-  const [pdfNotes, setPdfNotes] = useState<PdfNotes | null>(); // 読み込み失敗時にnull
-  const [pageRatios, setPageRatios] = useState<number[]>();
+  const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
+  const [, setPageRatios] = useState<number[]>();
   const pdfPath = pdf && (pdf instanceof File ? pdf.name : pdf);
 
   const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
@@ -43,22 +43,10 @@ function App() {
     setPdfNotes({ ...pdfNotes, currentPage: newPage });
   };
 
-  // クリック系のイベントを無効にする
+  // 初回に1度だけ行う処理
   useEffect(() => {
     document.onselectstart = () => false;
     document.oncontextmenu = () => false;
-  }, []);
-
-  // ファイルツリーに表示する進捗情報の取得
-  useEffect(() => {
-    document.onselectstart = () => false;
-    document.oncontextmenu = () => false;
-    model
-      .getCoverages()
-      .then((coverages) => {
-        setCoverages(coverages);
-      })
-      .catch(() => undefined);
     model
       .getAppSettings()
       .then((settings) => {
@@ -85,7 +73,7 @@ function App() {
             : pdfNotes.pages[Number(key)]?.notes?.length ?? 0) > 0
       ).length,
     };
-    coverages.PDFs.set(pdfPath, coverage);
+    coverages.pdfs[pdfPath] = coverage;
     model.putCoverages(coverages).catch(() => undefined);
   }, [pdfNotes, coverages, pdfPath]);
   useEffect(() => {
@@ -97,25 +85,16 @@ function App() {
     model.putPdfNotes(pdfPath, pdfNotes).catch(() => undefined);
   }, [pdfPath, pdfNotes]);
 
-  // 始めて読み込むPDFの場合、`PdfNotes`を生成する
-  useEffect(() => {
-    if (isWaitingPDF || isWaitingPdfNotes) return;
-    if (!pageRatios || !pdf || !pdfPath) return;
-    if (pdfNotes === undefined) return;
-    /*
-    if (pdfNotes === null) {
-      setPdfNotes(createNewPdfNotes(pageRatios));
-    } else if (pdfNotes.pages.length !== pageRatios.length) {
-      // 同じPDFでページ数が異なっている場合に対応する
-      setPdfNotes({ ...pdfNotes });
-    }
-    */
-  }, [isWaitingPDF, isWaitingPdfNotes, pageRatios, pdfNotes, pdfPath, pdf]);
-
   return (
     <AppSettingsContext.Provider value={{ appSettings, setAppSettings }}>
       <PdfNotesContext.Provider
-        value={{ pdfNotes: pdfNotes ?? undefined, setPdfNotes, pdfPath }}
+        value={{
+          pdfPath,
+          pdfNotes,
+          setPdfNotes,
+          coverages,
+          setCoverages,
+        }}
       >
         <Box
           sx={{ display: "flex" }}
@@ -126,7 +105,6 @@ function App() {
           {/* ファイルツリー */}
           <OpenFileDrawer
             model={model}
-            coverages={coverages}
             open={openLeftDrawer}
             onClose={() => {
               if (!pdf) return;
@@ -134,28 +112,17 @@ function App() {
             }}
             onSelectPdfById={(id) => {
               setOpenLeftDrawer(false);
-              setIsWaitingPDF(true);
+              if (pdfPath === id) return;
               setIsWaitingPdfNotes(true);
               setPdfNotes(undefined);
-              setPDF(pdf);
-              if (coverages)
-                setCoverages({ ...coverages, recentPath: pdfPathNew });
+              setPDF(id);
               model
-                .getPdfNotes(pdfPathNew)
-                .then((pdfNotes) => {
-                  // 初回生成時にタイトルを設定する
-                  if (
-                    pdfNotes?.pages.every((p) => Object.keys(p).length === 2)
-                  ) {
-                    if (pdfNotes.pages[0] !== undefined) {
-                      pdfNotes.pages[0].book =
-                        path.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined;
-                    }
-                  }
-                  setPdfNotes(pdfNotes);
+                .getPdfNotes(id)
+                .then((result) => {
+                  setPdfNotes(createOrGetPdfNotes(result));
                 })
                 .catch(() => {
-                  setPdfNotes(null);
+                  setPdfNotes(undefined);
                 })
                 .finally(() => {
                   setIsWaitingPdfNotes(false);
@@ -169,35 +136,15 @@ function App() {
               setIsWaitingPdfNotes(true);
               setPdfNotes(undefined);
               setPDF(pdf);
-              if (coverages)
-                setCoverages({ ...coverages, recentPath: pdfPathNew });
-              model
-                .getPdfNotes(pdfPathNew)
-                .then((pdfNotes) => {
-                  // 初回生成時にタイトルを設定する
-                  if (
-                    pdfNotes?.pages.every((p) => Object.keys(p).length === 2)
-                  ) {
-                    if (pdfNotes.pages[0] !== undefined) {
-                      pdfNotes.pages[0].book =
-                        path.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? undefined;
-                    }
-                  }
-                  setPdfNotes(pdfNotes);
-                })
-                .catch(() => {
-                  setPdfNotes(null);
-                })
-                .finally(() => {
-                  setIsWaitingPdfNotes(false);
-                });
+              // TODO
+              setIsWaitingPdfNotes(false);
             }}
           />
 
           <PanelGroup direction="horizontal">
             {/* 目次 */}
             <Panel defaultSizePixels={270} minSizePixels={40}>
-              <TOCView
+              <TocView
                 openDrawer={openBottomDrawer}
                 onCloseDrawer={() => {
                   setOpenBottomDrawer(false);
@@ -212,7 +159,7 @@ function App() {
 
             {/* PDFビュー */}
             <Panel minSizePixels={200}>
-              <PDFView
+              <PdfView
                 file={pdf}
                 model={model}
                 openDrawer={openBottomDrawer}
