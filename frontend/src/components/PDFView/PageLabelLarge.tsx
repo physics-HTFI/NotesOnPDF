@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box } from "@mui/material";
+import { Paper } from "@mui/material";
 
 /**
  * `PageLabelLarge`の引数
@@ -14,23 +14,27 @@ interface Props {
  */
 const PageLabelLarge: FC<Props> = ({ label, shown }) =>
   shown && (
-    <Box
+    <Paper
+      elevation={5}
       sx={{
-        color: "darkseagreen",
+        color: "white",
+        background: "darkseagreen",
         position: "absolute",
         top: 0,
         left: 0,
         bottom: 0,
         right: 0,
+        width: 140,
+        height: 50,
+        m: "auto",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         fontSize: "2em",
-        background: "white",
       }}
     >
       {label}
-    </Box>
+    </Paper>
   );
 
 export default PageLabelLarge;
