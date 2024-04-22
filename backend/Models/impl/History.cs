@@ -36,12 +36,12 @@ namespace backend
         /// <summary>
         /// <c>throw</c>しない
         /// </summary>
-        public HttpServer.FileItem[] GetHistory()
+        public HttpServer.PdfItem[] GetHistory()
         {
             try
             {
                 return Items.Select(i => 
-                    new HttpServer.FileItem(i.Id, getName(i), (int)i.Origin, i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
+                    new HttpServer.PdfItem(i.Id, getName(i), (int)i.Origin, i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
                 ).ToArray();
 
                 static string getName(Item item)

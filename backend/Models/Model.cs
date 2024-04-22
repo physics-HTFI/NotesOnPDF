@@ -69,7 +69,7 @@ namespace backend
         /// <summary>
         /// 過去に開いたファイルの<c>id</c>とファイル名のリストを返す
         /// </summary>
-        public HttpServer.FileItem[] GetHistory() => history.GetHistory();
+        public HttpServer.PdfItem[] GetHistory() => history.GetHistory();
 
 
         /// <summary>
