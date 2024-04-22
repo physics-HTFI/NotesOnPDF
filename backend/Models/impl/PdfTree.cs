@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text.Json;
+using System.Windows;
 
 namespace backend
 {
@@ -96,14 +97,13 @@ namespace backend
 
                 // `dir`を追加
                 {
-                    string id = PathUtils.Path2Id(dir);
                     string[] children = dirs.Concat(pdfs).Select(PathUtils.Path2Id).ToArray();
-                    items.Add(new(id, dir, children));
+                    addItem(dir, children);
                 }
                 // `dir`内のファイルを追加
                 foreach (var f in pdfs)
                 {
-                    items.Add(new(PathUtils.Path2Id(f), f, null));
+                    addItem(f, null);
                 }
                 // `dir`内のフォルダを追加
                 foreach (var d in dirs)
@@ -113,6 +113,10 @@ namespace backend
             }
 
             bool hasPdf(string dir) => Directory.GetFiles(dir, "*.pdf", SearchOption.AllDirectories).Length != 0;
+            void addItem(string path, string[]? children)
+            {
+                items.Add(new(PathUtils.Path2Id(path), path.Replace('\\', '/'), children));
+            }
         }
     }
 }
