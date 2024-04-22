@@ -16,8 +16,6 @@ namespace backend.Models.impl
         /// </summary>
         public static async Task<string> FromUrl(string url)
         {
-            url = "https://ocw.kyoto-u.ac.jp/wp-content/uploads/2010/04/2010_toukeibutsurigaku_2.pdf";
-
             var uri = new Uri(url);
             string name = Path.GetFileName(uri.LocalPath);
             string path = Path.Combine(SettingsUtils.DownloadDirectory, name);
