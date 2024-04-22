@@ -55,7 +55,7 @@ const Marker: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   return (
     <>
       <g
-        style={{ cursor }}
+        style={{ cursor, mixBlendMode: "multiply" }}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);
         }}

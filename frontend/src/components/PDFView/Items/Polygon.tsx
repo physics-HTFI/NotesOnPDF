@@ -48,6 +48,7 @@ const Polygon: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
           fillOpacity: params.style === "outlined" ? 0 : hover ? 0.2 : 0.3,
           strokeOpacity: hover ? 0.5 : 1,
           cursor,
+          mixBlendMode: "multiply",
         }}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);
