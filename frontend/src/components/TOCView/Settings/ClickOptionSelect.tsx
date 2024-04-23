@@ -41,19 +41,19 @@ const ClickOptionSelect: FC<Props> = ({ value, label, onChange }) => {
         sx={{ flexGrow: 1, fontSize: "160%" }}
       >
         <MenuItem value={"none"}>なし</MenuItem>
-        <MenuItem value={"edit"}>
-          <Edit
-            sx={{ color: "cornflowerblue", pr: 1, verticalAlign: "bottom" }}
-            fontSize="small"
-          />
-          <span>変更</span>
-        </MenuItem>
         <MenuItem value={"move"}>
           <OpenWith
             sx={{ color: "mediumseagreen", pr: 1, verticalAlign: "bottom" }}
             fontSize="small"
           />
           <span>移動・変形</span>
+        </MenuItem>
+        <MenuItem value={"edit"}>
+          <Edit
+            sx={{ color: "cornflowerblue", pr: 1, verticalAlign: "bottom" }}
+            fontSize="small"
+          />
+          <span>変更</span>
         </MenuItem>
         <MenuItem value={"delete"}>
           <Delete

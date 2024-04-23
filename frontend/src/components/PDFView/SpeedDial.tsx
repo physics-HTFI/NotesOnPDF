@@ -138,17 +138,6 @@ const SpeedDial: FC<Props> = ({
             tooltipPlacement="right"
           />
 
-          {/* 注釈の編集 */}
-          <SpeedDialAction
-            tooltipTitle={"注釈の文字列・線種の変更"}
-            icon={<Edit sx={{ color: "cornflowerblue" }} />}
-            sx={{ background: mode === "edit" ? blue[50] : undefined }}
-            onClick={() => {
-              setMode(mode !== "edit" ? "edit" : null);
-            }}
-            tooltipPlacement="right"
-          />
-
           {/* 注釈の移動・変形 */}
           <SpeedDialAction
             tooltipTitle={"注釈の移動・変形"}
@@ -156,6 +145,17 @@ const SpeedDial: FC<Props> = ({
             sx={{ background: mode === "move" ? green[50] : undefined }}
             onClick={() => {
               setMode(mode !== "move" ? "move" : null);
+            }}
+            tooltipPlacement="right"
+          />
+
+          {/* 注釈の編集 */}
+          <SpeedDialAction
+            tooltipTitle={"注釈の文字列・線種の変更"}
+            icon={<Edit sx={{ color: "cornflowerblue" }} />}
+            sx={{ background: mode === "edit" ? blue[50] : undefined }}
+            onClick={() => {
+              setMode(mode !== "edit" ? "edit" : null);
             }}
             tooltipPlacement="right"
           />
