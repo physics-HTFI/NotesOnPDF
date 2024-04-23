@@ -50,6 +50,11 @@ const InputStringDialog: FC<Props> = ({
           onChange={(e) => {
             setValue(e.target.value);
           }}
+          inputRef={(ref: HTMLInputElement | undefined) => {
+            setTimeout(() => {
+              ref?.focus();
+            }, 0);
+          }}
         />
       </DialogContent>
       <DialogActions>

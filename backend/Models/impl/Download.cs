@@ -12,7 +12,9 @@ namespace backend.Models.impl
     internal class Download
     {
         /// <summary>
-        /// URLのPDFファイルをダウンロードフォルダに保存する。失敗したら<c>throw</c>。
+        /// URLのPDFファイルをダウンロードフォルダに保存する。
+        /// 既に存在する場合は何もしない。
+        /// 失敗したら<c>throw</c>。
         /// </summary>
         public static async Task<string> FromUrl(string url)
         {

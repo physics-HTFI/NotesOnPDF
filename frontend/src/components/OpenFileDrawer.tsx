@@ -97,6 +97,14 @@ const OpenFileDrawer: FC<Props> = ({
         model={model}
         onSelectPdfByFile={onSelectPdfByFile}
         onSelectPdfById={onSelectPdfById}
+        onUpdatePdfTree={() => {
+          model
+            .getFileTree()
+            .then((files) => {
+              setFileTree(files);
+            })
+            .catch(() => undefined);
+        }}
       />
 
       <Box sx={{ position: "relative" }}>

@@ -1,9 +1,10 @@
 import { FC, useState } from "react";
 import { Box, Divider, IconButton, Tooltip } from "@mui/material";
-import { FolderOpen, Language, Restore } from "@mui/icons-material";
+import { FolderOpen, Language, Restore, Sync } from "@mui/icons-material";
 import InputStringDialog from "./InputStringDialog";
 import IModel from "@/models/IModel";
 import HistoryDialog from "./HIstoryDialog";
+import Waiting from "../Fullscreen/Waiting";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 
@@ -14,6 +15,7 @@ interface Props {
   model: IModel;
   onSelectPdfById?: (id: string) => void;
   onSelectPdfByFile?: (file: File) => void;
+  onUpdatePdfTree?: () => void;
 }
 
 const sxButton = { "&:focus": { outline: "none" }, color: "slategray" };
@@ -25,9 +27,11 @@ const HeaderIcons: FC<Props> = ({
   model,
   onSelectPdfById,
   onSelectPdfByFile,
+  onUpdatePdfTree,
 }) => {
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   const handleSelectExternalPdf = IS_MOCK
     ? () => {
@@ -118,23 +122,34 @@ const HeaderIcons: FC<Props> = ({
           >
             <Language />
           </IconButton>
-          {openUrl && !IS_MOCK && (
-            <InputStringDialog
-              title="URLからPDFファイルを開く"
-              label="URL"
-              onClose={(url) => {
-                setOpenUrl(false);
-                if (!url) return;
-                model
-                  .getIdFromUrl(url)
-                  .then((id) => {
-                    onSelectPdfById?.(id);
-                  })
-                  .catch(() => undefined);
-              }}
-            />
-          )}
         </span>
+      </Tooltip>
+      {openUrl && !IS_MOCK && (
+        <InputStringDialog
+          title="URLからPDFファイルを開く"
+          label="URL"
+          onClose={(url) => {
+            setOpenUrl(false);
+            if (!url) return;
+            setDownloading(true);
+            model
+              .getIdFromUrl(url)
+              .then((id) => {
+                onSelectPdfById?.(id);
+              })
+              .catch(() => undefined)
+              .finally(() => {
+                setDownloading(false);
+              });
+          }}
+        />
+      )}
+
+      <Divider orientation="vertical" variant="middle" flexItem />
+      <Tooltip title="ファイルツリーを更新します">
+        <IconButton size="small" sx={sxButton} onClick={onUpdatePdfTree}>
+          <Sync />
+        </IconButton>
       </Tooltip>
 
       {/* 開発ページを開く */}
@@ -152,6 +167,7 @@ const HeaderIcons: FC<Props> = ({
         </IconButton>
       </Tooltip>
       */}
+      <Waiting isWaiting={downloading} />
     </Box>
   );
 };

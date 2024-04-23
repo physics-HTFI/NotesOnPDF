@@ -43,44 +43,39 @@ namespace backend
 
                     while (listener.IsListening)
                     {
+                        // リクエストを待つ
+                        HttpListenerContext context = await listener.GetContextAsync();
+                        if (!listener.IsListening) break;
+
+                        // リクエストを取得
+                        HttpListenerRequest request = context.Request;
+
+                        using var response = context.Response;
+                        response.AppendHeader("Access-Control-Allow-Origin", "*"); // 開発時にloclhost:5173からアクセスする必要があるため
+
                         try
                         {
-                            // リクエストを待つ
-                            HttpListenerContext context = await listener.GetContextAsync();
-                            if (!listener.IsListening) break;
-
-                            // リクエストを取得
-                            HttpListenerRequest request = context.Request;
-
                             // GET
                             if (request.HttpMethod == "GET")
                             {
-                                using var response = getResponse();
                                 response.ContentLength64 = 0;
-                                using Stream output = response.OutputStream;
                                 (byte[] bytes, string mime) = await ProcessGet(request.Url);
                                 response.ContentLength64 = bytes.Length;
                                 response.ContentType = mime;
                                 response.ContentEncoding = Encoding.UTF8;
+                                using Stream output = response.OutputStream;
                                 await output.WriteAsync(bytes);
                             }
 
                             // POST
                             if (request.HttpMethod == "POST")
                             {
-                                using var response = getResponse();
                                 await ProcessPost(request);
-                            }
-
-                            HttpListenerResponse getResponse()
-                            {
-                                var response = context.Response;
-                                response.AppendHeader("Access-Control-Allow-Origin", "*"); // 開発時にloclhost:5173からアクセスする必要があるため
-                                return response;
                             }
                         }
                         catch
                         {
+                            response.StatusCode = (int)HttpStatusCode.BadRequest;
                         }
                     }
                 }
