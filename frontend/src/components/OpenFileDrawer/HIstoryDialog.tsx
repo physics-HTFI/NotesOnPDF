@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import {
   Backdrop,
   Box,
@@ -10,14 +10,13 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import IModel from "@/models/IModel";
 import { History, historyFileOrigin2String } from "@/types/History";
+import { ModelContext } from "@/contexts/ModelContext";
 
 /**
  * `History`の引数
  */
 interface Props {
-  model: IModel;
   open: boolean;
   onClose: (id?: string) => void;
 }
@@ -25,7 +24,8 @@ interface Props {
 /**
  * PDFを開いた履歴
  */
-const HistoryDialog: FC<Props> = ({ model, open, onClose }) => {
+const HistoryDialog: FC<Props> = ({ open, onClose }) => {
+  const model = useContext(ModelContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {

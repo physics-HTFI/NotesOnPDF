@@ -1,10 +1,10 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { Box, Divider, IconButton, Tooltip } from "@mui/material";
 import { FolderOpen, Language, Restore, Sync } from "@mui/icons-material";
 import InputStringDialog from "./InputStringDialog";
-import IModel from "@/models/IModel";
 import HistoryDialog from "./HIstoryDialog";
 import Waiting from "../Fullscreen/Waiting";
+import { ModelContext } from "@/contexts/ModelContext";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 
@@ -12,10 +12,9 @@ const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
  * `HeaderIcons`の引数
  */
 interface Props {
-  model: IModel;
   onSelectPdfById?: (id: string) => void;
   onSelectPdfByFile?: (file: File) => void;
-  onUpdatePdfTree?: () => void;
+  onUpdateFileTree?: () => void;
 }
 
 const sxButton = { "&:focus": { outline: "none" }, color: "slategray" };
@@ -24,11 +23,11 @@ const sxButton = { "&:focus": { outline: "none" }, color: "slategray" };
  * ファイルツリーの上部に表示されるボタンコントロール
  */
 const HeaderIcons: FC<Props> = ({
-  model,
   onSelectPdfById,
   onSelectPdfByFile,
-  onUpdatePdfTree,
+  onUpdateFileTree,
 }) => {
+  const model = useContext(ModelContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -86,7 +85,6 @@ const HeaderIcons: FC<Props> = ({
         </span>
       </Tooltip>
       <HistoryDialog
-        model={model}
         open={openHistory}
         onClose={(id) => {
           setOpenHistory(false);
@@ -147,7 +145,7 @@ const HeaderIcons: FC<Props> = ({
 
       <Divider orientation="vertical" variant="middle" flexItem />
       <Tooltip title="ファイルツリーを更新します">
-        <IconButton size="small" sx={sxButton} onClick={onUpdatePdfTree}>
+        <IconButton size="small" sx={sxButton} onClick={onUpdateFileTree}>
           <Sync />
         </IconButton>
       </Tooltip>

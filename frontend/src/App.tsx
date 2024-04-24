@@ -92,7 +92,6 @@ function App() {
         >
           {/* ファイルツリー */}
           <OpenFileDrawer
-            model={model}
             open={openLeftDrawer}
             onClose={() => {
               if (!pdf) return;

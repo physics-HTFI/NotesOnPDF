@@ -1,7 +1,6 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { Box, Drawer } from "@mui/material";
 import { Coverage } from "@/types/Coverages";
-import IModel from "@/models/IModel";
 import { FileTree } from "@/types/FileTree";
 import { TreeView } from "@mui/x-tree-view";
 import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
@@ -10,13 +9,13 @@ import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
 import HeaderIcons from "@/components/OpenFileDrawer/HeaderIcons";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
+import { ModelContext } from "@/contexts/ModelContext";
 
 /**
  * `OpenFileDrawer`の引数
  */
 interface Props {
   open: boolean;
-  model: IModel;
   onClose: () => void;
   onSelectPdfById?: (id: string) => void;
   onSelectPdfByFile?: (file: File) => void;
@@ -27,12 +26,12 @@ interface Props {
  */
 const OpenFileDrawer: FC<Props> = ({
   open,
-  model,
   onClose,
   onSelectPdfById,
   onSelectPdfByFile,
 }) => {
   const { coverages, setCoverages } = useContext(PdfNotesContext);
+  const model = useContext(ModelContext);
   const [fileTree, setFileTree] = useState<FileTree>([]);
   const [expanded, setExpanded] = useState<string[]>([]);
   const [selectedPath, setSelectedPath] = useState<string>();
@@ -94,10 +93,9 @@ const OpenFileDrawer: FC<Props> = ({
     >
       {/* ヘッダーアイコン */}
       <HeaderIcons
-        model={model}
         onSelectPdfByFile={onSelectPdfByFile}
         onSelectPdfById={onSelectPdfById}
-        onUpdatePdfTree={() => {
+        onUpdateFileTree={() => {
           model
             .getFileTree()
             .then((files) => {
