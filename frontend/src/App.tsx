@@ -1,10 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import IModel from "@/models/IModel";
-import Model from "./models/Model";
-import ModelMock from "@/models/Model.Mock";
-import { Coverage, Coverages } from "@/types/Coverages";
 import { PdfNotes, createOrGetPdfNotes } from "@/types/PdfNotes";
 import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "./components/OpenFileDrawer";
@@ -14,16 +10,17 @@ import TocView from "@/components/TocView";
 import { PdfNotesContext } from "./contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 import { AppSettingsContextProvider } from "./contexts/AppSettingsContext";
+import { ModelContext } from "./contexts/ModelContext";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
-const model: IModel = IS_MOCK ? new ModelMock() : new Model();
 
 function App() {
-  const [coverages, setCoverages] = useState<Coverages>();
-  const [pdf, setPDF] = useState<string | File>();
+  const model = useContext(ModelContext);
+  const [id, setId] = useState<string>();
+  const [file, setFile] = useState<File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [, setPageRatios] = useState<number[]>();
-  const pdfPath = pdf && (pdf instanceof File ? pdf.name : pdf);
+  const pdfPath = id ?? file?.name;
 
   const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
   const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
@@ -45,33 +42,16 @@ function App() {
   useEffect(() => {
     document.onselectstart = () => false;
     document.oncontextmenu = () => false;
+    return () => {
+      document.onselectstart = null;
+      document.oncontextmenu = null;
+    };
   }, []);
 
-  // 進捗の更新
-  useEffect(() => {
-    if (!coverages || !pdfPath || !pdfNotes) return;
-    // TODO ページを切り替えるだけで更新されてしまう
-    const coverage: Coverage = {
-      allPages: pdfNotes.pages.length,
-      enabledPages:
-        pdfNotes.pages.length -
-        Object.keys(pdfNotes.pages).filter((key) =>
-          pdfNotes.pages[Number(key)]?.style?.includes("excluded")
-        ).length,
-      notedPages: Object.keys(pdfNotes.pages).filter(
-        (key) =>
-          (pdfNotes.pages[Number(key)]?.style?.includes("excluded")
-            ? 0
-            : pdfNotes.pages[Number(key)]?.notes?.length ?? 0) > 0
-      ).length,
-    };
-    coverages.pdfs[pdfPath] = coverage;
-    model.putCoverages(coverages).catch(() => undefined);
-  }, [pdfNotes, coverages, pdfPath]);
   useEffect(() => {
     if (!pdfNotes || !pdfPath) return;
     model.putPdfNotes(pdfPath, pdfNotes).catch(() => undefined);
-  }, [pdfPath, pdfNotes]);
+  }, [model, pdfPath, pdfNotes]);
 
   return (
     <AppSettingsContextProvider model={model}>
@@ -80,8 +60,6 @@ function App() {
           pdfPath,
           pdfNotes,
           setPdfNotes,
-          coverages,
-          setCoverages,
         }}
       >
         <Box
@@ -93,8 +71,10 @@ function App() {
           {/* ファイルツリー */}
           <OpenFileDrawer
             open={openLeftDrawer}
+            id={id}
+            pdfNotes={pdfNotes}
             onClose={() => {
-              if (!pdf) return;
+              if (!id) return;
               setOpenLeftDrawer(false);
             }}
             onSelectPdfById={(id) => {
@@ -102,7 +82,7 @@ function App() {
               if (pdfPath === id) return;
               setIsWaitingPdfNotes(true);
               setPdfNotes(undefined);
-              setPDF(id);
+              setId(id);
               model
                 .getPdfNotes(id)
                 .then((result) => {
@@ -122,7 +102,7 @@ function App() {
               setIsWaitingPDF(true);
               setIsWaitingPdfNotes(true);
               setPdfNotes(undefined);
-              setPDF(pdf);
+              setFile(file);
               // TODO
               setIsWaitingPdfNotes(false);
             }}
@@ -147,7 +127,7 @@ function App() {
             {/* PDFビュー */}
             <Panel minSizePixels={200}>
               <PdfView
-                file={pdf}
+                file={id}
                 model={model}
                 openDrawer={openBottomDrawer}
                 onOpenFileTree={() => {
@@ -157,7 +137,7 @@ function App() {
                   setOpenBottomDrawer(!openBottomDrawer);
                 }}
                 onLoadError={() => {
-                  setPDF(undefined);
+                  setId(undefined);
                   setPageRatios(undefined);
                   setIsWaitingPDF(false);
                   setOpenLeftDrawer(true);

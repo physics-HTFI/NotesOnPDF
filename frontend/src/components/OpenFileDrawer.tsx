@@ -1,6 +1,6 @@
 import { FC, useContext, useEffect, useState } from "react";
 import { Box, Drawer } from "@mui/material";
-import { Coverage } from "@/types/Coverages";
+import { Coverage, Coverages } from "@/types/Coverages";
 import { FileTree } from "@/types/FileTree";
 import { TreeView } from "@mui/x-tree-view";
 import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
@@ -8,14 +8,68 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
 import HeaderIcons from "@/components/OpenFileDrawer/HeaderIcons";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { ModelContext } from "@/contexts/ModelContext";
+import { PdfNotes } from "@/types/PdfNotes";
+import IModel from "@/models/IModel";
+
+/**
+ * `FileTree`と`Coverages`を取得する
+ */
+async function load(model: IModel) {
+  const fileTree = await model.getFileTree();
+  const coverages = await model.getCoverages();
+  // ファイルツリー内に存在しないファイルの情報を削除する
+  const pdfs: Record<string, Coverage> = {};
+  for (const pdf of Object.entries(coverages.pdfs)) {
+    const entry = fileTree.find((f) => f.id === pdf[0]);
+    if (!entry) continue;
+    pdfs[pdf[0]] = pdf[1];
+  }
+  return { fileTree, coverages };
+}
+
+/**
+ * 更新済みの`coverages`を返す。更新不要の場合は`undefined`。
+ */
+function getNewCoverages(
+  coverages?: Coverages,
+  id?: string,
+  pdfNotes?: PdfNotes,
+  fileTree?: FileTree
+) {
+  if (!id || !pdfNotes || !coverages || !fileTree) return;
+  if (!fileTree.find((f) => f.id === id)) return;
+
+  const oldCov = coverages.pdfs[id];
+  const newCov: Coverage = {
+    allPages: pdfNotes.pages.length,
+    enabledPages:
+      pdfNotes.pages.length -
+      pdfNotes.pages.filter((p) => p.style?.includes("excluded")).length,
+    notedPages: pdfNotes.pages.filter(
+      (p) => !p.style?.includes("excluded") && p.notes?.length
+    ).length,
+  };
+  const unchanged =
+    oldCov?.allPages === newCov.allPages &&
+    oldCov.enabledPages === newCov.enabledPages &&
+    oldCov.notedPages === newCov.notedPages;
+  if (unchanged) {
+    return;
+  } else {
+    const newCoverages = { ...coverages };
+    newCoverages.pdfs[id] = newCov;
+    return newCoverages;
+  }
+}
 
 /**
  * `OpenFileDrawer`の引数
  */
 interface Props {
   open: boolean;
+  id?: string;
+  pdfNotes?: PdfNotes;
   onClose: () => void;
   onSelectPdfById?: (id: string) => void;
   onSelectPdfByFile?: (file: File) => void;
@@ -26,51 +80,50 @@ interface Props {
  */
 const OpenFileDrawer: FC<Props> = ({
   open,
+  id,
+  pdfNotes,
   onClose,
   onSelectPdfById,
   onSelectPdfByFile,
 }) => {
-  const { coverages, setCoverages } = useContext(PdfNotesContext);
   const model = useContext(ModelContext);
   const [fileTree, setFileTree] = useState<FileTree>([]);
+  const [coverages, setCoverages] = useState<Coverages>();
   const [expanded, setExpanded] = useState<string[]>([]);
   const [selectedPath, setSelectedPath] = useState<string>();
 
   // ファイル一覧を取得
   useEffect(() => {
-    load().catch(() => undefined);
-    async function load() {
-      // データ読み込み
-      const files = await model.getFileTree();
-      const covs = await model.getCoverages();
-      // ファイルツリー内に存在しないファイルの情報を削除する
-      const pdfs: Record<string, Coverage> = {};
-      for (const pdf of Object.entries(covs.pdfs)) {
-        const entry = files.find((f) => f.id === pdf[0]);
-        if (!entry) continue;
-        pdfs[pdf[0]] = pdf[1];
-      }
-      covs.pdfs = pdfs;
-      // 読み込んだ値を設定
-      setFileTree(files);
-      setCoverages(covs);
-    }
-  }, [model, setCoverages]);
+    load(model)
+      .then(({ fileTree, coverages }) => {
+        setFileTree(fileTree);
+        setCoverages(coverages);
+      })
+      .catch(() => undefined);
+  }, [model]);
 
   // 前回のファイルを選択した状態にする
-  useEffect(() => {
-    if (selectedPath !== undefined) return;
-    if (fileTree.length === 0 || !coverages) return;
+  if (selectedPath === undefined && fileTree.length !== 0 && coverages) {
     const file = fileTree.find((i) => i.id === coverages.recentId);
-    if (!file) return;
-    const path = file.path;
-    setSelectedPath(path);
-    setExpanded(
-      [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
-        path.substring(0, m.index - 1)
-      )
-    );
-  }, [fileTree, selectedPath, coverages]);
+    if (file) {
+      const path = file.path;
+      setSelectedPath(path);
+      setExpanded(
+        [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
+          path.substring(0, m.index - 1)
+        )
+      );
+    } else {
+      setSelectedPath("");
+    }
+  }
+
+  // `coverages`の更新
+  const newCoverages = getNewCoverages(coverages, id, pdfNotes, fileTree);
+  if (newCoverages) {
+    setCoverages(newCoverages);
+    model.putCoverages(newCoverages).catch(() => undefined);
+  }
 
   return (
     <Drawer
