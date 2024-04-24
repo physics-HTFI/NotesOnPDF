@@ -22,8 +22,8 @@ import { MathJaxContext } from "better-react-mathjax";
 import Move from "./PdfView/Move";
 import { usePdfNotes } from "@/hooks/usePdfNotes";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
-import IModel from "@/models/IModel";
 import { sampleId2Path } from "@/models/Model.Mock";
+import { ModelContext } from "@/contexts/ModelContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -103,7 +103,6 @@ const preferredSize = (
  */
 interface Props {
   file?: string | File;
-  model: IModel;
   openDrawer: boolean;
   onLoadError?: () => void;
   onLoadSuccess?: (pageRatios: number[]) => void;
@@ -116,13 +115,13 @@ interface Props {
  */
 const PdfView: FC<Props> = ({
   file,
-  model,
   openDrawer,
   onLoadError, // 不要では？
   onLoadSuccess, // 不要では？成功失敗にかかわらずドロワーを閉じてしまってもよい気がする。
   onOpenFileTree,
   onOpenDrawer,
 }) => {
+  const model = useContext(ModelContext);
   const [reading, setReading] = useState(false);
   const [paretteOpen, setParetteOpen] = useState(false);
   const pdfSizes = useRef<{ width: number; height: number }[]>();

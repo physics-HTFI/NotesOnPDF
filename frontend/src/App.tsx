@@ -54,7 +54,7 @@ function App() {
   }, [model, pdfPath, pdfNotes]);
 
   return (
-    <AppSettingsContextProvider model={model}>
+    <AppSettingsContextProvider>
       <PdfNotesContext.Provider
         value={{
           pdfPath,
@@ -128,7 +128,6 @@ function App() {
             <Panel minSizePixels={200}>
               <PdfView
                 file={id}
-                model={model}
                 openDrawer={openBottomDrawer}
                 onOpenFileTree={() => {
                   setOpenLeftDrawer(true);

@@ -1,6 +1,13 @@
-import IModel from "@/models/IModel";
 import { AppSettings } from "@/types/AppSettings";
-import { FC, ReactNode, createContext, useEffect, useState } from "react";
+import {
+  FC,
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { ModelContext } from "./ModelContext";
 
 interface AppSettingsContextType {
   appSettings?: AppSettings;
@@ -16,14 +23,14 @@ export const AppSettingsContext = createContext<AppSettingsContextType>({});
  * `AppSettingsContextProvider`の引数
  */
 interface Props {
-  model: IModel;
   children: ReactNode;
 }
 
 /**
  * `AppSettingsContext`のプロバイダー
  */
-export const AppSettingsContextProvider: FC<Props> = ({ model, children }) => {
+export const AppSettingsContextProvider: FC<Props> = ({ children }) => {
+  const model = useContext(ModelContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
 
   useEffect(() => {
