@@ -32,9 +32,8 @@ interface Props {
 const Items: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
   const { setMouse } = useContext(MouseContext);
   const { appSettings } = useContext(AppSettingsContext);
-  const { page, setPdfNotes, popNote } = usePdfNotes();
-  if (!page?.notes || !setPdfNotes || !pageRect || !setMouse)
-    return <SvgDefs />;
+  const { page, popNote } = usePdfNotes();
+  if (!page?.notes || !pageRect || !setMouse) return <SvgDefs />;
 
   const props = <T extends NoteType | NodeType>(params: T) => ({
     key: JSON.stringify(params),

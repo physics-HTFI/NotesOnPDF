@@ -13,14 +13,12 @@ import Waiting from "@/components/Fullscreen/Waiting";
 import TocView from "@/components/TocView";
 import { PdfNotesContext } from "./contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
-import { AppSettingsContext } from "./contexts/AppSettingsContext";
-import { AppSettings } from "./types/AppSettings";
+import { AppSettingsContextProvider } from "./contexts/AppSettingsContext";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 const model: IModel = IS_MOCK ? new ModelMock() : new Model();
 
 function App() {
-  const [appSettings, setAppSettings] = useState<AppSettings>();
   const [coverages, setCoverages] = useState<Coverages>();
   const [pdf, setPDF] = useState<string | File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
@@ -47,12 +45,6 @@ function App() {
   useEffect(() => {
     document.onselectstart = () => false;
     document.oncontextmenu = () => false;
-    model
-      .getAppSettings()
-      .then((settings) => {
-        setAppSettings(settings);
-      })
-      .catch(() => undefined);
   }, []);
 
   // 進捗の更新
@@ -77,16 +69,12 @@ function App() {
     model.putCoverages(coverages).catch(() => undefined);
   }, [pdfNotes, coverages, pdfPath]);
   useEffect(() => {
-    if (!appSettings) return;
-    model.putAppSettings(appSettings).catch(() => undefined);
-  }, [appSettings]);
-  useEffect(() => {
     if (!pdfNotes || !pdfPath) return;
     model.putPdfNotes(pdfPath, pdfNotes).catch(() => undefined);
   }, [pdfPath, pdfNotes]);
 
   return (
-    <AppSettingsContext.Provider value={{ appSettings, setAppSettings }}>
+    <AppSettingsContextProvider model={model}>
       <PdfNotesContext.Provider
         value={{
           pdfPath,
@@ -191,7 +179,7 @@ function App() {
           {IS_MOCK && <SnackbarsMock open />}
         </Box>
       </PdfNotesContext.Provider>
-    </AppSettingsContext.Provider>
+    </AppSettingsContextProvider>
   );
 }
 
