@@ -30,16 +30,13 @@ interface Props {
  */
 const Settings: FC<Props> = ({ onClose }) => {
   const { appSettings, setAppSettings } = useContext(AppSettingsContext);
-  const { pdfNotes, setPdfNotes, pdfPath } = useContext(PdfNotesContext);
+  const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
   const [tab, setTab] = useState(0);
   if (!appSettings || !setAppSettings) return <></>;
-  if (!pdfNotes || !setPdfNotes || !pdfPath) return <></>;
+  if (!pdfNotes) return <></>;
 
   // 部名・章名・ページ番号の候補など
-  const { page, bookName, partNum, chapterNum, pageNum } = getParams(
-    pdfNotes,
-    pdfPath
-  );
+  const { page, partNum, chapterNum, pageNum } = getParams(pdfNotes);
 
   // ページ設定変更
   const handleChangePage = (page: Partial<Page>) => {
@@ -99,7 +96,7 @@ const Settings: FC<Props> = ({ onClose }) => {
           <CheckboxText
             label="題区切り"
             text={page?.book}
-            preferredText={bookName}
+            preferredText={"タイトル"}
             onChange={(book) => {
               handleChangePage({ book });
             }}
@@ -240,11 +237,10 @@ export default Settings;
 //| ローカル関数
 //|
 
-function getParams(pdfNotes: PdfNotes, pdfPath: string) {
+function getParams(pdfNotes: PdfNotes) {
   const page = pdfNotes.pages[pdfNotes.currentPage];
 
   // 部名・章名・ページ番号の候補
-  const bookName = pdfPath.match(/[^\\/]+(?=\.[^.]+$)/)?.[0] ?? "";
   let partNum = 1;
   let chapterNum = 1;
   let pageNum = 1;
@@ -259,7 +255,7 @@ function getParams(pdfNotes: PdfNotes, pdfPath: string) {
     }
   }
 
-  return { page, bookName, partNum, chapterNum, pageNum };
+  return { page, partNum, chapterNum, pageNum };
 }
 
 /**

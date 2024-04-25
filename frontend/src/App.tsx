@@ -17,15 +17,15 @@ const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 function App() {
   const model = useContext(ModelContext);
   const [id, setId] = useState<string>();
-  const [file, setFile] = useState<File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
-  const [, setPageRatios] = useState<number[]>();
-  const pdfPath = id ?? file?.name;
-
   const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
   const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
   const [isWaitingPDF, setIsWaitingPDF] = useState(false);
   const [isWaitingPdfNotes, setIsWaitingPdfNotes] = useState(false);
+
+  // モック用
+  const [file, setFile] = useState<File>();
+  const [, setPageRatios] = useState<number[]>();
 
   // ページの遷移
   const handlePageChange = (delta: number) => {
@@ -49,15 +49,15 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!pdfNotes || !pdfPath) return;
-    model.putPdfNotes(pdfPath, pdfNotes).catch(() => undefined);
-  }, [model, pdfPath, pdfNotes]);
+    if (!pdfNotes || !id) return;
+    model.putPdfNotes(id, pdfNotes).catch(() => undefined);
+  }, [model, id, pdfNotes]);
 
   return (
     <AppSettingsContextProvider>
       <PdfNotesContext.Provider
         value={{
-          pdfPath,
+          id,
           pdfNotes,
           setPdfNotes,
         }}
@@ -77,14 +77,14 @@ function App() {
               if (!id) return;
               setOpenLeftDrawer(false);
             }}
-            onSelectPdfById={(id) => {
+            onSelectPdfById={(_id) => {
               setOpenLeftDrawer(false);
-              if (pdfPath === id) return;
+              if (_id === id) return;
               setIsWaitingPdfNotes(true);
               setPdfNotes(undefined);
-              setId(id);
+              setId(_id);
               model
-                .getPdfNotes(id)
+                .getPdfNotes(_id)
                 .then((result) => {
                   setPdfNotes(createOrGetPdfNotes(result));
                 })
@@ -95,14 +95,14 @@ function App() {
                   setIsWaitingPdfNotes(false);
                 });
             }}
-            onSelectPdfByFile={(file) => {
+            onSelectPdfByFile={(_file) => {
               setOpenLeftDrawer(false);
-              const pdfPathNew = file.name;
-              if (pdfPath === pdfPathNew || !pdfPathNew) return;
+              const pdfPathNew = _file.name;
+              if (file?.name === pdfPathNew || !pdfPathNew) return;
               setIsWaitingPDF(true);
               setIsWaitingPdfNotes(true);
               setPdfNotes(undefined);
-              setFile(file);
+              setFile(_file);
               // TODO
               setIsWaitingPdfNotes(false);
             }}

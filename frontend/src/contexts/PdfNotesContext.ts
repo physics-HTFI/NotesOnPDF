@@ -2,7 +2,7 @@ import { PdfNotes } from "@/types/PdfNotes";
 import { createContext } from "react";
 
 interface PdfNotesContextType {
-  pdfPath?: string;
+  id?: string;
   pdfNotes?: PdfNotes;
   setPdfNotes: (pdfNotes: PdfNotes) => void;
 }

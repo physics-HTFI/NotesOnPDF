@@ -284,7 +284,6 @@ const PdfView: FC<Props> = ({
                 />
               )
             )}
-            <PageLabelLarge label={pageLabel} shown={reading} />
             <Items
               pageRect={pageRect}
               mode={mode}
@@ -324,6 +323,7 @@ const PdfView: FC<Props> = ({
             (!mode && !moveNote && page?.style?.includes("excluded")) ?? false
           }
         />
+        <PageLabelLarge label={pageLabel} shown={reading} />
         <PageLabelSmall label={pageLabel} hidden={Boolean(moveNote)} />
         <SpeedDial
           mode={mode}
