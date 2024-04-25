@@ -35,7 +35,9 @@ const HistoryDialog: FC<Props> = ({ open, onClose }) => {
       .then((h) => {
         setHistory(h);
       })
-      .catch(() => undefined);
+      .catch(() => {
+        setHistory([]);
+      });
   }, [open, model]);
 
   return (
