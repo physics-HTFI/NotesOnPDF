@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Rect, Polygon } from "@/types/PdfNotes";
-import { usePdfNotes } from "@/hooks/usePdfNotes";
+import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import Svg from "../Items/Svg";
 import RectSvg from "../Items/Rect";

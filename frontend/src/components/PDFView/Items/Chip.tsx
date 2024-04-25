@@ -3,7 +3,7 @@ import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
 import { Chip as ChipType, Node, NoteType } from "@/types/PdfNotes";
 import { MouseContext } from "@/contexts/MouseContext";
-import { usePdfNotes } from "@/hooks/usePdfNotes";
+import usePdfNotes from "@/hooks/usePdfNotes";
 import { useCursor } from "./useCursor";
 
 /**

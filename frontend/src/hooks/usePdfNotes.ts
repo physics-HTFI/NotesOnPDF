@@ -5,9 +5,22 @@ import { useContext } from "react";
 /**
  * Context内の`pdfNotes, setPdfNotes`および更新用関数`update`を返す。
  */
-export const usePdfNotes = () => {
+const usePdfNotes = () => {
   const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
   const page = pdfNotes?.pages[pdfNotes.currentPage];
+
+  /**
+   * ページを移動する
+   */
+  const changePage = (delta: number) => {
+    if (!pdfNotes) return;
+    const currentPage = Math.max(
+      0,
+      Math.min(pdfNotes.pages.length - 1, pdfNotes.currentPage + delta)
+    );
+    if (pdfNotes.currentPage === currentPage) return;
+    setPdfNotes({ ...pdfNotes, currentPage });
+  };
 
   /**
    * `PdfNotes`オブジェクトの現在ページから注釈を消去する。
@@ -55,8 +68,24 @@ export const usePdfNotes = () => {
     pdfNotes,
     setPdfNotes,
     page: pdfNotes?.pages[pdfNotes.currentPage],
+    /**
+     * ページを移動する
+     */
+    changePage,
+    /**
+     * `PdfNotes`オブジェクトの現在ページから注釈を消去する。
+     */
     popNote,
+    /**
+     * `PdfNotes`オブジェクトの現在ページに注釈を追加する。
+     */
     pushNote,
+    /**
+     * `PdfNotes`オブジェクトの現在ページの注釈を入れ替える。
+     * `pop`がない場合は`push`の追加だけが行われる。
+     */
     updateNote,
   };
 };
+
+export default usePdfNotes;

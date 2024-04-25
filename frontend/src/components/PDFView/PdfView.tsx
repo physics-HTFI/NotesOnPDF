@@ -20,7 +20,7 @@ import Editor from "./Editor";
 import { grey } from "@mui/material/colors";
 import { MathJaxContext } from "better-react-mathjax";
 import Move from "./Move";
-import { usePdfNotes } from "@/hooks/usePdfNotes";
+import usePdfNotes from "@/hooks/usePdfNotes";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import { sampleId2Path } from "@/models/Model.Mock";
 import { ModelContext } from "@/contexts/ModelContext";
@@ -121,7 +121,8 @@ const PdfView: FC<Props> = ({
   onOpenFileTree,
   onOpenDrawer,
 }) => {
-  const model = useContext(ModelContext);
+  const { model } = useContext(ModelContext);
+  const { appSettings } = useContext(AppSettingsContext);
   const [reading, setReading] = useState(false);
   const [paretteOpen, setParetteOpen] = useState(false);
   const pdfSizes = useRef<{ width: number; height: number }[]>();
@@ -131,7 +132,6 @@ const PdfView: FC<Props> = ({
   const [editNote, setEditNote] = useState<NoteType>();
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
   const [scale, setScale] = useState(100);
-  const { appSettings } = useContext(AppSettingsContext);
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();

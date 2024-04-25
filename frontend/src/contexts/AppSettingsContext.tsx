@@ -30,7 +30,7 @@ interface Props {
  * `AppSettingsContext`のプロバイダー
  */
 export const AppSettingsContextProvider: FC<Props> = ({ children }) => {
-  const model = useContext(ModelContext);
+  const { model } = useContext(ModelContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { FC, useRef } from "react";
 import { TextField } from "@mui/material";
 import { PageLink, fromDisplayedPage } from "@/types/PdfNotes";
-import { usePdfNotes } from "@/hooks/usePdfNotes";
+import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 
 /**

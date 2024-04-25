@@ -12,7 +12,7 @@ import { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
-import { usePdfNotes } from "@/hooks/usePdfNotes";
+import usePdfNotes from "@/hooks/usePdfNotes";
 
 /**
  * `Move`の引数

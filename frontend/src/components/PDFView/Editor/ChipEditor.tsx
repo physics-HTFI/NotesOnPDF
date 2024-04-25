@@ -7,7 +7,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import { Chip, PdfNotes } from "@/types/PdfNotes";
-import { usePdfNotes } from "@/hooks/usePdfNotes";
+import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import { blue } from "@mui/material/colors";
 

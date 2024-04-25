@@ -7,7 +7,7 @@ import {
   tooltipClasses,
 } from "@mui/material";
 import { Note } from "@/types/PdfNotes";
-import { usePdfNotes } from "@/hooks/usePdfNotes";
+import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
 import { blue, grey } from "@mui/material/colors";

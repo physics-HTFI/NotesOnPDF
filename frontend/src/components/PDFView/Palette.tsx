@@ -1,7 +1,7 @@
 import { FC, useContext } from "react";
 import { Paper } from "@mui/material";
 import { MouseContext } from "@/contexts/MouseContext";
-import { usePdfNotes } from "@/hooks/usePdfNotes";
+import usePdfNotes from "@/hooks/usePdfNotes";
 import { Node, NoteType } from "@/types/PdfNotes";
 import {
   ArrowIcon,

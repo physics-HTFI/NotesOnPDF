@@ -9,7 +9,7 @@ import Polygon from "./Items/Polygon";
 import Chip from "./Items/Chip";
 import Svg from "./Items/Svg";
 import { Mode } from "./SpeedDial";
-import { usePdfNotes } from "@/hooks/usePdfNotes";
+import usePdfNotes from "@/hooks/usePdfNotes";
 import { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./Items/SvgDefs";
 import { MouseContext } from "@/contexts/MouseContext";

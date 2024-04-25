@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { History, historyFileOrigin2String } from "@/types/History";
 import { ModelContext } from "@/contexts/ModelContext";
+import { WaitContext } from "@/contexts/WaitContext";
 
 /**
  * `History`の引数
@@ -25,11 +26,13 @@ interface Props {
  * PDFを開いた履歴
  */
 const HistoryDialog: FC<Props> = ({ open, onClose }) => {
-  const model = useContext(ModelContext);
+  const { model } = useContext(ModelContext);
+  const { setWaiting } = useContext(WaitContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {
     if (!open) return;
+    setWaiting(true);
     model
       .getHistory()
       .then((h) => {
@@ -37,8 +40,11 @@ const HistoryDialog: FC<Props> = ({ open, onClose }) => {
       })
       .catch(() => {
         setHistory([]);
+      })
+      .finally(() => {
+        setWaiting(false);
       });
-  }, [open, model]);
+  }, [open, model, setWaiting]);
 
   return (
     <Backdrop
