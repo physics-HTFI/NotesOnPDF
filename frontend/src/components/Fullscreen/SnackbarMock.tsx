@@ -3,24 +3,17 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
 /**
- * `SnackbarsMock`の`Props`
- */
-interface Props {
-  open: boolean;
-}
-
-/**
  * モックモデルを使用していることを示すポップアップ表示
  */
-const SnackbarsMock: FC<Props> = ({ open }) => {
-  const [openLocal, setOpenLocal] = useState(open);
+const SnackbarsMock: FC = () => {
+  const [open, setOpen] = useState(true);
 
   const handleClose = () => {
-    setOpenLocal(false);
+    setOpen(false);
   };
 
   return (
-    <Snackbar open={openLocal} onClose={handleClose}>
+    <Snackbar open={open} onClose={handleClose}>
       <Alert
         elevation={6}
         variant="filled"

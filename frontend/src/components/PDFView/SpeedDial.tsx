@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import {
   Box,
   SpeedDial as MUISpeedDial,
@@ -16,6 +16,7 @@ import {
   OpenWith,
 } from "@mui/icons-material";
 import { blue, green, grey, red } from "@mui/material/colors";
+import { UiStateContext } from "@/contexts/UiStateContext";
 
 export type Mode = null | "edit" | "move" | "delete";
 
@@ -58,22 +59,14 @@ interface Props {
   mode: Mode;
   setMode: (mode: Mode) => void;
   hidden: boolean;
-  openDrawer: boolean;
-  onOpenFileTree: () => void;
-  onOpenSettings: () => void;
 }
 
 /**
  * 目次の右上に表示されるボタンコントロール
  */
-const SpeedDial: FC<Props> = ({
-  mode,
-  setMode,
-  hidden,
-  openDrawer,
-  onOpenFileTree,
-  onOpenSettings,
-}) => {
+const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
+  const { openSettingsDrawer, setOpenFileTreeDrawer, setOpenSettingsDrawer } =
+    useContext(UiStateContext);
   const [open, setOpen] = useState(false);
 
   return (
@@ -121,7 +114,7 @@ const SpeedDial: FC<Props> = ({
             tooltipTitle={"PDF選択パネルを開きます"}
             icon={<KeyboardArrowRight />}
             onClick={() => {
-              onOpenFileTree();
+              setOpenFileTreeDrawer(true);
               setMode(null);
             }}
             tooltipPlacement="right"
@@ -129,10 +122,14 @@ const SpeedDial: FC<Props> = ({
 
           {/* 設定パネルの開閉 */}
           <SpeedDialAction
-            tooltipTitle={`設定パネルを${openDrawer ? "閉じます" : "開きます"}`}
-            icon={openDrawer ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
+            tooltipTitle={`設定パネルを${
+              openSettingsDrawer ? "閉じます" : "開きます"
+            }`}
+            icon={
+              openSettingsDrawer ? <KeyboardArrowDown /> : <KeyboardArrowUp />
+            }
             onClick={() => {
-              onOpenSettings();
+              setOpenSettingsDrawer(!openSettingsDrawer);
               setMode(null);
             }}
             tooltipPlacement="right"

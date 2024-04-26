@@ -1,11 +1,11 @@
 import { FC, useContext } from "react";
 import { Box, Drawer } from "@mui/material";
-import { PdfNotes } from "@/types/PdfNotes";
 import Settings from "./Settings/Settings";
 import getTocData from "./getTocData";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 import { UiStateContext } from "@/contexts/UiStateContext";
+import usePdfNotes from "@/hooks/usePdfNotes";
 
 /**
  * 目次を表示するコンポーネント
@@ -14,9 +14,7 @@ const TocView: FC = () => {
   const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
   const { openSettingsDrawer, setOpenSettingsDrawer } =
     useContext(UiStateContext);
-  const handleChanged = (pdfNotes: PdfNotes) => {
-    setPdfNotes(pdfNotes);
-  };
+  const { changePage } = usePdfNotes();
 
   return (
     <Box
@@ -28,9 +26,12 @@ const TocView: FC = () => {
         overflow: "hidden",
         fontSize: "70%",
       }}
+      onWheel={(e) => {
+        changePage(e.deltaY < 0 ? -1 : 1);
+      }}
     >
       <Box sx={{ p: 0.5, lineHeight: 1 }}>
-        {getTocData(pdfNotes, handleChanged)}
+        {getTocData(pdfNotes, setPdfNotes)}
       </Box>
 
       <Drawer

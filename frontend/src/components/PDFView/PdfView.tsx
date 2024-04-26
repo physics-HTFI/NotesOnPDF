@@ -24,6 +24,8 @@ import usePdfNotes from "@/hooks/usePdfNotes";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import { sampleId2Path } from "@/models/Model.Mock";
 import PdfImage from "./PdfImage";
+import { PdfNotesContext } from "@/contexts/PdfNotesContext";
+import { UiStateContext } from "@/contexts/UiStateContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -99,29 +101,14 @@ const preferredSize = (
 };
 
 /**
- * `PdfView`の引数
- */
-interface Props {
-  file?: string | File;
-  openDrawer: boolean;
-  onLoadError?: () => void;
-  onLoadSuccess?: (pageRatios: number[]) => void;
-  onOpenFileTree: () => void;
-  onOpenDrawer: () => void;
-}
-
-/**
  * Pdfを表示するコンポーネント
  */
-const PdfView: FC<Props> = ({
-  file,
-  openDrawer,
-  onLoadError, // 不要では？
-  onLoadSuccess, // 不要では？成功失敗にかかわらずドロワーを閉じてしまってもよい気がする。
-  onOpenFileTree,
-  onOpenDrawer,
-}) => {
+const PdfView: FC = () => {
   const { appSettings } = useContext(AppSettingsContext);
+  const { file, setFile } = useContext(PdfNotesContext);
+  const { setWaiting, setOpenFileTreeDrawer } = useContext(UiStateContext);
+  const { pdfNotes, page, updateNote, changePage } = usePdfNotes();
+
   const [reading, setReading] = useState(false);
   const [paretteOpen, setParetteOpen] = useState(false);
   const pdfSizes = useRef<{ width: number; height: number }[]>();
@@ -132,10 +119,25 @@ const PdfView: FC<Props> = ({
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
   const [scale, setScale] = useState(100);
 
+  // モック用
+  const [, setPageRatios] = useState<number[]>();
+  const onLoadError = () => {
+    // 不要では？
+    setFile(undefined);
+    setPageRatios(undefined);
+    setWaiting(false);
+    setOpenFileTreeDrawer(true);
+  };
+  const onLoadSuccess = (pageRatios: number[]) => {
+    // 不要では？成功失敗にかかわらずドロワーを閉じてしまってもよい気がする。
+    setPageRatios(pageRatios);
+    setWaiting(false);
+    setOpenFileTreeDrawer(false);
+  };
+
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const { pdfNotes, page, updateNote } = usePdfNotes();
   const [width, height, top, bottom] =
     pdfNotes?.currentPage === undefined
       ? [undefined, undefined]
@@ -198,6 +200,9 @@ const PdfView: FC<Props> = ({
         onMouseLeave={() => {
           setParetteOpen(false);
         }}
+        onWheel={(e) => {
+          changePage(e.deltaY < 0 ? -1 : 1);
+        }}
       >
         <MathJaxContext version={3} config={mathjaxConfig}>
           <Container
@@ -238,7 +243,7 @@ const PdfView: FC<Props> = ({
                   getsizes()
                     .then(() => {
                       if (!pdfSizes.current) return;
-                      onLoadSuccess?.(
+                      onLoadSuccess(
                         pdfSizes.current.map((s) => s.width / s.height)
                       );
                     })
@@ -315,14 +320,7 @@ const PdfView: FC<Props> = ({
         />
         <PageLabelLarge label={pageLabel} shown={reading} />
         <PageLabelSmall label={pageLabel} hidden={Boolean(moveNote)} />
-        <SpeedDial
-          mode={mode}
-          setMode={setMode}
-          hidden={Boolean(moveNote)}
-          openDrawer={openDrawer}
-          onOpenSettings={onOpenDrawer}
-          onOpenFileTree={onOpenFileTree}
-        />
+        <SpeedDial mode={mode} setMode={setMode} hidden={Boolean(moveNote)} />
         <Palette
           open={paretteOpen}
           onClose={(note) => {

@@ -12,6 +12,8 @@ import { ModelContext } from "./ModelContext";
 interface PdfNotesContextType {
   id?: string;
   setId: (id?: string) => void;
+  file?: File;
+  setFile: (file?: File) => void;
   pdfNotes?: PdfNotes;
   setPdfNotes: (pdfNotes?: PdfNotes) => void;
 }
@@ -21,6 +23,7 @@ interface PdfNotesContextType {
  */
 export const PdfNotesContext = createContext<PdfNotesContextType>({
   setId: () => undefined,
+  setFile: () => undefined,
   setPdfNotes: () => undefined,
 });
 
@@ -37,6 +40,7 @@ interface Props {
 export const PdfNotesContextProvider: FC<Props> = ({ children }) => {
   const { model } = useContext(ModelContext);
   const [id, setId] = useState<string>();
+  const [file, setFile] = useState<File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
 
   useEffect(() => {
@@ -45,7 +49,9 @@ export const PdfNotesContextProvider: FC<Props> = ({ children }) => {
   }, [model, id, pdfNotes]);
 
   return (
-    <PdfNotesContext.Provider value={{ id, setId, pdfNotes, setPdfNotes }}>
+    <PdfNotesContext.Provider
+      value={{ id, setId, file, setFile, pdfNotes, setPdfNotes }}
+    >
       {children}
     </PdfNotesContext.Provider>
   );
