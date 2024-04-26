@@ -18,7 +18,6 @@ import Items from "./Items";
 import { MouseContext } from "@/contexts/MouseContext";
 import Editor from "./Editor";
 import { grey } from "@mui/material/colors";
-import { MathJaxContext } from "better-react-mathjax";
 import Move from "./Move";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
@@ -31,49 +30,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 const options = {
   cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
   standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts`,
-};
-
-/**
- * 数式表示のコンフィグ
- */
-const mathjaxConfig = {
-  loader: {
-    load: [
-      "[tex]/html",
-      "[tex]/boldsymbol",
-      "[tex]/ams",
-      "[tex]/braket",
-      "[tex]/cancel",
-      "[tex]/cases",
-      "[tex]/color",
-      //"[tex]/physics", // Mathjaxは対応していないが、physics2というのがあるらしい: https://qiita.com/Yarakashi_Kikohshi/items/131e2324f401c3effb84
-    ],
-  },
-  tex: {
-    packages: {
-      "[+]": [
-        "html",
-        "boldsymbol",
-        "ams",
-        "braket",
-        "cancel",
-        "cases",
-        "color",
-        //"physics",
-      ],
-    },
-    inlineMath: [
-      ["$", "$"],
-      ["\\(", "\\)"],
-    ],
-    displayMath: [
-      ["$$", "$$"],
-      ["\\[", "\\]"],
-    ],
-  },
-  options: {
-    enableMenu: false,
-  },
 };
 
 /**
@@ -280,39 +236,37 @@ const PdfView: FC = () => {
               }}
             />
           )}
-          <MathJaxContext version={3} config={mathjaxConfig}>
-            <Items
-              pageRect={pageRect}
-              mode={mode}
-              moveNote={moveNote}
-              onEdit={setEditNote}
-              onMove={setMoveNote}
-            />
-            <Move
-              params={moveNote}
-              onClose={(oldNote, newNote, addPolygon) => {
-                if (
-                  !addPolygon &&
-                  newNote?.type === "Polygon" &&
-                  !page?.notes?.some((n) => n === oldNote) // `!page`の場合も含んでいる
-                ) {
-                  // Polygonの追加時は点を追加して変形モードを続ける
-                  // TODO ポリゴンを追加が終了したときにマウスカーソルがなぜか消えたままになる（Firefoxだと表示される）
-                  const push = newNote.points[newNote.points.length - 1];
-                  if (push) newNote.points.push([...push]);
-                  setMoveNote({
-                    type: "Node",
-                    index: newNote.points.length - 1,
-                    target: newNote,
-                  });
-                } else {
-                  setMoveNote(undefined);
-                  if (!oldNote || !newNote) return;
-                  updateNote(oldNote, newNote);
-                }
-              }}
-            />
-          </MathJaxContext>
+          <Items
+            pageRect={pageRect}
+            mode={mode}
+            moveNote={moveNote}
+            onEdit={setEditNote}
+            onMove={setMoveNote}
+          />
+          <Move
+            params={moveNote}
+            onClose={(oldNote, newNote, addPolygon) => {
+              if (
+                !addPolygon &&
+                newNote?.type === "Polygon" &&
+                !page?.notes?.some((n) => n === oldNote) // `!page`の場合も含んでいる
+              ) {
+                // Polygonの追加時は点を追加して変形モードを続ける
+                // TODO ポリゴンを追加が終了したときにマウスカーソルがなぜか消えたままになる（Firefoxだと表示される）
+                const push = newNote.points[newNote.points.length - 1];
+                if (push) newNote.points.push([...push]);
+                setMoveNote({
+                  type: "Node",
+                  index: newNote.points.length - 1,
+                  target: newNote,
+                });
+              } else {
+                setMoveNote(undefined);
+                if (!oldNote || !newNote) return;
+                updateNote(oldNote, newNote);
+              }
+            }}
+          />
         </Container>
 
         <Excluded

@@ -9,6 +9,50 @@ import TocView from "@/components/TocView/TocView";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext";
 import { AppSettingsContextProvider } from "./contexts/AppSettingsContext";
 import { UiStateContextProvider } from "./contexts/UiStateContext";
+import { MathJaxContext } from "better-react-mathjax";
+
+/**
+ * 数式表示のコンフィグ
+ */
+const mathjaxConfig = {
+  loader: {
+    load: [
+      "[tex]/html",
+      "[tex]/boldsymbol",
+      "[tex]/ams",
+      "[tex]/braket",
+      "[tex]/cancel",
+      "[tex]/cases",
+      "[tex]/color",
+      //"[tex]/physics", // Mathjaxは対応していないが、physics2というのがあるらしい: https://qiita.com/Yarakashi_Kikohshi/items/131e2324f401c3effb84
+    ],
+  },
+  tex: {
+    packages: {
+      "[+]": [
+        "html",
+        "boldsymbol",
+        "ams",
+        "braket",
+        "cancel",
+        "cases",
+        "color",
+        //"physics",
+      ],
+    },
+    inlineMath: [
+      ["$", "$"],
+      ["\\(", "\\)"],
+    ],
+    displayMath: [
+      ["$$", "$$"],
+      ["\\[", "\\]"],
+    ],
+  },
+  options: {
+    enableMenu: false,
+  },
+};
 
 function App() {
   // ドラッグでの選択と右クリックメニューを無効にする
@@ -25,32 +69,34 @@ function App() {
     <AppSettingsContextProvider>
       <UiStateContextProvider>
         <PdfNotesContextProvider>
-          <Box>
-            {/* ファイルツリー */}
-            <OpenFileDrawer />
+          <MathJaxContext version={3} config={mathjaxConfig}>
+            <Box>
+              {/* ファイルツリー */}
+              <OpenFileDrawer />
 
-            <PanelGroup direction="horizontal">
-              {/* 目次 */}
-              <Panel defaultSizePixels={270} minSizePixels={40}>
-                <TocView />
-              </Panel>
+              <PanelGroup direction="horizontal">
+                {/* 目次 */}
+                <Panel defaultSizePixels={270} minSizePixels={40}>
+                  <TocView />
+                </Panel>
 
-              {/* リサイズハンドル */}
-              <PanelResizeHandle>
-                <Box
-                  sx={{ width: 5, height: "100vh", background: grey[400] }}
-                />
-              </PanelResizeHandle>
+                {/* リサイズハンドル */}
+                <PanelResizeHandle>
+                  <Box
+                    sx={{ width: 5, height: "100vh", background: grey[400] }}
+                  />
+                </PanelResizeHandle>
 
-              {/* PDFビュー */}
-              <Panel minSizePixels={200}>
-                <PdfView />
-              </Panel>
-            </PanelGroup>
-          </Box>
+                {/* PDFビュー */}
+                <Panel minSizePixels={200}>
+                  <PdfView />
+                </Panel>
+              </PanelGroup>
+            </Box>
 
-          {/* モックモデルを使用していることを示すポップアップ表示 */}
-          {import.meta.env.VITE_IS_MOCK === "true" && <SnackbarsMock />}
+            {/* モックモデルを使用していることを示すポップアップ表示 */}
+            {import.meta.env.VITE_IS_MOCK === "true" && <SnackbarsMock />}
+          </MathJaxContext>
         </PdfNotesContextProvider>
       </UiStateContextProvider>
     </AppSettingsContextProvider>

@@ -6,6 +6,7 @@ import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 import { UiStateContext } from "@/contexts/UiStateContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
+import { MathJax } from "better-react-mathjax";
 
 /**
  * 目次を表示するコンポーネント
@@ -30,9 +31,11 @@ const TocView: FC = () => {
         changePage(e.deltaY < 0 ? -1 : 1);
       }}
     >
-      <Box sx={{ p: 0.5, lineHeight: 1 }}>
-        {getTocData(pdfNotes, setPdfNotes)}
-      </Box>
+      <MathJax hideUntilTypeset={"first"}>
+        <Box sx={{ p: 0.5, lineHeight: 1 }}>
+          {getTocData(pdfNotes, setPdfNotes)}
+        </Box>
+      </MathJax>
 
       <Drawer
         variant="persistent"
