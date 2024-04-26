@@ -76,7 +76,9 @@ const mathjaxConfig = {
   },
 };
 
-/** [width, height, deltaY（＝view中心とPdf中心の差）] */
+/**
+ * [width, height, deltaY（＝view中心とPdf中心の差）]
+ */
 const preferredSize = (
   offsetTop: number,
   offsetBottom: number,
@@ -204,81 +206,81 @@ const PdfView: FC = () => {
           changePage(e.deltaY < 0 ? -1 : 1);
         }}
       >
-        <MathJaxContext version={3} config={mathjaxConfig}>
-          <Container
-            sx={{
-              width,
-              height,
-              position: "absolute",
-              top,
-              bottom,
-              left: 0,
-              right: 0,
-              margin: "auto",
-              containerType: "size",
-            }}
-            disableGutters
-            ref={getPageRect}
-          >
-            {import.meta.env.VITE_IS_MOCK === "true" ? (
-              <Document
-                file={
-                  file instanceof File
-                    ? file
-                    : `${import.meta.env.VITE_Pdf_ROOT}${sampleId2Path(file)}`
-                }
-                onLoadSuccess={(doc) => {
-                  if (!file) return;
-                  const getsizes = async () => {
-                    pdfSizes.current = [];
-                    for (let i = 0; i < doc.numPages; i++) {
-                      const page = await doc.getPage(i + 1);
-                      const [width, height] = [
-                        page.view[2] ?? 0,
-                        page.view[3] ?? 0,
-                      ];
-                      pdfSizes.current.push({ width, height });
-                    }
-                  };
-                  getsizes()
-                    .then(() => {
-                      if (!pdfSizes.current) return;
-                      onLoadSuccess(
-                        pdfSizes.current.map((s) => s.width / s.height)
-                      );
-                    })
-                    .catch(() => undefined);
-                }}
-                onLoadError={onLoadError}
-                options={options}
+        <Container
+          sx={{
+            width,
+            height,
+            position: "absolute",
+            top,
+            bottom,
+            left: 0,
+            right: 0,
+            margin: "auto",
+            containerType: "size",
+          }}
+          disableGutters
+          ref={getPageRect}
+        >
+          {import.meta.env.VITE_IS_MOCK === "true" ? (
+            <Document
+              file={
+                file instanceof File
+                  ? file
+                  : `${import.meta.env.VITE_Pdf_ROOT}${sampleId2Path(file)}`
+              }
+              onLoadSuccess={(doc) => {
+                if (!file) return;
+                const getsizes = async () => {
+                  pdfSizes.current = [];
+                  for (let i = 0; i < doc.numPages; i++) {
+                    const page = await doc.getPage(i + 1);
+                    const [width, height] = [
+                      page.view[2] ?? 0,
+                      page.view[3] ?? 0,
+                    ];
+                    pdfSizes.current.push({ width, height });
+                  }
+                };
+                getsizes()
+                  .then(() => {
+                    if (!pdfSizes.current) return;
+                    onLoadSuccess(
+                      pdfSizes.current.map((s) => s.width / s.height)
+                    );
+                  })
+                  .catch(() => undefined);
+              }}
+              onLoadError={onLoadError}
+              options={options}
+              error={""}
+              loading={""}
+              noData={""}
+            >
+              <PdfPage
+                pageIndex={pdfNotes?.currentPage}
+                width={width}
                 error={""}
                 loading={""}
                 noData={""}
-              >
-                <PdfPage
-                  pageIndex={pdfNotes?.currentPage}
-                  width={width}
-                  error={""}
-                  loading={""}
-                  noData={""}
-                  renderAnnotationLayer={false}
-                  renderTextLayer={false}
-                  onRenderSuccess={() => {
-                    setReading(false);
-                  }}
-                />
-              </Document>
-            ) : (
-              <PdfImage
-                width={width}
-                onStartRead={() => {
-                  setReading(true);
-                }}
-                onEndRead={() => {
+                renderAnnotationLayer={false}
+                renderTextLayer={false}
+                onRenderSuccess={() => {
                   setReading(false);
                 }}
               />
-            )}
+            </Document>
+          ) : (
+            <PdfImage
+              width={width}
+              onStartRead={() => {
+                setReading(true);
+              }}
+              onEndRead={() => {
+                setReading(false);
+              }}
+            />
+          )}
+          <MathJaxContext version={3} config={mathjaxConfig}>
             <Items
               pageRect={pageRect}
               mode={mode}
@@ -310,8 +312,8 @@ const PdfView: FC = () => {
                 }
               }}
             />
-          </Container>
-        </MathJaxContext>
+          </MathJaxContext>
+        </Container>
 
         <Excluded
           excluded={

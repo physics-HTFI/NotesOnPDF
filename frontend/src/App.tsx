@@ -11,7 +11,7 @@ import { AppSettingsContextProvider } from "./contexts/AppSettingsContext";
 import { UiStateContextProvider } from "./contexts/UiStateContext";
 
 function App() {
-  // 初回に1度だけ行う処理
+  // ドラッグでの選択と右クリックメニューを無効にする
   useEffect(() => {
     document.onselectstart = () => false;
     document.oncontextmenu = () => false;
