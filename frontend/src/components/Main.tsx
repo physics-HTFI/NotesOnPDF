@@ -5,17 +5,19 @@ import OpenFileDrawer from "@/components/OpenFileDrawer/OpenFileDrawer";
 import PdfView from "@/components/PdfView/PdfView";
 import TocView from "@/components/TocView/TocView";
 import { grey } from "@mui/material/colors";
-import { WaitContext } from "@/contexts/WaitContext";
+import { UiStateContext } from "@/contexts/UiStateContext";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
 
 function Main() {
-  const { setWaiting } = useContext(WaitContext);
+  const {
+    setWaiting,
+    setOpenFileTreeDrawer,
+    openSettingsDrawer,
+    setOpenSettingsDrawer,
+  } = useContext(UiStateContext);
   const { id, setId } = useContext(PdfNotesContext);
-  const [openLeftDrawer, setOpenLeftDrawer] = useState(true);
-  const [openBottomDrawer, setOpenBottomDrawer] = useState(false);
   const { changePage } = usePdfNotes();
-
   // モック用
   const [, setPageRatios] = useState<number[]>();
 
@@ -27,23 +29,12 @@ function Main() {
       }}
     >
       {/* ファイルツリー */}
-      <OpenFileDrawer
-        open={openLeftDrawer}
-        onClose={() => {
-          if (!id) return;
-          setOpenLeftDrawer(false);
-        }}
-      />
+      <OpenFileDrawer />
 
       <PanelGroup direction="horizontal">
         {/* 目次 */}
         <Panel defaultSizePixels={270} minSizePixels={40}>
-          <TocView
-            openDrawer={openBottomDrawer}
-            onCloseDrawer={() => {
-              setOpenBottomDrawer(false);
-            }}
-          />
+          <TocView />
         </Panel>
 
         {/* リサイズハンドル */}
@@ -55,23 +46,23 @@ function Main() {
         <Panel minSizePixels={200}>
           <PdfView
             file={id}
-            openDrawer={openBottomDrawer}
+            openDrawer={openSettingsDrawer}
             onOpenFileTree={() => {
-              setOpenLeftDrawer(true);
+              setOpenFileTreeDrawer(true);
             }}
             onOpenDrawer={() => {
-              setOpenBottomDrawer(!openBottomDrawer);
+              setOpenSettingsDrawer(!openSettingsDrawer);
             }}
             onLoadError={() => {
               setId(undefined);
               setPageRatios(undefined);
               setWaiting(false);
-              setOpenLeftDrawer(true);
+              setOpenFileTreeDrawer(true);
             }}
             onLoadSuccess={(pageRatios) => {
               setPageRatios(pageRatios);
               setWaiting(false);
-              setOpenLeftDrawer(false);
+              setOpenFileTreeDrawer(false);
             }}
           />
         </Panel>

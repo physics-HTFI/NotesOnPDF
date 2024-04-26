@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import SnackbarsMock from "./components/Fullscreen/SnackbarMock";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext";
 import { AppSettingsContextProvider } from "./contexts/AppSettingsContext";
-import { WaitContextProvider } from "./contexts/WaitContext";
+import { UiStateContextProvider } from "./contexts/UiStateContext";
 import Main from "./components/Main";
 
 function App() {
@@ -19,11 +19,11 @@ function App() {
   return (
     <AppSettingsContextProvider>
       <PdfNotesContextProvider>
-        <WaitContextProvider>
+        <UiStateContextProvider>
           <Main />
           {/* モックモデルを使用していることを示すポップアップ表示 */}
           {import.meta.env.VITE_IS_MOCK === "true" && <SnackbarsMock open />}
-        </WaitContextProvider>
+        </UiStateContextProvider>
       </PdfNotesContextProvider>
     </AppSettingsContextProvider>
   );

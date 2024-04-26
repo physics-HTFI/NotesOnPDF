@@ -5,20 +5,15 @@ import Settings from "./Settings/Settings";
 import getTocData from "./getTocData";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
-
-/**
- * `TocView`の引数
- */
-interface Props {
-  openDrawer: boolean;
-  onCloseDrawer: () => void;
-}
+import { UiStateContext } from "@/contexts/UiStateContext";
 
 /**
  * 目次を表示するコンポーネント
  */
-const TocView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
+const TocView: FC = () => {
   const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
+  const { openSettingsDrawer, setOpenSettingsDrawer } =
+    useContext(UiStateContext);
   const handleChanged = (pdfNotes: PdfNotes) => {
     setPdfNotes(pdfNotes);
   };
@@ -41,7 +36,7 @@ const TocView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
       <Drawer
         variant="persistent"
         anchor="bottom"
-        open={openDrawer}
+        open={openSettingsDrawer}
         PaperProps={{
           square: false,
           sx: {
@@ -54,7 +49,11 @@ const TocView: FC<Props> = ({ openDrawer, onCloseDrawer }) => {
           e.stopPropagation();
         }}
       >
-        <Settings onClose={onCloseDrawer} />
+        <Settings
+          onClose={() => {
+            setOpenSettingsDrawer(false);
+          }}
+        />
       </Drawer>
     </Box>
   );

@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { History, historyFileOrigin2String } from "@/types/History";
 import { ModelContext } from "@/contexts/ModelContext";
-import { WaitContext } from "@/contexts/WaitContext";
+import { UiStateContext } from "@/contexts/UiStateContext";
 
 /**
  * `History`の引数
@@ -27,7 +27,7 @@ interface Props {
  */
 const HistoryDialog: FC<Props> = ({ open, onClose }) => {
   const { model } = useContext(ModelContext);
-  const { setWaiting } = useContext(WaitContext);
+  const { setWaiting } = useContext(UiStateContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {

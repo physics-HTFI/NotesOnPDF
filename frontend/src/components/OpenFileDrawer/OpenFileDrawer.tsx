@@ -8,25 +8,18 @@ import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
 import Header from "@/components/OpenFileDrawer/Header/Header";
 import { ModelContext } from "@/contexts/ModelContext";
 import { createOrGetPdfNotes } from "@/types/PdfNotes";
-import { WaitContext } from "@/contexts/WaitContext";
+import { UiStateContext } from "@/contexts/UiStateContext";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import useCoverages from "@/hooks/useFileTree";
 
 /**
- * `OpenFileDrawer`の引数
- */
-interface Props {
-  open: boolean;
-  onClose: () => void;
-}
-
-/**
  * ファイル一覧を表示するドロワー
  */
-const OpenFileDrawer: FC<Props> = ({ open, onClose }) => {
+const OpenFileDrawer: FC = () => {
   const { model } = useContext(ModelContext);
   const { id, setId, pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
-  const { setWaiting } = useContext(WaitContext);
+  const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
+    useContext(UiStateContext);
   const {
     fileTree,
     coverages,
@@ -65,7 +58,7 @@ const OpenFileDrawer: FC<Props> = ({ open, onClose }) => {
       .then((result) => {
         setPdfNotes(createOrGetPdfNotes(result));
         setId(_id);
-        onClose();
+        setOpenFileTreeDrawer(false);
       })
       .catch(() => undefined)
       .finally(() => {
@@ -74,6 +67,7 @@ const OpenFileDrawer: FC<Props> = ({ open, onClose }) => {
   };
 
   const handleSelectPdfByFile = (file: File) => {
+    console.count(file.name);
     /*
     setOpenLeftDrawer(false);
     const pdfPathNew = _file.name;
@@ -89,8 +83,10 @@ const OpenFileDrawer: FC<Props> = ({ open, onClose }) => {
   return (
     <Drawer
       anchor="left"
-      open={open}
-      onClose={onClose}
+      open={openFileTreeDrawer}
+      onClose={() => {
+        setOpenFileTreeDrawer(false);
+      }}
       PaperProps={{
         square: false,
         sx: {
