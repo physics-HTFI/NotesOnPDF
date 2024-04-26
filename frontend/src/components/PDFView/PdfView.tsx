@@ -23,7 +23,7 @@ import Move from "./Move";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import { sampleId2Path } from "@/models/Model.Mock";
-import { ModelContext } from "@/contexts/ModelContext";
+import PdfImage from "./PdfImage";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 const options = {
@@ -121,7 +121,6 @@ const PdfView: FC<Props> = ({
   onOpenFileTree,
   onOpenDrawer,
 }) => {
-  const { model } = useContext(ModelContext);
   const { appSettings } = useContext(AppSettingsContext);
   const [reading, setReading] = useState(false);
   const [paretteOpen, setParetteOpen] = useState(false);
@@ -155,11 +154,6 @@ const PdfView: FC<Props> = ({
   const getContainerRect = useCallback((ref: HTMLDivElement) => {
     setRefContainer(ref);
   }, []);
-
-  useEffect(() => {
-    if (pdfNotes?.currentPage === undefined) return;
-    setReading(true);
-  }, [pdfNotes?.currentPage]);
 
   useEffect(() => {
     if (pdfNotes?.currentPage === undefined) return;
@@ -270,19 +264,15 @@ const PdfView: FC<Props> = ({
                 />
               </Document>
             ) : (
-              typeof file === "string" &&
-              pdfNotes &&
-              width && (
-                <img
-                  src={model.getPageImage(file, pdfNotes.currentPage, width)}
-                  style={{ width: "100%", height: "100%" }}
-                  onLoad={() => {
-                    onLoadSuccess?.([]);
-                    setReading(false);
-                  }}
-                  onError={onLoadError}
-                />
-              )
+              <PdfImage
+                width={width}
+                onStartRead={() => {
+                  setReading(true);
+                }}
+                onEndRead={() => {
+                  setReading(false);
+                }}
+              />
             )}
             <Items
               pageRect={pageRect}

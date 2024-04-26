@@ -7,14 +7,14 @@ import {
   Settings as PdfSettings,
   updatePageNum,
 } from "@/types/PdfNotes";
-import CheckboxText from "./Settings/CheckboxText";
-import SectionBreak from "./Settings/SectionBreak";
-import PageNumberRestart from "./Settings/PageNumberRestart";
-import LabelSlider from "./Settings/LabelSlider";
+import CheckboxText from "./CheckboxText";
+import SectionBreak from "./SectionBreak";
+import PageNumberRestart from "./PageNumberRestart";
+import LabelSlider from "./LabelSlider";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { ExpandMore } from "@mui/icons-material";
-import Checkbox from "./Settings/Checkbox";
-import ClickOptionSelect from "./Settings/ClickOptionSelect";
+import Checkbox from "./Checkbox";
+import ClickOptionSelect from "./ClickOptionSelect";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import { AppSettings } from "@/types/AppSettings";
 

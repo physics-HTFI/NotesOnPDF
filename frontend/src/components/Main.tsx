@@ -9,8 +9,6 @@ import { WaitContext } from "@/contexts/WaitContext";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
 
-const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
-
 function Main() {
   const { setWaiting } = useContext(WaitContext);
   const { id, setId } = useContext(PdfNotesContext);
