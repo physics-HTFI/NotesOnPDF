@@ -1,70 +1,43 @@
-import { FC, useContext, useState } from "react";
-import { Box, Drawer } from "@mui/material";
-import { TreeView } from "@mui/x-tree-view";
-import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
-import getTreeItems from "@/components/OpenFileDrawer/getTreeItems";
+import { FC, useCallback, useContext } from "react";
+import { Drawer } from "@mui/material";
 import Header from "@/components/OpenFileDrawer/Header/Header";
 import { ModelContext } from "@/contexts/ModelContext";
 import { createOrGetPdfNotes } from "@/types/PdfNotes";
 import { UiStateContext } from "@/contexts/UiStateContext";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
-import useCoverages from "@/hooks/useFileTree";
+import FileTreeView from "./FileTreeView/FileTreeView";
 
 /**
  * ファイル一覧を表示するドロワー
  */
 const OpenFileDrawer: FC = () => {
   const { model } = useContext(ModelContext);
-  const { id, setId, pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
+  const { id, setId, setPdfNotes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiStateContext);
-  const {
-    fileTree,
-    coverages,
-    reloadFileTree,
-    updateCoveragesIfRecentIdChanged,
-    updateCoveragesIfPdfNotesChanged,
-  } = useCoverages();
 
-  const [expanded, setExpanded] = useState<string[]>([]);
-  const [selectedPath, setSelectedPath] = useState<string>("");
-
-  // 前回のファイルを選択した状態にする
-  if (!selectedPath && fileTree.length !== 0 && coverages) {
-    const path = fileTree.find((i) => i.id === coverages.recentId)?.path;
-    if (path) {
-      setSelectedPath(path);
-      setExpanded(
-        [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
-          path.substring(0, m.index - 1)
-        )
-      );
-    } else {
-      setSelectedPath("");
-    }
-  }
-
-  updateCoveragesIfPdfNotesChanged(id, pdfNotes);
-
-  const handleSelectPdfById = (_id: string) => {
-    if (_id === id) return;
-    setWaiting(true);
-    setPdfNotes(undefined);
-    setId(undefined);
-    model
-      .getPdfNotes(_id)
-      .then((result) => {
-        setPdfNotes(createOrGetPdfNotes(result));
-        setId(_id);
-        setOpenFileTreeDrawer(false);
-      })
-      .catch(() => undefined)
-      .finally(() => {
-        setWaiting(false);
-      });
-  };
+  // ファイルIDを選択したときの処理。
+  // ファイルツリーのアップデートを抑えるためメモ化している。
+  const handleSelectPdfById = useCallback(
+    (_id: string) => {
+      if (_id === id) return;
+      setWaiting(true);
+      setPdfNotes(undefined);
+      setId(undefined);
+      model
+        .getPdfNotes(_id)
+        .then((result) => {
+          setPdfNotes(createOrGetPdfNotes(result));
+          setId(_id);
+          setOpenFileTreeDrawer(false);
+        })
+        .catch(() => undefined)
+        .finally(() => {
+          setWaiting(false);
+        });
+    },
+    [id, model, setId, setOpenFileTreeDrawer, setPdfNotes, setWaiting]
+  );
 
   const handleSelectPdfByFile = (file: File) => {
     console.count(file.name);
@@ -105,32 +78,10 @@ const OpenFileDrawer: FC = () => {
       <Header
         onSelectPdfByFile={handleSelectPdfByFile}
         onSelectPdfById={handleSelectPdfById}
-        onReloadFileTree={reloadFileTree}
       />
 
-      <Box sx={{ position: "relative" }}>
-        {/* ツリービュー */}
-        {/* TODO ファイルを分ける。ファイル数が増えると重くなるのでReact.memo化したほうが良い */}
-        <TreeView
-          expanded={expanded}
-          selected={selectedPath}
-          defaultCollapseIcon={<KeyboardArrowDown />}
-          defaultEndIcon={<FontAwesomeIcon icon={faFilePdf} />}
-          defaultExpandIcon={<KeyboardArrowRight />}
-          onNodeSelect={(_, path) => {
-            const file = fileTree.find((i) => i.path === path);
-            if (!file || file.children) return; // `children`がある場合はPDFファイルではなくフォルダ
-            setSelectedPath(file.path);
-            updateCoveragesIfRecentIdChanged(file.id);
-            handleSelectPdfById(file.id);
-          }}
-          onNodeToggle={(_, nodeIds) => {
-            setExpanded(nodeIds);
-          }}
-        >
-          {getTreeItems(fileTree, coverages)}
-        </TreeView>
-      </Box>
+      {/* ツリービュー */}
+      <FileTreeView onSelectPdfById={handleSelectPdfById} />
     </Drawer>
   );
 };

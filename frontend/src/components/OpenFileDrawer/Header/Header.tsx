@@ -5,6 +5,7 @@ import InputStringDialog from "./InputStringDialog";
 import HistoryDialog from "./HistoryDialog";
 import Waiting from "../../Fullscreen/Waiting";
 import { ModelContext } from "@/contexts/ModelContext";
+import useFileTree from "@/hooks/useFileTree";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 
@@ -14,7 +15,6 @@ const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 interface Props {
   onSelectPdfById?: (id: string) => void;
   onSelectPdfByFile?: (file: File) => void;
-  onReloadFileTree?: () => void;
 }
 
 const sxButton = { "&:focus": { outline: "none" }, color: "slategray" };
@@ -22,12 +22,9 @@ const sxButton = { "&:focus": { outline: "none" }, color: "slategray" };
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
-const Header: FC<Props> = ({
-  onSelectPdfById,
-  onSelectPdfByFile,
-  onReloadFileTree,
-}) => {
+const Header: FC<Props> = ({ onSelectPdfById, onSelectPdfByFile }) => {
   const { model } = useContext(ModelContext);
+  const { reloadFileTree } = useFileTree();
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -145,7 +142,7 @@ const Header: FC<Props> = ({
 
       <Divider orientation="vertical" variant="middle" flexItem />
       <Tooltip title="ファイルツリーを更新します">
-        <IconButton size="small" sx={sxButton} onClick={onReloadFileTree}>
+        <IconButton size="small" sx={sxButton} onClick={reloadFileTree}>
           <Sync />
         </IconButton>
       </Tooltip>
