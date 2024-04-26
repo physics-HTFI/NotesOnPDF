@@ -292,7 +292,7 @@ export default class ModelMock implements IModel {
     throw new Error();
   };
 
-  getPageImage = () => "";
+  getPageImageUrl = () => "";
 
   getAppSettings = async (): Promise<AppSettings> => {
     await this.wait();

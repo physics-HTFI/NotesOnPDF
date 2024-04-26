@@ -18,7 +18,7 @@ interface Props {
 }
 
 /**
- * Pdfを表示するコンポーネント
+ * PDF画像を表示するコンポーネント
  */
 const PdfImage: FC<Props> = ({ width, onStartRead, onEndRead }) => {
   const { model } = useContext(ModelContext);
@@ -41,7 +41,7 @@ const PdfImage: FC<Props> = ({ width, onStartRead, onEndRead }) => {
 
   return (
     <img
-      src={model.getPageImage(id, pdfNotes.currentPage, width)}
+      src={model.getPageImageUrl(id, pdfNotes.currentPage, width)}
       style={{ width: "100%", height: "100%" }}
       onLoad={onEndRead}
       onError={onEndRead}
