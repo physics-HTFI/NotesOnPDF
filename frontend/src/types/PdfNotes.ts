@@ -140,6 +140,16 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
 };
 
 /**
+ * `PDF.js`から取得したサイズ情報から`PdfNotes`を生成する。
+ */
+export const createPdfNotesMock = (
+  file: File,
+  sizes: { width: number; height: number }[]
+) => {
+  return createOrGetPdfNotes({ name: file.name, sizes });
+};
+
+/**
  * ページ番号を更新する
  */
 export function updatePageNum(pdfNotes: PdfNotes) {

@@ -34,7 +34,7 @@ const FileTreeView: FC<Props> = ({ onSelectPdfById }) => {
       setSelectedPath(path);
       setExpanded(
         [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
-          path.substring(0, m.index - 1)
+          path.substring(0, m.index ?? 0 - 1)
         )
       );
     } else {

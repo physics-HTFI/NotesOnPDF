@@ -7,7 +7,6 @@ import {
   useState,
 } from "react";
 import { Box, Container } from "@mui/material";
-import { pdfjs, Document, Page as PdfPage } from "react-pdf";
 import PageLabelSmall from "./PageLabelSmall";
 import PageLabelLarge from "./PageLabelLarge";
 import SpeedDial, { Mode } from "./SpeedDial";
@@ -21,16 +20,8 @@ import { grey } from "@mui/material/colors";
 import Move from "./Move";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
-import { sampleId2Path } from "@/models/Model.Mock";
 import PdfImage from "./PdfImage";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
-import { UiStateContext } from "@/contexts/UiStateContext";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-const options = {
-  cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-  standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts`,
-};
+import PdfImageMock from "./PdfImageMock";
 
 /**
  * [width, height, deltaY（＝view中心とPdf中心の差）]
@@ -63,8 +54,6 @@ const preferredSize = (
  */
 const PdfView: FC = () => {
   const { appSettings } = useContext(AppSettingsContext);
-  const { file, setFile } = useContext(PdfNotesContext);
-  const { setWaiting, setOpenFileTreeDrawer } = useContext(UiStateContext);
   const { pdfNotes, page, updateNote, changePage } = usePdfNotes();
 
   const [reading, setReading] = useState(false);
@@ -76,22 +65,6 @@ const PdfView: FC = () => {
   const [editNote, setEditNote] = useState<NoteType>();
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
   const [scale, setScale] = useState(100);
-
-  // モック用
-  const [, setPageRatios] = useState<number[]>();
-  const onLoadError = () => {
-    // 不要では？
-    setFile(undefined);
-    setPageRatios(undefined);
-    setWaiting(false);
-    setOpenFileTreeDrawer(true);
-  };
-  const onLoadSuccess = (pageRatios: number[]) => {
-    // 不要では？成功失敗にかかわらずドロワーを閉じてしまってもよい気がする。
-    setPageRatios(pageRatios);
-    setWaiting(false);
-    setOpenFileTreeDrawer(false);
-  };
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
@@ -178,53 +151,15 @@ const PdfView: FC = () => {
           ref={getPageRect}
         >
           {import.meta.env.VITE_IS_MOCK === "true" ? (
-            <Document
-              file={
-                file instanceof File
-                  ? file
-                  : `${import.meta.env.VITE_Pdf_ROOT}${sampleId2Path(file)}`
-              }
-              onLoadSuccess={(doc) => {
-                if (!file) return;
-                const getsizes = async () => {
-                  pdfSizes.current = [];
-                  for (let i = 0; i < doc.numPages; i++) {
-                    const page = await doc.getPage(i + 1);
-                    const [width, height] = [
-                      page.view[2] ?? 0,
-                      page.view[3] ?? 0,
-                    ];
-                    pdfSizes.current.push({ width, height });
-                  }
-                };
-                getsizes()
-                  .then(() => {
-                    if (!pdfSizes.current) return;
-                    onLoadSuccess(
-                      pdfSizes.current.map((s) => s.width / s.height)
-                    );
-                  })
-                  .catch(() => undefined);
+            <PdfImageMock
+              width={width}
+              onStartRead={() => {
+                setReading(true);
               }}
-              onLoadError={onLoadError}
-              options={options}
-              error={""}
-              loading={""}
-              noData={""}
-            >
-              <PdfPage
-                pageIndex={pdfNotes?.currentPage}
-                width={width}
-                error={""}
-                loading={""}
-                noData={""}
-                renderAnnotationLayer={false}
-                renderTextLayer={false}
-                onRenderSuccess={() => {
-                  setReading(false);
-                }}
-              />
-            </Document>
+              onEndRead={() => {
+                setReading(false);
+              }}
+            />
           ) : (
             <PdfImage
               width={width}

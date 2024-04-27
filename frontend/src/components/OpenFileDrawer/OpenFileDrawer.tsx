@@ -12,7 +12,7 @@ import FileTreeView from "./FileTreeView/FileTreeView";
  */
 const OpenFileDrawer: FC = () => {
   const { model } = useContext(ModelContext);
-  const { id, setId, setPdfNotes } = useContext(PdfNotesContext);
+  const { id, setIdOrFile, setPdfNotes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiStateContext);
 
@@ -23,12 +23,12 @@ const OpenFileDrawer: FC = () => {
       if (_id === id) return;
       setWaiting(true);
       setPdfNotes(undefined);
-      setId(undefined);
+      setIdOrFile(undefined);
       model
         .getPdfNotes(_id)
         .then((result) => {
           setPdfNotes(createOrGetPdfNotes(result));
-          setId(_id);
+          setIdOrFile(_id);
           setOpenFileTreeDrawer(false);
         })
         .catch(() => undefined)
@@ -36,7 +36,7 @@ const OpenFileDrawer: FC = () => {
           setWaiting(false);
         });
     },
-    [id, model, setId, setOpenFileTreeDrawer, setPdfNotes, setWaiting]
+    [id, model, setIdOrFile, setOpenFileTreeDrawer, setPdfNotes, setWaiting]
   );
 
   const handleSelectPdfByFile = (file: File) => {
