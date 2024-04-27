@@ -12,7 +12,7 @@ import FileTreeView from "./FileTreeView/FileTreeView";
  */
 const OpenFileDrawer: FC = () => {
   const { model } = useContext(ModelContext);
-  const { id, setIdOrFile, setPdfNotes } = useContext(PdfNotesContext);
+  const { id, file, setIdOrFile, setPdfNotes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiStateContext);
 
@@ -58,6 +58,7 @@ const OpenFileDrawer: FC = () => {
       anchor="left"
       open={openFileTreeDrawer}
       onClose={() => {
+        if (!id && !file) return;
         setOpenFileTreeDrawer(false);
       }}
       PaperProps={{

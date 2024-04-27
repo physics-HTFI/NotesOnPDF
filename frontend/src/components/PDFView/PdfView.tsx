@@ -22,6 +22,16 @@ import usePdfNotes from "@/hooks/usePdfNotes";
 import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import PdfImage from "./PdfImage";
 import PdfImageMock from "./PdfImageMock";
+import { PdfNotesContext } from "@/contexts/PdfNotesContext";
+
+/**
+ * 画像読み込み中かどうかの判定用変数
+ */
+interface Prev {
+  idOrFile: string | File;
+  page: number;
+  width: number;
+}
 
 /**
  * [width, height, deltaY（＝view中心とPdf中心の差）]
@@ -54,6 +64,7 @@ const preferredSize = (
  */
 const PdfView: FC = () => {
   const { appSettings } = useContext(AppSettingsContext);
+  const { id, file } = useContext(PdfNotesContext);
   const { pdfNotes, page, updateNote, changePage } = usePdfNotes();
 
   const [reading, setReading] = useState(false);
@@ -65,6 +76,7 @@ const PdfView: FC = () => {
   const [editNote, setEditNote] = useState<NoteType>();
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
   const [scale, setScale] = useState(100);
+  const prev = useRef<Prev>();
 
   const containerRect = refContainer?.getBoundingClientRect();
   const pageRect = refPage?.getBoundingClientRect();
@@ -95,6 +107,24 @@ const PdfView: FC = () => {
     if (!pageW || !pdfW) setScale(100);
     else setScale((pdfNotes.settings.fontSize * pageW) / pdfW);
   }, [pdfNotes?.currentPage, pageRect, pdfSizes, pdfNotes?.settings.fontSize]);
+
+  const idOrFile = id ?? file;
+  if (pdfNotes && idOrFile && width) {
+    if (
+      !prev.current ||
+      prev.current.idOrFile !== idOrFile ||
+      prev.current.page !== pdfNotes.currentPage ||
+      prev.current.width !== width
+    ) {
+      // TODO ページ番号が表示されない
+      setReading(true);
+      prev.current = {
+        idOrFile: idOrFile,
+        page: pdfNotes.currentPage,
+        width,
+      };
+    }
+  }
 
   const base = grey[300];
   const stripe =
@@ -153,21 +183,15 @@ const PdfView: FC = () => {
           {import.meta.env.VITE_IS_MOCK === "true" ? (
             <PdfImageMock
               width={width}
-              onStartRead={() => {
-                setReading(true);
-              }}
               onEndRead={() => {
-                setReading(false);
+                //                setReading(false);
               }}
             />
           ) : (
             <PdfImage
               width={width}
-              onStartRead={() => {
-                setReading(true);
-              }}
               onEndRead={() => {
-                setReading(false);
+                //                setReading(false);
               }}
             />
           )}

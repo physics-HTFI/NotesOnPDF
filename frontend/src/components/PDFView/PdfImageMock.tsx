@@ -1,4 +1,4 @@
-import { FC, useContext, useRef } from "react";
+import { FC, useContext } from "react";
 import { pdfjs, Document, Page as PdfPage } from "react-pdf";
 import { sampleId2Path } from "@/models/Model.Mock";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
@@ -13,43 +13,18 @@ const options = {
   standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts`,
 };
 
-interface Prev {
-  idOrFile: string | File;
-  page: number;
-  width: number;
-}
-
 interface Props {
   width?: number;
-  onStartRead: () => void;
   onEndRead: () => void;
 }
 
 /**
  * PDF画像を表示するコンポーネント
  */
-const PdfImageMock: FC<Props> = ({ width, onStartRead, onEndRead }) => {
+const PdfImageMock: FC<Props> = ({ width, onEndRead }) => {
   const { id, file, setIdOrFile, setPdfNotes, pdfNotes } =
     useContext(PdfNotesContext);
   const { setWaiting, setOpenFileTreeDrawer } = useContext(UiStateContext);
-  const prev = useRef<Prev>();
-
-  const idOrFile = id ?? file;
-  if (pdfNotes && idOrFile && width) {
-    if (
-      !prev.current ||
-      prev.current.idOrFile !== idOrFile ||
-      prev.current.page !== pdfNotes.currentPage ||
-      prev.current.width !== width
-    ) {
-      onStartRead();
-      prev.current = {
-        idOrFile: idOrFile,
-        page: pdfNotes.currentPage,
-        width,
-      };
-    }
-  }
 
   return (
     <Document
