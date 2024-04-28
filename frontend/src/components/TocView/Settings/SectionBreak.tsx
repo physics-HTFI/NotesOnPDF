@@ -6,7 +6,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { getPage, getSeparator } from "../getTocData";
+import { getPage, getSeparator } from "../getTocData_";
 
 /**
  * `SctionBreak`の引数
