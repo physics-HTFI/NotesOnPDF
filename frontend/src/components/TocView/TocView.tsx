@@ -1,7 +1,7 @@
 import { FC, useContext } from "react";
 import { Box, Drawer } from "@mui/material";
 import Settings from "./Settings/Settings";
-import getTocData from "./getTocData_";
+import getTocData from "./getTocData";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 import { UiStateContext } from "@/contexts/UiStateContext";
