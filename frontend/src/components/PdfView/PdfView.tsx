@@ -1,16 +1,9 @@
-import {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FC, useCallback, useContext, useState } from "react";
 import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
 import PageLabelLarge from "./PageLabelLarge";
 import SpeedDial, { Mode } from "./SpeedDial";
-import { Node, NoteType } from "@/types/PdfNotes";
+import { Node, NoteType, PdfNotes } from "@/types/PdfNotes";
 import Palette from "./Palette";
 import Excluded from "./Excluded";
 import Items from "./Items";
@@ -25,44 +18,9 @@ import PdfImageMock from "./PdfImageMock";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 
 /**
- * 画像読み込み中かどうか判定するために以前のページ番号などを保持する
- */
-interface Prev {
-  idOrFile: string | File;
-  page: number;
-  width: number;
-}
-
-/**
- * [width, height, deltaY（＝view中心とPdf中心の差）]
- */
-const preferredSize = (
-  offsetTop: number,
-  offsetBottom: number,
-  pdfRatio?: number, // width / height
-  viewW?: number,
-  viewH?: number
-): readonly [number | undefined, number | undefined, number, number] => {
-  if (!pdfRatio || !viewW || !viewH) return [undefined, undefined, 0, 0];
-  const H = viewH / (1 - offsetTop - offsetBottom);
-  const W = pdfRatio * H;
-  const ratio = Math.min(1, viewW / W);
-  const top = H * offsetTop;
-  const bottom = H * offsetBottom;
-  const calTB = (tb: number) => {
-    if (ratio === 1) return tb;
-    if (top === 0 && bottom === 0) return 0;
-    if (ratio * H < viewH) return 0;
-    // ratio==1の時に tb, ratio*H==viewH(==H-top-bottom) の時に 0 になる
-    return (1 - ((1 - ratio) * H) / (top + bottom)) * tb;
-  };
-  return [ratio * W, ratio * H, -calTB(top), -calTB(bottom)];
-};
-
-/**
  * モードに応じた背景色を返す
  */
-const getBackground = (mode: Mode): string => {
+function getBackground(mode: Mode): string {
   const base = grey[300];
   const stripe =
     mode === "edit"
@@ -73,30 +31,20 @@ const getBackground = (mode: Mode): string => {
       ? "#eae0e0"
       : base;
   return `repeating-linear-gradient(-60deg, ${stripe}, ${stripe} 5px, ${base} 5px, ${base} 10px)`;
-};
+}
 
 /**
- * Pdfを表示するコンポーネント
+ * 注釈の倍率を返す
  */
-const PdfView: FC = () => {
-  const { appSettings } = useContext(AppSettingsContext);
-  const { id, file } = useContext(PdfNotesContext);
-  const { pdfNotes, page, updateNote, changePage } = usePdfNotes();
+function getScale(pdfNotes?: PdfNotes, pageRect?: DOMRect) {
+  if (!pdfNotes || !pageRect) return 100;
+  return (pdfNotes.settings.fontSize * pageRect.width) / 500;
+}
 
-  const [reading, setReading] = useState(false);
-  const [paretteOpen, setParetteOpen] = useState(false);
-  const pdfSizes = useRef<{ width: number; height: number }[]>();
-  const [refContainer, setRefContainer] = useState<HTMLDivElement>();
-  const [refPage, setRefPage] = useState<HTMLDivElement>();
-  const [mode, setMode] = useState<Mode>(null);
-  const [editNote, setEditNote] = useState<NoteType>();
-  const [moveNote, setMoveNote] = useState<NoteType | Node>();
-  const [scale, setScale] = useState(100);
-  const [prev, setPrev] = useState<Prev>();
-
-  const containerRect = refContainer?.getBoundingClientRect();
-  const pageRect = refPage?.getBoundingClientRect();
-  const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
+/**
+ * ページのサイズと位置を返す
+ */
+function getRect(pdfNotes?: PdfNotes, containerRect?: DOMRect) {
   const [width, height, top, bottom] =
     pdfNotes?.currentPage === undefined
       ? [undefined, undefined]
@@ -107,7 +55,80 @@ const PdfView: FC = () => {
           containerRect?.width,
           containerRect?.height
         );
+  return { width, height, top, bottom };
+
+  /**
+   * [width, height, deltaY（＝view中心とPdf中心の差）]
+   */
+  function preferredSize(
+    offsetTop: number,
+    offsetBottom: number,
+    pdfRatio?: number, // width / height
+    viewW?: number,
+    viewH?: number
+  ): readonly [number | undefined, number | undefined, number, number] {
+    if (!pdfRatio || !viewW || !viewH) return [undefined, undefined, 0, 0];
+    const H = viewH / (1 - offsetTop - offsetBottom);
+    const W = pdfRatio * H;
+    const ratio = Math.min(1, viewW / W);
+    const top = H * offsetTop;
+    const bottom = H * offsetBottom;
+    const calTB = (tb: number) => {
+      if (ratio === 1) return tb;
+      if (top === 0 && bottom === 0) return 0;
+      if (ratio * H < viewH) return 0;
+      // ratio==1の時に tb, ratio*H==viewH(==H-top-bottom) の時に 0 になる
+      return (1 - ((1 - ratio) * H) / (top + bottom)) * tb;
+    };
+    return [ratio * W, ratio * H, -calTB(top), -calTB(bottom)];
+  }
+}
+
+/**
+ * 読み込み中かどうかを返すカスタムフック
+ */
+function useReading() {
+  const [prev, setPrev] = useState<{
+    idOrFile: string | File;
+    page: number;
+  }>();
+  const { id, file, pdfNotes } = useContext(PdfNotesContext);
+
+  const isReading = () => {
+    const idOrFile = id ?? file;
+    if (pdfNotes && idOrFile) {
+      if (prev?.idOrFile !== idOrFile || prev.page !== pdfNotes.currentPage) {
+        setPrev({
+          idOrFile: idOrFile,
+          page: pdfNotes.currentPage,
+        });
+        return true;
+      }
+    }
+  };
+  return { isReading };
+}
+
+/**
+ * Pdfを表示するコンポーネント
+ */
+const PdfView: FC = () => {
+  const { appSettings } = useContext(AppSettingsContext);
+  const { pdfNotes, page, updateNote, changePage } = usePdfNotes();
+
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [refContainer, setRefContainer] = useState<HTMLDivElement>();
+  const [refPage, setRefPage] = useState<HTMLDivElement>();
+  const [mode, setMode] = useState<Mode>(null);
+  const [editNote, setEditNote] = useState<NoteType>();
+  const [moveNote, setMoveNote] = useState<NoteType | Node>();
+
+  const containerRect = refContainer?.getBoundingClientRect();
+  const pageRect = refPage?.getBoundingClientRect();
+  const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
+  const { width, height, top, bottom } = getRect(pdfNotes, containerRect);
   const pageLabel = `p. ${pdfNotes?.pages[pdfNotes.currentPage]?.num ?? "???"}`;
+  const scale = getScale(pdfNotes, pageRect);
 
   const getPageRect = useCallback((ref: HTMLDivElement) => {
     setRefPage(ref);
@@ -116,28 +137,11 @@ const PdfView: FC = () => {
     setRefContainer(ref);
   }, []);
 
-  useEffect(() => {
-    if (pdfNotes?.currentPage === undefined) return;
-    const pageW = pageRect?.width;
-    const pdfW = pdfSizes.current?.[pdfNotes.currentPage]?.width;
-    if (!pageW || !pdfW) setScale(100);
-    else setScale((pdfNotes.settings.fontSize * pageW) / pdfW);
-  }, [pdfNotes?.currentPage, pageRect, pdfSizes, pdfNotes?.settings.fontSize]);
-
-  const idOrFile = id ?? file;
-  if (pdfNotes && idOrFile && width) {
-    if (
-      prev?.idOrFile !== idOrFile ||
-      prev.page !== pdfNotes.currentPage ||
-      prev.width !== width
-    ) {
-      setReading(true);
-      setPrev({
-        idOrFile: idOrFile,
-        page: pdfNotes.currentPage,
-        width,
-      });
-    }
+  // ページ読み込み時にページ番号を出す
+  const [reading, setReading] = useState(false);
+  const { isReading } = useReading();
+  if (isReading()) {
+    setReading(true);
   }
 
   return (
@@ -157,18 +161,19 @@ const PdfView: FC = () => {
           if (appSettings?.cancelModeWithVoidClick) setMode(null);
           if (mode ?? moveNote) return;
           setMouse({ pageX: e.pageX, pageY: e.pageY });
-          setParetteOpen(true);
+          setPaletteOpen(true);
         }}
         onMouseUp={() => {
-          setParetteOpen(false);
+          setPaletteOpen(false);
         }}
         onMouseLeave={() => {
-          setParetteOpen(false);
+          setPaletteOpen(false);
         }}
         onWheel={(e) => {
           changePage(e.deltaY < 0 ? -1 : 1);
         }}
       >
+        {/* PDF画像がある要素 */}
         <Container
           sx={{
             width,
@@ -241,9 +246,9 @@ const PdfView: FC = () => {
         <PageLabelSmall label={pageLabel} hidden={Boolean(moveNote)} />
         <SpeedDial mode={mode} setMode={setMode} hidden={Boolean(moveNote)} />
         <Palette
-          open={paretteOpen}
+          open={paletteOpen}
           onClose={(note) => {
-            setParetteOpen(false);
+            setPaletteOpen(false);
             if (note.type === "Node") setMoveNote(note);
             else setEditNote(note);
           }}

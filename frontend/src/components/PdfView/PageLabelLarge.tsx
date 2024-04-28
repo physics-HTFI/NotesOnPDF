@@ -31,6 +31,18 @@ const PageLabelLarge: FC<Props> = ({ label, shown }) =>
         justifyContent: "center",
         alignItems: "center",
         fontSize: "2em",
+        animation: "fadeIn 0.1s ease 0s 1",
+        "@keyframes fadeIn": {
+          "0%": {
+            opacity: 0,
+          },
+          "90%": {
+            opacity: 0,
+          },
+          "100%": {
+            opacity: 1,
+          },
+        },
       }}
     >
       {label}
