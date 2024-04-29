@@ -10,6 +10,7 @@ import { PdfNotesContextProvider } from "./contexts/PdfNotesContext";
 import { AppSettingsContextProvider } from "./contexts/AppSettingsContext";
 import { UiStateContextProvider } from "./contexts/UiStateContext";
 import { MathJaxContext } from "better-react-mathjax";
+import { MouseContextProvider } from "./contexts/MouseContext";
 
 /**
  * 数式表示のコンフィグ
@@ -19,7 +20,7 @@ const mathjaxConfig = {
     load: [
       "[tex]/html",
       "[tex]/boldsymbol",
-      "[tex]/ams",
+      //"[tex]/ams", // エラーになる"No version information available for component [tex]/ams"
       "[tex]/braket",
       "[tex]/cancel",
       "[tex]/cases",
@@ -68,8 +69,8 @@ function App() {
   return (
     <AppSettingsContextProvider>
       <UiStateContextProvider>
-        <PdfNotesContextProvider>
-          <MathJaxContext version={3} config={mathjaxConfig}>
+        <MathJaxContext version={3} config={mathjaxConfig}>
+          <PdfNotesContextProvider>
             <Box>
               {/* ファイルツリー */}
               <OpenFileDrawer />
@@ -89,15 +90,17 @@ function App() {
 
                 {/* PDFビュー */}
                 <Panel minSizePixels={200}>
-                  <PdfView />
+                  <MouseContextProvider>
+                    <PdfView />
+                  </MouseContextProvider>
                 </Panel>
               </PanelGroup>
             </Box>
 
             {/* モックモデルを使用していることを示すポップアップ表示 */}
             {import.meta.env.VITE_IS_MOCK === "true" && <SnackbarsMock />}
-          </MathJaxContext>
-        </PdfNotesContextProvider>
+          </PdfNotesContextProvider>
+        </MathJaxContext>
       </UiStateContextProvider>
     </AppSettingsContextProvider>
   );
