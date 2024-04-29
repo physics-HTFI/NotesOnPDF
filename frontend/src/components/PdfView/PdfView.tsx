@@ -44,18 +44,20 @@ function getScale(pdfNotes?: PdfNotes, pageRect?: DOMRect) {
 /**
  * ページのサイズと位置を返す
  */
-function getRect(pdfNotes?: PdfNotes, containerRect?: DOMRect) {
-  const [width, height, top, bottom] =
-    pdfNotes?.currentPage === undefined
-      ? [undefined, undefined]
-      : preferredSize(
-          pdfNotes.settings.offsetTop,
-          pdfNotes.settings.offsetBottom,
-          pdfNotes.pages[pdfNotes.currentPage]?.sizeRatio,
-          containerRect?.width,
-          containerRect?.height
-        );
-  return { width, height, top, bottom };
+function getRect(
+  pdfNotes?: PdfNotes,
+  containerRect?: DOMRect
+): { pageRect?: DOMRect; top?: number; bottom?: number } {
+  const pdfRatio = pdfNotes?.pages[pdfNotes.currentPage]?.sizeRatio;
+  if (!pdfNotes || !pdfRatio || !containerRect) return {};
+  return preferredSize(
+    pdfNotes.settings.offsetTop,
+    pdfNotes.settings.offsetBottom,
+    pdfRatio,
+    containerRect.width,
+    containerRect.height,
+    containerRect.x
+  );
 
   /**
    * [width, height, deltaY（＝view中心とPdf中心の差）]
@@ -63,24 +65,26 @@ function getRect(pdfNotes?: PdfNotes, containerRect?: DOMRect) {
   function preferredSize(
     offsetTop: number,
     offsetBottom: number,
-    pdfRatio?: number, // width / height
-    viewW?: number,
-    viewH?: number
-  ): readonly [number | undefined, number | undefined, number, number] {
-    if (!pdfRatio || !viewW || !viewH) return [undefined, undefined, 0, 0];
+    pdfRatio: number, // width / height
+    viewW: number,
+    viewH: number,
+    viewX: number
+  ) {
     const H = viewH / (1 - offsetTop - offsetBottom);
     const W = pdfRatio * H;
-    const ratio = Math.min(1, viewW / W);
+    const ratio = Math.min(1, viewW / W); // 画像が横にはみ出しそうな場合にこの係数をかけて収める
     const top = H * offsetTop;
     const bottom = H * offsetBottom;
-    const calTB = (tb: number) => {
-      if (ratio === 1) return tb;
-      if (top === 0 && bottom === 0) return 0;
-      if (ratio * H < viewH) return 0;
-      // ratio==1の時に tb, ratio*H==viewH(==H-top-bottom) の時に 0 になる
-      return (1 - ((1 - ratio) * H) / (top + bottom)) * tb;
+    const tbRatio =
+      ratio * H < viewH
+        ? 0 // ページ内に収まる場合は中央に配置する
+        : 1 - ((1 - ratio) * H) / (top + bottom); // ratio==1の時に 1, ratio*H==viewH(==H-top-bottom) の時（ページサイズ＝画像サイズ）に 0 になる
+    const x = viewX + (viewW + ratio * W) / 2;
+    return {
+      pageRect: new DOMRect(x, -tbRatio * top, ratio * W, ratio * H),
+      top: -tbRatio * top,
+      bottom: -tbRatio * bottom,
     };
-    return [ratio * W, ratio * H, -calTB(top), -calTB(bottom)];
   }
 }
 
@@ -118,21 +122,16 @@ const PdfView: FC = () => {
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [refContainer, setRefContainer] = useState<HTMLDivElement>();
-  const [refPage, setRefPage] = useState<HTMLDivElement>();
   const [mode, setMode] = useState<Mode>(null);
   const [editNote, setEditNote] = useState<NoteType>();
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
 
   const containerRect = refContainer?.getBoundingClientRect();
-  const pageRect = refPage?.getBoundingClientRect();
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const { width, height, top, bottom } = getRect(pdfNotes, containerRect);
+  const { pageRect, top, bottom } = getRect(pdfNotes, containerRect);
   const pageLabel = `p. ${pdfNotes?.pages[pdfNotes.currentPage]?.num ?? "???"}`;
   const scale = getScale(pdfNotes, pageRect);
 
-  const getPageRect = useCallback((ref: HTMLDivElement) => {
-    setRefPage(ref);
-  }, []);
   const getContainerRect = useCallback((ref: HTMLDivElement) => {
     setRefContainer(ref);
   }, []);
@@ -176,8 +175,8 @@ const PdfView: FC = () => {
         {/* PDF画像がある要素 */}
         <Container
           sx={{
-            width,
-            height,
+            width: pageRect?.width,
+            height: pageRect?.height,
             position: "absolute",
             top,
             bottom,
@@ -187,18 +186,17 @@ const PdfView: FC = () => {
             containerType: "size",
           }}
           disableGutters
-          ref={getPageRect}
         >
           {import.meta.env.VITE_IS_MOCK === "true" ? (
             <PdfImageMock
-              width={width}
+              width={pageRect?.width}
               onEndRead={() => {
                 setReading(false);
               }}
             />
           ) : (
             <PdfImage
-              width={width}
+              width={pageRect?.width}
               onEndRead={() => {
                 setReading(false);
               }}
