@@ -123,21 +123,18 @@ const PdfView: FC = () => {
       >
         {import.meta.env.VITE_IS_MOCK === "true" ? (
           <PdfImageMock
-            width={pageRect?.width}
             onEndRead={() => {
               setReading(false);
             }}
           />
         ) : (
           <PdfImage
-            width={pageRect?.width}
             onEndRead={() => {
               setReading(false);
             }}
           />
         )}
         <Items
-          pageRect={pageRect}
           mode={mode}
           moveNote={moveNote}
           onEdit={setEditNote}

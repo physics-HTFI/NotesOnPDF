@@ -20,7 +20,6 @@ import { AppSettingsContext } from "@/contexts/AppSettingsContext";
  */
 interface Props {
   mode: Mode;
-  pageRect?: DOMRect;
   moveNote?: NoteType | NodeType;
   onEdit: (note: NoteType) => void;
   onMove: (note: NoteType | NodeType) => void;
@@ -29,11 +28,11 @@ interface Props {
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Items: FC<Props> = ({ mode, pageRect, moveNote, onEdit, onMove }) => {
-  const { setMouse } = useContext(MouseContext);
+const Items: FC<Props> = ({ mode, moveNote, onEdit, onMove }) => {
+  const { pageRect, setMouse } = useContext(MouseContext);
   const { appSettings } = useContext(AppSettingsContext);
   const { page, popNote } = usePdfNotes();
-  if (!page?.notes || !pageRect || !setMouse) return <SvgDefs />;
+  if (!page?.notes || !pageRect) return <SvgDefs />;
 
   const props = <T extends NoteType | NodeType>(params: T) => ({
     key: JSON.stringify(params),

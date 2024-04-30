@@ -4,6 +4,7 @@ import { sampleId2Path } from "@/models/Model.Mock";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { UiStateContext } from "@/contexts/UiStateContext";
 import { createPdfNotesMock } from "@/types/PdfNotes";
+import { MouseContext } from "@/contexts/MouseContext";
 
 if (import.meta.env.VITE_IS_MOCK === "true") {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -14,16 +15,16 @@ const options = {
 };
 
 interface Props {
-  width?: number;
   onEndRead: () => void;
 }
 
 /**
  * PDF画像を表示するコンポーネント
  */
-const PdfImageMock: FC<Props> = ({ width, onEndRead }) => {
+const PdfImageMock: FC<Props> = ({ onEndRead }) => {
   const { id, file, setIdOrFile, setPdfNotes, pdfNotes } =
     useContext(PdfNotesContext);
+  const { pageRect } = useContext(MouseContext);
   const { setWaiting, setOpenFileTreeDrawer } = useContext(UiStateContext);
 
   return (
@@ -59,7 +60,7 @@ const PdfImageMock: FC<Props> = ({ width, onEndRead }) => {
     >
       <PdfPage
         pageIndex={pdfNotes?.currentPage}
-        width={width}
+        width={pageRect?.width}
         error={""}
         loading={""}
         noData={""}
