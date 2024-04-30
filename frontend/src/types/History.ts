@@ -2,7 +2,7 @@ export type History = {
   id: string;
   name: string;
   origin: HistoryFileOrigin;
-  accsessDate: string;
+  accessDate: string;
 }[];
 
 export enum HistoryFileOrigin {
@@ -14,7 +14,7 @@ export enum HistoryFileOrigin {
 export const historyFileOrigin2String = (origin: HistoryFileOrigin) => {
   switch (origin) {
     case HistoryFileOrigin.insideTree:
-      return "ツリー内";
+      return "ツリー";
     case HistoryFileOrigin.outsideTree:
       return "ツリー外";
     case HistoryFileOrigin.web:

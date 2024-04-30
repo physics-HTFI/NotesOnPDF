@@ -34,13 +34,13 @@ export default class ModelMock implements IModel {
         id: "12",
         name: "文書1.pdf",
         origin: 0,
-        accsessDate: "2001-01-01 00:00",
+        accessDate: "2001-01-01 00:00",
       },
       {
         id: "10",
         name: "dummy2A.pdf",
         origin: 0,
-        accsessDate: "2000-01-01 00:00",
+        accessDate: "2000-01-01 00:00",
       },
     ];
   };

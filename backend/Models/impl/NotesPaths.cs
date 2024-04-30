@@ -27,7 +27,7 @@ namespace backend
 
         public enum PdfOrigin { InsideTree, OutsideTree, Web }
 
-        public static string Prefix(PdfOrigin origin) => origin switch
+        static string Prefix(PdfOrigin origin) => origin switch
         {
             PdfOrigin.OutsideTree => "[ツリー外] ",
             PdfOrigin.Web => "[ウェブ] ",

@@ -59,7 +59,7 @@ const HistoryDialog: FC<Props> = ({ open, onClose }) => {
           e.stopPropagation();
         }}
       >
-        <Typography variant="body1">アクセス履歴から開く</Typography>
+        <Typography variant="body1">履歴からPDFファイルを開く</Typography>
         <TableContainer
           component={Box}
           sx={{
@@ -67,16 +67,19 @@ const HistoryDialog: FC<Props> = ({ open, onClose }) => {
             minHeight: 200,
             maxHeight: "calc(100vh - 100px)",
             background: "white",
+            borderRadius: 2,
           }}
         >
           <Table size="small">
-            <TableHead sx={{ background: "lightsteelblue" }}>
+            <TableHead sx={{ background: "#72a0db" }}>
               <TableRow>
-                <TableCell sx={{ minWidth: 150 }}>ファイル名</TableCell>
-                <TableCell align="center" sx={{ width: 80 }}>
+                <TableCell sx={{ minWidth: 150, height: 30, color: "white" }}>
+                  ファイル名
+                </TableCell>
+                <TableCell align="center" sx={{ width: 80, color: "white" }}>
                   場所
                 </TableCell>
-                <TableCell align="center" sx={{ width: 130 }}>
+                <TableCell align="center" sx={{ width: 130, color: "white" }}>
                   アクセス日時
                 </TableCell>
               </TableRow>
@@ -91,13 +94,13 @@ const HistoryDialog: FC<Props> = ({ open, onClose }) => {
                     onClose(row.id);
                   }}
                 >
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" sx={{ height: 30 }}>
                     {row.name}
                   </TableCell>
                   <TableCell align="center">
                     {historyFileOrigin2String(row.origin)}
                   </TableCell>
-                  <TableCell align="center">{row.accsessDate}</TableCell>
+                  <TableCell align="center">{row.accessDate}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

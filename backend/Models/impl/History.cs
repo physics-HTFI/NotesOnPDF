@@ -15,14 +15,15 @@ namespace backend
         /// <summary>
         /// <c>throw</c>しない
         /// </summary>
-        public void Add(string id, string path, NotesPaths.PdfOrigin? type = null) {
+        public void Add(string id, string path, NotesPaths.PdfOrigin? origin = null) {
             try
             {
                 if (Items.FirstOrDefault()?.Id == id) return;
+                origin ??= Items.FirstOrDefault(i => i.Id == id)?.Origin;
                 Item item = new(
                     id,
                     Path.GetFullPath(path),
-                    type ?? NotesPaths.PdfOrigin.InsideTree,
+                    origin ?? NotesPaths.PdfOrigin.InsideTree,
                     DateTime.Now
                 );
                 Items.RemoveAll(i => i.Id == id);
@@ -41,15 +42,8 @@ namespace backend
             try
             {
                 return Items.Select(i => 
-                    new HttpServer.PdfItem(i.Id, getName(i), (int)i.Origin, i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
+                    new HttpServer.PdfItem(i.Id, Path.GetFileName(i.Path), (int)i.Origin, i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
                 ).ToArray();
-
-                static string getName(Item item)
-                {
-                    string prefix = NotesPaths.Prefix(item.Origin);
-                    string name = Path.GetFileName(item.Path);
-                    return $"{prefix}{name}";
-                }
             }
             catch
             {
