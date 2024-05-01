@@ -143,7 +143,7 @@ namespace backend
                     pageNum: uint.Parse(url.Split('/')[4]),
                     width: uint.Parse(Regex.Match(uri.Query, @"width=([^&]+)").Groups[1].Value)
                     );
-                return new(png, MimeType(".png"));
+                return new(png, MimeType(".jpg"));
             }
             Response getResponse(string? body) => new(
                 Encoding.UTF8.GetBytes(body ?? "null"),
@@ -186,10 +186,10 @@ namespace backend
             {
                 ".css" => "text/css",
                 ".html" => "text/html",
+                ".jpg" => "image/jpeg",
                 ".js" => "application/x-javascript",
                 ".json" => "application/json",
                 ".pdf" => "application/pdf",
-                ".png" => "image/png",
                 ".svg" => "image/svg+xml",
                 _ => throw new Exception()
             };
