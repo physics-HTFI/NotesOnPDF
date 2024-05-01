@@ -17,12 +17,19 @@ interface Props {
   mode?: Mode;
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+  disableNodes?: boolean;
 }
 
 /**
  * 黄色いマーカー
  */
-const Marker: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
+const Marker: FC<Props> = ({
+  params,
+  mode,
+  pageRect,
+  onMouseDown,
+  disableNodes,
+}) => {
   const [hover, setHover] = useState(false);
   const { isMove } = useCursor(mode);
   const { appSettings } = useContext(AppSettingsContext);
@@ -30,27 +37,29 @@ const Marker: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
   const y1 = params.y1 * pageRect.height;
   const x2 = params.x2 * pageRect.width;
   const y2 = params.y2 * pageRect.height;
-  const cursor =
-    mode === "move"
-      ? "move"
-      : mode === "delete"
-      ? "pointer"
-      : appSettings?.rightClick === "move" ||
-        appSettings?.rightClick === "delete" ||
-        appSettings?.middleClick === "move" ||
-        appSettings?.middleClick === "delete"
-      ? "alias"
-      : undefined;
-
-  const node = isMove
-    ? {
-        target: params,
-        visible: hover,
-        pageRect,
-        onMouseDown,
-        isGrab: mode === "move",
-      }
+  const cursor = disableNodes
+    ? undefined
+    : mode === "move"
+    ? "move"
+    : mode === "delete"
+    ? "pointer"
+    : appSettings?.rightClick === "move" ||
+      appSettings?.rightClick === "delete" ||
+      appSettings?.middleClick === "move" ||
+      appSettings?.middleClick === "delete"
+    ? "alias"
     : undefined;
+
+  const node =
+    !disableNodes && isMove
+      ? {
+          target: params,
+          visible: hover,
+          pageRect,
+          onMouseDown,
+          isGrab: mode === "move",
+        }
+      : undefined;
 
   return (
     <>

@@ -61,7 +61,7 @@ const RectEditor: FC<Props> = ({ params, onClose }) => {
       >
         <ToggleButton value="filled" sx={toggleSx}>
           <Svg pageRect={pageRect}>
-            <RectSvg pageRect={pageRect} params={rect} />
+            <RectSvg pageRect={pageRect} params={rect} disableNodes />
           </Svg>
         </ToggleButton>
         <ToggleButton value="outlined" sx={toggleSx}>
@@ -69,6 +69,7 @@ const RectEditor: FC<Props> = ({ params, onClose }) => {
             <RectSvg
               pageRect={pageRect}
               params={{ ...rect, style: "outlined" }}
+              disableNodes
             />
           </Svg>
         </ToggleButton>

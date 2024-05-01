@@ -16,28 +16,36 @@ interface Props {
   mode?: Mode;
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+  disableNodes?: boolean;
 }
 
 /**
  * 矢印などの直線
  */
-const Arrow: FC<Props> = ({ params, mode, pageRect, onMouseDown }) => {
+const Arrow: FC<Props> = ({
+  params,
+  mode,
+  pageRect,
+  onMouseDown,
+  disableNodes,
+}) => {
   const [hover, setHover] = useState(false);
   const { getCursor, isMove } = useCursor(mode);
   const x1 = params.x1 * pageRect.width;
   const y1 = params.y1 * pageRect.height;
   const x2 = params.x2 * pageRect.width;
   const y2 = params.y2 * pageRect.height;
-  const cursor = getCursor();
-  const node = isMove
-    ? {
-        target: params,
-        visible: hover,
-        pageRect,
-        onMouseDown,
-        isGrab: mode === "move",
-      }
-    : undefined;
+  const cursor = disableNodes ? undefined : getCursor();
+  const node =
+    !disableNodes && isMove
+      ? {
+          target: params,
+          visible: hover,
+          pageRect,
+          onMouseDown,
+          isGrab: mode === "move",
+        }
+      : undefined;
 
   return (
     <>

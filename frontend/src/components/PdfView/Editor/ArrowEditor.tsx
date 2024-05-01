@@ -80,9 +80,9 @@ const ArrowEditor: FC<Props> = ({ params, onClose }) => {
       <ToggleButton key={heads} value={heads} sx={toggleSx}>
         <Svg pageRect={pageRectButton}>
           {line.type === "Arrow" ? (
-            <ArrowItem pageRect={pageRectButton} params={line} />
+            <ArrowItem pageRect={pageRectButton} params={line} disableNodes />
           ) : (
-            <BracketItem pageRect={pageRectButton} params={line} />
+            <BracketItem pageRect={pageRectButton} params={line} disableNodes />
           )}
         </Svg>
       </ToggleButton>
