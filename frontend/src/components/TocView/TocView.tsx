@@ -5,7 +5,6 @@ import getTocData from "./getTocData";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 import { UiStateContext } from "@/contexts/UiStateContext";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import { MathJax } from "better-react-mathjax";
 
 /**
@@ -15,7 +14,6 @@ const TocView: FC = () => {
   const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
   const { openSettingsDrawer, setOpenSettingsDrawer } =
     useContext(UiStateContext);
-  const { changePage } = usePdfNotes();
 
   return (
     <Box
@@ -24,15 +22,20 @@ const TocView: FC = () => {
         position: "relative",
         height: "100vh",
         overflowWrap: "break-word",
-        overflow: "hidden",
         fontSize: "70%",
-      }}
-      onWheel={(e) => {
-        changePage(e.deltaY < 0 ? -1 : 1);
       }}
     >
       <MathJax hideUntilTypeset={"first"}>
-        <Box sx={{ p: 0.5, lineHeight: 1 }}>
+        <Box
+          sx={{
+            p: 0.5,
+            lineHeight: 1,
+            overflowY: "auto",
+            overflowX: "hidden",
+            height: "100vh",
+            boxSizing: "border-box",
+          }}
+        >
           {getTocData(pdfNotes, setPdfNotes)}
         </Box>
       </MathJax>
