@@ -48,7 +48,6 @@ const Settings: FC<Props> = ({ onClose }) => {
   };
 
   // ファイル設定変更
-  // TODO 線の太さを変更できるようにしてもよい
   const handleChangeFileSettings = (newSettings: Partial<PdfSettings>) => {
     setPdfNotes({
       ...pdfNotes,

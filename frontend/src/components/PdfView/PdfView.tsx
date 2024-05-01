@@ -149,7 +149,6 @@ const PdfView: FC = () => {
               !page?.notes?.some((n) => n === oldNote) // `!page`の場合も含んでいる
             ) {
               // Polygonの追加時は点を追加して変形モードを続ける
-              // TODO ポリゴンを追加が終了したときにマウスカーソルがなぜか消えたままになる（Firefoxだと表示される）
               const push = newNote.points[newNote.points.length - 1];
               if (push) newNote.points.push([...push]);
               setMoveNote({
