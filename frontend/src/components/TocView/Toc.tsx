@@ -70,14 +70,22 @@ export const Page = ({
   isCurrent,
   page,
   onClick,
+  // 全てのページに<Tooltip>を設定すると遅くなるので、マウスホバーしたページにだけ設定する。
+  // <Page>ごとに`openTooltip`フラグを持たせて、onMouseEnterとonMouseLeaveで切り替えるようにすると、
+  // onMouseLeaveが呼ばれないことがあるので、親コンポーネントから一括して管理するようにしている。
+  index,
+  openTooltips,
+  setOpenTooltips,
 }: {
   sectionBreakInner?: boolean;
   tooltip?: string;
   isCurrent?: boolean;
   page?: PageParams;
   onClick?: () => void;
+  index?: number;
+  openTooltips?: boolean[];
+  setOpenTooltips?: (openTooltips: boolean[]) => void;
 }) => {
-  const [openTooltip, setOpenTooltip] = useState(false);
   const getPageColor = (isCurrent?: boolean, page?: PageParams) => {
     if (isCurrent) {
       return page?.notes ? "magenta" : "red";
@@ -98,15 +106,12 @@ export const Page = ({
     opacity: page?.style?.includes("excluded") ? 0.3 : 1,
     cursor: "pointer",
   };
+  const openTooltip = index !== undefined && openTooltips?.[index];
   return (
     <span
       onMouseEnter={() => {
-        setOpenTooltip(true);
-        console.log("open");
-      }}
-      onMouseLeave={() => {
-        setOpenTooltip(false);
-        console.log("close");
+        if (!setOpenTooltips || !openTooltips) return;
+        setOpenTooltips(openTooltips.map((_, j) => index === j));
       }}
     >
       {!openTooltip && <span style={style} onClick={onClick} />}
@@ -116,10 +121,6 @@ export const Page = ({
           disableInteractive
           enterDelay={0}
           leaveDelay={0}
-          onClose={() => {
-            setOpenTooltip(false);
-            console.log("close2");
-          }}
         >
           <span style={style} onClick={onClick} />
         </Tooltip>
@@ -154,7 +155,13 @@ const ToC = ({
   pdfNotes?: PdfNotes;
   onChanged?: (pdfNotes: PdfNotes) => void;
 }) => {
+  const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
   if (!pdfNotes) return [];
+  if (pdfNotes.pages.length !== openTooltips.length) {
+    setOpenTooltips(new Array(pdfNotes.pages.length).fill(false));
+    return undefined;
+  }
+
   const toc: JSX.Element[] = [];
   let pageNum = 1;
   for (let i = 0; i < pdfNotes.pages.length; i++) {
@@ -199,6 +206,9 @@ const ToC = ({
         isCurrent={i === pdfNotes.currentPage}
         page={page}
         onClick={handleClick}
+        index={i}
+        openTooltips={openTooltips}
+        setOpenTooltips={setOpenTooltips}
       />
     );
     if (page?.style?.includes("break-middle")) {
@@ -211,6 +221,9 @@ const ToC = ({
           isCurrent={i === pdfNotes.currentPage}
           page={page}
           onClick={handleClick}
+          index={i}
+          openTooltips={openTooltips}
+          setOpenTooltips={setOpenTooltips}
         />
       );
     }
