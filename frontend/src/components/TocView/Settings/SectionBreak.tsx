@@ -6,7 +6,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { getPage, getSeparator } from "../getTocData";
+import { Page, Separator } from "../Toc";
 
 /**
  * `SctionBreak`の引数
@@ -54,34 +54,34 @@ const SectionBreak: FC<Props> = ({ breakBefore, breakMiddle, onChange }) => {
       >
         <ToggleButton value="none">
           {/* TooltipをToggleButtonの外に置くと、コードは減るが、選択時にハイライトされなくなるので注意 */}
-          <Tooltip title="区切りなし">
-            <span style={{ marginLeft: 2, marginBottom: -4 }}>{getPage()}</span>
+          <Tooltip title="区切り＝なし">
+            <span style={{ marginLeft: 2, marginBottom: -4 }}>{<Page />}</span>
           </Tooltip>
         </ToggleButton>
         <ToggleButton value="before">
-          <Tooltip title="ページ前に区切り">
+          <Tooltip title="区切り＝ページ前">
             <span style={{ marginBottom: -3 }}>
-              {getSeparator()}
-              {getPage()}
+              <Separator />
+              <Page />
             </span>
           </Tooltip>
         </ToggleButton>
         <ToggleButton value="middle">
-          <Tooltip title="ページ途中に区切り">
+          <Tooltip title="区切り＝ページ途中">
             <span style={{ marginLeft: 2, marginBottom: -3 }}>
-              {getPage(true)}
-              {getSeparator()}
-              {getPage(true)}
+              <Page sectionBreakInner={true} />
+              <Separator />
+              <Page sectionBreakInner={true} />
             </span>
           </Tooltip>
         </ToggleButton>
         <ToggleButton value="before-middle">
-          <Tooltip title="ページ前・途中に区切り">
+          <Tooltip title="区切り＝ページ前・途中">
             <span style={{ marginBottom: -3 }}>
-              {getSeparator()}
-              {getPage(true)}
-              {getSeparator()}
-              {getPage(true)}
+              <Separator />
+              <Page sectionBreakInner={true} />
+              <Separator />
+              <Page sectionBreakInner={true} />
             </span>
           </Tooltip>
         </ToggleButton>

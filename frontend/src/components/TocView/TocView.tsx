@@ -1,11 +1,11 @@
 import { FC, useContext } from "react";
 import { Box, Drawer } from "@mui/material";
 import Settings from "./Settings/Settings";
-import getTocData from "./getTocData";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 import { UiStateContext } from "@/contexts/UiStateContext";
 import { MathJax } from "better-react-mathjax";
+import ToC from "./Toc";
 
 /**
  * 目次を表示するコンポーネント
@@ -36,7 +36,7 @@ const TocView: FC = () => {
             boxSizing: "border-box",
           }}
         >
-          {getTocData(pdfNotes, setPdfNotes)}
+          <ToC pdfNotes={pdfNotes} onChanged={setPdfNotes} />
         </Box>
       </MathJax>
 

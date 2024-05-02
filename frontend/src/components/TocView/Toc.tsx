@@ -1,12 +1,11 @@
 import { Tooltip, Typography } from "@mui/material";
-import { PdfNotes, Page } from "@/types/PdfNotes";
+import { PdfNotes, Page as PageParams } from "@/types/PdfNotes";
 
 /**
- * 題名を返す
+ * 題名要素
  */
-const getBook = (i: number, title: string, onClick?: () => void) => (
+const Book = ({ title, onClick }: { title: string; onClick?: () => void }) => (
   <Typography
-    key={`book-${i}`}
     variant="body1"
     sx={{
       whiteSpace: "nowrap",
@@ -21,11 +20,10 @@ const getBook = (i: number, title: string, onClick?: () => void) => (
 );
 
 /**
- * 部名を返す
+ * 部名要素
  */
-const getPart = (i: number, title: string, onClick?: () => void) => (
+const Part = ({ title, onClick }: { title: string; onClick?: () => void }) => (
   <Typography
-    key={`part-${i}`}
     variant="body2"
     sx={{ whiteSpace: "nowrap", color: "gray", pt: 0.8 }}
   >
@@ -36,11 +34,16 @@ const getPart = (i: number, title: string, onClick?: () => void) => (
 );
 
 /**
- * 章名を返す
+ * 章名要素
  */
-const getChapter = (i: number, title: string, onClick?: () => void) => (
+const Chapter = ({
+  title,
+  onClick,
+}: {
+  title: string;
+  onClick?: () => void;
+}) => (
   <Typography
-    key={`chapter-${i}`}
     variant="body2"
     sx={{
       pt: 0.5,
@@ -58,17 +61,22 @@ const getChapter = (i: number, title: string, onClick?: () => void) => (
 );
 
 /**
- * ページを返す
+ * ページ要素
  */
-export const getPage = (
-  sectionBreakInner?: boolean,
-  key?: string,
-  tooltip?: string,
-  isCurrent?: boolean,
-  page?: Page,
-  onClick?: () => void
-) => {
-  const getPageColor = (isCurrent?: boolean, page?: Page) => {
+export const Page = ({
+  sectionBreakInner,
+  tooltip,
+  isCurrent,
+  page,
+  onClick,
+}: {
+  sectionBreakInner?: boolean;
+  tooltip?: string;
+  isCurrent?: boolean;
+  page?: PageParams;
+  onClick?: () => void;
+}) => {
+  const getPageColor = (isCurrent?: boolean, page?: PageParams) => {
     if (isCurrent) {
       return page?.notes ? "magenta" : "red";
     } else {
@@ -78,13 +86,7 @@ export const getPage = (
     }
   };
   return (
-    <Tooltip
-      key={key}
-      title={tooltip}
-      disableInteractive
-      enterDelay={0}
-      leaveDelay={0}
-    >
+    <Tooltip title={tooltip} disableInteractive enterDelay={0} leaveDelay={0}>
       <span
         style={{
           display: "inline-block",
@@ -104,11 +106,10 @@ export const getPage = (
 };
 
 /**
- * 節区切りを返す
+ * 節区切り
  */
-export const getSeparator = (key?: string) => (
+export const Separator = () => (
   <span
-    key={key}
     style={{
       height: 11,
       width: 1,
@@ -123,10 +124,13 @@ export const getSeparator = (key?: string) => (
 /**
  * @returns 目次の内容
  */
-const getTocData = (
-  pdfNotes?: PdfNotes,
-  onChanged?: (pdfNotes: PdfNotes) => void
-): JSX.Element[] => {
+const ToC = ({
+  pdfNotes,
+  onChanged,
+}: {
+  pdfNotes?: PdfNotes;
+  onChanged?: (pdfNotes: PdfNotes) => void;
+}) => {
   if (!pdfNotes) return [];
   const toc: JSX.Element[] = [];
   let pageNum = 1;
@@ -138,43 +142,53 @@ const getTocData = (
 
     // 第名を追加
     if (page?.book !== undefined) {
-      toc.push(getBook(i, page.book, handleClick));
+      toc.push(
+        <Book key={`book-${i}`} title={page.book} onClick={handleClick} />
+      );
     }
     // 部名を追加
     if (page?.part !== undefined) {
-      toc.push(getPart(i, page.part, handleClick));
+      toc.push(
+        <Part key={`part-${i}`} title={page.part} onClick={handleClick} />
+      );
     }
     // 章名を追加
     if (page?.chapter !== undefined) {
-      toc.push(getChapter(i, page.chapter, handleClick));
+      toc.push(
+        <Chapter
+          key={`Chapter-${i}`}
+          title={page.chapter}
+          onClick={handleClick}
+        />
+      );
     }
     // 節区切りを追加
     if (page?.style?.includes("break-before")) {
-      toc.push(getSeparator(`separator-${i}`));
+      toc.push(<Separator key={`separator-${i}`} />);
     }
     // ページを追加
     pageNum = page?.numberRestart ?? pageNum;
     toc.push(
-      getPage(
-        page?.style?.includes("break-middle"),
-        `page-${i}`,
-        `p. ${pageNum}`,
-        i === pdfNotes.currentPage,
-        page,
-        handleClick
-      )
+      <Page
+        key={`page-${i}`}
+        sectionBreakInner={page?.style?.includes("break-middle")}
+        tooltip={`p. ${pageNum}`}
+        isCurrent={i === pdfNotes.currentPage}
+        page={page}
+        onClick={handleClick}
+      />
     );
     if (page?.style?.includes("break-middle")) {
-      toc.push(getSeparator(`separator-inner-${i}`));
+      toc.push(<Separator key={`separator-inner-${i}`} />);
       toc.push(
-        getPage(
-          page.style.includes("break-middle"),
-          `page-right-${i}`,
-          `p. ${pageNum}`,
-          i === pdfNotes.currentPage,
-          page,
-          handleClick
-        )
+        <Page
+          key={`page-right-${i}`}
+          sectionBreakInner={page.style.includes("break-middle")}
+          tooltip={`p. ${pageNum}`}
+          isCurrent={i === pdfNotes.currentPage}
+          page={page}
+          onClick={handleClick}
+        />
       );
     }
     ++pageNum;
@@ -182,4 +196,4 @@ const getTocData = (
   return toc;
 };
 
-export default getTocData;
+export default ToC;
