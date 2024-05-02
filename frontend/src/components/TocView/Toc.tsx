@@ -1,5 +1,6 @@
 import { Tooltip, Typography } from "@mui/material";
 import { PdfNotes, Page as PageParams } from "@/types/PdfNotes";
+import { useState } from "react";
 
 /**
  * 題名要素
@@ -76,6 +77,7 @@ export const Page = ({
   page?: PageParams;
   onClick?: () => void;
 }) => {
+  const [openTooltip, setOpenTooltip] = useState(false);
   const getPageColor = (isCurrent?: boolean, page?: PageParams) => {
     if (isCurrent) {
       return page?.notes ? "magenta" : "red";
@@ -85,23 +87,44 @@ export const Page = ({
         : "black";
     }
   };
+  const style = {
+    display: "inline-block",
+    width: sectionBreakInner ? 3 : 7,
+    height: 7,
+    background: getPageColor(isCurrent, page),
+    marginRight: 2,
+    marginBottom: 2,
+    marginTop: 2,
+    opacity: page?.style?.includes("excluded") ? 0.3 : 1,
+    cursor: "pointer",
+  };
   return (
-    <Tooltip title={tooltip} disableInteractive enterDelay={0} leaveDelay={0}>
-      <span
-        style={{
-          display: "inline-block",
-          width: sectionBreakInner ? 3 : 7,
-          height: 7,
-          background: getPageColor(isCurrent, page),
-          marginRight: 2,
-          marginBottom: 2,
-          marginTop: 2,
-          opacity: page?.style?.includes("excluded") ? 0.3 : 1,
-          cursor: "pointer",
-        }}
-        onClick={onClick}
-      />
-    </Tooltip>
+    <span
+      onMouseEnter={() => {
+        setOpenTooltip(true);
+        console.log("open");
+      }}
+      onMouseLeave={() => {
+        setOpenTooltip(false);
+        console.log("close");
+      }}
+    >
+      {!openTooltip && <span style={style} onClick={onClick} />}
+      {openTooltip && (
+        <Tooltip
+          title={tooltip}
+          disableInteractive
+          enterDelay={0}
+          leaveDelay={0}
+          onClose={() => {
+            setOpenTooltip(false);
+            console.log("close2");
+          }}
+        >
+          <span style={style} onClick={onClick} />
+        </Tooltip>
+      )}
+    </span>
   );
 };
 
