@@ -10,10 +10,9 @@ import {
 import {
   Delete,
   Edit,
-  KeyboardArrowDown,
   KeyboardArrowRight,
-  KeyboardArrowUp,
   OpenWith,
+  Settings,
 } from "@mui/icons-material";
 import { blue, green, grey, red } from "@mui/material/colors";
 import { UiStateContext } from "@/contexts/UiStateContext";
@@ -125,9 +124,7 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
             tooltipTitle={`設定パネルを${
               openSettingsDrawer ? "閉じます" : "開きます"
             }`}
-            icon={
-              openSettingsDrawer ? <KeyboardArrowDown /> : <KeyboardArrowUp />
-            }
+            icon={<Settings />}
             onClick={() => {
               setOpenSettingsDrawer(!openSettingsDrawer);
               setMode(null);
