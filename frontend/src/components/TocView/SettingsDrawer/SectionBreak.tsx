@@ -54,12 +54,12 @@ const SectionBreak: FC<Props> = ({ breakBefore, breakMiddle, onChange }) => {
       >
         <ToggleButton value="none">
           {/* TooltipをToggleButtonの外に置くと、コードは減るが、選択時にハイライトされなくなるので注意 */}
-          <Tooltip title="区切り＝なし">
+          <Tooltip title="区切り＝なし" disableInteractive>
             <span style={{ marginLeft: 2, marginBottom: -4 }}>{<Page />}</span>
           </Tooltip>
         </ToggleButton>
         <ToggleButton value="before">
-          <Tooltip title="区切り＝ページ前">
+          <Tooltip title="区切り＝ページ前" disableInteractive>
             <span style={{ marginBottom: -3 }}>
               <Separator />
               <Page />
@@ -67,7 +67,7 @@ const SectionBreak: FC<Props> = ({ breakBefore, breakMiddle, onChange }) => {
           </Tooltip>
         </ToggleButton>
         <ToggleButton value="middle">
-          <Tooltip title="区切り＝ページ途中">
+          <Tooltip title="区切り＝ページ途中" disableInteractive>
             <span style={{ marginLeft: 2, marginBottom: -3 }}>
               <Page sectionBreakInner={true} />
               <Separator />
@@ -76,7 +76,7 @@ const SectionBreak: FC<Props> = ({ breakBefore, breakMiddle, onChange }) => {
           </Tooltip>
         </ToggleButton>
         <ToggleButton value="before-middle">
-          <Tooltip title="区切り＝ページ前・途中">
+          <Tooltip title="区切り＝ページ前・途中" disableInteractive>
             <span style={{ marginBottom: -3 }}>
               <Separator />
               <Page sectionBreakInner={true} />

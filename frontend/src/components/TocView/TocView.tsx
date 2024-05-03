@@ -1,9 +1,8 @@
 import { FC, useContext } from "react";
-import { Box, Drawer } from "@mui/material";
-import Settings from "./Settings/Settings";
+import { Box } from "@mui/material";
+import SettingsDrawer from "./SettingsDrawer/SettingsDrawer";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
-import { UiStateContext } from "@/contexts/UiStateContext";
 import { MathJax } from "better-react-mathjax";
 import ToC from "./Toc";
 
@@ -12,8 +11,6 @@ import ToC from "./Toc";
  */
 const TocView: FC = () => {
   const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
-  const { openSettingsDrawer, setOpenSettingsDrawer } =
-    useContext(UiStateContext);
 
   return (
     <Box
@@ -40,28 +37,7 @@ const TocView: FC = () => {
         </Box>
       </MathJax>
 
-      <Drawer
-        variant="persistent"
-        anchor="bottom"
-        open={openSettingsDrawer}
-        PaperProps={{
-          square: false,
-          sx: {
-            position: "absolute",
-            borderRadius: "10px 10px 0 0",
-            overflow: "visible", // 「閉じるアイコン」を表示する
-          },
-        }}
-        onWheel={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <Settings
-          onClose={() => {
-            setOpenSettingsDrawer(false);
-          }}
-        />
-      </Drawer>
+      <SettingsDrawer />
     </Box>
   );
 };

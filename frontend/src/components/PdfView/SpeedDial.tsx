@@ -24,15 +24,6 @@ export type Mode = null | "edit" | "move" | "delete";
  */
 const theme = createTheme({
   components: {
-    MuiSpeedDial: {
-      styleOverrides: {
-        fab: {
-          "&:focus": {
-            outline: "none",
-          },
-        },
-      },
-    },
     MuiSpeedDialAction: {
       styleOverrides: {
         staticTooltipLabel: {
@@ -40,11 +31,6 @@ const theme = createTheme({
           fontSize: "80%",
           background: "gray",
           color: "white",
-        },
-        fab: {
-          "&:focus": {
-            outline: "none",
-          },
         },
       },
     },

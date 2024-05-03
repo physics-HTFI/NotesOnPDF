@@ -21,7 +21,7 @@ interface Props {
  */
 const Checkbox: FC<Props> = ({ label, checked, tooltip, onChange }) => {
   return (
-    <Tooltip title={tooltip} disableInteractive followCursor placement="bottom">
+    <Tooltip title={tooltip} disableInteractive placement="right">
       <FormControlLabel
         control={
           <MuiCheckbox
