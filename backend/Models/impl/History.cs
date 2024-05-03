@@ -7,6 +7,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using System.Threading.Tasks;
+using static backend.NotesPaths;
 
 namespace backend
 {
@@ -15,15 +16,17 @@ namespace backend
         /// <summary>
         /// <c>throw</c>しない
         /// </summary>
-        public void Add(string id, string path, NotesPaths.PdfOrigin? origin = null) {
+        public void Add(string id, string path, NotesPaths.PdfOrigin? origin = null, int? pages = null) {
             try
             {
                 if (Items.FirstOrDefault()?.Id == id) return;
                 origin ??= Items.FirstOrDefault(i => i.Id == id)?.Origin;
+                pages ??= Items.FirstOrDefault(i => i.Id == id)?.Pages;
                 Item item = new(
                     id,
                     Path.GetFullPath(path),
                     origin ?? NotesPaths.PdfOrigin.InsideTree,
+                    pages ?? 0,
                     DateTime.Now
                 );
                 Items.RemoveAll(i => i.Id == id);
@@ -42,13 +45,20 @@ namespace backend
             try
             {
                 return Items.Select(i => 
-                    new HttpServer.PdfItem(i.Id, Path.GetFileName(i.Path), (int)i.Origin, i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
+                    new HttpServer.PdfItem(i.Id, Path.GetFileName(i.Path), pagesToString(i.Pages), prefix(i.Origin), i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
                 ).ToArray();
             }
             catch
             {
                 return [];
             }
+            static string pagesToString(int pages) => pages <= 0 ? "???" : pages.ToString();
+            static string prefix(PdfOrigin origin) => origin switch
+            {
+                PdfOrigin.OutsideTree => "ツリー外",
+                PdfOrigin.Web => "ウェブ",
+                _ => "ツリー"
+            };
         }
 
         /// <summary>
@@ -56,7 +66,7 @@ namespace backend
         /// </summary>
         public Item? GetItem(string id) => Items.FirstOrDefault(i => i.Id == id);
 
-        public record Item(string Id, string Path, NotesPaths.PdfOrigin Origin, DateTime AccessDate);
+        public record Item(string Id, string Path, NotesPaths.PdfOrigin Origin, int Pages, DateTime AccessDate);
 
 
         //|

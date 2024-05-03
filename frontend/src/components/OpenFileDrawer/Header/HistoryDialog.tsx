@@ -10,7 +10,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { History, historyFileOrigin2String } from "@/types/History";
+import { History } from "@/types/History";
 import { ModelContext } from "@/contexts/ModelContext";
 import { UiStateContext } from "@/contexts/UiStateContext";
 
@@ -79,6 +79,9 @@ const HistoryDialog: FC<Props> = ({ open, onClose }) => {
                 <TableCell align="center" sx={{ width: 80, color: "white" }}>
                   場所
                 </TableCell>
+                <TableCell align="center" sx={{ width: 80, color: "white" }}>
+                  ページ数
+                </TableCell>
                 <TableCell align="center" sx={{ width: 130, color: "white" }}>
                   アクセス日時
                 </TableCell>
@@ -97,9 +100,8 @@ const HistoryDialog: FC<Props> = ({ open, onClose }) => {
                   <TableCell component="th" scope="row" sx={{ height: 30 }}>
                     {row.name}
                   </TableCell>
-                  <TableCell align="center">
-                    {historyFileOrigin2String(row.origin)}
-                  </TableCell>
+                  <TableCell align="center">{row.origin}</TableCell>
+                  <TableCell align="center">{row.pages}</TableCell>
                   <TableCell align="center">{row.accessDate}</TableCell>
                 </TableRow>
               ))}

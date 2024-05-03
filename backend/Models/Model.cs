@@ -24,7 +24,7 @@ namespace backend
             string path = GetPath(id).path;
             var sizes = await pdfReader.Open(path);
             string? notes = PathUtils.ReadAllText(await GetNotesPath(id));
-            history.Add(id, path);
+            history.Add(id, path, null, sizes.Length);
             return new(Path.GetFileName(path), sizes, notes);
         }
 
