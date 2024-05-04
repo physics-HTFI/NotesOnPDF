@@ -3,7 +3,7 @@ import {
   Arrow,
   Bracket,
   Marker,
-  Node,
+  Node as NodeType,
   NoteType,
   Polygon,
   Rect,
@@ -19,7 +19,7 @@ interface Props {
   visible: boolean;
   pageRect: DOMRect;
   isGrab: boolean;
-  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
 }
 
 /**

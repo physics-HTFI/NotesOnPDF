@@ -25,7 +25,7 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
   const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
   const { scale } = useContext(MouseContext);
   const cursor = getCursor() ?? "pointer";
-  if (!pdfNotes || !setPdfNotes) return <></>;
+  if (!pdfNotes) return <></>;
   return (
     <>
       <Chip

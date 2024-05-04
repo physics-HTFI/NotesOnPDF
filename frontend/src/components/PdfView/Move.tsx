@@ -35,7 +35,7 @@ const Move: FC<Props> = ({ params, onClose }) => {
   const { mouse, setMouse, pageRect } = useContext(MouseContext);
   const { appSettings } = useContext(AppSettingsContext);
   const { page } = usePdfNotes();
-  if (!params || !mouse || !setMouse || !pageRect || !appSettings) return <></>;
+  if (!params || !mouse || !pageRect || !appSettings) return <></>;
 
   const getDxy = (xy?: typeof mouse): [number, number] =>
     !xy

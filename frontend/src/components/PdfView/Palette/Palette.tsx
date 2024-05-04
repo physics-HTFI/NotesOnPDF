@@ -13,8 +13,8 @@ import {
   PageLinkIcon,
   PolygonIcon,
   RectIcon,
-} from "./Palette/Icons";
-import Divider from "./Palette/Divider";
+} from "./Icons";
+import Divider from "./Divider";
 
 /**
  * `Palette`の引数
