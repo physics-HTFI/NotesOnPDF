@@ -57,7 +57,7 @@ const TreeItemWithInfo: FC<Props> = (props: Props) => {
   return (
     <StyledTreeItem
       label={
-        <Tooltip title={tooltip} placement="right">
+        <Tooltip title={tooltip} placement="right" disableInteractive>
           <Box
             sx={{
               display: "flex",
