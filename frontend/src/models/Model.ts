@@ -74,7 +74,7 @@ export default class Model implements IModel {
   putPdfNotes = async (id: string, pdfNotes: PdfNotes): Promise<void> => {
     await fetch(ORIGIN + `/api/notes/${id}`, {
       ...this.getPutOptions(),
-      body: JSON.stringify(pdfNotes, null, 2),
+      body: JSON.stringify(pdfNotes /*, null, 2*/),
     });
   };
 
