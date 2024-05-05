@@ -1,7 +1,8 @@
 import { Tooltip, Typography } from "@mui/material";
-import { PdfNotes, Page as PageParams } from "@/types/PdfNotes";
+import { Page as PageParams } from "@/types/PdfNotes";
 import { useState } from "react";
 import { grey } from "@mui/material/colors";
+import usePdfNotes from "@/hooks/usePdfNotes";
 
 /**
  * 題名要素
@@ -186,13 +187,8 @@ export const Separator = ({
 /**
  * @returns 目次の内容
  */
-const ToC = ({
-  pdfNotes,
-  onChanged,
-}: {
-  pdfNotes?: PdfNotes;
-  onChanged?: (pdfNotes: PdfNotes) => void;
-}) => {
+const ToC = () => {
+  const { pdfNotes, jumpPage } = usePdfNotes();
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
   if (!pdfNotes) return [];
   if (pdfNotes.pages.length !== openTooltips.length) {
@@ -205,7 +201,7 @@ const ToC = ({
   for (let i = 0; i < pdfNotes.pages.length; i++) {
     const page = pdfNotes.pages[i];
     const handleClick = () => {
-      onChanged?.({ ...pdfNotes, currentPage: i });
+      jumpPage(i);
     };
 
     // 第名を追加

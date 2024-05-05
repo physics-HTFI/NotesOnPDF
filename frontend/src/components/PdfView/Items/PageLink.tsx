@@ -2,10 +2,10 @@ import { FC, MouseEvent, useContext, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
 import { Node, NoteType, PageLink as PageLinkType } from "@/types/PdfNotes";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { Mode } from "../SpeedDial";
 import { MouseContext } from "@/contexts/MouseContext";
 import { useCursor } from "./useCursor";
+import usePdfNotes from "@/hooks/usePdfNotes";
 
 /**
  * `PageLink`の引数
@@ -22,7 +22,7 @@ interface Props {
 const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
   const [hover, setHover] = useState(false);
   const { getCursor } = useCursor(mode);
-  const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
+  const { pdfNotes, jumpPage } = usePdfNotes();
   const { scale } = useContext(MouseContext);
   const cursor = getCursor() ?? "pointer";
   if (!pdfNotes) return <></>;
@@ -47,10 +47,7 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
         onMouseDown={(e) => {
           e.stopPropagation();
           if (e.button === 0 && !mode) {
-            // ページリンク先へ移動
-            if (pdfNotes.currentPage === params.page) return;
-            if (params.page < 0 || pdfNotes.pages.length <= params.page) return;
-            setPdfNotes({ ...pdfNotes, currentPage: params.page });
+            jumpPage(params.page);
             return;
           }
           onMouseDown?.(e, params);

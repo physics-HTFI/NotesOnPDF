@@ -1,7 +1,6 @@
-import { FC, useContext, useMemo } from "react";
+import { FC, useMemo } from "react";
 import { Box } from "@mui/material";
 import SettingsDrawer from "./SettingsDrawer/SettingsDrawer";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import { grey } from "@mui/material/colors";
 import { MathJax } from "better-react-mathjax";
 import ToC from "./Toc";
@@ -10,8 +9,6 @@ import ToC from "./Toc";
  * 目次を表示するコンポーネント
  */
 const TocView: FC = () => {
-  const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
-
   return (
     <Box
       sx={{
@@ -36,9 +33,9 @@ const TocView: FC = () => {
           {/* レンダリングコストが高いのでメモ化する */}
           {useMemo(
             () => (
-              <ToC pdfNotes={pdfNotes} onChanged={setPdfNotes} />
+              <ToC />
             ),
-            [pdfNotes, setPdfNotes]
+            []
           )}
         </Box>
       </MathJax>

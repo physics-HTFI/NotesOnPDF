@@ -4,6 +4,7 @@ import Waiting from "@/components/Fullscreen/Waiting";
 interface UiStateContextType {
   openFileTreeDrawer: boolean;
   openSettingsDrawer: boolean;
+  waiting: boolean;
   setOpenFileTreeDrawer: (openFileTreeDrawer: boolean) => void;
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
   setWaiting: (waiting: boolean) => void;
@@ -15,6 +16,7 @@ interface UiStateContextType {
 export const UiStateContext = createContext<UiStateContextType>({
   openFileTreeDrawer: true,
   openSettingsDrawer: false,
+  waiting: false,
   setOpenFileTreeDrawer: () => undefined,
   setOpenSettingsDrawer: () => undefined,
   setWaiting: () => undefined,
@@ -38,11 +40,12 @@ export const UiStateContextProvider: FC<Props> = ({ children }) => {
   return (
     <UiStateContext.Provider
       value={{
-        setWaiting,
         openFileTreeDrawer,
-        setOpenFileTreeDrawer,
         openSettingsDrawer,
+        waiting,
+        setOpenFileTreeDrawer,
         setOpenSettingsDrawer,
+        setWaiting,
       }}
     >
       {children}

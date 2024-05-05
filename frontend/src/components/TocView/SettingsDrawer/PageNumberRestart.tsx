@@ -26,9 +26,8 @@ const PageNumberRestart: FC<Props> = ({
     <Box sx={{ whiteSpace: "nowrap" }}>
       {/* ページ番号を手動で決める */}
       <Checkbox
-        label="ページ番号を手動で設定"
+        label="ページ番号を振りなおす"
         checked={isManual}
-        tooltip="チェックを外すと「前ページ＋１」がページ番号になります"
         onChange={(checked) => {
           onChange(checked ? restart : undefined);
         }}

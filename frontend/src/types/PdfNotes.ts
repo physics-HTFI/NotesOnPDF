@@ -4,6 +4,7 @@ import { ResultGetPdfNotes } from "@/models/IModel";
  * 1つのPDFファイルに追加された全ての情報
  */
 export interface PdfNotes {
+  title: string;
   version: string;
   currentPage: number;
   pages: Page[];
@@ -93,7 +94,7 @@ export interface Page {
   /** ページサイズ比（= width/height） */
   sizeRatio: number;
   /** 本のタイトル */
-  book?: string;
+  volume?: string;
   /** 部のタイトル */
   part?: string;
   /** 章のタイトル */
@@ -105,6 +106,21 @@ export interface Page {
   /** PDFビューに表示される注釈 */
   notes?: NoteType[];
 }
+
+/**
+ * `page.style`を編集したものを返す
+ */
+export const editPageStyle = (
+  style: PageStyle[] | undefined,
+  item: PageStyle,
+  adds: boolean
+) => {
+  const set = new Set(style);
+  if (adds) set.add(item);
+  else set.delete(item);
+  const retval = Array.from(set);
+  return retval.length === 0 ? undefined : retval;
+};
 
 /**
  * 1つのPDFファイルの設定情報
@@ -125,6 +141,7 @@ export interface Settings {
 export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
   if (result.notes) return result.notes;
   const notes: PdfNotes = {
+    title: result.name,
     version: "1.0",
     currentPage: 0,
     settings: { fontSize: 70, offsetTop: 0, offsetBottom: 0 },
@@ -134,7 +151,7 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
     })),
   };
   if (notes.pages[0]) {
-    notes.pages[0].book = result.name;
+    notes.pages[0].volume = result.name;
   }
   return notes;
 };

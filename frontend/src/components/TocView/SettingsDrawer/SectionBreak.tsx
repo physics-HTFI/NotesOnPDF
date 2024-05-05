@@ -12,6 +12,7 @@ import { Page, Separator } from "../Toc";
  * `SctionBreak`の引数
  */
 interface Props {
+  tooltip?: string;
   breakBefore?: boolean;
   breakMiddle?: boolean;
   onChange: (breakBefore: boolean, breakMiddle: boolean) => void;
@@ -20,7 +21,12 @@ interface Props {
 /**
  * 節区切りを設定するコンポーネント
  */
-const SectionBreak: FC<Props> = ({ breakBefore, breakMiddle, onChange }) => {
+const SectionBreak: FC<Props> = ({
+  tooltip,
+  breakBefore,
+  breakMiddle,
+  onChange,
+}) => {
   const value = breakBefore
     ? breakMiddle
       ? "before-middle"
@@ -39,9 +45,11 @@ const SectionBreak: FC<Props> = ({ breakBefore, breakMiddle, onChange }) => {
         alignItems: "center",
       }}
     >
-      <Typography variant="button" sx={{ whiteSpace: "nowrap", pr: 1 }}>
-        節区切り
-      </Typography>
+      <Tooltip title={tooltip} disableInteractive>
+        <Typography variant="button" sx={{ whiteSpace: "nowrap", pr: 1 }}>
+          節区切り
+        </Typography>
+      </Tooltip>
       <ToggleButtonGroup
         value={value}
         exclusive

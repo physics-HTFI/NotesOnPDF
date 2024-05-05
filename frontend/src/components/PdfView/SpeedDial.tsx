@@ -142,7 +142,13 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
 
           {/* 注釈の削除 */}
           <SpeedDialAction
-            tooltipTitle={"注釈の削除"}
+            tooltipTitle={
+              <span>
+                注釈の削除
+                <br />
+                [Ctrl+Delete] ページ内の全注釈を削除
+              </span>
+            }
             icon={<Delete sx={{ color: "palevioletred" }} />}
             sx={{ background: mode === "delete" ? red[50] : undefined }}
             onClick={() => {

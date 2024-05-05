@@ -109,7 +109,7 @@ export default class ModelMock implements IModel {
           {
             num: 1,
             sizeRatio: 0.705,
-            book: "タイトル",
+            volume: "タイトル",
             notes: [
               {
                 type: "Arrow",

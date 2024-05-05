@@ -2,16 +2,14 @@ import { FC, useContext, useState } from "react";
 import { Box, Drawer, IconButton, Tab, Tabs } from "@mui/material";
 import {
   Page,
-  PageStyle,
-  PdfNotes,
   Settings as PdfSettings,
+  editPageStyle,
   updatePageNum,
 } from "@/types/PdfNotes";
 import CheckboxText from "./CheckboxText";
 import SectionBreak from "./SectionBreak";
 import PageNumberRestart from "./PageNumberRestart";
 import LabelSlider from "./LabelSlider";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
 import {
   Close,
   KeyboardDoubleArrowDown,
@@ -23,13 +21,14 @@ import { AppSettingsContext } from "@/contexts/AppSettingsContext";
 import { AppSettings } from "@/types/AppSettings";
 import { UiStateContext } from "@/contexts/UiStateContext";
 import { grey } from "@mui/material/colors";
+import usePdfNotes from "@/hooks/usePdfNotes";
 
 /**
  * 設定パネル
  */
 const SettingsDrawer: FC = () => {
   const { appSettings, setAppSettings } = useContext(AppSettingsContext);
-  const { pdfNotes, setPdfNotes } = useContext(PdfNotesContext);
+  const { pdfNotes, setPdfNotes, getPreferredLabels } = usePdfNotes();
   const { openSettingsDrawer, setOpenSettingsDrawer } =
     useContext(UiStateContext);
   const [tab, setTab] = useState(0);
@@ -38,14 +37,16 @@ const SettingsDrawer: FC = () => {
   if (!pdfNotes) return <></>;
 
   // 部名・章名・ページ番号の候補など
-  const { page, partNum, chapterNum, pageNum } = getParams(pdfNotes);
+  const page = pdfNotes.pages[pdfNotes.currentPage];
+  const { volumeLabel, partLabel, chapterLabel, pageNum } =
+    getPreferredLabels();
 
   // ページ設定変更
-  const handleChangePage = (page: Partial<Page>) => {
-    const pre = pdfNotes.pages[pdfNotes.currentPage];
-    if (!pre) return;
-    pdfNotes.pages[pdfNotes.currentPage] = { ...pre, ...page };
-    if (Object.keys(page).includes("numberRestart")) updatePageNum(pdfNotes);
+  const handleChangePage = (pageSettings: Partial<Page>) => {
+    if (!page) return;
+    pdfNotes.pages[pdfNotes.currentPage] = { ...page, ...pageSettings };
+    if (Object.keys(pageSettings).includes("numberRestart"))
+      updatePageNum(pdfNotes);
     setPdfNotes({ ...pdfNotes });
   };
 
@@ -63,19 +64,6 @@ const SettingsDrawer: FC = () => {
       ...appSettings,
       ...newSettings,
     });
-  };
-
-  // `page.style`の編集用関数
-  const editStyle = (
-    arr: PageStyle[] | undefined,
-    item: PageStyle,
-    adds: boolean
-  ) => {
-    const set = new Set(arr);
-    if (adds) set.add(item);
-    else set.delete(item);
-    const retval = Array.from(set);
-    return retval.length === 0 ? undefined : retval;
   };
 
   return (
@@ -112,7 +100,7 @@ const SettingsDrawer: FC = () => {
         {/* タブ */}
         <SettingsTabs
           tab={tab}
-          pageLabel={`p. ${pdfNotes.pages[pdfNotes.currentPage]?.num ?? "???"}`}
+          pageLabel={`p. ${page?.num ?? "???"}`}
           setTab={setTab}
         />
 
@@ -122,17 +110,19 @@ const SettingsDrawer: FC = () => {
             {/* 題区切り */}
             <CheckboxText
               label="題区切り"
-              text={page?.book}
-              preferredText={"タイトル"}
-              onChange={(book) => {
-                handleChangePage({ book });
+              tooltip="[Alt+Enter]"
+              text={page?.volume}
+              preferredText={volumeLabel}
+              onChange={(volume) => {
+                handleChangePage({ volume });
               }}
             />
             {/* 部区切り */}
             <CheckboxText
               label="部区切り"
+              tooltip="[Ctrl+Enter]"
               text={page?.part}
-              preferredText={`第${partNum}部`}
+              preferredText={partLabel}
               onChange={(part) => {
                 handleChangePage({ part });
               }}
@@ -140,19 +130,25 @@ const SettingsDrawer: FC = () => {
             {/* 章区切り */}
             <CheckboxText
               label="章区切り"
+              tooltip="[Shift+Enter]"
               text={page?.chapter}
-              preferredText={`第${chapterNum}章`}
+              preferredText={chapterLabel}
               onChange={(chapter) => {
                 handleChangePage({ chapter });
               }}
             />
             {/* 節区切り */}
             <SectionBreak
+              tooltip="[Enter]"
               breakBefore={page?.style?.includes("break-before")}
               breakMiddle={page?.style?.includes("break-middle")}
               onChange={(breakBefore, breakMiddle) => {
-                let style = editStyle(page?.style, "break-before", breakBefore);
-                style = editStyle(style, "break-middle", breakMiddle);
+                let style = editPageStyle(
+                  page?.style,
+                  "break-before",
+                  breakBefore
+                );
+                style = editPageStyle(style, "break-middle", breakMiddle);
                 handleChangePage({ style });
               }}
             />
@@ -167,9 +163,10 @@ const SettingsDrawer: FC = () => {
             {/* ページ除外 */}
             <Checkbox
               label="このページをグレーアウトする"
+              tooltip="[Esc]"
               checked={page?.style?.includes("excluded")}
               onChange={(excluded) => {
-                const style = editStyle(page?.style, "excluded", excluded);
+                const style = editPageStyle(page?.style, "excluded", excluded);
                 handleChangePage({ style });
               }}
             />
@@ -264,27 +261,6 @@ export default SettingsDrawer;
 //|
 //| ローカル関数
 //|
-
-function getParams(pdfNotes: PdfNotes) {
-  const page = pdfNotes.pages[pdfNotes.currentPage];
-
-  // 部名・章名・ページ番号の候補
-  let partNum = 1;
-  let chapterNum = 1;
-  let pageNum = 1;
-  for (let i = 0; i < pdfNotes.currentPage; i++) {
-    ++pageNum;
-    const page = pdfNotes.pages[i];
-    if (!page) continue;
-    if (page.part !== undefined) ++partNum;
-    if (page.chapter !== undefined) ++chapterNum;
-    if (page.numberRestart) {
-      pageNum = 1 + page.numberRestart;
-    }
-  }
-
-  return { page, partNum, chapterNum, pageNum };
-}
 
 /**
  * 閉じるボタン

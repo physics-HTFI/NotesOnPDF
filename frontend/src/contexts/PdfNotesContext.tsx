@@ -15,6 +15,8 @@ interface PdfNotesContextType {
   setIdOrFile: (idOrFile?: string | File) => void;
   pdfNotes?: PdfNotes;
   setPdfNotes: (pdfNotes?: PdfNotes) => void;
+  previousPageNum?: number;
+  setPreviousPageNum: (previousPageNum?: number) => void;
 }
 
 /**
@@ -23,6 +25,7 @@ interface PdfNotesContextType {
 export const PdfNotesContext = createContext<PdfNotesContextType>({
   setIdOrFile: () => undefined,
   setPdfNotes: () => undefined,
+  setPreviousPageNum: () => undefined,
 });
 
 /**
@@ -37,10 +40,15 @@ interface Props {
  */
 export const PdfNotesContextProvider: FC<Props> = ({ children }) => {
   const { model } = useContext(ModelContext);
-  const [idOrFile, setIdOrFile] = useState<string | File>();
+  const [idOrFile, setIdOrFile_] = useState<string | File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
+  const [previousPageNum, setPreviousPageNum] = useState<number>();
   const id = idOrFile instanceof File ? undefined : idOrFile;
   const file = idOrFile instanceof File ? idOrFile : undefined;
+  const setIdOrFile = (idOrFile?: string | File) => {
+    setIdOrFile_(idOrFile);
+    setPreviousPageNum(undefined);
+  };
 
   useEffect(() => {
     if (!pdfNotes || !id) return;
@@ -49,7 +57,15 @@ export const PdfNotesContextProvider: FC<Props> = ({ children }) => {
 
   return (
     <PdfNotesContext.Provider
-      value={{ id, file, setIdOrFile, pdfNotes, setPdfNotes }}
+      value={{
+        id,
+        file,
+        setIdOrFile,
+        pdfNotes,
+        setPdfNotes,
+        previousPageNum,
+        setPreviousPageNum,
+      }}
     >
       {children}
     </PdfNotesContext.Provider>

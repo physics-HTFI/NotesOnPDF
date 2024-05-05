@@ -64,7 +64,8 @@ function useReading() {
 const PdfView: FC = () => {
   const { appSettings } = useContext(AppSettingsContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
-  const { pdfNotes, page, updateNote, changePage } = usePdfNotes();
+  const { pdfNotes, page, updateNote, scrollPage, handleKeyDown } =
+    usePdfNotes();
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mode, setMode] = useState<Mode>(null);
@@ -80,15 +81,13 @@ const PdfView: FC = () => {
     setReading(true);
   }
 
+  // ショートカットキーに対応する
   useEffect(() => {
-    document.onkeydown = (e) => {
-      if (e.target instanceof HTMLInputElement) return;
-      console.log(e.key);
-    };
+    document.onkeydown = handleKeyDown;
     return () => {
       document.onkeydown = null;
     };
-  }, []);
+  }, [handleKeyDown]);
 
   return (
     <Box
@@ -113,7 +112,7 @@ const PdfView: FC = () => {
         setPaletteOpen(false);
       }}
       onWheel={(e) => {
-        changePage(e.deltaY < 0 ? -1 : 1);
+        scrollPage(0 < e.deltaY);
       }}
     >
       {/* PDF画像がある要素 */}

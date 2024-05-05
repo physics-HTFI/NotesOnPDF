@@ -20,7 +20,10 @@ const OpenFileDrawer: FC = () => {
   // ファイルツリーのアップデートを抑えるためメモ化している。
   const handleSelectPdfById = useCallback(
     (_id: string) => {
-      if (_id === id) return;
+      if (_id === id) {
+        setOpenFileTreeDrawer(false);
+        return;
+      }
       setWaiting(true);
       setPdfNotes(undefined);
       setIdOrFile(undefined);
