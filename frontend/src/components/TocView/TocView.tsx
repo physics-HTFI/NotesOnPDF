@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useMemo } from "react";
 import { Box } from "@mui/material";
 import SettingsDrawer from "./SettingsDrawer/SettingsDrawer";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
@@ -33,7 +33,13 @@ const TocView: FC = () => {
             boxSizing: "border-box",
           }}
         >
-          <ToC pdfNotes={pdfNotes} onChanged={setPdfNotes} />
+          {/* レンダリングコストが高いのでメモ化する */}
+          {useMemo(
+            () => (
+              <ToC pdfNotes={pdfNotes} onChanged={setPdfNotes} />
+            ),
+            [pdfNotes, setPdfNotes]
+          )}
         </Box>
       </MathJax>
 
