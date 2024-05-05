@@ -18,10 +18,10 @@ interface Props {
  * 画面隅のページ数表示コンポーネント
  */
 const PageLabelSmall: FC<Props> = ({ label, hidden }) => {
-  const { pdfNotes, previousPageNum } = useContext(PdfNotesContext);
+  const { previousPageNum } = useContext(PdfNotesContext);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
-  const { jumpPage } = usePdfNotes();
+  const { jumpPage, page } = usePdfNotes();
   return (
     <Box
       sx={{
@@ -65,9 +65,9 @@ const PageLabelSmall: FC<Props> = ({ label, hidden }) => {
           }}
         />
       </Tooltip>
-      {pdfNotes && openJumpDialog && (
+      {page && openJumpDialog && (
         <JumpDialog
-          page={pdfNotes.currentPage}
+          page={page.num}
           onClose={(page) => {
             setOpenJumpDialog(false);
             if (page === undefined) return;

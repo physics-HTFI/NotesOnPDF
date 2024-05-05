@@ -74,7 +74,12 @@ const NoteEditor: FC<Props> = ({ params, onClose }) => {
           setText(e.target.value);
         }}
         ref={(ref: HTMLElement | null) => {
-          ref?.focus();
+          setTimeout(() => {
+            ref?.focus();
+          }, 10);
+        }}
+        onKeyDown={(e) => {
+          e.stopPropagation();
         }}
       />
       <NoMaxWidthTooltip

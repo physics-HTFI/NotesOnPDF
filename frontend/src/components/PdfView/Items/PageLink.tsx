@@ -42,7 +42,7 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
         }}
         color="success"
         icon={<Shortcut />}
-        label={`p. ${pdfNotes.pages[params.page]?.num ?? "???"}`}
+        label={`p. ${pdfNotes.pages[params.page]?.num ?? "---"}`}
         size="small"
         onMouseDown={(e) => {
           e.stopPropagation();
