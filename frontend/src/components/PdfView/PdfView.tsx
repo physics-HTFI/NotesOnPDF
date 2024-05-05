@@ -83,8 +83,15 @@ const PdfView: FC = () => {
 
   // ショートカットキーに対応する
   useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      e.ctrlKey && e.preventDefault();
+    };
+    document.addEventListener("wheel", handleWheel, {
+      passive: false,
+    });
     document.onkeydown = handleKeyDown;
     return () => {
+      document.removeEventListener("wheel", handleWheel);
       document.onkeydown = null;
     };
   }, [handleKeyDown]);
@@ -112,7 +119,15 @@ const PdfView: FC = () => {
         setPaletteOpen(false);
       }}
       onWheel={(e) => {
-        scrollPage(0 < e.deltaY);
+        e.getModifierState("Shift");
+        scrollPage(
+          0 < e.deltaY,
+          e.getModifierState("Shift")
+            ? "section"
+            : e.getModifierState("Control")
+            ? "chapter"
+            : undefined
+        );
       }}
     >
       {/* PDF画像がある要素 */}

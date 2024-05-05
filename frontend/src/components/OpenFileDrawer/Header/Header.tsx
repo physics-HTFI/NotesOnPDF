@@ -17,7 +17,7 @@ interface Props {
   onSelectPdfByFile?: (file: File) => void;
 }
 
-const sxButton = { "&:focus": { outline: "none" }, color: "slategray" };
+const sxButton = { color: "slategray" };
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール

@@ -43,7 +43,9 @@ const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
         type="number"
         sx={{ pl: 1, width: 80 }}
         inputRef={(ref?: HTMLInputElement) => {
-          ref?.focus();
+          setTimeout(() => {
+            ref?.focus();
+          }, 10);
         }}
         onChange={(e) => {
           num.current = Number(e.target.value);

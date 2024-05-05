@@ -75,6 +75,9 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
           setOpen(!open);
         }
       }}
+      onKeyDown={(e) => {
+        e.preventDefault();
+      }}
     >
       <ThemeProvider theme={theme}>
         <MUISpeedDial

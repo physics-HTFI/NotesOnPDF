@@ -102,7 +102,6 @@ const usePdfNotes = () => {
   function handleKeyDown(e: KeyboardEvent) {
     if (invalid) return;
     if (e.target instanceof HTMLInputElement) return; // テキストフィールドの場合は何もしない
-    console.log(`${e.key}, ${e.code}`);
 
     if (e.key === "ArrowLeft") {
       scrollPage(false, e.shiftKey ? "section" : undefined);
@@ -145,7 +144,6 @@ const usePdfNotes = () => {
       setPdfNotes({ ...pdfNotes });
     }
     if (e.key === " ") {
-      console.log(previousPageNum);
       if (previousPageNum === undefined) return;
       jumpPage(previousPageNum);
     }
