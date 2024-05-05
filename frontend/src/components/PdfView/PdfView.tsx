@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
 import PageLabelLarge from "./PageLabelLarge";
@@ -79,6 +79,16 @@ const PdfView: FC = () => {
   if (isReading()) {
     setReading(true);
   }
+
+  useEffect(() => {
+    document.onkeydown = (e) => {
+      if (e.target instanceof HTMLInputElement) return;
+      console.log(e.key);
+    };
+    return () => {
+      document.onkeydown = null;
+    };
+  }, []);
 
   return (
     <Box
