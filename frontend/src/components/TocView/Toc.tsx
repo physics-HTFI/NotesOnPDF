@@ -1,6 +1,7 @@
 import { Tooltip, Typography } from "@mui/material";
 import { PdfNotes, Page as PageParams } from "@/types/PdfNotes";
 import { useState } from "react";
+import { grey } from "@mui/material/colors";
 
 /**
  * 題名要素
@@ -132,18 +133,55 @@ export const Page = ({
 /**
  * 節区切り
  */
-export const Separator = () => (
-  <span
-    style={{
-      height: 11,
-      width: 1,
-      marginLeft: 2,
-      marginRight: 4,
-      background: "darkgray",
-      display: "inline-block",
-    }}
-  />
-);
+export const Separator = ({
+  onClick,
+  tooltip,
+  index,
+  openTooltips,
+  setOpenTooltips,
+}: {
+  onClick?: () => void;
+  tooltip?: string;
+  index?: number;
+  openTooltips?: boolean[];
+  setOpenTooltips?: (openTooltips: boolean[]) => void;
+}) => {
+  const openTooltip = index !== undefined && openTooltips?.[index];
+  const separator = (
+    <span
+      style={{
+        height: 11,
+        width: 1,
+        borderLeft: `2px solid ${grey[100]}`,
+        borderRight: `4px solid ${grey[100]}`,
+        background: "darkgray",
+        display: "inline-block",
+        cursor: "pointer",
+      }}
+      onClick={onClick}
+    />
+  );
+  return (
+    <span
+      onMouseEnter={() => {
+        if (!setOpenTooltips || !openTooltips) return;
+        setOpenTooltips(openTooltips.map((_, j) => index === j));
+      }}
+    >
+      {!openTooltip && separator}
+      {openTooltip && (
+        <Tooltip
+          title={tooltip}
+          disableInteractive
+          enterDelay={0}
+          leaveDelay={0}
+        >
+          {separator}
+        </Tooltip>
+      )}
+    </span>
+  );
+};
 
 /**
  * @returns 目次の内容
@@ -171,9 +209,9 @@ const ToC = ({
     };
 
     // 第名を追加
-    if (page?.book !== undefined) {
+    if (page?.volume !== undefined) {
       toc.push(
-        <Book key={`book-${i}`} title={page.book} onClick={handleClick} />
+        <Book key={`volume-${i}`} title={page.volume} onClick={handleClick} />
       );
     }
     // 部名を追加
@@ -193,11 +231,20 @@ const ToC = ({
       );
     }
     // 節区切りを追加
+    pageNum = page?.numberRestart ?? pageNum;
     if (page?.style?.includes("break-before")) {
-      toc.push(<Separator key={`separator-${i}`} />);
+      toc.push(
+        <Separator
+          key={`separator-${i}`}
+          onClick={handleClick}
+          tooltip={`p. ${pageNum}`}
+          index={i}
+          openTooltips={openTooltips}
+          setOpenTooltips={setOpenTooltips}
+        />
+      );
     }
     // ページを追加
-    pageNum = page?.numberRestart ?? pageNum;
     toc.push(
       <Page
         key={`page-${i}`}
@@ -212,7 +259,16 @@ const ToC = ({
       />
     );
     if (page?.style?.includes("break-middle")) {
-      toc.push(<Separator key={`separator-inner-${i}`} />);
+      toc.push(
+        <Separator
+          key={`separator-inner-${i}`}
+          onClick={handleClick}
+          tooltip={`p. ${pageNum}`}
+          index={i}
+          openTooltips={openTooltips}
+          setOpenTooltips={setOpenTooltips}
+        />
+      );
       toc.push(
         <Page
           key={`page-right-${i}`}
