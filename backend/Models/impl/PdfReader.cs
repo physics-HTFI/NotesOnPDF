@@ -1,5 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using backend.Models.impl;
+using CommunityToolkit.Mvvm.Messaging;
 using System.IO;
+using System.Security.Policy;
 using Windows.Data.Pdf;
 using Windows.Storage.Streams;
 
@@ -10,19 +12,22 @@ namespace backend
         /// <summary>
         /// PDFファイルを開いて各ページのサイズを返す。失敗したら<c>throw</c>。
         /// </summary>
-        public async Task<Size[]> Open(string path)
+        public async Task<Size[]> Open(string path, NotesPaths.PdfOrigin origin)
         {
             Close();
 
+            // URLならダウンロードする（必要なら）
+            string localFilePath = origin == NotesPaths.PdfOrigin.Web ? await Download.FromUrl(path) : path;
+
             // PDFを開く
-            pdfStream = File.OpenRead(path);
+            pdfStream = File.OpenRead(localFilePath);
             randomAccessStream = pdfStream.AsRandomAccessStream();
             pdf = await PdfDocument.LoadFromStreamAsync(randomAccessStream);
             currentPath = path;
 
             // MD5と各ページのサイズを取得する
             if (items.FirstOrDefault(x => x.Path == path) is Item item) return item.Sizes;
-            if (MD5.FromFile(path) is not string md5) throw new Exception();
+            if (MD5.FromFile(localFilePath) is not string md5) throw new Exception();
             Size[] sizes = Enumerable.Range(0, (int)pdf.PageCount).Select(i =>
             {
                 using var page = pdf.GetPage((uint)i);
@@ -35,10 +40,10 @@ namespace backend
         /// <summary>
         /// PDFファイルのMD5を返す。失敗したら<c>throw</c>。
         /// </summary>
-        public async Task<string> GetMD5(string path)
+        public async Task<string> GetMD5(string path, NotesPaths.PdfOrigin origin)
         {
             if (items.FirstOrDefault(x => x.Path == path) is Item item) return item.MD5;
-            await Open(path);
+            await Open(path, origin);
             return items.First(x => x.Path == path).MD5;
         }
 
@@ -56,11 +61,11 @@ namespace backend
         /// <summary>
         /// 画像ファイルを返す。失敗したら<c>throw</c>。
         /// </summary>
-        public async Task<byte[]> GetPagePng(string path, uint pageNum, uint width)
+        public async Task<byte[]> GetPagePng(string path, NotesPaths.PdfOrigin origin, uint pageNum, uint width)
         {
             if (path != currentPath)
             {
-                await Open(path);
+                await Open(path, origin);
             }
             if (pdf is null) throw new Exception();
             if (width == 0 || System.Windows.SystemParameters.PrimaryScreenWidth < width) throw new Exception();

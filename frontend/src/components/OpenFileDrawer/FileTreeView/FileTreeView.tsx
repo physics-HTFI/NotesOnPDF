@@ -25,10 +25,10 @@ const FileTreeView: FC<Props> = ({ onSelectPdfById }) => {
   } = useCoverages();
 
   const [expanded, setExpanded] = useState<string[]>([]);
-  const [selectedPath, setSelectedPath] = useState<string>("");
+  const [selectedPath, setSelectedPath] = useState<string>();
 
   // 前回のファイルを選択した状態にする
-  if (!selectedPath && fileTree.length !== 0 && coverages) {
+  if (selectedPath === undefined && fileTree.length !== 0 && coverages) {
     const path = fileTree.find((i) => i.id === coverages.recentId)?.path;
     if (path) {
       setSelectedPath(path);

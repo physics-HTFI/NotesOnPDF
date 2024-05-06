@@ -1,5 +1,6 @@
 ﻿using backend.Models.impl;
 using System.IO;
+using static backend.NotesPaths;
 
 namespace backend
 {
@@ -21,23 +22,24 @@ namespace backend
         /// </summary>
         public async Task<HttpServer.OpenPdfResult> OpenPdf(string id)
         {
-            string path = GetPath(id).path;
-            var sizes = await pdfReader.Open(path);
+            (var path, var origin) = GetPath(id);
+            var sizes = await pdfReader.Open(path, origin);
             string? notes = PathUtils.ReadAllText(await GetNotesPath(id));
-            history.Add(id, path, null, sizes.Length);
-            return new(Path.GetFileName(path), sizes, notes);
+            history.Add(id, path, origin, sizes.Length);
+            var name = origin == PdfOrigin.Web ? path : Path.GetFileNameWithoutExtension(path);
+            return new(name, sizes, notes);
         }
 
 
         /// <summary>
-        /// ツリー外のPDFファイルの<c>id</c>をダイアログから取得する。
+        /// ダイアログを開いて、ツリー外のPDFファイルの<c>id</c>を取得する。
         /// 失敗したら<c>throw</c>する。
         /// </summary>
         public string GetExternalPdfId()
         {
             string path = PathUtils.SelectPdf() ?? throw new Exception();
             string id = PathUtils.Path2Id(path);
-            history.Add(id, path, NotesPaths.PdfOrigin.OutsideTree);
+            history.Add(id, path, PdfOrigin.OutsideTree);
             return id;
         }
 
@@ -46,11 +48,10 @@ namespace backend
         /// URLからPDFファイルをダウンロードした後<c>id</c>を取得する。
         /// 失敗したら<c>throw</c>する。
         /// </summary>
-        public async Task<string> GetWebPdfId(string url)
+        public string GetWebPdfId(string url)
         {
-            string path = await Download.FromUrl(url);
-            string id = PathUtils.Path2Id(path);
-            history.Add(id, path, NotesPaths.PdfOrigin.Web);
+            string id = PathUtils.Path2Id(url);
+            history.Add(id, url, PdfOrigin.Web);
             return id;
         }
 
@@ -61,8 +62,8 @@ namespace backend
         /// </summary>
         public async Task<byte[]> GetPagePng(string id, uint pageNum, uint width)
         {
-            string path = GetPath(id).path;
-            return await pdfReader.GetPagePng(path, pageNum, width);
+            (var path, var origin) = GetPath(id);
+            return await pdfReader.GetPagePng(path, origin, pageNum, width);
         }
 
 
@@ -105,16 +106,16 @@ namespace backend
         /// </summary>
         async Task<string> GetNotesPath(string id)
         {
-            (string pdfPath, NotesPaths.PdfOrigin origin) = GetPath(id);
-            string md5 = await pdfReader.GetMD5(pdfPath);
+            (string pdfPath, PdfOrigin origin) = GetPath(id);
+            string md5 = await pdfReader.GetMD5(pdfPath, origin);
             return notesPaths.GetNotesPath(md5, pdfPath, origin);
         }
 
-        (string path, NotesPaths.PdfOrigin origin) GetPath(string id)
+        (string path, PdfOrigin origin) GetPath(string id)
         {
             if (pdfTree.GetPath(id) is string path)
             {
-                return new(path, NotesPaths.PdfOrigin.InsideTree);
+                return new(path, PdfOrigin.InsideTree);
             }
             if (history.GetItem(id) is History.Item item)
             {

@@ -4,6 +4,9 @@ using static backend.History;
 
 namespace backend
 {
+    /// <summary>
+    /// 注釈ファイル関連の処理
+    /// </summary>
     internal class NotesPaths
     {
         /// <summary>

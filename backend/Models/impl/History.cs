@@ -16,16 +16,15 @@ namespace backend
         /// <summary>
         /// <c>throw</c>しない
         /// </summary>
-        public void Add(string id, string path, NotesPaths.PdfOrigin? origin = null, int? pages = null) {
+        public void Add(string id, string path, PdfOrigin origin, int? pages = null) {
             try
             {
                 if (Items.FirstOrDefault()?.Id == id) return;
-                origin ??= Items.FirstOrDefault(i => i.Id == id)?.Origin;
                 pages ??= Items.FirstOrDefault(i => i.Id == id)?.Pages;
                 Item item = new(
                     id,
-                    Path.GetFullPath(path),
-                    origin ?? NotesPaths.PdfOrigin.InsideTree,
+                    origin == PdfOrigin.Web ? path : Path.GetFullPath(path),
+                    origin,
                     pages ?? 0,
                     DateTime.Now
                 );
@@ -45,13 +44,14 @@ namespace backend
             try
             {
                 return Items.Select(i => 
-                    new HttpServer.PdfItem(i.Id, Path.GetFileName(i.Path), pagesToString(i.Pages), prefix(i.Origin), i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
+                    new HttpServer.PdfItem(i.Id, toName(i), pagesToString(i.Pages), prefix(i.Origin), i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
                 ).ToArray();
             }
             catch
             {
                 return [];
             }
+            static string toName(Item i) => i.Origin == PdfOrigin.Web ? i.Path : Path.GetFileName(i.Path);
             static string pagesToString(int pages) => pages <= 0 ? "???" : pages.ToString();
             static string prefix(PdfOrigin origin) => origin switch
             {
@@ -66,7 +66,7 @@ namespace backend
         /// </summary>
         public Item? GetItem(string id) => Items.FirstOrDefault(i => i.Id == id);
 
-        public record Item(string Id, string Path, NotesPaths.PdfOrigin Origin, int Pages, DateTime AccessDate);
+        public record Item(string Id, string Path, PdfOrigin Origin, int Pages, DateTime AccessDate);
 
 
         //|
