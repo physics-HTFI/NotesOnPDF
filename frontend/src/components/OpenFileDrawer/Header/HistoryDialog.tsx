@@ -25,7 +25,7 @@ interface Props {
 /**
  * PDFを開いた履歴
  */
-const HistoryDialog: FC<Props> = ({ open, onClose }) => {
+export const HistoryDialog: FC<Props> = ({ open, onClose }) => {
   const { model } = useContext(ModelContext);
   const { setWaiting } = useContext(UiStateContext);
   const [history, setHistory] = useState<History>([]);
@@ -112,5 +112,3 @@ const HistoryDialog: FC<Props> = ({ open, onClose }) => {
     </Backdrop>
   );
 };
-
-export default HistoryDialog;

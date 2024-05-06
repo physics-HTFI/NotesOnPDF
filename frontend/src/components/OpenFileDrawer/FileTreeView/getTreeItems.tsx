@@ -1,5 +1,5 @@
 import { FileTree } from "@/types/FileTree";
-import TreeItemWithInfo from "./TreeItemWithInfo";
+import { TreeItemWithInfo } from "./TreeItemWithInfo";
 import { Coverages } from "@/types/Coverages";
 
 /**
@@ -7,7 +7,7 @@ import { Coverages } from "@/types/Coverages";
  * @example
  * <TreeView> {getTreeItems(fileTree, coverages)} </TreeView>
  */
-const getTreeItems = (
+export const getTreeItems = (
   fileTree: FileTree,
   coverages?: Coverages,
   id?: string
@@ -55,5 +55,3 @@ const getTreeItems = (
     return path.match(/[^\\/]+(?=[\\/]?$)/)?.[0] ?? "";
   }
 };
-
-export default getTreeItems;

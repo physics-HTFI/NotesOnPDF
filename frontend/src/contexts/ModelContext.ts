@@ -5,7 +5,7 @@ import { createContext } from "react";
 
 /**
  * `IModel`を取得するためのコンテクスト。
- * 初期値として既にモデルを設定しているので`ModelContext.Provider`は不要。
+ * 初期値として既に適切なモデルを設定しているので`ModelContext.Provider`は不要。
  */
 export const ModelContext = createContext<{ model: IModel }>({
   model:

@@ -1,8 +1,8 @@
 import { FC, useContext, useState } from "react";
 import { Box, Divider, IconButton, Tooltip } from "@mui/material";
 import { FolderOpen, Language, Restore, Sync } from "@mui/icons-material";
-import InputStringDialog from "./InputStringDialog";
-import HistoryDialog from "./HistoryDialog";
+import { InputStringDialog } from "./InputStringDialog";
+import { HistoryDialog } from "./HistoryDialog";
 import Waiting from "../../Fullscreen/Waiting";
 import { ModelContext } from "@/contexts/ModelContext";
 import useFileTree from "@/hooks/useFileTree";
@@ -17,12 +17,10 @@ interface Props {
   onSelectPdfByFile?: (file: File) => void;
 }
 
-const sxButton = { color: "slategray" };
-
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
-const Header: FC<Props> = ({ onSelectPdfById, onSelectPdfByFile }) => {
+export const Header: FC<Props> = ({ onSelectPdfById, onSelectPdfByFile }) => {
   const { model } = useContext(ModelContext);
   const { reloadFileTree } = useFileTree();
   const [openUrl, setOpenUrl] = useState(false);
@@ -57,6 +55,8 @@ const Header: FC<Props> = ({ onSelectPdfById, onSelectPdfByFile }) => {
           })
           .catch(() => undefined);
       };
+
+  const sxButton = { color: "slategray" };
 
   return (
     <Box
@@ -166,5 +166,3 @@ const Header: FC<Props> = ({ onSelectPdfById, onSelectPdfByFile }) => {
     </Box>
   );
 };
-
-export default Header;

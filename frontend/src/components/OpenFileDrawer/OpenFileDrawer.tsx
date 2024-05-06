@@ -1,16 +1,16 @@
 import { FC, useCallback, useContext } from "react";
 import { Drawer } from "@mui/material";
-import Header from "@/components/OpenFileDrawer/Header/Header";
+import { Header } from "@/components/OpenFileDrawer/Header/Header";
 import { ModelContext } from "@/contexts/ModelContext";
 import { createOrGetPdfNotes } from "@/types/PdfNotes";
 import { UiStateContext } from "@/contexts/UiStateContext";
 import { PdfNotesContext } from "@/contexts/PdfNotesContext";
-import FileTreeView from "./FileTreeView/FileTreeView";
+import { FileTreeView } from "./FileTreeView/FileTreeView";
 
 /**
  * ファイル一覧を表示するドロワー
  */
-const OpenFileDrawer: FC = () => {
+export const OpenFileDrawer: FC = () => {
   const { model } = useContext(ModelContext);
   const { id, file, setIdOrFile, setPdfNotes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
@@ -89,5 +89,3 @@ const OpenFileDrawer: FC = () => {
     </Drawer>
   );
 };
-
-export default OpenFileDrawer;

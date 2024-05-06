@@ -21,7 +21,7 @@ interface Props {
 /**
  * 文字列を入力するダイアログ
  */
-const InputStringDialog: FC<Props> = ({
+export const InputStringDialog: FC<Props> = ({
   defaultValue,
   title,
   label,
@@ -77,5 +77,3 @@ const InputStringDialog: FC<Props> = ({
     </Dialog>
   );
 };
-
-export default InputStringDialog;
