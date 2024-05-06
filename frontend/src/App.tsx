@@ -11,6 +11,7 @@ import { AppSettingsContextProvider } from "./contexts/AppSettingsContext";
 import { UiStateContextProvider } from "./contexts/UiStateContext";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
+import { FileTreeContextProvider } from "./contexts/FileTreeContext";
 
 /**
  * 数式表示のコンフィグ
@@ -73,7 +74,9 @@ function App() {
           <PdfNotesContextProvider>
             <Box>
               {/* ファイルツリー */}
-              <OpenFileDrawer />
+              <FileTreeContextProvider>
+                <OpenFileDrawer />
+              </FileTreeContextProvider>
 
               <PanelGroup direction="horizontal">
                 {/* 目次 */}
