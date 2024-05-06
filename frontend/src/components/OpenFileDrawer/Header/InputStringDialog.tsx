@@ -48,7 +48,7 @@ const InputStringDialog: FC<Props> = ({
           variant="standard"
           spellCheck={false}
           onChange={(e) => {
-            setValue(e.target.value);
+            setValue(decodeURI(e.target.value));
           }}
           inputRef={(ref: HTMLInputElement | undefined) => {
             setTimeout(() => {

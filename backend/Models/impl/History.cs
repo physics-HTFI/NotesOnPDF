@@ -19,7 +19,6 @@ namespace backend
         public void Add(string id, string path, PdfOrigin origin, int? pages = null) {
             try
             {
-                if (Items.FirstOrDefault()?.Id == id) return;
                 pages ??= Items.FirstOrDefault(i => i.Id == id)?.Pages;
                 Item item = new(
                     id,
