@@ -1,11 +1,10 @@
 import { FC, useContext, useState } from "react";
 import { Box, Divider, IconButton, Tooltip } from "@mui/material";
-import { FolderOpen, Language, Restore, Sync } from "@mui/icons-material";
+import { FolderOpen, Language, Restore } from "@mui/icons-material";
 import { InputStringDialog } from "./InputStringDialog";
 import { HistoryDialog } from "./HistoryDialog";
 import Waiting from "../../Fullscreen/Waiting";
 import { ModelContext } from "@/contexts/ModelContext";
-import useFileTree from "@/hooks/useFileTree";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 
@@ -22,7 +21,6 @@ interface Props {
  */
 export const Header: FC<Props> = ({ onSelectPdfById, onSelectPdfByFile }) => {
   const { model } = useContext(ModelContext);
-  const { reloadFileTree } = useFileTree();
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -139,13 +137,6 @@ export const Header: FC<Props> = ({ onSelectPdfById, onSelectPdfByFile }) => {
           }}
         />
       )}
-
-      <Divider orientation="vertical" variant="middle" flexItem />
-      <Tooltip title="ファイルツリーを更新します">
-        <IconButton size="small" sx={sxButton} onClick={reloadFileTree}>
-          <Sync />
-        </IconButton>
-      </Tooltip>
 
       {/* 開発ページを開く */}
       {/*
