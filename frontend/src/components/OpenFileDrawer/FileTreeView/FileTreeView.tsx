@@ -50,7 +50,7 @@ export const FileTreeView: FC<Props> = ({ onSelectPdfById }) => {
     () => (
       <TreeView
         expanded={expanded}
-        selected={selectedPath}
+        selected={selectedPath ?? ""}
         defaultCollapseIcon={<KeyboardArrowDown />}
         defaultEndIcon={<FontAwesomeIcon icon={faFilePdf} />}
         defaultExpandIcon={<KeyboardArrowRight />}
