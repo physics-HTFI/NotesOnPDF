@@ -1,4 +1,4 @@
-import { FC, useContext, useMemo, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { TreeView } from "@mui/x-tree-view";
 import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -39,37 +39,29 @@ export const FileTreeView: FC<Props> = ({ onSelectPdfById }) => {
     }
   }
 
-  // ページ移動のたびに再レンダーされるのを防ぐためメモ化している。
-  // （ファイル数が1000を超えてくると重くなる可能性があるため。）
-  return useMemo(
-    () =>
-      fileTree && (
-        <TreeView
-          expanded={expanded}
-          selected={selectedPath ?? ""}
-          defaultCollapseIcon={<KeyboardArrowDown />}
-          defaultEndIcon={<FontAwesomeIcon icon={faFilePdf} />}
-          defaultExpandIcon={<KeyboardArrowRight />}
-          onNodeSelect={(_, path) => {
-            const file = fileTree.find((i) => i.path === path);
-            if (!file || file.children) return; // `children`がある場合はPDFファイルではなくフォルダ
-            setSelectedPath(file.path);
-            onSelectPdfById(file.id);
-          }}
-          onNodeToggle={(_, nodeIds) => {
-            setExpanded(nodeIds);
-          }}
-        >
-          {getTreeItems(fileTree, coverages)}
-        </TreeView>
-      ),
-    [
-      coverages,
-      expanded,
-      selectedPath,
-      fileTree,
-      setSelectedPath,
-      onSelectPdfById,
-    ]
+  // ファイル数が1000を超えてくると重くなる可能性がある。
+  // しかし、ドロワーが閉じているときはその内部は再レンダーされないので、
+  // ページ移動のたびにこれが再レンダーされることない。よってメモ化は不要。
+  return (
+    fileTree && (
+      <TreeView
+        expanded={expanded}
+        selected={selectedPath ?? ""}
+        defaultCollapseIcon={<KeyboardArrowDown />}
+        defaultEndIcon={<FontAwesomeIcon icon={faFilePdf} />}
+        defaultExpandIcon={<KeyboardArrowRight />}
+        onNodeSelect={(_, path) => {
+          const file = fileTree.find((i) => i.path === path);
+          if (!file || file.children) return; // `children`がある場合はPDFファイルではなくフォルダ
+          setSelectedPath(file.path);
+          onSelectPdfById(file.id);
+        }}
+        onNodeToggle={(_, nodeIds) => {
+          setExpanded(nodeIds);
+        }}
+      >
+        {getTreeItems(fileTree, coverages)}
+      </TreeView>
+    )
   );
 };
