@@ -40,15 +40,11 @@ const PageLabelSmall: FC<Props> = ({ label, hidden }) => {
       <Tooltip
         title={
           <span>
-            クリックすると指定したページにジャンプできます
+            クリックすると指定したページにジャンプできます <br />
             <br />
-            <br />
-            その他ページ移動操作:
-            <br />
-            ・ページ移動: ←→ or マウスホイール
-            <br />
-            ・節移動: Shift + (←→ or マウスホイール)
-            <br />
+            その他ページ移動操作: <br />
+            ・ページ移動: ←→ or マウスホイール <br />
+            ・節移動: Shift + (←→ or マウスホイール) <br />
             ・章移動: ↑↓ or Ctrl + マウスホイール
           </span>
         }
@@ -125,8 +121,21 @@ function JumpDialog({
             ref?.focus();
           }, 10);
         }}
+        onFocus={(e) => {
+          e.target.select();
+        }}
         onChange={(e) => {
           num.current = Number(e.target.value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            onClose(num.current);
+            e.stopPropagation();
+          }
+          if (e.key === "Escape") {
+            onClose(undefined);
+            e.stopPropagation();
+          }
         }}
       />
     </EditorBase>

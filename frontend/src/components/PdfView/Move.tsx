@@ -30,12 +30,15 @@ interface Props {
  * 移動中の注釈を表示するコンポーネント
  */
 const Move: FC<Props> = ({ params, onClose }) => {
-  const [dXY, setDXY] = useState<[number, number]>([0, 0]);
+  const [dXY, setDXY] = useState<[number, number]>();
   const ref = useRef<HTMLElement>();
   const { mouse, setMouse, pageRect } = useContext(MouseContext);
   const { appSettings } = useContext(AppSettingsContext);
   const { page } = usePdfNotes();
-  if (!params || !mouse || !pageRect || !appSettings) return <></>;
+  if (!params || !mouse || !pageRect || !appSettings) {
+    if (dXY) setDXY(undefined); // 頂点編集中に`Esc`を押してキャンセル後に値が残るのを防ぐ
+    return <></>;
+  }
 
   const getDxy = (xy?: typeof mouse): [number, number] =>
     !xy
@@ -99,12 +102,12 @@ const Move: FC<Props> = ({ params, onClose }) => {
           cursor: "none",
         }}
         onMouseUp={(e) => {
-          setDXY([0, 0]);
+          setDXY(undefined);
           e.stopPropagation();
           setMouse({ pageX: e.pageX, pageY: e.pageY });
           const δxy =
             params.type === "Node"
-              ? dXY
+              ? dXY ?? [0, 0]
               : getDxy({ pageX: e.pageX, pageY: e.pageY });
           const noMove = δxy[0] === 0 && δxy[1] === 0;
           const isPolygonNode =
@@ -130,7 +133,7 @@ const Move: FC<Props> = ({ params, onClose }) => {
           }
         }}
         onMouseLeave={() => {
-          setDXY([0, 0]);
+          setDXY(undefined);
           onClose();
         }}
         onMouseMove={(e) => {
@@ -167,8 +170,8 @@ export default Move;
 /**
  * 平行移動した注釈を返す
  */
-function getTranslated(params: NoteType, dxy: [number, number]) {
-  const [dx, dy] = dxy;
+function getTranslated(params: NoteType, dxy?: [number, number]) {
+  const [dx, dy] = dxy ?? [0, 0];
   const newParams: NoteType = { ...params };
   switch (newParams.type) {
     case "Chip":
@@ -199,8 +202,8 @@ function getTranslated(params: NoteType, dxy: [number, number]) {
 /**
  * 変形した注釈を返す
  */
-function getTransformed(params: Node, dxy: [number, number]) {
-  const [dx, dy] = dxy;
+function getTransformed(params: Node, dxy?: [number, number]) {
+  const [dx, dy] = dxy ?? [0, 0];
   const newParams: NoteType = { ...params.target };
   switch (newParams.type) {
     case "Arrow":

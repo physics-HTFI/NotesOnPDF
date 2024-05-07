@@ -25,8 +25,9 @@ const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
   if (!pdfNotes) return <></>;
 
   // 閉じたときに値を更新する
-  const handleClose = () => {
+  const handleClose = (cancel?: boolean) => {
     onClose();
+    if (cancel) return;
     if (pageNum === num.current) return;
     updateNote(params, {
       ...params,
@@ -52,6 +53,16 @@ const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
         }}
         onChange={(e) => {
           num.current = Number(e.target.value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleClose();
+            e.stopPropagation();
+          }
+          if (e.key === "Escape") {
+            handleClose(true);
+            e.stopPropagation();
+          }
         }}
       />
     </EditorBase>

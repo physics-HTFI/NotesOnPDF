@@ -75,8 +75,15 @@ const ChipEditor: FC<Props> = ({ params, onClose }) => {
             inputRef={(ref?: HTMLInputElement) => {
               ref?.focus();
             }}
-            onFocus={(e) => {
-              e.target.select();
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleClose();
+                e.stopPropagation();
+              }
+              if (e.key === "Escape") {
+                handleClose("");
+                e.stopPropagation();
+              }
             }}
           />
         )}

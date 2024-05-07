@@ -17,7 +17,7 @@ import {
 import { blue, green, grey, red } from "@mui/material/colors";
 import { UiStateContext } from "@/contexts/UiStateContext";
 
-export type Mode = null | "edit" | "move" | "delete";
+export type Mode = undefined | "edit" | "move" | "delete";
 
 /**
  * `SpeedDialogAction`のCSS変更
@@ -71,7 +71,7 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
           // `isSpeedDial`に限定することで、アイコンがあった部分のクリック時に`Palette`が出なくなるのを防いでいる
         }
         if (isSpeedDial) {
-          if (mode) setMode(null);
+          if (mode) setMode(undefined);
           setOpen(!open);
         }
       }}
@@ -96,6 +96,10 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
               boxShadow: "none",
             },
           }}
+          onFocus={(e) => {
+            // これがないと、チップ編集中にEsc, Enterを押すと、スピードダイアルの編集ボタンのツールチップが出る
+            e.target.blur();
+          }}
         >
           {/* PDF選択パネルを開く */}
           <SpeedDialAction
@@ -104,7 +108,7 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
             disableInteractive
             onClick={() => {
               setOpenFileTreeDrawer(true);
-              setMode(null);
+              setMode(undefined);
             }}
             tooltipPlacement="right"
           />
@@ -118,31 +122,41 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
             icon={<Settings />}
             onClick={() => {
               setOpenSettingsDrawer(!openSettingsDrawer);
-              setMode(null);
+              setMode(undefined);
             }}
             tooltipPlacement="right"
           />
 
           {/* 注釈の移動・変形 */}
           <SpeedDialAction
-            tooltipTitle={"注釈の移動・変形"}
+            tooltipTitle={
+              <span>
+                注釈の移動・変形モード <br />
+                [Escape] モード解除
+              </span>
+            }
             disableInteractive
             icon={<OpenWith sx={{ color: "mediumseagreen" }} />}
             sx={{ background: mode === "move" ? green[50] : undefined }}
             onClick={() => {
-              setMode(mode !== "move" ? "move" : null);
+              setMode(mode !== "move" ? "move" : undefined);
             }}
             tooltipPlacement="right"
           />
 
           {/* 注釈の編集 */}
           <SpeedDialAction
-            tooltipTitle={"注釈の文字列・線種の変更"}
+            tooltipTitle={
+              <span>
+                注釈の文字列・線種の変更モード <br />
+                [Escape] モード解除
+              </span>
+            }
             disableInteractive
             icon={<Edit sx={{ color: "cornflowerblue" }} />}
             sx={{ background: mode === "edit" ? blue[50] : undefined }}
             onClick={() => {
-              setMode(mode !== "edit" ? "edit" : null);
+              setMode(mode !== "edit" ? "edit" : undefined);
             }}
             tooltipPlacement="right"
           />
@@ -151,8 +165,8 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
           <SpeedDialAction
             tooltipTitle={
               <span>
-                注釈の削除
-                <br />
+                注釈の削除モード <br />
+                [Escape] モード解除 <br />
                 [Ctrl+Delete] ページ内の全注釈を削除
               </span>
             }
@@ -160,7 +174,7 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
             icon={<Delete sx={{ color: "palevioletred" }} />}
             sx={{ background: mode === "delete" ? red[50] : undefined }}
             onClick={() => {
-              setMode(mode !== "delete" ? "delete" : null);
+              setMode(mode !== "delete" ? "delete" : undefined);
             }}
             tooltipPlacement="right"
           />

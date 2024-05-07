@@ -68,7 +68,7 @@ const PdfView: FC = () => {
     usePdfNotes();
 
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [mode, setMode] = useState<Mode>(null);
+  const [mode, setMode] = useState<Mode>(undefined);
   const [editNote, setEditNote] = useState<NoteType>();
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
 
@@ -84,17 +84,34 @@ const PdfView: FC = () => {
   // ショートカットキーに対応する
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
+      // Ctrl+ホイールでのズームを抑制する
       e.ctrlKey && e.preventDefault();
+    };
+    const handleKeyDownAll = (e: KeyboardEvent) => {
+      if (mode ?? editNote ?? moveNote) {
+        if (e.key === "Escape") {
+          if (editNote ?? moveNote) {
+            setEditNote(undefined);
+            setMoveNote(undefined);
+          } else {
+            setMode(undefined);
+          }
+          return;
+        }
+        if (editNote ?? moveNote) return;
+        // 矢印キーの場合などの場合は`return`せず`handleKeyDown`まで実行する
+      }
+      handleKeyDown(e);
     };
     document.addEventListener("wheel", handleWheel, {
       passive: false,
     });
-    document.onkeydown = handleKeyDown;
+    document.onkeydown = handleKeyDownAll;
     return () => {
       document.removeEventListener("wheel", handleWheel);
       document.onkeydown = null;
     };
-  }, [handleKeyDown]);
+  }, [editNote, handleKeyDown, mode, moveNote]);
 
   return (
     <Box
@@ -107,7 +124,7 @@ const PdfView: FC = () => {
       onMouseDown={(e) => {
         if (e.button !== 0) return;
         if (!pageRect) return;
-        if (appSettings?.cancelModeWithVoidClick) setMode(null);
+        if (appSettings?.cancelModeWithVoidClick) setMode(undefined);
         if (mode ?? moveNote) return;
         setMouse({ pageX: e.pageX, pageY: e.pageY });
         setPaletteOpen(true);

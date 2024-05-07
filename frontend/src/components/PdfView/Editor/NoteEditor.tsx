@@ -57,8 +57,9 @@ const NoteEditor: FC<Props> = ({ params, onClose }) => {
   const [text, setText] = useState(params.html);
 
   // 閉じたときに値を更新する
-  const handleClose = () => {
+  const handleClose = (cancel?: boolean) => {
     onClose();
+    if (cancel) return;
     const html = text.trim();
     if (text === "" || text === params.html) return;
     updateNote(params, { ...params, html });
@@ -82,6 +83,12 @@ const NoteEditor: FC<Props> = ({ params, onClose }) => {
           e.target.select();
         }}
         onKeyDown={(e) => {
+          if (e.ctrlKey && e.key === "Enter") {
+            handleClose();
+          }
+          if (e.key === "Escape") {
+            handleClose(true);
+          }
           e.stopPropagation();
         }}
       />
@@ -90,6 +97,10 @@ const NoteEditor: FC<Props> = ({ params, onClose }) => {
         disableInteractive={false}
         title={
           <span>
+            ・[Ctrl+Enter] 編集完了
+            <br />
+            ・[Escape] キャンセル
+            <br />
             ・インライン数式:
             <code style={{ fontSize: "120%", paddingLeft: 4 }}>$e=mc^2$</code>
             <br />
