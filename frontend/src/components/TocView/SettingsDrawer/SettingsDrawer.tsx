@@ -33,6 +33,10 @@ const SettingsDrawer: FC = () => {
     useContext(UiStateContext);
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
+  const [variant, setVariant] = useState<"persistent" | "temporary">(
+    "temporary"
+  );
+
   if (!appSettings || !setAppSettings) return <></>;
   if (!pdfNotes) return <></>;
 
@@ -66,9 +70,21 @@ const SettingsDrawer: FC = () => {
     });
   };
 
+  // 閉じているときは`variant`を`temporary`にすることで、内部コンポーネントの再レンダーを防ぐ
+  const newVariant = openSettingsDrawer ? "persistent" : "temporary";
+  if (newVariant !== variant) {
+    if (openSettingsDrawer) {
+      setVariant(newVariant);
+    } else {
+      setTimeout(() => {
+        setVariant(newVariant);
+      }, 500);
+    }
+  }
+
   return (
     <Drawer
-      variant="persistent"
+      variant={variant}
       anchor={isBottom ? "bottom" : "top"}
       open={openSettingsDrawer}
       PaperProps={{
@@ -302,6 +318,7 @@ function ToggleSettingsPositionIcon({
   isBottom: boolean;
   onToggleSettingsPosition: () => void;
 }): JSX.Element {
+  console.log(111);
   return (
     <IconButton
       sx={{
