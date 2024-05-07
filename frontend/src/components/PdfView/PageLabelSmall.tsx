@@ -26,8 +26,8 @@ const PageLabelSmall: FC<Props> = ({ label, hidden }) => {
     <Box
       sx={{
         position: "absolute",
-        left: 3,
-        bottom: 2,
+        left: 7,
+        bottom: 0,
         fontSize: "75%",
         cursor: "default",
         visibility: hidden ? "collapse" : undefined,
@@ -54,7 +54,7 @@ const PageLabelSmall: FC<Props> = ({ label, hidden }) => {
           color="success"
           label={label}
           size="small"
-          sx={{ cursor: "pointer" }}
+          sx={{ cursor: "pointer", mr: "2px" }}
           onMouseDown={(e) => {
             setOpenJumpDialog(true);
             setMouse({ pageX: e.pageX, pageY: e.pageY });
