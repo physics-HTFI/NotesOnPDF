@@ -46,6 +46,15 @@ export const PdfNotesContextProvider: FC<Props> = ({ children }) => {
   const [idOrFile, setIdOrFile_] = useState<string | File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [previousPageNum, setPreviousPageNum] = useState<number>();
+
+  const id = idOrFile instanceof File ? undefined : idOrFile;
+  const file = idOrFile instanceof File ? idOrFile : undefined;
+  const setIdOrFile = (idOrFile?: string | File) => {
+    setIdOrFile_(idOrFile);
+    setPreviousPageNum(undefined);
+  };
+
+  // 変更されたら保存
   const putPdfNotesDebounced = useMemo(
     () =>
       debounce((id?: string, pdfNotes?: PdfNotes, model?: IModel) => {
@@ -54,13 +63,6 @@ export const PdfNotesContextProvider: FC<Props> = ({ children }) => {
       }, 1000),
     []
   );
-
-  const id = idOrFile instanceof File ? undefined : idOrFile;
-  const file = idOrFile instanceof File ? idOrFile : undefined;
-  const setIdOrFile = (idOrFile?: string | File) => {
-    setIdOrFile_(idOrFile);
-    setPreviousPageNum(undefined);
-  };
   useEffect(() => {
     putPdfNotesDebounced(id, pdfNotes, model);
   }, [id, pdfNotes, model, putPdfNotesDebounced]);
