@@ -111,12 +111,13 @@ export const Page = ({
   const openTooltip = index !== undefined && openTooltips?.[index];
   return (
     <span
+      style={openTooltip ? undefined : style}
+      onClick={onClick}
       onMouseEnter={() => {
         if (!setOpenTooltips || !openTooltips) return;
         setOpenTooltips(openTooltips.map((_, j) => index === j));
       }}
     >
-      {!openTooltip && <span style={style} onClick={onClick} />}
       {openTooltip && (
         <Tooltip
           title={tooltip}
