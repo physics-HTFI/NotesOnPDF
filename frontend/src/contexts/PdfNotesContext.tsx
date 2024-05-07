@@ -5,9 +5,12 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { ModelContext } from "./ModelContext";
+import { debounce } from "@mui/material";
+import IModel from "@/models/IModel";
 
 interface PdfNotesContextType {
   id?: string;
@@ -43,17 +46,24 @@ export const PdfNotesContextProvider: FC<Props> = ({ children }) => {
   const [idOrFile, setIdOrFile_] = useState<string | File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [previousPageNum, setPreviousPageNum] = useState<number>();
+  const putPdfNotesDebounced = useMemo(
+    () =>
+      debounce((id?: string, pdfNotes?: PdfNotes, model?: IModel) => {
+        if (!pdfNotes || !id) return;
+        model?.putPdfNotes(id, pdfNotes).catch(() => undefined);
+      }, 1000),
+    []
+  );
+
   const id = idOrFile instanceof File ? undefined : idOrFile;
   const file = idOrFile instanceof File ? idOrFile : undefined;
   const setIdOrFile = (idOrFile?: string | File) => {
     setIdOrFile_(idOrFile);
     setPreviousPageNum(undefined);
   };
-
   useEffect(() => {
-    if (!pdfNotes || !id) return;
-    model.putPdfNotes(id, pdfNotes).catch(() => undefined);
-  }, [model, id, pdfNotes]);
+    putPdfNotesDebounced(id, pdfNotes, model);
+  }, [id, pdfNotes, model, putPdfNotesDebounced]);
 
   return (
     <PdfNotesContext.Provider
