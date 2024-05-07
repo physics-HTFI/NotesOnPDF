@@ -101,6 +101,7 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
           <SpeedDialAction
             tooltipTitle={"PDF選択パネルを開きます"}
             icon={<KeyboardArrowRight />}
+            disableInteractive
             onClick={() => {
               setOpenFileTreeDrawer(true);
               setMode(null);
@@ -113,6 +114,7 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
             tooltipTitle={`設定パネルを${
               openSettingsDrawer ? "閉じます" : "開きます"
             }`}
+            disableInteractive
             icon={<Settings />}
             onClick={() => {
               setOpenSettingsDrawer(!openSettingsDrawer);
@@ -124,6 +126,7 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
           {/* 注釈の移動・変形 */}
           <SpeedDialAction
             tooltipTitle={"注釈の移動・変形"}
+            disableInteractive
             icon={<OpenWith sx={{ color: "mediumseagreen" }} />}
             sx={{ background: mode === "move" ? green[50] : undefined }}
             onClick={() => {
@@ -135,6 +138,7 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
           {/* 注釈の編集 */}
           <SpeedDialAction
             tooltipTitle={"注釈の文字列・線種の変更"}
+            disableInteractive
             icon={<Edit sx={{ color: "cornflowerblue" }} />}
             sx={{ background: mode === "edit" ? blue[50] : undefined }}
             onClick={() => {
@@ -152,6 +156,7 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
                 [Ctrl+Delete] ページ内の全注釈を削除
               </span>
             }
+            disableInteractive
             icon={<Delete sx={{ color: "palevioletred" }} />}
             sx={{ background: mode === "delete" ? red[50] : undefined }}
             onClick={() => {
