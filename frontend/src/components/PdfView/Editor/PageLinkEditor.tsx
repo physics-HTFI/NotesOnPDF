@@ -47,6 +47,9 @@ const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
             ref?.focus();
           }, 10);
         }}
+        onFocus={(e) => {
+          e.target.select();
+        }}
         onChange={(e) => {
           num.current = Number(e.target.value);
         }}

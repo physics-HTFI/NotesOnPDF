@@ -78,6 +78,9 @@ const NoteEditor: FC<Props> = ({ params, onClose }) => {
             ref?.focus();
           }, 10);
         }}
+        onFocus={(e) => {
+          e.target.select();
+        }}
         onKeyDown={(e) => {
           e.stopPropagation();
         }}

@@ -75,6 +75,9 @@ const ChipEditor: FC<Props> = ({ params, onClose }) => {
             inputRef={(ref?: HTMLInputElement) => {
               ref?.focus();
             }}
+            onFocus={(e) => {
+              e.target.select();
+            }}
           />
         )}
         inputValue={rawText}

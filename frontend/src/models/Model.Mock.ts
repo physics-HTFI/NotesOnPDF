@@ -98,6 +98,7 @@ export default class ModelMock implements IModel {
         height: 1,
       }),
       notes: {
+        title: "文書1",
         version: "1.0",
         currentPage: 0,
         settings: {
