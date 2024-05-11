@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState } from "react";
+import { MouseEvent, useState } from "react";
 import {
   Arrow,
   Bracket,
@@ -11,28 +11,23 @@ import {
 import { green } from "@mui/material/colors";
 
 /**
- * `Node`の引数
- */
-interface Props {
-  target: Arrow | Bracket | Marker | Polygon | Rect;
-  index: number;
-  visible: boolean;
-  pageRect: DOMRect;
-  isGrab: boolean;
-  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-}
-
-/**
  * ノード編集用マーカー
  */
-const Node: FC<Props> = ({
+export default function Node({
   target,
   index,
   visible,
   pageRect,
   isGrab,
   onMouseDown,
-}) => {
+}: {
+  target: Arrow | Bracket | Marker | Polygon | Rect;
+  index: number;
+  visible: boolean;
+  pageRect: DOMRect;
+  isGrab: boolean;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+}) {
   const [hover, setHover] = useState(false);
   const [x, y] = (() => {
     switch (target.type) {
@@ -74,6 +69,4 @@ const Node: FC<Props> = ({
       />
     </g>
   );
-};
-
-export default Node;
+}

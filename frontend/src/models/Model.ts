@@ -1,9 +1,9 @@
-import { FileTree } from "@/types/FileTree";
-import { PdfNotes } from "@/types/PdfNotes";
-import { GetCoverages_empty, Coverages } from "@/types/Coverages";
+import FileTree from "@/types/FileTree";
+import PdfNotes from "@/types/PdfNotes";
+import Coverages, { GetCoverages_empty } from "@/types/Coverages";
 import IModel, { ResultGetPdfNotes } from "./IModel";
-import { AppSettings, GetAppSettings_default } from "@/types/AppSettings";
-import { History } from "@/types/History";
+import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
+import History from "@/types/History";
 
 const ORIGIN = import.meta.env.DEV
   ? "http://localhost:8080"

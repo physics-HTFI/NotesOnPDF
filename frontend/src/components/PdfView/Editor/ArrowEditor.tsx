@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { useContext } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Arrow, Bracket } from "@/types/PdfNotes";
 import usePdfNotes from "@/hooks/usePdfNotes";
@@ -7,7 +7,7 @@ import Svg from "../Items/Svg";
 import { red } from "@mui/material/colors";
 import ArrowItem from "../Items/Arrow";
 import BracketItem from "../Items/Bracket";
-import { MouseContext } from "@/contexts/MouseContext";
+import MouseContext from "@/contexts/MouseContext";
 
 /**
  * 与えられた直線と同じ向きを持つ`ToggleButton`用ベクトルを返す
@@ -31,17 +31,15 @@ const getVector = (
 };
 
 /**
- * `ArrowEditor`の引数
- */
-interface Props {
-  params: Arrow | Bracket;
-  onClose: () => void;
-}
-
-/**
  * Arrow, Bracketの編集ダイアログ
  */
-const ArrowEditor: FC<Props> = ({ params, onClose }) => {
+export default function ArrowEditor({
+  params,
+  onClose,
+}: {
+  params: Arrow | Bracket;
+  onClose: () => void;
+}) {
   const isArrow = params.type === "Arrow";
   const { updateNote } = usePdfNotes();
   const { pageRect } = useContext(MouseContext);
@@ -114,9 +112,7 @@ const ArrowEditor: FC<Props> = ({ params, onClose }) => {
       </ToggleButtonGroup>
     </EditorBase>
   );
-};
-
-export default ArrowEditor;
+}
 
 //|
 //| ローカル関数

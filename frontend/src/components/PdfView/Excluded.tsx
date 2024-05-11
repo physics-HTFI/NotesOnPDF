@@ -1,17 +1,9 @@
-import { FC } from "react";
 import { Box } from "@mui/material";
-
-/**
- * `Excluded`の引数
- */
-interface Props {
-  excluded: boolean;
-}
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Excluded: FC<Props> = ({ excluded }) => {
+export default function Excluded({ excluded }: { excluded: boolean }) {
   return (
     excluded && (
       <Box
@@ -24,6 +16,4 @@ const Excluded: FC<Props> = ({ excluded }) => {
       />
     )
   );
-};
-
-export default Excluded;
+}

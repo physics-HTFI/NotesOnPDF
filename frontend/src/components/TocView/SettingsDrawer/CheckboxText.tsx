@@ -1,29 +1,23 @@
-import { FC } from "react";
 import { Box, TextField } from "@mui/material";
 import Checkbox from "./Checkbox";
-
-/**
- * `CheckboxText`の`Props`
- */
-interface Props {
-  label: string;
-  tooltip?: string;
-  text?: string;
-  preferredText: string;
-  onChange: (text?: string) => void;
-}
 
 /**
  * ☑ラベル ________
  * という形のコンポーネント
  */
-const CheckboxText: FC<Props> = ({
+export default function CheckboxText({
   label,
   tooltip,
   text,
   preferredText,
   onChange,
-}) => {
+}: {
+  label: string;
+  tooltip?: string;
+  text?: string;
+  preferredText: string;
+  onChange: (text?: string) => void;
+}) {
   const checked = text !== undefined;
   const textLocal = text ?? preferredText;
 
@@ -57,6 +51,4 @@ const CheckboxText: FC<Props> = ({
       />
     </Box>
   );
-};
-
-export default CheckboxText;
+}

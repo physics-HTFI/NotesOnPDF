@@ -1,24 +1,23 @@
-import { FC, MouseEvent, useContext, useState } from "react";
+import { MouseEvent, useContext, useState } from "react";
 import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
 import { Chip as ChipType, Node, NoteType } from "@/types/PdfNotes";
-import { MouseContext } from "@/contexts/MouseContext";
+import MouseContext from "@/contexts/MouseContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
-import { useCursor } from "./useCursor";
-
-/**
- * `Chip`の引数
- */
-interface Props {
-  params: ChipType;
-  mode?: Mode;
-  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
-}
+import useCursor from "./useCursor";
 
 /**
  * チップ
  */
-const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
+export default function Chip({
+  params,
+  mode,
+  onMouseDown,
+}: {
+  params: ChipType;
+  mode?: Mode;
+  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
+}) {
   const [hover, setHover] = useState(false);
   const { getCursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
@@ -53,6 +52,4 @@ const Chip: FC<Props> = ({ params, mode, onMouseDown }) => {
       }}
     />
   );
-};
-
-export default Chip;
+}

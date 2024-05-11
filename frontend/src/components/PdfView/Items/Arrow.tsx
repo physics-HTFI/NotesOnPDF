@@ -3,32 +3,27 @@ import {
   Node as NodeType,
   NoteType,
 } from "@/types/PdfNotes";
-import { FC, MouseEvent, useState } from "react";
+import { MouseEvent, useState } from "react";
 import { Mode } from "../SpeedDial";
 import Node from "./Node";
-import { useCursor } from "./useCursor";
-
-/**
- * `Arrow`の引数
- */
-interface Props {
-  params: ArrowType;
-  mode?: Mode;
-  pageRect: DOMRect;
-  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-  disableNodes?: boolean;
-}
+import useCursor from "./useCursor";
 
 /**
  * 矢印などの直線
  */
-const Arrow: FC<Props> = ({
+export default function Arrow({
   params,
   mode,
   pageRect,
   onMouseDown,
   disableNodes,
-}) => {
+}: {
+  params: ArrowType;
+  mode?: Mode;
+  pageRect: DOMRect;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+  disableNodes?: boolean;
+}) {
   const [hover, setHover] = useState(false);
   const { getCursor, isMove } = useCursor(mode);
   const x1 = params.x1 * pageRect.width;
@@ -105,6 +100,4 @@ const Arrow: FC<Props> = ({
       {node && <Node index={1} {...node} />}
     </>
   );
-};
-
-export default Arrow;
+}

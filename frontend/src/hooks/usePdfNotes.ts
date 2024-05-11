@@ -1,12 +1,12 @@
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
-import { UiStateContext } from "@/contexts/UiStateContext";
+import PdfNotesContext from "@/contexts/PdfNotesContext";
+import UiStateContext from "@/contexts/UiStateContext";
 import { NoteType, editPageStyle, fromDisplayedPage } from "@/types/PdfNotes";
 import { useContext } from "react";
 
 /**
  * Context内の`pdfNotes, setPdfNotes`および更新用関数`update`を返す。
  */
-const usePdfNotes = () => {
+export default function usePdfNotes() {
   const { pdfNotes, setPdfNotes, previousPageNum, setPreviousPageNum } =
     useContext(PdfNotesContext);
   const { openFileTreeDrawer, waiting } = useContext(UiStateContext);
@@ -230,6 +230,4 @@ const usePdfNotes = () => {
      */
     handleKeyDown,
   };
-};
-
-export default usePdfNotes;
+}

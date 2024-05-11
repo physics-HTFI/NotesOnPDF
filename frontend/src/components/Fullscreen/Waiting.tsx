@@ -1,17 +1,9 @@
-import { FC } from "react";
 import { Backdrop, CircularProgress } from "@mui/material";
-
-/**
- * `Control`の引数
- */
-interface Props {
-  isWaiting: boolean;
-}
 
 /**
  * 処理中を表すモーダル表示
  */
-const Waiting: FC<Props> = ({ isWaiting }) => {
+export default function Waiting({ isWaiting }: { isWaiting: boolean }) {
   return (
     <Backdrop
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -20,6 +12,4 @@ const Waiting: FC<Props> = ({ isWaiting }) => {
       <CircularProgress color="inherit" />
     </Backdrop>
   );
-};
-
-export default Waiting;
+}

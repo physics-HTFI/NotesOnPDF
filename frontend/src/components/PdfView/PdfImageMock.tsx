@@ -1,10 +1,10 @@
-import { FC, useContext } from "react";
+import { useContext } from "react";
 import { pdfjs, Document, Page as PdfPage } from "react-pdf";
 import { sampleId2Path } from "@/models/Model.Mock";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
-import { UiStateContext } from "@/contexts/UiStateContext";
+import PdfNotesContext from "@/contexts/PdfNotesContext";
+import UiStateContext from "@/contexts/UiStateContext";
 import { createPdfNotesMock } from "@/types/PdfNotes";
-import { MouseContext } from "@/contexts/MouseContext";
+import MouseContext from "@/contexts/MouseContext";
 
 if (import.meta.env.VITE_IS_MOCK === "true") {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -14,14 +14,10 @@ const options = {
   standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts`,
 };
 
-interface Props {
-  onEndRead: () => void;
-}
-
 /**
  * PDF画像を表示するコンポーネント
  */
-const PdfImageMock: FC<Props> = ({ onEndRead }) => {
+export default function PdfImageMock({ onEndRead }: { onEndRead: () => void }) {
   const { id, file, setIdOrFile, setPdfNotes, pdfNotes } =
     useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
@@ -72,6 +68,4 @@ const PdfImageMock: FC<Props> = ({ onEndRead }) => {
       />
     </Document>
   );
-};
-
-export default PdfImageMock;
+}

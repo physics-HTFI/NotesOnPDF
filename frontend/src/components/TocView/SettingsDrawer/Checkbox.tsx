@@ -1,4 +1,3 @@
-import { FC } from "react";
 import {
   Checkbox as MuiCheckbox,
   FormControlLabel,
@@ -7,19 +6,19 @@ import {
 } from "@mui/material";
 
 /**
- * `Checkbox`の引数
+ * チェックボックス
  */
-interface Props {
+export default function Checkbox({
+  label,
+  checked,
+  tooltip,
+  onChange,
+}: {
   label: string;
   checked?: boolean;
   tooltip?: string;
   onChange: (checked: boolean) => void;
-}
-
-/**
- * チェックボックス
- */
-const Checkbox: FC<Props> = ({ label, checked, tooltip, onChange }) => {
+}) {
   return (
     <Tooltip title={tooltip} disableInteractive placement="right">
       <FormControlLabel
@@ -37,6 +36,4 @@ const Checkbox: FC<Props> = ({ label, checked, tooltip, onChange }) => {
       />
     </Tooltip>
   );
-};
-
-export default Checkbox;
+}

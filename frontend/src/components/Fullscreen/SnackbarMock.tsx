@@ -1,17 +1,15 @@
-import { FC, useState } from "react";
+import { useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
 /**
  * モックモデルを使用していることを示すポップアップ表示
  */
-const SnackbarsMock: FC = () => {
+export default function SnackbarsMock() {
   const [open, setOpen] = useState(true);
-
   const handleClose = () => {
     setOpen(false);
   };
-
   return (
     <Snackbar open={open} onClose={handleClose}>
       <Alert
@@ -31,6 +29,4 @@ const SnackbarsMock: FC = () => {
       </Alert>
     </Snackbar>
   );
-};
-
-export default SnackbarsMock;
+}

@@ -6,7 +6,7 @@ export type ClickOption = null | "edit" | "move" | "delete";
 /**
  * アプリ設定
  */
-export interface AppSettings {
+export default interface AppSettings {
   /** 空クリックでモードを解除する */
   cancelModeWithVoidClick: boolean;
   /** 注釈をスナップする */

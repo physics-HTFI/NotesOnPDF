@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
 import PageLabelLarge from "./PageLabelLarge";
@@ -7,61 +7,20 @@ import { Node, NoteType } from "@/types/PdfNotes";
 import Palette from "./Palette/Palette";
 import Excluded from "./Excluded";
 import Items from "./Items/Items";
-import { MouseContext } from "@/contexts/MouseContext";
+import MouseContext from "@/contexts/MouseContext";
 import Editor from "./Editor/Editor";
 import { grey } from "@mui/material/colors";
 import Move from "./Move";
 import usePdfNotes from "@/hooks/usePdfNotes";
-import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+import AppSettingsContext from "@/contexts/AppSettingsContext";
 import PdfImage from "./PdfImage";
 import PdfImageMock from "./PdfImageMock";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
-
-/**
- * モードに応じた背景色を返す
- */
-function getBackground(mode: Mode): string {
-  const base = grey[300];
-  const stripe =
-    mode === "edit"
-      ? "#e0e0f8"
-      : mode === "move"
-      ? "#e0e5e0"
-      : mode === "delete"
-      ? "#eae0e0"
-      : base;
-  return `repeating-linear-gradient(-60deg, ${stripe}, ${stripe} 5px, ${base} 5px, ${base} 10px)`;
-}
-
-/**
- * 読み込み中かどうかを返すカスタムフック
- */
-function useReading() {
-  const [prev, setPrev] = useState<{
-    idOrFile: string | File;
-    page: number;
-  }>();
-  const { id, file, pdfNotes } = useContext(PdfNotesContext);
-
-  const isReading = () => {
-    const idOrFile = id ?? file;
-    if (pdfNotes && idOrFile) {
-      if (prev?.idOrFile !== idOrFile || prev.page !== pdfNotes.currentPage) {
-        setPrev({
-          idOrFile: idOrFile,
-          page: pdfNotes.currentPage,
-        });
-        return true;
-      }
-    }
-  };
-  return { isReading };
-}
+import PdfNotesContext from "@/contexts/PdfNotesContext";
 
 /**
  * Pdfを表示するコンポーネント
  */
-const PdfView: FC = () => {
+export default function PdfView() {
   const { appSettings } = useContext(AppSettingsContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
   const { pdfNotes, page, updateNote, scrollPage, handleKeyDown } =
@@ -231,6 +190,45 @@ const PdfView: FC = () => {
       />
     </Box>
   );
-};
+}
 
-export default PdfView;
+/**
+ * モードに応じた背景色を返す
+ */
+function getBackground(mode: Mode): string {
+  const base = grey[300];
+  const stripe =
+    mode === "edit"
+      ? "#e0e0f8"
+      : mode === "move"
+      ? "#e0e5e0"
+      : mode === "delete"
+      ? "#eae0e0"
+      : base;
+  return `repeating-linear-gradient(-60deg, ${stripe}, ${stripe} 5px, ${base} 5px, ${base} 10px)`;
+}
+
+/**
+ * 読み込み中かどうかを返すカスタムフック
+ */
+function useReading() {
+  const [prev, setPrev] = useState<{
+    idOrFile: string | File;
+    page: number;
+  }>();
+  const { id, file, pdfNotes } = useContext(PdfNotesContext);
+
+  const isReading = () => {
+    const idOrFile = id ?? file;
+    if (pdfNotes && idOrFile) {
+      if (prev?.idOrFile !== idOrFile || prev.page !== pdfNotes.currentPage) {
+        setPrev({
+          idOrFile: idOrFile,
+          page: pdfNotes.currentPage,
+        });
+        return true;
+      }
+    }
+  };
+  return { isReading };
+}

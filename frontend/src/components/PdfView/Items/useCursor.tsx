@@ -1,8 +1,8 @@
-import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+import AppSettingsContext from "@/contexts/AppSettingsContext";
 import { useContext } from "react";
 import { Mode } from "../SpeedDial";
 
-export const useCursor = (mode?: Mode) => {
+export default function useCursor(mode?: Mode) {
   const { appSettings } = useContext(AppSettingsContext);
 
   const getCursor = () =>
@@ -20,4 +20,4 @@ export const useCursor = (mode?: Mode) => {
     appSettings?.middleClick === "move";
 
   return { getCursor, isMove };
-};
+}

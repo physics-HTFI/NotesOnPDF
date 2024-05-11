@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { useState } from "react";
 import {
   TextareaAutosize,
   Tooltip,
@@ -42,17 +42,15 @@ const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
 });
 
 /**
- * `NoteEditor`の引数
- */
-interface Props {
-  params: Note;
-  onClose: () => void;
-}
-
-/**
  * 注釈コメントの編集ダイアログ
  */
-const NoteEditor: FC<Props> = ({ params, onClose }) => {
+export default function NoteEditor({
+  params,
+  onClose,
+}: {
+  params: Note;
+  onClose: () => void;
+}) {
   const { updateNote } = usePdfNotes();
   const [text, setText] = useState(params.html);
 
@@ -131,6 +129,4 @@ const NoteEditor: FC<Props> = ({ params, onClose }) => {
       </NoMaxWidthTooltip>
     </EditorBase>
   );
-};
-
-export default NoteEditor;
+}

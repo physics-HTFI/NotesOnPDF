@@ -1,24 +1,18 @@
-import { FC } from "react";
 import { Box, TextField } from "@mui/material";
 import Checkbox from "./Checkbox";
 
 /**
- * `PageNumberRestart`の引数
- */
-interface Props {
-  numberRestart?: number;
-  preferredPageNumber?: number;
-  onChange: (numberRestart?: number) => void;
-}
-
-/**
  * ページ番号を設定するコンポーネント
  */
-const PageNumberRestart: FC<Props> = ({
+export default function PageNumberRestart({
   numberRestart,
   preferredPageNumber,
   onChange,
-}) => {
+}: {
+  numberRestart?: number;
+  preferredPageNumber?: number;
+  onChange: (numberRestart?: number) => void;
+}) {
   const isManual = numberRestart !== undefined;
   const restart = numberRestart ?? preferredPageNumber ?? 1;
 
@@ -52,6 +46,4 @@ const PageNumberRestart: FC<Props> = ({
       />
     </Box>
   );
-};
-
-export default PageNumberRestart;
+}

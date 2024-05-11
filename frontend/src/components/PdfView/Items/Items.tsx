@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useContext } from "react";
+import { MouseEvent, useContext } from "react";
 import Arrow from "./Arrow";
 import Bracket from "./Bracket";
 import Marker from "./Marker";
@@ -12,23 +12,23 @@ import { Mode } from "../SpeedDial";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./SvgDefs";
-import { MouseContext } from "@/contexts/MouseContext";
-import { AppSettingsContext } from "@/contexts/AppSettingsContext";
-
-/**
- * `Items`の引数
- */
-interface Props {
-  mode: Mode;
-  moveNote?: NoteType | NodeType;
-  onEdit: (note: NoteType) => void;
-  onMove: (note: NoteType | NodeType) => void;
-}
+import MouseContext from "@/contexts/MouseContext";
+import AppSettingsContext from "@/contexts/AppSettingsContext";
 
 /**
  * PDFビュークリック時に表示されるコントロール
  */
-const Items: FC<Props> = ({ mode, moveNote, onEdit, onMove }) => {
+export default function Items({
+  mode,
+  moveNote,
+  onEdit,
+  onMove,
+}: {
+  mode: Mode;
+  moveNote?: NoteType | NodeType;
+  onEdit: (note: NoteType) => void;
+  onMove: (note: NoteType | NodeType) => void;
+}) {
   const { pageRect, setMouse } = useContext(MouseContext);
   const { appSettings } = useContext(AppSettingsContext);
   const { page, popNote } = usePdfNotes();
@@ -91,6 +91,4 @@ const Items: FC<Props> = ({ mode, moveNote, onEdit, onMove }) => {
       })}
     </>
   );
-};
-
-export default Items;
+}

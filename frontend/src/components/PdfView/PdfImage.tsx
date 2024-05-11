@@ -1,19 +1,12 @@
-import { FC, useContext } from "react";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
-import { ModelContext } from "@/contexts/ModelContext";
-import { MouseContext } from "@/contexts/MouseContext";
-
-/**
- * `PdfImage`の引数
- */
-interface Props {
-  onEndRead: () => void;
-}
+import { useContext } from "react";
+import PdfNotesContext from "@/contexts/PdfNotesContext";
+import ModelContext from "@/contexts/ModelContext";
+import MouseContext from "@/contexts/MouseContext";
 
 /**
  * PDF画像を表示するコンポーネント
  */
-const PdfImage: FC<Props> = ({ onEndRead }) => {
+export default function PdfImage({ onEndRead }: { onEndRead: () => void }) {
   const { model } = useContext(ModelContext);
   const { pageRect } = useContext(MouseContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
@@ -30,6 +23,4 @@ const PdfImage: FC<Props> = ({ onEndRead }) => {
       onError={onEndRead}
     />
   );
-};
-
-export default PdfImage;
+}

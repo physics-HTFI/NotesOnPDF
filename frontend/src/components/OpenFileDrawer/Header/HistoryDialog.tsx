@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Backdrop,
   Box,
@@ -10,22 +10,20 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { History } from "@/types/History";
-import { ModelContext } from "@/contexts/ModelContext";
-import { UiStateContext } from "@/contexts/UiStateContext";
-
-/**
- * `History`の引数
- */
-interface Props {
-  open: boolean;
-  onClose: (id?: string) => void;
-}
+import History from "@/types/History";
+import ModelContext from "@/contexts/ModelContext";
+import UiStateContext from "@/contexts/UiStateContext";
 
 /**
  * PDFを開いた履歴
  */
-export const HistoryDialog: FC<Props> = ({ open, onClose }) => {
+export default function HistoryDialog({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: (id?: string) => void;
+}) {
   const { model } = useContext(ModelContext);
   const { setWaiting } = useContext(UiStateContext);
   const [history, setHistory] = useState<History>([]);
@@ -111,4 +109,4 @@ export const HistoryDialog: FC<Props> = ({ open, onClose }) => {
       </Box>
     </Backdrop>
   );
-};
+}

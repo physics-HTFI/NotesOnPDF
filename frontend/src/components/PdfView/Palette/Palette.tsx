@@ -1,6 +1,6 @@
-import { FC, useContext } from "react";
+import { useContext } from "react";
 import { Paper } from "@mui/material";
-import { MouseContext } from "@/contexts/MouseContext";
+import MouseContext from "@/contexts/MouseContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import { Node, NoteType } from "@/types/PdfNotes";
 import {
@@ -17,17 +17,15 @@ import {
 import Divider from "./Divider";
 
 /**
- * `Palette`の引数
- */
-interface Props {
-  open: boolean;
-  onClose: (note: NoteType | Node) => void;
-}
-
-/**
  * PDFビュークリック時に表示されるパレット型コントロール
  */
-const Palette: FC<Props> = ({ open, onClose }) => {
+export default function Palette({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: (note: NoteType | Node) => void;
+}) {
   const { mouse, pageRect } = useContext(MouseContext);
   const { pdfNotes } = usePdfNotes();
   if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
@@ -87,6 +85,4 @@ const Palette: FC<Props> = ({ open, onClose }) => {
       <Divider L={L} divisions={DIVISIONS} />
     </Paper>
   );
-};
-
-export default Palette;
+}

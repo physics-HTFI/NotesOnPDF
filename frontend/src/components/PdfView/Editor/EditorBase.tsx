@@ -1,20 +1,18 @@
-import { FC, ReactNode, useContext } from "react";
+import { ReactNode, useContext } from "react";
 import { Modal, Paper } from "@mui/material";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
-import { MouseContext } from "@/contexts/MouseContext";
-
-/**
- * `EditorBase`の引数
- */
-interface Props {
-  children: ReactNode;
-  onClose: () => void;
-}
+import PdfNotesContext from "@/contexts/PdfNotesContext";
+import MouseContext from "@/contexts/MouseContext";
 
 /**
  * 画面クリック時にポップアップする編集ダイアログ
  */
-const EditorBase: FC<Props> = ({ children, onClose }) => {
+export default function EditorBase({
+  children,
+  onClose,
+}: {
+  children: ReactNode;
+  onClose: () => void;
+}) {
   const { pdfNotes } = useContext(PdfNotesContext);
   const { mouse } = useContext(MouseContext);
   if (!pdfNotes || !mouse) return <></>;
@@ -59,6 +57,4 @@ const EditorBase: FC<Props> = ({ children, onClose }) => {
       </Paper>
     </Modal>
   );
-};
-
-export default EditorBase;
+}

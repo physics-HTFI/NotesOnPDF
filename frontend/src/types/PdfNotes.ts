@@ -3,7 +3,7 @@ import { ResultGetPdfNotes } from "@/models/IModel";
 /**
  * 1つのPDFファイルに追加された全ての情報
  */
-export interface PdfNotes {
+export default interface PdfNotes {
   title: string;
   version: string;
   currentPage: number;

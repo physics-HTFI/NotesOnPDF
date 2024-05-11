@@ -1,17 +1,17 @@
-import { FileTree } from "@/types/FileTree";
-import { TreeItemWithInfo } from "./TreeItemWithInfo";
-import { Coverages } from "@/types/Coverages";
+import FileTree from "@/types/FileTree";
+import TreeItemWithInfo from "./TreeItemWithInfo";
+import Coverages from "@/types/Coverages";
 
 /**
  * `<TreeView>`の中身を取得する。
  * @example
  * <TreeView> {getTreeItems(fileTree, coverages)} </TreeView>
  */
-export const getTreeItems = (
+export default function getTreeItems(
   fileTree: FileTree,
   coverages?: Coverages,
   id?: string
-): JSX.Element | JSX.Element[] => {
+): JSX.Element | JSX.Element[] {
   if (fileTree.length === 0) return <></>;
 
   // ルートディレクトリの場合
@@ -54,4 +54,4 @@ export const getTreeItems = (
   function getFileName(path: string): string {
     return path.match(/[^\\/]+(?=[\\/]?$)/)?.[0] ?? "";
   }
-};
+}

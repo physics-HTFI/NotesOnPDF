@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState } from "react";
+import { MouseEvent, useState } from "react";
 import {
   Bracket as BracketParams,
   Node as NodeType,
@@ -6,29 +6,24 @@ import {
 } from "@/types/PdfNotes";
 import { Mode } from "../SpeedDial";
 import Node from "./Node";
-import { useCursor } from "./useCursor";
-
-/**
- * `Bracket`の引数
- */
-interface Props {
-  params: BracketParams;
-  mode?: Mode;
-  pageRect: DOMRect;
-  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-  disableNodes?: boolean;
-}
+import useCursor from "./useCursor";
 
 /**
  * 括弧
  */
-const Bracket: FC<Props> = ({
+export default function Bracket({
   params,
   mode,
   pageRect,
   onMouseDown,
   disableNodes,
-}) => {
+}: {
+  params: BracketParams;
+  mode?: Mode;
+  pageRect: DOMRect;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+  disableNodes?: boolean;
+}) {
   const [hover, setHover] = useState(false);
   const { getCursor, isMove } = useCursor(mode);
   const x1 = params.x1 * pageRect.width;
@@ -107,6 +102,4 @@ const Bracket: FC<Props> = ({
       {node && <Node index={1} {...node} />}
     </>
   );
-};
-
-export default Bracket;
+}

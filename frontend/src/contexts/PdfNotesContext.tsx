@@ -1,6 +1,5 @@
-import { PdfNotes } from "@/types/PdfNotes";
+import PdfNotes from "@/types/PdfNotes";
 import {
-  FC,
   ReactNode,
   createContext,
   useContext,
@@ -8,11 +7,14 @@ import {
   useMemo,
   useState,
 } from "react";
-import { ModelContext } from "./ModelContext";
+import ModelContext from "./ModelContext";
 import { debounce } from "@mui/material";
 import IModel from "@/models/IModel";
 
-interface PdfNotesContextType {
+/**
+ * 注釈のコンテクスト
+ */
+const PdfNotesContext = createContext<{
   id?: string;
   file?: File;
   setIdOrFile: (idOrFile?: string | File) => void;
@@ -20,28 +22,18 @@ interface PdfNotesContextType {
   setPdfNotes: (pdfNotes?: PdfNotes) => void;
   previousPageNum?: number;
   setPreviousPageNum: (previousPageNum?: number) => void;
-}
-
-/**
- * 注釈のコンテクスト
- */
-export const PdfNotesContext = createContext<PdfNotesContextType>({
+}>({
   setIdOrFile: () => undefined,
   setPdfNotes: () => undefined,
   setPreviousPageNum: () => undefined,
 });
 
-/**
- * `AppSettingsContextProvider`の引数
- */
-interface Props {
-  children: ReactNode;
-}
+export default PdfNotesContext;
 
 /**
  * `AppSettingsContext`のプロバイダー
  */
-export const PdfNotesContextProvider: FC<Props> = ({ children }) => {
+export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
   const [idOrFile, setIdOrFile_] = useState<string | File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
@@ -82,4 +74,4 @@ export const PdfNotesContextProvider: FC<Props> = ({ children }) => {
       {children}
     </PdfNotesContext.Provider>
   );
-};
+}

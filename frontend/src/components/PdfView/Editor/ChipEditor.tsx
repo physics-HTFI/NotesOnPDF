@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Autocomplete,
   Chip as MuiChip,
@@ -6,7 +6,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { Chip, PdfNotes } from "@/types/PdfNotes";
+import PdfNotes, { Chip } from "@/types/PdfNotes";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import { blue } from "@mui/material/colors";
@@ -30,17 +30,15 @@ const getOptions = (pdfNotes?: PdfNotes): string[] => {
 };
 
 /**
- * `ChipEditor`の引数
- */
-interface Props {
-  params: Chip;
-  onClose: () => void;
-}
-
-/**
  * チップの編集ダイアログ
  */
-const ChipEditor: FC<Props> = ({ params, onClose }) => {
+export default function ChipEditor({
+  params,
+  onClose,
+}: {
+  params: Chip;
+  onClose: () => void;
+}) {
   const { pdfNotes, updateNote } = usePdfNotes();
   const [style, setStyle] = useState(params.style);
   const [rawText, setRawText] = useState(params.text);
@@ -122,6 +120,4 @@ const ChipEditor: FC<Props> = ({ params, onClose }) => {
       </ToggleButtonGroup>
     </EditorBase>
   );
-};
-
-export default ChipEditor;
+}

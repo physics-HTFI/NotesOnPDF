@@ -1,39 +1,31 @@
 import {
-  FC,
   ReactNode,
   createContext,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { FileTree } from "@/types/FileTree";
-import { Coverage, Coverages } from "@/types/Coverages";
-import { ModelContext } from "./ModelContext";
+import FileTree from "@/types/FileTree";
+import Coverages, { Coverage } from "@/types/Coverages";
+import ModelContext from "./ModelContext";
 import IModel from "@/models/IModel";
-import { PdfNotesContext } from "./PdfNotesContext";
-import { PdfNotes } from "@/types/PdfNotes";
-
-interface FileTreeContextType {
-  fileTree?: FileTree;
-  coverages?: Coverages;
-}
+import PdfNotesContext from "./PdfNotesContext";
+import PdfNotes from "@/types/PdfNotes";
 
 /**
  * ファイルツリーと履歴のコンテクスト
  */
-export const FileTreeContext = createContext<FileTreeContextType>({});
+const FileTreeContext = createContext<{
+  fileTree?: FileTree;
+  coverages?: Coverages;
+}>({});
 
-/**
- * `FileTreeContextProvider`の引数
- */
-interface Props {
-  children: ReactNode;
-}
+export default FileTreeContext;
 
 /**
  * `FileTreeContext`のプロバイダー
  */
-export const FileTreeContextProvider: FC<Props> = ({ children }) => {
+export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
@@ -63,7 +55,7 @@ export const FileTreeContextProvider: FC<Props> = ({ children }) => {
       {children}
     </FileTreeContext.Provider>
   );
-};
+}
 
 /**
  * `FileTree`と`Coverages`を取得する

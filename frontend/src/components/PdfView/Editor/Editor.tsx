@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { NoteType } from "@/types/PdfNotes";
 import ChipEditor from "./ChipEditor";
 import RectEditor from "./RectEditor";
@@ -7,18 +6,17 @@ import NoteEditor from "./NoteEditor";
 import ArrowEditor from "./ArrowEditor";
 
 /**
- * `Editor`の引数
+ * 編集ダイアログ
  */
-interface Props {
+export default function Editor({
+  open,
+  params,
+  onClose,
+}: {
   open: boolean;
   params?: NoteType;
   onClose: () => void;
-}
-
-/**
- * 編集ダイアログ
- */
-const Editor: FC<Props> = ({ open, params, onClose }) => {
+}) {
   if (!open || !params) return <></>;
   switch (params.type) {
     case "Arrow":
@@ -38,6 +36,4 @@ const Editor: FC<Props> = ({ open, params, onClose }) => {
     case "Rect":
       return <RectEditor params={params} onClose={onClose} />;
   }
-};
-
-export default Editor;
+}

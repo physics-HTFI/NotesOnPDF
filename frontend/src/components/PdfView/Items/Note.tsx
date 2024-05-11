@@ -1,24 +1,23 @@
-import { FC, MouseEvent, useContext, useState } from "react";
+import { MouseEvent, useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
-import { MouseContext } from "@/contexts/MouseContext";
+import MouseContext from "@/contexts/MouseContext";
 import { Node, Note as NoteParams, NoteType } from "@/types/PdfNotes";
-import { useCursor } from "./useCursor";
-
-/**
- * `Note`の引数
- */
-interface Props {
-  params: NoteParams;
-  mode?: Mode;
-  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
-}
+import useCursor from "./useCursor";
 
 /**
  * テキストや数式
  */
-const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
+export default function Note({
+  params,
+  mode,
+  onMouseDown,
+}: {
+  params: NoteParams;
+  mode?: Mode;
+  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
+}) {
   const [hover, setHover] = useState(false);
   const { getCursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
@@ -55,6 +54,4 @@ const Note: FC<Props> = ({ params, mode, onMouseDown }) => {
       />
     </MathJax>
   );
-};
-
-export default Note;
+}

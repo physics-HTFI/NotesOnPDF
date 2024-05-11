@@ -1,21 +1,19 @@
-import { FC, useRef } from "react";
+import { useRef } from "react";
 import { TextField } from "@mui/material";
 import { PageLink, fromDisplayedPage } from "@/types/PdfNotes";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 
 /**
- * `PageLinkEditor`の引数
- */
-interface Props {
-  params: PageLink;
-  onClose: () => void;
-}
-
-/**
  * ページリンクの編集ダイアログ
  */
-const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
+export default function PageLinkEditor({
+  params,
+  onClose,
+}: {
+  params: PageLink;
+  onClose: () => void;
+}) {
   const { pdfNotes, updateNote } = usePdfNotes();
   const pageNum =
     pdfNotes?.pages[params.page]?.num ??
@@ -67,6 +65,4 @@ const PageLinkEditor: FC<Props> = ({ params, onClose }) => {
       />
     </EditorBase>
   );
-};
-
-export default PageLinkEditor;
+}

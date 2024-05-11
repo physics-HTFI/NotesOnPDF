@@ -13,7 +13,7 @@ export interface Coverage {
 /**
  * 開いたことのあるPDFの進捗情報を保持する
  */
-export interface Coverages {
+export default interface Coverages {
   /** 前回開いたPDFファイルのID */
   recentId?: string;
   /** 各PDFの進捗率。keyはID */

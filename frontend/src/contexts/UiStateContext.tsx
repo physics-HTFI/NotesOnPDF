@@ -1,19 +1,17 @@
-import { FC, ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useState } from "react";
 import Waiting from "@/components/Fullscreen/Waiting";
 
-interface UiStateContextType {
+/**
+ * UIの状態コンテクスト（待機中、ドロワーの開閉状態）
+ */
+export const UiStateContext = createContext<{
   openFileTreeDrawer: boolean;
   openSettingsDrawer: boolean;
   waiting: boolean;
   setOpenFileTreeDrawer: (openFileTreeDrawer: boolean) => void;
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
   setWaiting: (waiting: boolean) => void;
-}
-
-/**
- * UIの状態コンテクスト（待機中、ドロワーの開閉状態）
- */
-export const UiStateContext = createContext<UiStateContextType>({
+}>({
   openFileTreeDrawer: true,
   openSettingsDrawer: false,
   waiting: false,
@@ -22,17 +20,12 @@ export const UiStateContext = createContext<UiStateContextType>({
   setWaiting: () => undefined,
 });
 
-/**
- * `UiStateContextProvider`の引数
- */
-interface Props {
-  children: ReactNode;
-}
+export default UiStateContext;
 
 /**
  * `UiStateContext`のプロバイダー
  */
-export const UiStateContextProvider: FC<Props> = ({ children }) => {
+export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [openFileTreeDrawer, setOpenFileTreeDrawer] = useState(true);
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [waiting, setWaiting] = useState(false);
@@ -52,4 +45,4 @@ export const UiStateContextProvider: FC<Props> = ({ children }) => {
       <Waiting isWaiting={waiting} />
     </UiStateContext.Provider>
   );
-};
+}

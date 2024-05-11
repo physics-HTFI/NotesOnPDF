@@ -1,4 +1,3 @@
-import { FC } from "react";
 import {
   Box,
   MenuItem,
@@ -10,18 +9,17 @@ import { ClickOption } from "@/types/AppSettings";
 import { Delete, Edit, OpenWith } from "@mui/icons-material";
 
 /**
- * `ClickOptionSelect`の引数
+ * 注釈クリック時の処理を設定するコンポーネント
  */
-interface Props {
+export default function ClickOptionSelect({
+  value,
+  label,
+  onChange,
+}: {
   value: ClickOption;
   label: string;
   onChange: (option: ClickOption) => void;
-}
-
-/**
- * 注釈クリック時の処理を設定するコンポーネント
- */
-const ClickOptionSelect: FC<Props> = ({ value, label, onChange }) => {
+}) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", py: 0.5 }}>
       <Typography variant="button" sx={{ whiteSpace: "nowrap", pr: 1 }}>
@@ -65,6 +63,4 @@ const ClickOptionSelect: FC<Props> = ({ value, label, onChange }) => {
       </Select>
     </Box>
   );
-};
-
-export default ClickOptionSelect;
+}

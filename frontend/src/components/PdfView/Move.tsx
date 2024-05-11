@@ -1,4 +1,4 @@
-import { FC, useContext, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Arrow from "./Items/Arrow";
 import Bracket from "./Items/Bracket";
 import Marker from "./Items/Marker";
@@ -10,26 +10,24 @@ import Svg from "./Items/Svg";
 import Chip from "./Items/Chip";
 import { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
-import { MouseContext } from "@/contexts/MouseContext";
-import { AppSettingsContext } from "@/contexts/AppSettingsContext";
+import MouseContext from "@/contexts/MouseContext";
+import AppSettingsContext from "@/contexts/AppSettingsContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
 
 /**
- * `Move`の引数
+ * 移動中の注釈を表示するコンポーネント
  */
-interface Props {
+export default function Move({
+  params,
+  onClose,
+}: {
   params?: NoteType | Node;
   onClose: (
     newNote?: NoteType,
     oldNote?: NoteType,
     addPolygon?: boolean
   ) => void;
-}
-
-/**
- * 移動中の注釈を表示するコンポーネント
- */
-const Move: FC<Props> = ({ params, onClose }) => {
+}) {
   const [dXY, setDXY] = useState<[number, number]>();
   const ref = useRef<HTMLElement>();
   const { mouse, setMouse, pageRect } = useContext(MouseContext);
@@ -159,9 +157,7 @@ const Move: FC<Props> = ({ params, onClose }) => {
       />
     </>
   );
-};
-
-export default Move;
+}
 
 //|
 //| ローカル関数

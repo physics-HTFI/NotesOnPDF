@@ -1,20 +1,19 @@
-import { FC, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { TreeView } from "@mui/x-tree-view";
 import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
-import { getTreeItems } from "@/components/OpenFileDrawer/FileTreeView/getTreeItems";
-import { FileTreeContext } from "@/contexts/FileTreeContext";
-
-// `FileTreeView`の引数
-interface Props {
-  onSelectPdfById: (id: string) => void;
-}
+import getTreeItems from "@/components/OpenFileDrawer/FileTreeView/getTreeItems";
+import FileTreeContext from "@/contexts/FileTreeContext";
 
 /**
  * ファイル一覧を表示するコンポーネント
  */
-export const FileTreeView: FC<Props> = ({ onSelectPdfById }) => {
+export default function FileTreeView({
+  onSelectPdfById,
+}: {
+  onSelectPdfById: (id: string) => void;
+}) {
   const { fileTree, coverages } = useContext(FileTreeContext);
   const [expanded, setExpanded] = useState<string[]>([]);
   const [selectedPath, setSelectedPath] = useState<string>();
@@ -64,4 +63,4 @@ export const FileTreeView: FC<Props> = ({ onSelectPdfById }) => {
       </TreeView>
     )
   );
-};
+}

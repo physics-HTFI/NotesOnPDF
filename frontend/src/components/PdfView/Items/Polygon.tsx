@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState } from "react";
+import { MouseEvent, useState } from "react";
 import { Mode } from "../SpeedDial";
 import {
   Polygon as PolygonType,
@@ -6,29 +6,24 @@ import {
   NoteType,
 } from "@/types/PdfNotes";
 import Node from "./Node";
-import { useCursor } from "./useCursor";
-
-/**
- * `Polygon`の引数
- */
-interface Props {
-  params: PolygonType;
-  mode?: Mode;
-  pageRect: DOMRect;
-  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-  disableNodes?: boolean;
-}
+import useCursor from "./useCursor";
 
 /**
  * ポリゴン
  */
-const Polygon: FC<Props> = ({
+export default function Polygon({
   params,
   mode,
   pageRect,
   onMouseDown,
   disableNodes,
-}) => {
+}: {
+  params: PolygonType;
+  mode?: Mode;
+  pageRect: DOMRect;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+  disableNodes?: boolean;
+}) {
   const [hover, setHover] = useState(false);
   const { getCursor, isMove } = useCursor(mode);
   const cursor = disableNodes ? undefined : getCursor();
@@ -72,6 +67,4 @@ const Polygon: FC<Props> = ({
         params.points.map((_, i) => <Node key={i} index={i} {...node} />)}
     </>
   );
-};
-
-export default Polygon;
+}

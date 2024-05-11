@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Rect, Polygon } from "@/types/PdfNotes";
 import usePdfNotes from "@/hooks/usePdfNotes";
@@ -8,17 +7,15 @@ import RectSvg from "../Items/Rect";
 import { red } from "@mui/material/colors";
 
 /**
- * `RectEditor`の引数
- */
-interface Props {
-  params: Polygon | Rect;
-  onClose: () => void;
-}
-
-/**
  * 直方体、ポリゴンの編集ダイアログ
  */
-const RectEditor: FC<Props> = ({ params, onClose }) => {
+export default function RectEditor({
+  params,
+  onClose,
+}: {
+  params: Polygon | Rect;
+  onClose: () => void;
+}) {
   const { updateNote } = usePdfNotes();
 
   // 閉じたときに値を更新する
@@ -76,6 +73,4 @@ const RectEditor: FC<Props> = ({ params, onClose }) => {
       </ToggleButtonGroup>
     </EditorBase>
   );
-};
-
-export default RectEditor;
+}

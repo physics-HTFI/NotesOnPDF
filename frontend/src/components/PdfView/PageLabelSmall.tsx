@@ -1,23 +1,21 @@
-import { FC, useContext, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Box, Chip, IconButton, TextField, Tooltip } from "@mui/material";
 import { Reply } from "@mui/icons-material";
 import usePdfNotes from "@/hooks/usePdfNotes";
-import { PdfNotesContext } from "@/contexts/PdfNotesContext";
+import PdfNotesContext from "@/contexts/PdfNotesContext";
 import EditorBase from "./Editor/EditorBase";
-import { MouseContext } from "@/contexts/MouseContext";
-
-/**
- * `PageLabelSmall`の引数
- */
-interface Props {
-  label?: string;
-  hidden: boolean;
-}
+import MouseContext from "@/contexts/MouseContext";
 
 /**
  * 画面隅のページ数表示コンポーネント
  */
-const PageLabelSmall: FC<Props> = ({ label, hidden }) => {
+export default function PageLabelSmall({
+  label,
+  hidden,
+}: {
+  label?: string;
+  hidden: boolean;
+}) {
   const { previousPageNum } = useContext(PdfNotesContext);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
@@ -89,9 +87,7 @@ const PageLabelSmall: FC<Props> = ({ label, hidden }) => {
       </Tooltip>
     </Box>
   );
-};
-
-export default PageLabelSmall;
+}
 
 /**
  * ページリンクの編集ダイアログ

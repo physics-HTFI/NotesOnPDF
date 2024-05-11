@@ -1,5 +1,5 @@
-import { FC, useContext, useState } from "react";
-import { Box, Drawer, IconButton, Tab, Tabs } from "@mui/material";
+import { useContext, useState } from "react";
+import { Box, Drawer } from "@mui/material";
 import {
   Page,
   Settings as PdfSettings,
@@ -10,23 +10,20 @@ import CheckboxText from "./CheckboxText";
 import SectionBreak from "./SectionBreak";
 import PageNumberRestart from "./PageNumberRestart";
 import LabelSlider from "./LabelSlider";
-import {
-  Close,
-  KeyboardDoubleArrowDown,
-  KeyboardDoubleArrowUp,
-} from "@mui/icons-material";
 import Checkbox from "./Checkbox";
 import ClickOptionSelect from "./ClickOptionSelect";
-import { AppSettingsContext } from "@/contexts/AppSettingsContext";
-import { AppSettings } from "@/types/AppSettings";
+import AppSettingsContext from "@/contexts/AppSettingsContext";
+import AppSettings from "@/types/AppSettings";
 import { UiStateContext } from "@/contexts/UiStateContext";
-import { grey } from "@mui/material/colors";
 import usePdfNotes from "@/hooks/usePdfNotes";
+import IconClose from "./IconClose";
+import IconTogglePosition from "./IconTogglePosition";
+import Tabs from "./Tabs";
 
 /**
  * 設定パネル
  */
-const SettingsDrawer: FC = () => {
+export default function SettingsDrawer() {
   const { appSettings, setAppSettings } = useContext(AppSettingsContext);
   const { pdfNotes, setPdfNotes, getPreferredLabels } = usePdfNotes();
   const { openSettingsDrawer, setOpenSettingsDrawer } =
@@ -98,7 +95,7 @@ const SettingsDrawer: FC = () => {
     >
       <Box sx={{ width: "100%", fontSize: "80%" }}>
         {/* 閉じるアイコン */}
-        <CloseIcon
+        <IconClose
           isBottom={isBottom}
           onClose={() => {
             setOpenSettingsDrawer(false);
@@ -106,7 +103,7 @@ const SettingsDrawer: FC = () => {
         />
 
         {/* 設定パネル位置変更ボタン */}
-        <ToggleSettingsPositionIcon
+        <IconTogglePosition
           isBottom={isBottom}
           onToggleSettingsPosition={() => {
             setIsBottom(!isBottom);
@@ -114,7 +111,7 @@ const SettingsDrawer: FC = () => {
         />
 
         {/* タブ */}
-        <SettingsTabs
+        <Tabs
           tab={tab}
           pageLabel={`p. ${page?.num ?? "???"}`}
           setTab={setTab}
@@ -269,96 +266,5 @@ const SettingsDrawer: FC = () => {
         )}
       </Box>
     </Drawer>
-  );
-};
-
-export default SettingsDrawer;
-
-//|
-//| ローカル関数
-//|
-
-/**
- * 閉じるボタン
- */
-function CloseIcon({
-  isBottom,
-  onClose,
-}: {
-  isBottom: boolean;
-  onClose: () => void;
-}): JSX.Element {
-  return (
-    <IconButton
-      sx={{
-        position: "absolute",
-        right: 2,
-        bottom: isBottom ? undefined : -37,
-        top: isBottom ? -37 : undefined,
-        background: grey[100],
-        "&:hover": {
-          background: grey[300],
-        },
-      }}
-      onClick={onClose}
-      size="small"
-    >
-      <Close />
-    </IconButton>
-  );
-}
-
-/**
- * 設定パネル位置変更ボタン
- */
-function ToggleSettingsPositionIcon({
-  isBottom,
-  onToggleSettingsPosition,
-}: {
-  isBottom: boolean;
-  onToggleSettingsPosition: () => void;
-}): JSX.Element {
-  console.log(111);
-  return (
-    <IconButton
-      sx={{
-        position: "absolute",
-        right: 39,
-        bottom: isBottom ? undefined : -37,
-        top: isBottom ? -37 : undefined,
-        background: grey[100],
-        "&:hover": {
-          background: grey[300],
-        },
-      }}
-      onClick={onToggleSettingsPosition}
-      size="small"
-    >
-      {isBottom ? <KeyboardDoubleArrowUp /> : <KeyboardDoubleArrowDown />}
-    </IconButton>
-  );
-}
-
-/**
- * タブ
- */
-function SettingsTabs(props: {
-  tab: number;
-  setTab: (i: number) => void;
-  pageLabel?: string;
-}): JSX.Element {
-  return (
-    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-      <Tabs
-        value={props.tab}
-        onChange={(_, i: number) => {
-          props.setTab(i);
-        }}
-      >
-        <Tab label={props.pageLabel ?? "p. ???"} />
-        <Tab label="ファイル" />
-        <Tab label="アプリ" />
-      </Tabs>
-    </Box>
   );
 }

@@ -1,8 +1,8 @@
-import { FileTree } from "@/types/FileTree";
-import { Coverages } from "@/types/Coverages";
+import FileTree from "@/types/FileTree";
+import Coverages from "@/types/Coverages";
 import IModel, { ResultGetPdfNotes } from "./IModel";
-import { AppSettings, GetAppSettings_default } from "@/types/AppSettings";
-import { History } from "@/types/History";
+import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
+import History from "@/types/History";
 
 export const sampleId2Path = (id?: string) => (id === "12" ? "文書1.pdf" : "");
 

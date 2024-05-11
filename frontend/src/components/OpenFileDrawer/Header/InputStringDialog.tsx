@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Dialog,
@@ -9,24 +9,19 @@ import {
 } from "@mui/material";
 
 /**
- * `InputStringDialog`の引数
- */
-interface Props {
-  defaultValue?: string;
-  title: string;
-  label: string;
-  onClose: (value?: string) => void;
-}
-
-/**
  * 文字列を入力するダイアログ
  */
-export const InputStringDialog: FC<Props> = ({
+export default function InputStringDialog({
   defaultValue,
   title,
   label,
   onClose,
-}) => {
+}: {
+  defaultValue?: string;
+  title: string;
+  label: string;
+  onClose: (value?: string) => void;
+}) {
   const [value, setValue] = useState(defaultValue ?? "");
 
   return (
@@ -76,4 +71,4 @@ export const InputStringDialog: FC<Props> = ({
       </DialogActions>
     </Dialog>
   );
-};
+}

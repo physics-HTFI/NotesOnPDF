@@ -1,38 +1,31 @@
 import usePdfNotes from "@/hooks/usePdfNotes";
-import { PdfNotes } from "@/types/PdfNotes";
+import PdfNotes from "@/types/PdfNotes";
 import { Box } from "@mui/material";
-import { FC, ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useState } from "react";
 
 interface Mouse {
   pageX: number;
   pageY: number;
 }
 
-interface MouseContextType {
+const MouseContext = createContext<{
   mouse?: Mouse;
   setMouse: (m: Mouse) => void;
   pageRect?: DOMRect;
   scale: number; // %単位
   top?: number;
   bottom?: number;
-}
-
-export const MouseContext = createContext<MouseContextType>({
+}>({
   setMouse: () => undefined,
   scale: 100,
 });
 
-/**
- * `MouseContextProvider`の引数
- */
-interface Props {
-  children: ReactNode;
-}
+export default MouseContext;
 
 /**
  * `MouseContext`のプロバイダー
  */
-export const MouseContextProvider: FC<Props> = ({ children }) => {
+export function MouseContextProvider({ children }: { children: ReactNode }) {
   const { pdfNotes } = usePdfNotes();
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
   const [refContainer, setRefContainer] = useState<HTMLDivElement>();
@@ -51,7 +44,7 @@ export const MouseContextProvider: FC<Props> = ({ children }) => {
       <Box ref={setRefContainer}>{children}</Box>
     </MouseContext.Provider>
   );
-};
+}
 
 /**
  * ページのサイズと位置を返す

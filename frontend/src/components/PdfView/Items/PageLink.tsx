@@ -1,25 +1,24 @@
-import { FC, MouseEvent, useContext, useState } from "react";
+import { MouseEvent, useContext, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
 import { Node, NoteType, PageLink as PageLinkType } from "@/types/PdfNotes";
 import { Mode } from "../SpeedDial";
-import { MouseContext } from "@/contexts/MouseContext";
-import { useCursor } from "./useCursor";
+import MouseContext from "@/contexts/MouseContext";
+import useCursor from "./useCursor";
 import usePdfNotes from "@/hooks/usePdfNotes";
-
-/**
- * `PageLink`の引数
- */
-interface Props {
-  params: PageLinkType;
-  mode?: Mode;
-  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
-}
 
 /**
  * ページへのリンク
  */
-const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
+export default function PageLink({
+  params,
+  mode,
+  onMouseDown,
+}: {
+  params: PageLinkType;
+  mode?: Mode;
+  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
+}) {
   const [hover, setHover] = useState(false);
   const { getCursor } = useCursor(mode);
   const { pdfNotes, jumpPage } = usePdfNotes();
@@ -61,6 +60,4 @@ const PageLink: FC<Props> = ({ params, mode, onMouseDown }) => {
       />
     </>
   );
-};
-
-export default PageLink;
+}

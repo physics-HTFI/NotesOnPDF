@@ -1,18 +1,15 @@
-import { FC } from "react";
 import Svg from "../Items/Svg";
-
-/**
- * `Divider`の引数
- */
-interface Props {
-  L: number;
-  divisions: number;
-}
 
 /**
  * パレットの分割線
  */
-const Divider: FC<Props> = ({ L, divisions }) => {
+export default function Divider({
+  L,
+  divisions,
+}: {
+  L: number;
+  divisions: number;
+}) {
   const Θ = (2 * Math.PI) / divisions;
   return (
     <Svg pageRect={new DOMRect(0, 0, 3 * L, 3 * L)} noPointerEvents>
@@ -43,6 +40,4 @@ const Divider: FC<Props> = ({ L, divisions }) => {
       />
     </Svg>
   );
-};
-
-export default Divider;
+}

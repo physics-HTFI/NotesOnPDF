@@ -1,4 +1,3 @@
-import { FC } from "react";
 import {
   Box,
   ToggleButton,
@@ -6,27 +5,23 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Page, Separator } from "../Toc";
-
-/**
- * `SctionBreak`の引数
- */
-interface Props {
-  tooltip?: string;
-  breakBefore?: boolean;
-  breakMiddle?: boolean;
-  onChange: (breakBefore: boolean, breakMiddle: boolean) => void;
-}
+import Separator from "../Toc/Separator";
+import Page from "../Toc/Page";
 
 /**
  * 節区切りを設定するコンポーネント
  */
-const SectionBreak: FC<Props> = ({
+export default function SectionBreak({
   tooltip,
   breakBefore,
   breakMiddle,
   onChange,
-}) => {
+}: {
+  tooltip?: string;
+  breakBefore?: boolean;
+  breakMiddle?: boolean;
+  onChange: (breakBefore: boolean, breakMiddle: boolean) => void;
+}) {
   const value = breakBefore
     ? breakMiddle
       ? "before-middle"
@@ -96,6 +91,4 @@ const SectionBreak: FC<Props> = ({
       </ToggleButtonGroup>
     </Box>
   );
-};
-
-export default SectionBreak;
+}

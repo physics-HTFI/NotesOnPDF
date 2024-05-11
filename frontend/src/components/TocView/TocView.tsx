@@ -1,14 +1,14 @@
-import { FC, useMemo } from "react";
+import { useMemo } from "react";
 import { Box } from "@mui/material";
 import SettingsDrawer from "./SettingsDrawer/SettingsDrawer";
 import { grey } from "@mui/material/colors";
 import { MathJax } from "better-react-mathjax";
-import ToC from "./Toc";
+import ToC from "./Toc/Toc";
 
 /**
  * 目次を表示するコンポーネント
  */
-const TocView: FC = () => {
+export default function TocView() {
   return (
     <Box
       sx={{
@@ -43,6 +43,4 @@ const TocView: FC = () => {
       <SettingsDrawer />
     </Box>
   );
-};
-
-export default TocView;
+}

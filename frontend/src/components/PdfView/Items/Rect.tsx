@@ -1,30 +1,25 @@
-import { FC, MouseEvent, useState } from "react";
+import { MouseEvent, useState } from "react";
 import { Mode } from "../SpeedDial";
 import { Rect as RectType, Node as NodeType, NoteType } from "@/types/PdfNotes";
 import Node from "./Node";
-import { useCursor } from "./useCursor";
-
-/**
- * `Rect`の引数
- */
-interface Props {
-  params: RectType;
-  mode?: Mode;
-  pageRect: DOMRect;
-  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-  disableNodes?: boolean;
-}
+import useCursor from "./useCursor";
 
 /**
  * 長方形
  */
-const Rect: FC<Props> = ({
+export default function Rect({
   params,
   mode,
   pageRect,
   onMouseDown,
   disableNodes,
-}) => {
+}: {
+  params: RectType;
+  mode?: Mode;
+  pageRect: DOMRect;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+  disableNodes?: boolean;
+}) {
   const [hover, setHover] = useState(false);
   const { getCursor, isMove } = useCursor(mode);
   const cursor = disableNodes ? undefined : getCursor();
@@ -70,6 +65,4 @@ const Rect: FC<Props> = ({
       {node && <Node index={3} {...node} />}
     </>
   );
-};
-
-export default Rect;
+}

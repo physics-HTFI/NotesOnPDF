@@ -1,25 +1,23 @@
-import { FC, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { Box, Divider, IconButton, Tooltip } from "@mui/material";
 import { FolderOpen, Language, Restore } from "@mui/icons-material";
-import { InputStringDialog } from "./InputStringDialog";
-import { HistoryDialog } from "./HistoryDialog";
+import InputStringDialog from "./InputStringDialog";
+import HistoryDialog from "./HistoryDialog";
 import Waiting from "../../Fullscreen/Waiting";
-import { ModelContext } from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 
 /**
- * `Header`の引数
- */
-interface Props {
-  onSelectPdfById?: (id: string) => void;
-  onSelectPdfByFile?: (file: File) => void;
-}
-
-/**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
-export const Header: FC<Props> = ({ onSelectPdfById, onSelectPdfByFile }) => {
+export default function Header({
+  onSelectPdfById,
+  onSelectPdfByFile,
+}: {
+  onSelectPdfById?: (id: string) => void;
+  onSelectPdfByFile?: (file: File) => void;
+}) {
   const { model } = useContext(ModelContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
@@ -156,4 +154,4 @@ export const Header: FC<Props> = ({ onSelectPdfById, onSelectPdfByFile }) => {
       <Waiting isWaiting={downloading} />
     </Box>
   );
-};
+}

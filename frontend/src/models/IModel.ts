@@ -1,8 +1,8 @@
-import { FileTree } from "@/types/FileTree";
-import { Coverages } from "@/types/Coverages";
-import { PdfNotes } from "@/types/PdfNotes";
-import { AppSettings } from "@/types/AppSettings";
-import { History } from "@/types/History";
+import FileTree from "@/types/FileTree";
+import Coverages from "@/types/Coverages";
+import PdfNotes from "@/types/PdfNotes";
+import AppSettings from "@/types/AppSettings";
+import History from "@/types/History";
 
 export default interface IModel {
   getFileTree(): Promise<FileTree>;

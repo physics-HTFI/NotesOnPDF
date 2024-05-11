@@ -1,5 +1,3 @@
-export type FileTree = Entry[];
-
 /**
  * ルートフォルダの`id`は`root`。
  * フォルダの`children`は、フォルダ内の要素の`id`。
@@ -21,8 +19,10 @@ export type FileTree = Entry[];
  *     { path: "文書1.pdf", id: "12", children: null },
  *   ]
  */
-interface Entry {
+type FileTree = {
   path: string;
   id: string;
   children: string[] | null;
-}
+}[];
+
+export default FileTree;

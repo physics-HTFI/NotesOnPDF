@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useContext, useState } from "react";
+import { MouseEvent, useContext, useState } from "react";
 import { Mode } from "../SpeedDial";
 import {
   Marker as MarkerType,
@@ -6,30 +6,25 @@ import {
   NoteType,
 } from "@/types/PdfNotes";
 import Node from "./Node";
-import { AppSettingsContext } from "@/contexts/AppSettingsContext";
-import { useCursor } from "./useCursor";
-
-/**
- * `Marker`の引数
- */
-interface Props {
-  params: MarkerType;
-  mode?: Mode;
-  pageRect: DOMRect;
-  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-  disableNodes?: boolean;
-}
+import AppSettingsContext from "@/contexts/AppSettingsContext";
+import useCursor from "./useCursor";
 
 /**
  * 黄色いマーカー
  */
-const Marker: FC<Props> = ({
+export default function Marker({
   params,
   mode,
   pageRect,
   onMouseDown,
   disableNodes,
-}) => {
+}: {
+  params: MarkerType;
+  mode?: Mode;
+  pageRect: DOMRect;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+  disableNodes?: boolean;
+}) {
   const [hover, setHover] = useState(false);
   const { isMove } = useCursor(mode);
   const { appSettings } = useContext(AppSettingsContext);
@@ -103,6 +98,4 @@ const Marker: FC<Props> = ({
       {node && <Node index={1} {...node} />}
     </>
   );
-};
-
-export default Marker;
+}

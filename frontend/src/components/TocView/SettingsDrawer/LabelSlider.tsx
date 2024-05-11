@@ -1,23 +1,9 @@
-import { FC } from "react";
 import { Box, Slider, Tooltip, Typography } from "@mui/material";
-
-/**
- * `LabelSlider`の`Props`
- */
-interface Props {
-  label: string;
-  value: number;
-  minValue: number;
-  maxValue: number;
-  step: number;
-  tooltipTitle: string;
-  onChange: (value: number) => void;
-}
 
 /**
  * ラベル付きスライダーのコンポーネント
  */
-const LabelSlider: FC<Props> = ({
+export default function LabelSlider({
   label,
   value,
   minValue,
@@ -25,7 +11,15 @@ const LabelSlider: FC<Props> = ({
   step,
   tooltipTitle,
   onChange,
-}) => {
+}: {
+  label: string;
+  value: number;
+  minValue: number;
+  maxValue: number;
+  step: number;
+  tooltipTitle: string;
+  onChange: (value: number) => void;
+}) {
   return (
     <Tooltip title={tooltipTitle} disableInteractive placement="right">
       <Box sx={{ display: "flex", pt: 1 }}>
@@ -52,6 +46,4 @@ const LabelSlider: FC<Props> = ({
       </Box>
     </Tooltip>
   );
-};
-
-export default LabelSlider;
+}

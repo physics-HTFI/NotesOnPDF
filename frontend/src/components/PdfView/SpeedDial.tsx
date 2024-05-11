@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import {
   Box,
   SpeedDial as MUISpeedDial,
@@ -38,18 +38,17 @@ const theme = createTheme({
 });
 
 /**
- * `SpeedDial`の引数
+ * 目次の右上に表示されるボタンコントロール
  */
-interface Props {
+export default function SpeedDial({
+  mode,
+  setMode,
+  hidden,
+}: {
   mode: Mode;
   setMode: (mode: Mode) => void;
   hidden: boolean;
-}
-
-/**
- * 目次の右上に表示されるボタンコントロール
- */
-const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
+}) {
   const { openSettingsDrawer, setOpenFileTreeDrawer, setOpenSettingsDrawer } =
     useContext(UiStateContext);
   const [open, setOpen] = useState(false);
@@ -182,6 +181,4 @@ const SpeedDial: FC<Props> = ({ mode, setMode, hidden }) => {
       </ThemeProvider>
     </Box>
   );
-};
-
-export default SpeedDial;
+}

@@ -1,35 +1,31 @@
-import { AppSettings } from "@/types/AppSettings";
+import AppSettings from "@/types/AppSettings";
 import {
-  FC,
   ReactNode,
   createContext,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { ModelContext } from "./ModelContext";
-
-interface AppSettingsContextType {
-  appSettings?: AppSettings;
-  setAppSettings?: (appSettings: AppSettings) => void;
-}
+import ModelContext from "./ModelContext";
 
 /**
  * アプリ設定のコンテクスト
  */
-export const AppSettingsContext = createContext<AppSettingsContextType>({});
+const AppSettingsContext = createContext<{
+  appSettings?: AppSettings;
+  setAppSettings?: (appSettings: AppSettings) => void;
+}>({});
 
-/**
- * `AppSettingsContextProvider`の引数
- */
-interface Props {
-  children: ReactNode;
-}
+export default AppSettingsContext;
 
 /**
  * `AppSettingsContext`のプロバイダー
  */
-export const AppSettingsContextProvider: FC<Props> = ({ children }) => {
+export function AppSettingsContextProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const { model } = useContext(ModelContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
 
@@ -52,4 +48,4 @@ export const AppSettingsContextProvider: FC<Props> = ({ children }) => {
       {children}
     </AppSettingsContext.Provider>
   );
-};
+}

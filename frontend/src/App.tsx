@@ -3,7 +3,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import SnackbarsMock from "@/components/Fullscreen/SnackbarMock";
-import { OpenFileDrawer } from "@/components/OpenFileDrawer/OpenFileDrawer";
+import OpenFileDrawer from "@/components/OpenFileDrawer/OpenFileDrawer";
 import PdfView from "@/components/PdfView/PdfView";
 import TocView from "@/components/TocView/TocView";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext";
@@ -56,7 +56,7 @@ const mathjaxConfig = {
   },
 };
 
-function App() {
+export default function App() {
   // ドラッグでの選択と右クリックメニューを無効にする
   useEffect(() => {
     document.onselectstart = () => false;
@@ -108,5 +108,3 @@ function App() {
     </AppSettingsContextProvider>
   );
 }
-
-export default App;
