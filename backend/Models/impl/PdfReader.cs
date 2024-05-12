@@ -1,7 +1,9 @@
 ﻿using backend.Models.impl;
-using CommunityToolkit.Mvvm.Messaging;
+using System.Collections;
+using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.IO;
-using System.Security.Policy;
+using System.Runtime.CompilerServices;
 using Windows.Data.Pdf;
 using Windows.Storage.Streams;
 
@@ -23,6 +25,8 @@ namespace backend
             pdfStream = File.OpenRead(localFilePath);
             randomAccessStream = pdfStream.AsRandomAccessStream();
             pdf = await PdfDocument.LoadFromStreamAsync(randomAccessStream);
+            pdfPigDocument = UglyToad.PdfPig.PdfDocument.Open(localFilePath);
+            isScanned = null;
             currentPath = path;
 
             // MD5と各ページのサイズを取得する
@@ -71,6 +75,35 @@ namespace backend
             if (width == 0 || System.Windows.SystemParameters.PrimaryScreenWidth < width) throw new Exception();
             if (pdf.PageCount <= pageNum) throw new Exception();
 
+            if (isScanned == true || isScanned is null)
+            {
+                // 画像を含む場合にWindows.Data.Pdfを使ってレンダリングするとボケるので、PDFから抜き出した画像をそのまま返す
+                // https://github.com/UglyToad/PdfPig/wiki/Images
+                var pdfPigPage = (pdfPigDocument?.GetPage((int)pageNum + 1)) ?? throw new Exception();
+                isScanned = pdfPigPage.Text.Length == 0 && pdfPigPage.NumberOfImages !=0;
+                if (isScanned == true)
+                {
+                    int r(double d) => (int)(Math.Round(d * width / pdfPigPage.Width));
+                    using var bitmap = new Bitmap((int)width, r(pdfPigPage.Height));
+                    using var g = Graphics.FromImage(bitmap);
+                    g.Clear(Color.White);
+
+                    var images = pdfPigPage.GetImages()
+                        .Select(img => (img, new Rectangle(r(img.Bounds.Left), r(pdfPigPage.Height - img.Bounds.Top), r(img.Bounds.Width), r(img.Bounds.Height))))
+                        .OrderBy(img => img.Item2.Y);
+                    int Y = 0;
+                    foreach(var (img, rect) in images)
+                    {
+                        rect.Offset(0, Y - rect.Y); // 隙間ができないように移動する
+                        Y = rect.Y + rect.Height;
+                        using Stream stream = new MemoryStream([.. img.RawBytes]);
+                        g.DrawImage(Image.FromStream(stream), rect);
+                    }
+                    using MemoryStream ms = new();
+                    bitmap.Save(ms, ImageFormat.Bmp);
+                    return ms.ToArray();
+                }
+            }
             var options = new PdfPageRenderOptions
             {
                 DestinationWidth = width,
@@ -98,6 +131,9 @@ namespace backend
         PdfDocument? pdf;
         FileStream? pdfStream;
         IRandomAccessStream? randomAccessStream;
+        UglyToad.PdfPig.PdfDocument? pdfPigDocument;
+        /// <summary> スキャン画像で作られたPDFかどうか </summary>
+        bool? isScanned;
 
 
         /// <summary>
@@ -111,6 +147,7 @@ namespace backend
             pdf = null;
             pdfStream?.Close();
             randomAccessStream?.Dispose();
+            pdfPigDocument?.Dispose();
         }
 
         ~PdfReader()

@@ -15,7 +15,6 @@ export default function IconTogglePosition({
   isBottom: boolean;
   onToggleSettingsPosition: () => void;
 }): JSX.Element {
-  console.log(111);
   return (
     <IconButton
       sx={{
