@@ -140,8 +140,8 @@ namespace backend
             {
                 byte[] png = await model.GetPagePng(
                     id: url.Split('/')[3],
-                    pageNum: uint.Parse(url.Split('/')[4]),
-                    width: uint.Parse(Regex.Match(uri.Query, @"width=([^&]+)").Groups[1].Value)
+                    pageNum: int.Parse(url.Split('/')[4]),
+                    width: int.Parse(Regex.Match(uri.Query, @"width=([^&]+)").Groups[1].Value)
                     );
                 return new(png, MimeType(".jpg"));
             }
