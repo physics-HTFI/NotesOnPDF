@@ -12,12 +12,11 @@ namespace backend
 {
     /// <summary>
     /// PDFから抽出した画像からページ画像を描画する。
+    /// 画像が回転している場合には上手く表示されないと思われる。
     /// テキストを持つPDFはレンダリングを行わない。
     /// </summary>
-    internal class ImageRenderer : IPdfRenderer
+    internal class ImageRenderer(IImageExtractor imgExtractor) : IPdfRenderer
     {
-        public ImageRenderer(IImageExtractor imgExtractor) { imageExtractor = imgExtractor; }
-
         public Task Open(string path)
         {
             imageExtractor.Open(path);
@@ -69,7 +68,7 @@ namespace backend
         }
 
         bool hasText = false;
-        readonly IImageExtractor imageExtractor;
+        readonly IImageExtractor imageExtractor = imgExtractor;
     }
 
 }

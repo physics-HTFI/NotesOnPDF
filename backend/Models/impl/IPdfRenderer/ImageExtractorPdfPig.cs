@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UglyToad.PdfPig;
-using Windows.Storage.Streams;
+﻿using UglyToad.PdfPig;
 
 namespace backend
 {
@@ -19,7 +11,6 @@ namespace backend
     {
         public Task Open(string path)
         {
-            pdf = null;
             pdf = PdfDocument.Open(path);
             return Task.CompletedTask;
         }
@@ -37,7 +28,7 @@ namespace backend
         public PdfReader.Size GetSize(int pageIndex)
         {
             if(pdf is null) return new PdfReader.Size(0, 0);
-            var page = pdf.GetPage(pageIndex);
+            var page = pdf.GetPage(pageIndex + 1);
             return new PdfReader.Size(page.Width, page.Height);
         }
 

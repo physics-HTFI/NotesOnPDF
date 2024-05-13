@@ -85,7 +85,7 @@ namespace backend
         /// <c>pdfRenderer</c>によるレンダリングはスキャン画像のPDFの場合にぼやける。
         /// そのため、画像だけからなるPDFの場合はこれを使う
         /// </summary>
-        readonly ImageRenderer pdfRendererSub = new (new ImageExtractorPdfPig());
+        readonly ImageRenderer pdfRendererSub = new (new ImageExtractorITextSharp());
 
 
         /// <summary>
