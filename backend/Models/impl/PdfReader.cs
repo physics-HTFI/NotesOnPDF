@@ -23,9 +23,7 @@ namespace backend
 
             // PDFを開く
             await pdfRenderer.Open(localFilePath);
-            await pdfRendererSub.Open(localFilePath);
             if (!pdfRenderer.IsOpened) throw new Exception();
-            if (!pdfRendererSub.IsOpened) throw new Exception();
             currentPath = path;
 
             // MD5と各ページのサイズを取得する
@@ -82,13 +80,6 @@ namespace backend
         readonly IPdfRenderer pdfRenderer = new PdfRendererCubePdfium();
 
         /// <summary>
-        /// <c>pdfRenderer</c>によるレンダリングはスキャン画像のPDFの場合にぼやける。
-        /// そのため、画像だけからなるPDFの場合はこれを使う
-        /// </summary>
-        readonly ImageRenderer pdfRendererSub = new (new ImageExtractorITextSharp());
-
-
-        /// <summary>
         /// 開いたことのあるPDFファイル
         /// </summary>
         readonly List<Item> items = [];
@@ -97,7 +88,6 @@ namespace backend
         {
             currentPath = null;
             pdfRenderer.Close();
-            pdfRendererSub.Close();
         }
 
         ~PdfReader()
