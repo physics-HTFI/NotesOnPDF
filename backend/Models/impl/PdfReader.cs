@@ -79,12 +79,13 @@ namespace backend
         //|
 
         string? currentPath;
-        IPdfRenderer pdfRenderer = new PdfRendererWin();
+        readonly IPdfRenderer pdfRenderer = new PdfRendererWin();
 
         /// <summary>
-        /// <c>pdfRenderer</c>によるレンダリングはスキャン画像のPDFの場合にぼやけるので、これを使う
+        /// <c>pdfRenderer</c>によるレンダリングはスキャン画像のPDFの場合にぼやける。
+        /// そのため、画像だけからなるPDFの場合はこれを使う
         /// </summary>
-        IPdfRenderer pdfRendererSub = new PdfRendererPdfPig();
+        readonly ImageRenderer pdfRendererSub = new (new ImageExtractorPdfPig());
 
 
         /// <summary>
