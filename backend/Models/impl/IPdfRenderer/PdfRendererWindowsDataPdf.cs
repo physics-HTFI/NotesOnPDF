@@ -9,7 +9,11 @@ using Windows.Storage.Streams;
 
 namespace backend
 {
-    internal class PdfRendererWin : IPdfRenderer
+    /// <summary>
+    /// 追加のインストールが不要で使用できるし、十分速い。
+    /// しかし、スキャン画像のレンダリングがピンボケになるので使えない。
+    /// </summary>
+    internal class PdfRendererWindowsDataPdf : IPdfRenderer
     {
         public async Task Open(string path)
         {

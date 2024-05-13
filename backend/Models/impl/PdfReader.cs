@@ -70,7 +70,7 @@ namespace backend
             if (pdfRenderer.PageCount <= pageNum) throw new Exception();
             if (width == 0 || System.Windows.SystemParameters.PrimaryScreenWidth < width) throw new Exception();
 
-            return await pdfRendererSub.Render(pageNum, width) ?? await pdfRenderer.Render(pageNum, width) ?? throw new Exception();
+            return await pdfRenderer.Render(pageNum, width) ?? throw new Exception();
         }
 
 
@@ -79,7 +79,7 @@ namespace backend
         //|
 
         string? currentPath;
-        readonly IPdfRenderer pdfRenderer = new PdfRendererWin();
+        readonly IPdfRenderer pdfRenderer = new PdfRendererCubePdfium();
 
         /// <summary>
         /// <c>pdfRenderer</c>によるレンダリングはスキャン画像のPDFの場合にぼやける。

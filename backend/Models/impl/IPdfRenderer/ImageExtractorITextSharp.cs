@@ -12,37 +12,37 @@ namespace backend
     {
         public Task Open(string path)
         {
-            reader = new(path);
+            pdf = new(path);
             return Task.CompletedTask;
         }
 
         public void Close()
         {
-            reader?.Dispose();
-            reader = null;
+            pdf?.Dispose();
+            pdf = null;
         }
 
-        public bool IsOpened  => reader is not null; 
+        public bool IsOpened  => pdf is not null; 
 
-        public int PageCount => reader?.NumberOfPages ?? 0;
+        public int PageCount => pdf?.NumberOfPages ?? 0;
 
         public PdfReader.Size GetSize(int pageIndex)
         {
-            if(reader is null) return new PdfReader.Size(0, 0);
-            var page = reader.GetPageSize(pageIndex + 1);
+            if(pdf is null) return new PdfReader.Size(0, 0);
+            var page = pdf.GetPageSize(pageIndex + 1);
             return new PdfReader.Size(page.Width, page.Height);
         }
 
         public bool HasText(int pageIndex)
         {
-            string text = PdfTextExtractor.GetTextFromPage(reader, pageIndex + 1, new SimpleTextExtractionStrategy());
+            string text = PdfTextExtractor.GetTextFromPage(pdf, pageIndex + 1, new SimpleTextExtractionStrategy());
             return text.Length != 0;
         }
 
         public IEnumerable<(byte[], RectangleF)> ExtractImages(int pageIndex)
         {
-            if (reader is null) return [];
-            var parser = new PdfReaderContentParser(reader);
+            if (pdf is null) return [];
+            var parser = new PdfReaderContentParser(pdf);
             List<(byte[], RectangleF)> images = [];
             parser.ProcessContent(pageIndex + 1, new ImageRenderListener(images));
             return images;
@@ -52,7 +52,7 @@ namespace backend
         //| private
         //|
 
-        iTextSharp.text.pdf.PdfReader? reader;
+        iTextSharp.text.pdf.PdfReader? pdf;
     }
 
     internal class ImageRenderListener : IRenderListener

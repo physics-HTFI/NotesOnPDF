@@ -32,7 +32,7 @@ namespace backend
             return new PdfReader.Size(page.Width, page.Height);
         }
 
-        public bool HasText(int pageIndex) => pdf?.GetPage(pageIndex + 1)?.Text?.Length != 0;
+        public bool HasText(int pageIndex) => pdf?.GetPage(pageIndex + 1).Text.Length != 0;
 
         public IEnumerable<(byte[], RectangleF)> ExtractImages(int pageIndex)
         {

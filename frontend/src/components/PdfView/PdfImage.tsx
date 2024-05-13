@@ -19,6 +19,7 @@ export default function PdfImage({ onEndRead }: { onEndRead: () => void }) {
     <img
       src={model.getPageImageUrl(id, pdfNotes.currentPage, pageRect.width)}
       style={{
+        objectFit: "none",
         width: Math.floor(pageRect.width),
         height: Math.floor(pageRect.height),
       }}

@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Cube.Native.Pdfium.Lite" Version="124.0.6367" />
+    <PackageReference Include="Cube.Pdf.Pdfium" Version="8.7.0" />
     <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2420.47" />
