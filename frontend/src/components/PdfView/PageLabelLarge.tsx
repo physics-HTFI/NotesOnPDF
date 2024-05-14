@@ -29,7 +29,7 @@ export default function PageLabelLarge({
           justifyContent: "center",
           alignItems: "center",
           fontSize: "2em",
-          animation: "fadeIn 0.1s ease 0s 1",
+          animation: "fadeIn 0.2s ease 0s 1",
           "@keyframes fadeIn": {
             "0%": {
               opacity: 0,

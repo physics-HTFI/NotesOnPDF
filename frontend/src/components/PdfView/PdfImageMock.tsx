@@ -1,10 +1,11 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { pdfjs, Document, Page as PdfPage } from "react-pdf";
 import { sampleId2Path } from "@/models/Model.Mock";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import UiStateContext from "@/contexts/UiStateContext";
 import { createPdfNotesMock } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
+import PageLabelLarge from "./PageLabelLarge";
 
 if (import.meta.env.VITE_IS_MOCK === "true") {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -17,11 +18,16 @@ const options = {
 /**
  * PDF画像を表示するコンポーネント
  */
-export default function PdfImageMock({ onEndRead }: { onEndRead: () => void }) {
+export default function PdfImageMock({ pageLabel }: { pageLabel?: string }) {
   const { id, file, setIdOrFile, setPdfNotes, pdfNotes } =
     useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
   const { setWaiting, setOpenFileTreeDrawer } = useContext(UiStateContext);
+  const [reading, setReading] = useState(false);
+  const { isReading } = useReading();
+  if (isReading()) {
+    setReading(true);
+  }
 
   return (
     <Document
@@ -63,9 +69,35 @@ export default function PdfImageMock({ onEndRead }: { onEndRead: () => void }) {
         renderAnnotationLayer={false}
         renderTextLayer={false}
         onRenderSuccess={() => {
-          onEndRead();
+          setReading(false);
         }}
       />
+      <PageLabelLarge label={pageLabel} shown={reading} />
     </Document>
   );
+}
+
+/**
+ * 読み込み中かどうかを返すカスタムフック
+ */
+function useReading() {
+  const [prev, setPrev] = useState<{
+    idOrFile: string | File;
+    page: number;
+  }>();
+  const { id, file, pdfNotes } = useContext(PdfNotesContext);
+
+  const isReading = () => {
+    const idOrFile = id ?? file;
+    if (pdfNotes && idOrFile) {
+      if (prev?.idOrFile !== idOrFile || prev.page !== pdfNotes.currentPage) {
+        setPrev({
+          idOrFile: idOrFile,
+          page: pdfNotes.currentPage,
+        });
+        return true;
+      }
+    }
+  };
+  return { isReading };
 }

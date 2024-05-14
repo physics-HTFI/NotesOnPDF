@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
-import PageLabelLarge from "./PageLabelLarge";
 import SpeedDial, { Mode } from "./SpeedDial";
 import { Node, NoteType } from "@/types/PdfNotes";
 import Palette from "./Palette/Palette";
@@ -15,7 +14,6 @@ import usePdfNotes from "@/hooks/usePdfNotes";
 import AppSettingsContext from "@/contexts/AppSettingsContext";
 import PdfImage from "./PdfImage";
 import PdfImageMock from "./PdfImageMock";
-import PdfNotesContext from "@/contexts/PdfNotesContext";
 
 /**
  * Pdfを表示するコンポーネント
@@ -32,13 +30,6 @@ export default function PdfView() {
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
 
   const pageLabel = `p. ${pdfNotes?.pages[pdfNotes.currentPage]?.num ?? "???"}`;
-
-  // ページ読み込み時にページ番号を出す
-  const [reading, setReading] = useState(false);
-  const { isReading } = useReading();
-  if (isReading()) {
-    setReading(true);
-  }
 
   // ショートカットキーに対応する
   useEffect(() => {
@@ -122,17 +113,9 @@ export default function PdfView() {
         disableGutters
       >
         {import.meta.env.VITE_IS_MOCK === "true" ? (
-          <PdfImageMock
-            onEndRead={() => {
-              setReading(false);
-            }}
-          />
+          <PdfImageMock pageLabel={pageLabel} />
         ) : (
-          <PdfImage
-            onEndRead={() => {
-              setReading(false);
-            }}
-          />
+          <PdfImage pageLabel={pageLabel} />
         )}
         <Items
           mode={mode}
@@ -170,7 +153,6 @@ export default function PdfView() {
           (!mode && !moveNote && page?.style?.includes("excluded")) ?? false
         }
       />
-      <PageLabelLarge label={pageLabel} shown={reading} />
       <PageLabelSmall label={pageLabel} hidden={Boolean(moveNote)} />
       <SpeedDial mode={mode} setMode={setMode} hidden={Boolean(moveNote)} />
       <Palette
@@ -206,29 +188,4 @@ function getBackground(mode: Mode): string {
       ? "#eae0e0"
       : base;
   return `repeating-linear-gradient(-60deg, ${stripe}, ${stripe} 5px, ${base} 5px, ${base} 10px)`;
-}
-
-/**
- * 読み込み中かどうかを返すカスタムフック
- */
-function useReading() {
-  const [prev, setPrev] = useState<{
-    idOrFile: string | File;
-    page: number;
-  }>();
-  const { id, file, pdfNotes } = useContext(PdfNotesContext);
-
-  const isReading = () => {
-    const idOrFile = id ?? file;
-    if (pdfNotes && idOrFile) {
-      if (prev?.idOrFile !== idOrFile || prev.page !== pdfNotes.currentPage) {
-        setPrev({
-          idOrFile: idOrFile,
-          page: pdfNotes.currentPage,
-        });
-        return true;
-      }
-    }
-  };
-  return { isReading };
 }
