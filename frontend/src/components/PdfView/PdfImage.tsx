@@ -26,8 +26,10 @@ export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
   );
   // 現在の読み込みが終了してから次の読み込みを行う
   if (!reading && nextSrc.current !== src) {
-    setReading(true);
     setSrc(nextSrc.current);
+    if (nextSrc.current.split("?")[0] != src.split("?")[0]) {
+      setReading(true);
+    }
   }
 
   const handleEndRead = () => {
