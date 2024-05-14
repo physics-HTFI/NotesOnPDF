@@ -19,10 +19,13 @@ export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
     return <></>;
   }
 
+  const width = Math.round(pageRect.width);
+  const height = Math.round(pageRect.height);
   nextSrc.current = model.getPageImageUrl(
     id,
     pdfNotes.currentPage,
-    pageRect.width
+    width,
+    height
   );
   // 現在の読み込みが終了してから次の読み込みを行う
   if (!reading && nextSrc.current !== src) {
@@ -40,11 +43,7 @@ export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
     <>
       <img
         src={src}
-        style={{
-          objectFit: "none",
-          width: Math.floor(pageRect.width),
-          height: Math.floor(pageRect.height),
-        }}
+        style={{ width, height }}
         onLoad={handleEndRead}
         onError={handleEndRead}
       />

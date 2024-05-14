@@ -36,11 +36,11 @@ namespace backend
             return new PdfReader.Size(page.Size.Width, page.Size.Height);
         }
 
-        public Task<byte[]?> Render(int pageIndex, int width)
+        public Task<byte[]?> Render(int pageIndex, int width, int height)
         {
             if (pdf is null) return Task.FromResult<byte[]?>(null);
             var page = pdf.GetPage(pageIndex + 1);
-            using var bmp = pdf.Render(page, new SizeF(width, (float)Math.Floor(width * page.Size.Height / page.Size.Width)));
+            using var bmp = pdf.Render(page, new Size(width, height));
             using var stream = new MemoryStream();
             bmp.Save(stream, ImageFormat.Bmp);
             return Task.FromResult<byte[]?>(stream.ToArray());

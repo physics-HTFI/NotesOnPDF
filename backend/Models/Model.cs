@@ -60,10 +60,10 @@ namespace backend
         /// ページのPNGデータを取得する。
         /// 失敗したら<c>throw</c>する。
         /// </summary>
-        public async Task<byte[]> GetPagePng(string id, int pageNum, int width)
+        public async Task<byte[]> GetPagePng(string id, int pageNum, int width, int height)
         {
             (var path, var origin) = GetPath(id);
-            return await pdfReader.GetPagePng(path, origin, pageNum, width);
+            return await pdfReader.GetPagePng(path, origin, pageNum, width, height);
         }
 
 

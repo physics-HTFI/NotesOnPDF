@@ -58,7 +58,7 @@ namespace backend
         /// <summary>
         /// 画像ファイルを返す。失敗したら<c>throw</c>。
         /// </summary>
-        public async Task<byte[]> GetPagePng(string path, NotesPaths.PdfOrigin origin, int pageNum, int width)
+        public async Task<byte[]> GetPagePng(string path, NotesPaths.PdfOrigin origin, int pageNum, int width, int height)
         {
             if (path != currentPath)
             {
@@ -68,7 +68,7 @@ namespace backend
             if (pdfRenderer.PageCount <= pageNum) throw new Exception();
             if (width == 0 || System.Windows.SystemParameters.PrimaryScreenWidth < width) throw new Exception();
 
-            return await pdfRenderer.Render(pageNum, width) ?? throw new Exception();
+            return await pdfRenderer.Render(pageNum, width, height) ?? throw new Exception();
         }
 
 

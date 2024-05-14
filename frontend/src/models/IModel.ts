@@ -16,7 +16,12 @@ export default interface IModel {
   getPdfNotes(id: string): Promise<ResultGetPdfNotes>;
   putPdfNotes(id: string, pdfNotes: PdfNotes): Promise<void>;
 
-  getPageImageUrl(id: string, page: number, width: number): string;
+  getPageImageUrl(
+    id: string,
+    page: number,
+    width: number,
+    height: number
+  ): string;
 
   getAppSettings(): Promise<AppSettings>;
   putAppSettings(appSettings: AppSettings): Promise<void>;

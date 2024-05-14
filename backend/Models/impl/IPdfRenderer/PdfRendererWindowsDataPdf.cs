@@ -40,12 +40,13 @@ namespace backend
             return new PdfReader.Size(page.Size.Width, page.Size.Height);
         }
 
-        public async Task<byte[]?> Render(int pageIndex, int width)
+        public async Task<byte[]?> Render(int pageIndex, int width, int height)
         {
             if (pdf is null) return null;
             var options = new PdfPageRenderOptions
             {
                 DestinationWidth = (uint)width,
+                DestinationHeight = (uint)height,
                 // https://learn.microsoft.com/ja-jp/windows/win32/wic/-wic-guids-clsids
                 // JPEG: 0x1a34f5c1, 0x4a5a, 0x46dc, 0xb6, 0x44, 0x1f, 0x45, 0x67, 0xe7, 0xa6, 0x76
                 // PNG: 0x27949969, 0x876a, 0x41d7, 0x94, 0x47, 0x56, 0x8f, 0x6a, 0x35, 0xa4, 0xdc

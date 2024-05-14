@@ -78,8 +78,8 @@ export default class Model implements IModel {
     });
   };
 
-  getPageImageUrl = (id: string, page: number, width: number) =>
-    ORIGIN + `/api/images/${id}/${page}?width=${Math.floor(width)}`;
+  getPageImageUrl = (id: string, page: number, width: number, height: number) =>
+    ORIGIN + `/api/images/${id}/${page}?width=${width}&height=${height}`;
 
   getAppSettings = async (): Promise<AppSettings> => {
     const res = await fetch(ORIGIN + "/api/settings");
