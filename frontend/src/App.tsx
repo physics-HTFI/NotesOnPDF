@@ -57,12 +57,10 @@ const mathjaxConfig = {
 };
 
 export default function App() {
-  // ドラッグでの選択と右クリックメニューを無効にする
+  // 右クリックメニューを無効にする
   useEffect(() => {
-    document.onselectstart = () => false;
     document.oncontextmenu = () => false;
     return () => {
-      document.onselectstart = null;
       document.oncontextmenu = null;
     };
   }, []);
@@ -72,7 +70,7 @@ export default function App() {
       <UiStateContextProvider>
         <MathJaxContext version={3} config={mathjaxConfig}>
           <PdfNotesContextProvider>
-            <Box>
+            <Box sx={{ userSelect: "none" }}>
               {/* ファイルツリー */}
               <FileTreeContextProvider>
                 <OpenFileDrawer />
