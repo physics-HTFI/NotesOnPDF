@@ -8,9 +8,6 @@
     <Setting Name="RootDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">./pdfs</Value>
     </Setting>
-    <Setting Name="OutputDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">./output</Value>
-    </Setting>
     <Setting Name="DownloadDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">./download</Value>
     </Setting>

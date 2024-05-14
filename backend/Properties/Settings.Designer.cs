@@ -49,18 +49,6 @@ namespace backend.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("./output")]
-        public string OutputDirectory {
-            get {
-                return ((string)(this["OutputDirectory"]));
-            }
-            set {
-                this["OutputDirectory"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("./download")]
         public string DownloadDirectory {
             get {

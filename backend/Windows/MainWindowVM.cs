@@ -35,12 +35,6 @@ namespace backend
         [NotifyDataErrorInfo]
         [DirectoryExists]
         [NotifyCanExecuteChangedFor(nameof(UpdateSettingsCommand))]
-        private string _OutputDirectory = "";
-
-        [ObservableProperty]
-        [NotifyDataErrorInfo]
-        [DirectoryExists]
-        [NotifyCanExecuteChangedFor(nameof(UpdateSettingsCommand))]
         private string _DownloadDirectory = "";
 
         [ObservableProperty]
@@ -115,7 +109,6 @@ namespace backend
         {
             IsSettingsOpen = false;
             Properties.Settings.Default.RootDirectory = RootDirectory;
-            Properties.Settings.Default.OutputDirectory = OutputDirectory;
             Properties.Settings.Default.DownloadDirectory = DownloadDirectory;
             Properties.Settings.Default.Port = Ports[(int)PortIndex];
             Properties.Settings.Default.Save();
@@ -133,7 +126,6 @@ namespace backend
         {
             IsSettingsOpen = false;
             RootDirectory = Properties.Settings.Default.RootDirectory;
-            OutputDirectory = Properties.Settings.Default.OutputDirectory;
             DownloadDirectory = Properties.Settings.Default.DownloadDirectory;
             PortIndex = Ports.IndexOf(Properties.Settings.Default.Port);
             if (PortIndex == -1)
@@ -149,15 +141,6 @@ namespace backend
         void SelectRootDirectory()
         {
             RootDirectory = PathUtils.SelectDirectory(RootDirectory, Properties.Settings.Default.RootDirectory);
-        }
-
-        /// <summary>
-        /// 保存ディレクトリ選択コマンド
-        /// </summary>
-        [RelayCommand]
-        void SelectOutputDirectory()
-        {
-            OutputDirectory = PathUtils.SelectDirectory(OutputDirectory, Properties.Settings.Default.OutputDirectory);
         }
 
         /// <summary>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Windows.Data.Pdf;
 using Windows.Storage.Streams;
 
@@ -33,11 +28,11 @@ namespace backend
 
         public int PageCount => (int)(pdf?.PageCount ?? 0);
 
-        public PdfReader.Size GetSize(int index)
+        public Size GetSize(int index)
         {
-            if(pdf is null) return new PdfReader.Size(0, 0);
+            if(pdf is null) return new Size(0, 0);
             using var page = pdf.GetPage((uint)index);
-            return new PdfReader.Size(page.Size.Width, page.Size.Height);
+            return new Size(page.Size.Width, page.Size.Height);
         }
 
         public async Task<byte[]?> Render(int pageIndex, int width, int height)

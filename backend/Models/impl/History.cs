@@ -7,7 +7,6 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using System.Threading.Tasks;
-using static backend.NotesPaths;
 
 namespace backend
 {
@@ -38,12 +37,12 @@ namespace backend
         /// <summary>
         /// <c>throw</c>しない
         /// </summary>
-        public HttpServer.PdfItem[] GetHistory()
+        public PdfItem[] GetHistory()
         {
             try
             {
                 return Items.Select(i => 
-                    new HttpServer.PdfItem(i.Id, toName(i), pagesToString(i.Pages), prefix(i.Origin), i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
+                    new PdfItem(i.Id, toName(i), pagesToString(i.Pages), prefix(i.Origin), i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
                 ).ToArray();
             }
             catch

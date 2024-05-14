@@ -18,8 +18,7 @@ namespace backend.Models.impl
         /// </summary>
         public static async Task<string> FromUrl(string url)
         {
-            var uri = new Uri(url);
-            string name = Path.GetFileName(uri.LocalPath);
+            string name = UrlToName(url);
             string path = Path.Combine(SettingsUtils.DownloadDirectory, name);
             if (!name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)) throw new Exception();
 
@@ -32,6 +31,23 @@ namespace backend.Models.impl
             }
             return path;
         }
+
+        /// <summary>
+        /// URLをダウンロード時のファイル名に変換する。
+        /// 失敗したら<c>throw</c>。
+        /// </summary>
+        public static string UrlToName(string url)
+        {
+            var match = Regex.Match(url, @"^(.+)(\.[^.]*)$");
+            var name = match.Groups[1].Value;
+            var ext = match.Groups[2].Value;
+            static bool invalid(char c) => c == '.' || Path.GetInvalidFileNameChars().Contains(c);
+            return new string([.. name.Select(c => invalid(c) ? '_' : c)]) + ext;
+        }
+
+        //|
+        //| private
+        //|
 
         /// <summary>
         /// <c>HttpClient</c>は生成したものを使いまわす。

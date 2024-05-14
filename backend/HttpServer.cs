@@ -16,18 +16,6 @@ namespace backend
 {
     class HttpServer
     {
-        /// <summary>
-        /// PDFを開いたときにフロントエンドに渡す情報
-        /// </summary>
-        public record OpenPdfResult(string name, PdfReader.Size[] sizes, string? notes);
-
-        /// <summary>
-        /// フロントエンドに渡す1ファイル分の情報。
-        /// <c>origin</c>は0:ツリー内のファイル、1:ツリー外のファイル、2:ウェブから取得したファイル
-        /// </summary>
-        public record PdfItem(string id, string name, string pages, string origin, string accessDate);
-
-
         HttpListener? listener;
         readonly Model model = new();
 
@@ -70,7 +58,7 @@ namespace backend
                             // POST
                             if (request.HttpMethod == "POST")
                             {
-                                await ProcessPost(request);
+                                ProcessPost(request);
                             }
                         }
                         catch
@@ -157,7 +145,7 @@ namespace backend
             return new(File.ReadAllBytes(file), MimeType(file));
         }
 
-        async Task ProcessPost(HttpListenerRequest request)
+        void ProcessPost(HttpListenerRequest request)
         {
             using var stream = new StreamReader(request.InputStream, request.ContentEncoding);
             var body = stream.ReadToEnd();
@@ -171,7 +159,7 @@ namespace backend
                     model.SaveCoverage(body);
                     return;
                 case string s when Regex.IsMatch(s, @"/api/notes/[^/]+"):
-                    await model.SaveNotes(id: s.Split('/')[^1], body);
+                    model.SaveNotes(id: s.Split('/')[^1], body);
                     return;
                 default:
                     throw new Exception();
