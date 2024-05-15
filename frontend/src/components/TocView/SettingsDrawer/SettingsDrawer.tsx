@@ -192,8 +192,8 @@ export default function SettingsDrawer() {
             <LabelSlider
               label="文字サイズ"
               value={pdfNotes.settings.fontSize}
-              minValue={30}
-              maxValue={100}
+              minValue={50}
+              maxValue={150}
               step={0.5}
               tooltipTitle="注釈内で使用される文字のサイズを調節します"
               onChange={(fontSize) => {

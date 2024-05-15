@@ -67,3 +67,8 @@ button:hover {
     background-color: #f9f9f9;
   }
 }
+
+textarea {
+  /* 新しいスタイルなのでTypescript中で使うと型エラーになる。そのためここで設定する */
+  field-sizing: content;
+}

@@ -35,7 +35,7 @@ export function MouseContextProvider({ children }: { children: ReactNode }) {
   const scale =
     !pdfNotes || !pageRect
       ? 100
-      : (pdfNotes.settings.fontSize * pageRect.width) / 500;
+      : (pdfNotes.settings.fontSize * pageRect.width) / 600;
 
   return (
     <MouseContext.Provider

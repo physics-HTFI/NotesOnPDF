@@ -144,7 +144,7 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
     title: result.name,
     version: "1.0",
     currentPage: 0,
-    settings: { fontSize: 70, offsetTop: 0, offsetBottom: 0 },
+    settings: { fontSize: 100, offsetTop: 0, offsetBottom: 0 },
     pages: result.sizes.map<Page>((s, i) => ({
       num: i + 1,
       sizeRatio: s.width / s.height,

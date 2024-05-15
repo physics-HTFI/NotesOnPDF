@@ -131,7 +131,7 @@ export default function SpeedDial({
             tooltipTitle={
               <span>
                 注釈の移動・変形モード <br />
-                [Escape] 移動・変形モード解除
+                [Escape] 操作のキャンセル、モード解除
               </span>
             }
             disableInteractive
@@ -148,7 +148,7 @@ export default function SpeedDial({
             tooltipTitle={
               <span>
                 注釈の文字列・線種の変更モード <br />
-                [Escape] 変更モード解除
+                [Escape] 操作のキャンセル、モード解除
               </span>
             }
             disableInteractive

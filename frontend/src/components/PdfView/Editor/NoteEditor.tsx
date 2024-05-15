@@ -15,14 +15,14 @@ import { blue, grey } from "@mui/material/colors";
 // https://mui.com/base-ui/react-textarea-autosize/
 const Textarea = styled(TextareaAutosize)(
   () => `
-  width: 500px;
+  min-width: 100px;
+  max-width: 50vw;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.9rem;
   padding: 8px 12px;
   color: ${grey[900]};
   background: ${"#fff"};
   border: 1px solid ${grey[200]};
-  white-space: nowrap;
   &:hover {
     border-color: ${blue[400]};
   }
@@ -66,7 +66,6 @@ export default function NoteEditor({
   return (
     <EditorBase onClose={handleClose}>
       <Textarea
-        minRows={10}
         value={text}
         spellCheck={false}
         onChange={(e) => {
