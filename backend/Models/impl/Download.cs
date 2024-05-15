@@ -53,6 +53,14 @@ namespace backend.Models.impl
         /// <c>HttpClient</c>は生成したものを使いまわす。
         /// https://learn.microsoft.com/ja-jp/dotnet/fundamentals/runtime-libraries/system-net-http-httpclient
         /// </summary>
-        static readonly HttpClient Http = new();
+        static readonly HttpClient Http;
+
+        static Download()
+        {
+            Http = new();
+            // エージェントを偽装しないとダウンロードできない場合への対応。
+            // ex) https://opac.ll.chiba-u.jp/da/curator/900121233/qm_a.pdf
+            Http.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0");
+        }
     }
 }
