@@ -82,10 +82,10 @@ export const ArrowIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
         pageRect={svgRect}
         params={{
           type: "Arrow",
-          x1: 0.5,
-          y1: 0.25,
-          x2: 0.5,
-          y2: 0.75,
+          x1: 0.3,
+          y1: 0.3,
+          x2: 0.7,
+          y2: 0.7,
           heads: ["end"],
         }}
       />

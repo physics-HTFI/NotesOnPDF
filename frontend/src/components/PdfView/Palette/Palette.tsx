@@ -73,13 +73,13 @@ export default function Palette({
     >
       {/* 各アイコン */}
       <MarkerIcon sx={sx(0)} {...iconProps} />
-      <RectIcon sx={sx(1)} {...iconProps} />
-      <ArrowIcon sx={sx(2)} {...iconProps} />
-      <BracketIcon sx={sx(3)} {...iconProps} />
+      <ArrowIcon sx={sx(1)} {...iconProps} />
+      <BracketIcon sx={sx(2)} {...iconProps} />
+      <PolygonIcon sx={sx(3)} {...iconProps} />
       <ChipIcon sx={sx(4)} {...iconProps} />
       <PageLinkIcon sx={sx(5)} {...iconProps} />
       <NoteIcon sx={sx(6)} {...iconProps} />
-      <PolygonIcon sx={sx(7)} {...iconProps} />
+      <RectIcon sx={sx(7)} {...iconProps} />
 
       {/* 分割線 */}
       <Divider L={L} divisions={DIVISIONS} />

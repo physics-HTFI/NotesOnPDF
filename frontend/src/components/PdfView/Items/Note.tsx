@@ -25,6 +25,7 @@ export default function Note({
   const html = params.html
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
     .replace(/\n/g, "<br/>");
+  const filter = "drop-shadow(0px 0px 2px white)";
   return (
     <MathJax hideUntilTypeset={"first"}>
       <Box
@@ -40,6 +41,7 @@ export default function Note({
           whiteSpace: "nowrap", // 画面右端においたときに改行するのを防ぐ
           transformOrigin: "top left",
           transform: `scale(${scale}%)`,
+          filter: `${filter} ${filter} ${filter} ${filter} ${filter}`,
         }}
         dangerouslySetInnerHTML={{ __html: html }}
         onMouseDown={(e) => {
