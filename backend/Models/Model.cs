@@ -51,9 +51,9 @@ namespace backend
         /// </summary>
         public async Task<string> GetWebPdfId(string url)
         {
+            await Download.FromUrl(url);
             string id = PathUtils.Path2Id(url);
             history.Add(id, url, PdfOrigin.Web);
-            await Download.FromUrl(url);
             return id;
         }
 
