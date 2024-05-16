@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Box, Divider, IconButton, Tooltip } from "@mui/material";
 import { FolderOpen, Language, Restore } from "@mui/icons-material";
 import InputStringDialog from "./InputStringDialog";
 import HistoryDialog from "./HistoryDialog";
 import Waiting from "../../Fullscreen/Waiting";
-import ModelContext from "@/contexts/ModelContext";
+import useModel from "@/hooks/useModel";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 
@@ -18,7 +18,7 @@ export default function Header({
   onSelectPdfById?: (id: string) => void;
   onSelectPdfByFile?: (file: File) => void;
 }) {
-  const { model } = useContext(ModelContext);
+  const { model, setAccessFailedReason } = useModel();
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -49,7 +49,9 @@ export default function Header({
           .then((id) => {
             onSelectPdfById?.(id);
           })
-          .catch(() => undefined);
+          .catch(() => {
+            setAccessFailedReason("PDFファイルの取得");
+          });
       };
 
   const sxButton = { color: "slategray" };
@@ -128,7 +130,9 @@ export default function Header({
               .then((id) => {
                 onSelectPdfById?.(id);
               })
-              .catch(() => undefined)
+              .catch(() => {
+                setAccessFailedReason("PDFファイルのダウンロード");
+              })
               .finally(() => {
                 setDownloading(false);
               });

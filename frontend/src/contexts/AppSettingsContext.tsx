@@ -1,12 +1,6 @@
 import AppSettings from "@/types/AppSettings";
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import ModelContext from "./ModelContext";
+import { ReactNode, createContext, useEffect, useState } from "react";
+import useModel from "@/hooks/useModel";
 
 /**
  * アプリ設定のコンテクスト
@@ -26,7 +20,7 @@ export function AppSettingsContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const { model } = useContext(ModelContext);
+  const { model, setAccessFailedReason } = useModel();
   const [appSettings, setAppSettings] = useState<AppSettings>();
 
   useEffect(() => {
@@ -35,13 +29,17 @@ export function AppSettingsContextProvider({
       .then((settings) => {
         setAppSettings(settings);
       })
-      .catch(() => undefined);
-  }, [model]);
+      .catch(() => {
+        setAccessFailedReason("設定ファイルの取得");
+      });
+  }, [model, setAccessFailedReason]);
 
   useEffect(() => {
     if (!appSettings) return;
-    model.putAppSettings(appSettings).catch(() => undefined);
-  }, [appSettings, model]);
+    model.putAppSettings(appSettings).catch(() => {
+      setAccessFailedReason("設定ファイルの保存");
+    });
+  }, [appSettings, model, setAccessFailedReason]);
 
   return (
     <AppSettingsContext.Provider value={{ appSettings, setAppSettings }}>

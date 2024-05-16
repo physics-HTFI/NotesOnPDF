@@ -7,10 +7,10 @@ import {
 } from "react";
 import FileTree from "@/types/FileTree";
 import Coverages, { Coverage } from "@/types/Coverages";
-import ModelContext from "./ModelContext";
 import IModel from "@/models/IModel";
 import PdfNotesContext from "./PdfNotesContext";
 import PdfNotes from "@/types/PdfNotes";
+import useModel from "@/hooks/useModel";
 
 /**
  * ファイルツリーと履歴のコンテクスト
@@ -26,7 +26,7 @@ export default FileTreeContext;
  * `FileTreeContext`のプロバイダー
  */
 export function FileTreeContextProvider({ children }: { children: ReactNode }) {
-  const { model } = useContext(ModelContext);
+  const { model, setAccessFailedReason } = useModel();
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
@@ -38,15 +38,19 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
         setFileTree(fileTree);
         setCoverages(coverages);
       })
-      .catch(() => undefined);
-  }, [model]);
+      .catch(() => {
+        setAccessFailedReason("ファイルツリーの取得");
+      });
+  }, [model, setAccessFailedReason]);
 
   // `id`または`pdfNotes`が変更されたときに、必要であれば`Coverages`を更新する
   if (id && pdfNotes) {
     const newCoverages = getNewCoverages(coverages, id, pdfNotes, fileTree);
     if (newCoverages) {
       setCoverages(newCoverages);
-      model.putCoverages(newCoverages).catch(() => undefined);
+      model.putCoverages(newCoverages).catch(() => {
+        setAccessFailedReason("進捗率の保存");
+      });
     }
   }
 

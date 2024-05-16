@@ -1,5 +1,6 @@
 ﻿using backend.Models.impl;
 using System.IO;
+using System.Xml.Linq;
 
 namespace backend
 {
@@ -47,10 +48,11 @@ namespace backend
         /// URLからPDFファイルをダウンロードした後<c>id</c>を取得する。
         /// 失敗したら<c>throw</c>する。
         /// </summary>
-        public string GetWebPdfId(string url)
+        public async Task<string> GetWebPdfId(string url)
         {
             string id = PathUtils.Path2Id(url);
             history.Add(id, url, PdfOrigin.Web);
+            await Download.FromUrl(url);
             return id;
         }
 

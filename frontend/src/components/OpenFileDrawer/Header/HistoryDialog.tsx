@@ -11,8 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import History from "@/types/History";
-import ModelContext from "@/contexts/ModelContext";
 import UiStateContext from "@/contexts/UiStateContext";
+import useModel from "@/hooks/useModel";
 
 /**
  * PDFを開いた履歴
@@ -24,7 +24,7 @@ export default function HistoryDialog({
   open: boolean;
   onClose: (id?: string) => void;
 }) {
-  const { model } = useContext(ModelContext);
+  const { model, setAccessFailedReason } = useModel();
   const { setWaiting } = useContext(UiStateContext);
   const [history, setHistory] = useState<History>([]);
 
@@ -38,11 +38,12 @@ export default function HistoryDialog({
       })
       .catch(() => {
         setHistory([]);
+        setAccessFailedReason("履歴の取得");
       })
       .finally(() => {
         setWaiting(false);
       });
-  }, [open, model, setWaiting]);
+  }, [open, model, setWaiting, setAccessFailedReason]);
 
   return (
     <Backdrop

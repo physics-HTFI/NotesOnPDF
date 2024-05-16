@@ -1,15 +1,8 @@
 import PdfNotes from "@/types/PdfNotes";
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import ModelContext from "./ModelContext";
+import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
 import { debounce } from "@mui/material";
 import IModel from "@/models/IModel";
+import useModel from "@/hooks/useModel";
 
 /**
  * 注釈のコンテクスト
@@ -34,7 +27,7 @@ export default PdfNotesContext;
  * `AppSettingsContext`のプロバイダー
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
-  const { model } = useContext(ModelContext);
+  const { model, setAccessFailedReason } = useModel();
   const [idOrFile, setIdOrFile_] = useState<string | File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [previousPageNum, setPreviousPageNum] = useState<number>();
@@ -51,9 +44,11 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     () =>
       debounce((id?: string, pdfNotes?: PdfNotes, model?: IModel) => {
         if (!pdfNotes || !id) return;
-        model?.putPdfNotes(id, pdfNotes).catch(() => undefined);
+        model?.putPdfNotes(id, pdfNotes).catch(() => {
+          setAccessFailedReason("注釈ファイルの保存");
+        });
       }, 1000),
-    []
+    [setAccessFailedReason]
   );
   useEffect(() => {
     putPdfNotesDebounced(id, pdfNotes, model);

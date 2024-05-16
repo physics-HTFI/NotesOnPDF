@@ -4,7 +4,7 @@ import { NoteType, editPageStyle, fromDisplayedPage } from "@/types/PdfNotes";
 import { useContext } from "react";
 
 /**
- * Context内の`pdfNotes, setPdfNotes`および更新用関数`update`を返す。
+ * Context内の`pdfNotes, setPdfNotes`および更新用関数`update`を返す
  */
 export default function usePdfNotes() {
   const { pdfNotes, setPdfNotes, previousPageNum, setPreviousPageNum } =

@@ -1,14 +1,14 @@
 import { useContext, useRef, useState } from "react";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
-import ModelContext from "@/contexts/ModelContext";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
+import useModel from "@/hooks/useModel";
 
 /**
  * PDF画像を表示するコンポーネント
  */
 export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
-  const { model } = useContext(ModelContext);
+  const { model, setAccessFailedReason } = useModel();
   const { pageRect } = useContext(MouseContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [src, setSrc] = useState("");
@@ -35,17 +35,18 @@ export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
     }
   }
 
-  const handleEndRead = () => {
-    setReading(false);
-  };
-
   return (
     <>
       <img
         src={src}
         style={{ width, height }}
-        onLoad={handleEndRead}
-        onError={handleEndRead}
+        onLoad={() => {
+          setReading(false);
+        }}
+        onError={() => {
+          setReading(false);
+          setAccessFailedReason("ページ画像の取得");
+        }}
       />
       <PageLabelLarge label={pageLabel} shown={reading} />
     </>

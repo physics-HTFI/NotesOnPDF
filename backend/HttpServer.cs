@@ -116,7 +116,7 @@ namespace backend
             if (url == "/api/web-pdf-id")
             {
                 string query = uri.GetComponents(UriComponents.Query, UriFormat.Unescaped);
-                return getResponse(JsonSerializer.Serialize(model.GetWebPdfId(query)));
+                return getResponse(JsonSerializer.Serialize(await model.GetWebPdfId(query)));
             }
             if (Regex.IsMatch(url, @"/api/notes/[^/]+$"))
             {

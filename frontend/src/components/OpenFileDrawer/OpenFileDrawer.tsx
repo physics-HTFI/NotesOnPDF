@@ -1,17 +1,17 @@
 import { useCallback, useContext } from "react";
 import { Drawer } from "@mui/material";
 import Header from "@/components/OpenFileDrawer/Header/Header";
-import ModelContext from "@/contexts/ModelContext";
 import { createOrGetPdfNotes } from "@/types/PdfNotes";
 import UiStateContext from "@/contexts/UiStateContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import FileTreeView from "./FileTreeView/FileTreeView";
+import useModel from "@/hooks/useModel";
 
 /**
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
-  const { model } = useContext(ModelContext);
+  const { model, setAccessFailedReason } = useModel();
   const { id, file, setIdOrFile, setPdfNotes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiStateContext);
@@ -34,12 +34,22 @@ export default function OpenFileDrawer() {
           setIdOrFile(_id);
           setOpenFileTreeDrawer(false);
         })
-        .catch(() => undefined)
+        .catch(() => {
+          setAccessFailedReason("PDFファイルの読み込み");
+        })
         .finally(() => {
           setWaiting(false);
         });
     },
-    [id, model, setIdOrFile, setOpenFileTreeDrawer, setPdfNotes, setWaiting]
+    [
+      id,
+      model,
+      setIdOrFile,
+      setOpenFileTreeDrawer,
+      setPdfNotes,
+      setWaiting,
+      setAccessFailedReason,
+    ]
   );
 
   const handleSelectPdfByFile = (file: File) => {
