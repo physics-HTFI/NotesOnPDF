@@ -26,7 +26,7 @@ export default FileTreeContext;
  * `FileTreeContext`のプロバイダー
  */
 export function FileTreeContextProvider({ children }: { children: ReactNode }) {
-  const { model, setAccessFailedReason } = useModel();
+  const { model, readOnly, setAccessFailedReason } = useModel();
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
@@ -48,6 +48,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
     const newCoverages = getNewCoverages(coverages, id, pdfNotes, fileTree);
     if (newCoverages) {
       setCoverages(newCoverages);
+      if (readOnly) return;
       model.putCoverages(newCoverages).catch(() => {
         setAccessFailedReason("進捗率の保存");
       });

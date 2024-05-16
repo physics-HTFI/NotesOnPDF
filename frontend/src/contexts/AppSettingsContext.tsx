@@ -20,7 +20,7 @@ export function AppSettingsContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const { model, setAccessFailedReason } = useModel();
+  const { model, readOnly, setAccessFailedReason } = useModel();
   const [appSettings, setAppSettings] = useState<AppSettings>();
 
   useEffect(() => {
@@ -35,11 +35,11 @@ export function AppSettingsContextProvider({
   }, [model, setAccessFailedReason]);
 
   useEffect(() => {
-    if (!appSettings) return;
+    if (!appSettings || readOnly) return;
     model.putAppSettings(appSettings).catch(() => {
       setAccessFailedReason("設定ファイルの保存");
     });
-  }, [appSettings, model, setAccessFailedReason]);
+  }, [appSettings, model, readOnly, setAccessFailedReason]);
 
   return (
     <AppSettingsContext.Provider value={{ appSettings, setAppSettings }}>

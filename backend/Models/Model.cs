@@ -33,11 +33,12 @@ namespace backend
 
         /// <summary>
         /// ダイアログを開いて、ツリー外のPDFファイルの<c>id</c>を取得する。
-        /// 失敗したら<c>throw</c>する。
+        /// キャンセル時は<c>""</c>。
         /// </summary>
         public string GetExternalPdfId()
         {
-            string path = PathUtils.SelectPdf() ?? throw new Exception();
+            string? path = PathUtils.SelectPdf();
+            if (path is null) return "";
             string id = PathUtils.Path2Id(path);
             history.Add(id, path, PdfOrigin.OutsideTree);
             return id;

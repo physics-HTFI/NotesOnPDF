@@ -35,7 +35,7 @@ export default function OpenFileDrawer() {
           setOpenFileTreeDrawer(false);
         })
         .catch(() => {
-          setAccessFailedReason("PDFファイルの読み込み");
+          setAccessFailedReason("注釈ファイルの読み込み");
         })
         .finally(() => {
           setWaiting(false);

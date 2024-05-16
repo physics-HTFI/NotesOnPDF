@@ -7,10 +7,11 @@ import { useContext } from "react";
  */
 export default function useModel() {
   const { model } = useContext(ModelContext);
-  const { setAccessFailedReason } = useContext(UiStateContext);
+  const { readOnly, setAccessFailedReason } = useContext(UiStateContext);
 
   return {
     model,
+    readOnly,
     setAccessFailedReason,
   };
 }

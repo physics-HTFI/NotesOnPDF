@@ -1,10 +1,17 @@
-import { useState } from "react";
-import { Box, Divider, IconButton, Tooltip } from "@mui/material";
-import { FolderOpen, Language, Restore } from "@mui/icons-material";
+import { useContext, useState } from "react";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import {
+  FolderOpen,
+  Language,
+  Lock,
+  LockOpen,
+  Restore,
+} from "@mui/icons-material";
 import InputStringDialog from "./InputStringDialog";
 import HistoryDialog from "./HistoryDialog";
 import Waiting from "../../Fullscreen/Waiting";
 import useModel from "@/hooks/useModel";
+import UiStateContext from "@/contexts/UiStateContext";
 
 const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
 
@@ -19,6 +26,7 @@ export default function Header({
   onSelectPdfByFile?: (file: File) => void;
 }) {
   const { model, setAccessFailedReason } = useModel();
+  const { readOnly, setReadOnly } = useContext(UiStateContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -47,6 +55,7 @@ export default function Header({
         model
           .getIdFromExternalFile()
           .then((id) => {
+            if (id === "") return;
             onSelectPdfById?.(id);
           })
           .catch(() => {
@@ -65,6 +74,37 @@ export default function Header({
         justifyContent: "flex-end",
       }}
     >
+      {/* 読み取り専用 */}
+      <Tooltip
+        title={
+          readOnly ? (
+            <span>
+              【読み取り専用モード】
+              <br />
+              編集はできますが、保存は一切されません
+            </span>
+          ) : (
+            <span>
+              【自動保存モード】
+              <br />
+              変更が加えられると自動保存します
+            </span>
+          )
+        }
+      >
+        <span style={{ marginRight: "auto" }}>
+          <IconButton
+            sx={sxButton}
+            onClick={() => {
+              setReadOnly(!readOnly);
+            }}
+            size="small"
+          >
+            {readOnly ? <Lock /> : <LockOpen />}
+          </IconButton>
+        </span>
+      </Tooltip>
+
       {/* アクセス履歴からPDFファイルを開く */}
       <Tooltip title="アクセス履歴からPDFファイルを開きます">
         <span>
@@ -87,7 +127,6 @@ export default function Header({
           onSelectPdfById?.(id);
         }}
       />
-      <Divider orientation="vertical" variant="middle" flexItem />
 
       {/* PC内のPDFファイルを開く */}
       <Tooltip title="ファイルツリー外のPDFファイルを開きます">

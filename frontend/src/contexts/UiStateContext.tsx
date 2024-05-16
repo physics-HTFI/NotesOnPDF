@@ -9,17 +9,21 @@ export const UiStateContext = createContext<{
   openFileTreeDrawer: boolean;
   openSettingsDrawer: boolean;
   waiting: boolean;
+  readOnly: boolean;
   setOpenFileTreeDrawer: (openFileTreeDrawer: boolean) => void;
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
   setWaiting: (waiting: boolean) => void;
+  setReadOnly: (readOnly: boolean) => void;
   setAccessFailedReason: (reason: string) => void;
 }>({
   openFileTreeDrawer: true,
   openSettingsDrawer: false,
   waiting: false,
+  readOnly: false,
   setOpenFileTreeDrawer: () => undefined,
   setOpenSettingsDrawer: () => undefined,
   setWaiting: () => undefined,
+  setReadOnly: () => undefined,
   setAccessFailedReason: () => undefined,
 });
 
@@ -32,6 +36,7 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [openFileTreeDrawer, setOpenFileTreeDrawer] = useState(true);
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [waiting, setWaiting] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
   const [accessFailedReason, setAccessFailedReason] = useState<string>();
   const handleClose = () => {
     setAccessFailedReason(undefined);
@@ -43,9 +48,11 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
         openFileTreeDrawer,
         openSettingsDrawer,
         waiting,
+        readOnly,
         setOpenFileTreeDrawer,
         setOpenSettingsDrawer,
         setWaiting,
+        setReadOnly,
         setAccessFailedReason,
       }}
     >
