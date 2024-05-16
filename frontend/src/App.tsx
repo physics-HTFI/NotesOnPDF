@@ -99,7 +99,7 @@ export default function App() {
             </Box>
 
             {/* モックモデルを使用していることを示すポップアップ表示 */}
-            {import.meta.env.VITE_IS_MOCK === "true" && <SnackbarsMock />}
+            {import.meta.env.VITE_IS_WEB === "true" && <SnackbarsMock />}
           </PdfNotesContextProvider>
         </MathJaxContext>
       </UiStateContextProvider>

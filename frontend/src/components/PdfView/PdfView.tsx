@@ -112,7 +112,7 @@ export default function PdfView() {
         }}
         disableGutters
       >
-        {import.meta.env.VITE_IS_MOCK === "true" ? (
+        {import.meta.env.VITE_IS_WEB === "true" ? (
           <PdfImageMock pageLabel={pageLabel} />
         ) : (
           <PdfImage pageLabel={pageLabel} />

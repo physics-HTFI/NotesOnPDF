@@ -9,7 +9,7 @@ const ORIGIN = import.meta.env.DEV
   ? "http://localhost:8080"
   : window.location.href.match(/.*:\d+/)?.[0];
 
-if (import.meta.env.DEV && import.meta.env.VITE_IS_MOCK !== "true") {
+if (import.meta.env.DEV && import.meta.env.VITE_IS_WEB !== "true") {
   console.log(`backend: ${ORIGIN}`);
 }
 

@@ -8,8 +8,7 @@ import { createContext } from "react";
  * 初期値として既に適切なモデルを設定しているので`ModelContext.Provider`は不要。
  */
 const ModelContext = createContext<{ model: IModel }>({
-  model:
-    import.meta.env.VITE_IS_MOCK === "true" ? new ModelMock() : new Model(),
+  model: import.meta.env.VITE_IS_WEB === "true" ? new ModelMock() : new Model(),
 });
 
 export default ModelContext;

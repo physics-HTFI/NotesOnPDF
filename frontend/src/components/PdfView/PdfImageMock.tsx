@@ -7,7 +7,7 @@ import { createPdfNotesMock } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 
-if (import.meta.env.VITE_IS_MOCK === "true") {
+if (import.meta.env.VITE_IS_WEB === "true") {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 }
 const options = {

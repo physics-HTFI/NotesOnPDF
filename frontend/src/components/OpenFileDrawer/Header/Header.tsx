@@ -20,7 +20,7 @@ import Waiting from "../../Fullscreen/Waiting";
 import useModel from "@/hooks/useModel";
 import UiStateContext from "@/contexts/UiStateContext";
 
-const IS_MOCK = import.meta.env.VITE_IS_MOCK === "true";
+const IS_MOCK = import.meta.env.VITE_IS_WEB === "true";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
