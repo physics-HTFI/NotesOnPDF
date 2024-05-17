@@ -59,7 +59,9 @@ export default function SelectRootDialog() {
       <DialogContent>
         <TextField
           margin="dense"
-          label={"PDFファイル検索の基準フォルダ (ドラッグ＆ドロップも可)"}
+          label={
+            "このフォルダ内のPDFファイルを検索します (ドラッグ＆ドロップも可)"
+          }
           value={dirHandle?.name ?? ""}
           fullWidth
           variant="standard"
@@ -149,8 +151,7 @@ export default function SelectRootDialog() {
       <DialogActions>
         {/* サンプルを開く */}
         <Button
-          disabled={ok}
-          variant="contained"
+          variant={ok ? "outlined" : "contained"}
           onClick={() => {
             setModel(new ModelMock());
             setReadOnly(true);
