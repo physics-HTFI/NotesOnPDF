@@ -3,12 +3,14 @@ import {
   Alert,
   Backdrop,
   Box,
+  Divider,
   IconButton,
   Snackbar,
   Tooltip,
 } from "@mui/material";
 import {
   FolderOpen,
+  GitHub,
   Language,
   Lock,
   LockOpen,
@@ -211,9 +213,8 @@ export default function Header({
       )}
 
       {/* 開発ページを開く */}
-      {/*
       <Divider orientation="vertical" variant="middle" flexItem />
-      <Tooltip title="アプリ開発ページへのリンクを開く">
+      <Tooltip title="アプリ開発ページへのリンクを開きます">
         <IconButton
           size="small"
           sx={sxButton}
@@ -221,10 +222,11 @@ export default function Header({
             open("https://github.com/physics-HTFI/NotesOnPDF");
           }}
         >
-          <MenuBook />
+          <GitHub />
+          {/* <MenuBook /> */}
         </IconButton>
       </Tooltip>
-      */}
+
       <Waiting isWaiting={downloading} />
     </Box>
   );
