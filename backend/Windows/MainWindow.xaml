@@ -214,7 +214,7 @@
                     </StackPanel>
 
                     <StackPanel>
-                        <!-- ルートフォルダー -->
+                        <!-- ルートフォルダ -->
                         <DockPanel
                             Margin="0 0 0 5">
                             <Button
@@ -228,14 +228,14 @@
                                 Height="40"
                                 Margin="0,0,0,5"
                                 Text="{Binding RootDirectory, UpdateSourceTrigger=PropertyChanged}"
-                                materialDesign:HintAssist.Hint="PDF一覧のルートフォルダー"
+                                materialDesign:HintAssist.Hint="PDF一覧のルートフォルダ"
                                 ToolTip="アプリ画面左のPDFツリーの起点を指定します。変更後はアプリ画面を開き直してください。"
                                 ToolTipService.InitialShowDelay="0"
                                 ToolTipService.Placement="Left"
                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                         </DockPanel>
 
-                        <!-- ダウンロードフォルダー -->
+                        <!-- ダウンロードフォルダ -->
                         <DockPanel>
                             <Button
                                 DockPanel.Dock="Right"
@@ -248,7 +248,7 @@
                                 Height="40"
                                 Margin="0,0,0,5"
                                 Text="{Binding DownloadDirectory, UpdateSourceTrigger=PropertyChanged}"
-                                materialDesign:HintAssist.Hint="ダウンロードフォルダー"
+                                materialDesign:HintAssist.Hint="ダウンロードフォルダ"
                                 ToolTip="ダウンロードされたPDFファイルがここに保存されます"
                                 ToolTipService.InitialShowDelay="0"
                                 ToolTipService.Placement="Left"

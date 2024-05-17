@@ -13,7 +13,7 @@ if (import.meta.env.DEV && import.meta.env.VITE_IS_WEB !== "true") {
   console.log(`backend: ${ORIGIN}`);
 }
 
-export default class Model implements IModel {
+export default class ModelDesktop implements IModel {
   private getPutOptions = () =>
     ({
       method: "POST",

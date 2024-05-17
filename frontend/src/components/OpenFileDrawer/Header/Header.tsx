@@ -99,7 +99,9 @@ export default function Header({
             <span>
               【自動保存モード】
               <br />
-              変更が加えられると自動保存します
+              変更が加えられた際に、注釈ファイルを自動保存します
+              <br />
+              注釈ファイル名は&quot;(PDFファイル名).json&quot;です
             </span>
           )
         }

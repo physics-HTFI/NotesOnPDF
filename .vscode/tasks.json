@@ -8,9 +8,7 @@
       "problemMatcher": [],
       "label": "npm: dev-desktop - frontend",
       "detail": "vite",
-      "runOptions": {
-        "runOn": "folderOpen"
-      }
+      "runOptions": {}
     },
     {
       "type": "npm",
@@ -18,7 +16,10 @@
       "path": "frontend",
       "problemMatcher": [],
       "label": "npm: dev-web - frontend",
-      "detail": "vite"
+      "detail": "vite",
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
     }
   ]
 }

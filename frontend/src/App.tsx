@@ -12,6 +12,8 @@ import { UiStateContextProvider } from "./contexts/UiStateContext";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
 import { FileTreeContextProvider } from "./contexts/FileTreeContext";
+import SelectRootDialog from "./components/Fullscreen/SelectRootDialog";
+import { ModelContextProvider } from "./contexts/ModelContext";
 
 /**
  * 数式表示のコンフィグ
@@ -66,43 +68,45 @@ export default function App() {
   }, []);
 
   return (
-    <AppSettingsContextProvider>
+    <ModelContextProvider>
       <UiStateContextProvider>
-        <MathJaxContext version={3} config={mathjaxConfig}>
-          <PdfNotesContextProvider>
-            <Box sx={{ userSelect: "none" }}>
-              {/* ファイルツリー */}
-              <FileTreeContextProvider>
-                <OpenFileDrawer />
-              </FileTreeContextProvider>
+        {/* モックモデルを使用していることを示すポップアップ表示 */}
+        {import.meta.env.VITE_IS_WEB === "true" && <SnackbarsMock />}
+        {import.meta.env.VITE_IS_WEB === "true" && <SelectRootDialog />}
+        <AppSettingsContextProvider>
+          <MathJaxContext version={3} config={mathjaxConfig}>
+            <PdfNotesContextProvider>
+              <Box sx={{ userSelect: "none" }}>
+                {/* ファイルツリー */}
+                <FileTreeContextProvider>
+                  <OpenFileDrawer />
+                </FileTreeContextProvider>
 
-              <PanelGroup direction="horizontal">
-                {/* 目次 */}
-                <Panel defaultSizePixels={270} minSizePixels={40}>
-                  <TocView />
-                </Panel>
+                <PanelGroup direction="horizontal">
+                  {/* 目次 */}
+                  <Panel defaultSizePixels={270} minSizePixels={40}>
+                    <TocView />
+                  </Panel>
 
-                {/* リサイズハンドル */}
-                <PanelResizeHandle>
-                  <Box
-                    sx={{ width: 5, height: "100vh", background: grey[400] }}
-                  />
-                </PanelResizeHandle>
+                  {/* リサイズハンドル */}
+                  <PanelResizeHandle>
+                    <Box
+                      sx={{ width: 5, height: "100vh", background: grey[400] }}
+                    />
+                  </PanelResizeHandle>
 
-                {/* PDFビュー */}
-                <Panel minSizePixels={200}>
-                  <MouseContextProvider>
-                    <PdfView />
-                  </MouseContextProvider>
-                </Panel>
-              </PanelGroup>
-            </Box>
-
-            {/* モックモデルを使用していることを示すポップアップ表示 */}
-            {import.meta.env.VITE_IS_WEB === "true" && <SnackbarsMock />}
-          </PdfNotesContextProvider>
-        </MathJaxContext>
+                  {/* PDFビュー */}
+                  <Panel minSizePixels={200}>
+                    <MouseContextProvider>
+                      <PdfView />
+                    </MouseContextProvider>
+                  </Panel>
+                </PanelGroup>
+              </Box>
+            </PdfNotesContextProvider>
+          </MathJaxContext>
+        </AppSettingsContextProvider>
       </UiStateContextProvider>
-    </AppSettingsContextProvider>
+    </ModelContextProvider>
   );
 }

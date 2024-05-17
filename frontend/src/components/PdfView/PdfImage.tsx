@@ -21,12 +21,16 @@ export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
 
   const width = Math.round(pageRect.width);
   const height = Math.round(pageRect.height);
-  nextSrc.current = model.getPageImageUrl(
-    id,
-    pdfNotes.currentPage,
-    width,
-    height
-  );
+  try {
+    nextSrc.current = model.getPageImageUrl(
+      id,
+      pdfNotes.currentPage,
+      width,
+      height
+    );
+  } catch {
+    setAccessFailedReason("ページ画像の取得");
+  }
   // 現在の読み込みが終了してから次の読み込みを行う
   if (!reading && nextSrc.current !== src) {
     setSrc(nextSrc.current);
