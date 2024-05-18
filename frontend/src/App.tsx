@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import SnackbarsMock from "@/components/Fullscreen/SnackbarMock";
 import OpenFileDrawer from "@/components/OpenFileDrawer/OpenFileDrawer";
 import PdfView from "@/components/PdfView/PdfView";
 import TocView from "@/components/TocView/TocView";
@@ -71,7 +70,6 @@ export default function App() {
     <ModelContextProvider>
       <UiStateContextProvider>
         {/* モックモデルを使用していることを示すポップアップ表示 */}
-        {import.meta.env.VITE_IS_WEB === "true" && <SnackbarsMock />}
         {import.meta.env.VITE_IS_WEB === "true" && <SelectRootDialog />}
         <AppSettingsContextProvider>
           <MathJaxContext version={3} config={mathjaxConfig}>

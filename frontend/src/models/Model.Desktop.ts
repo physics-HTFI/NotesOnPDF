@@ -9,10 +9,6 @@ const ORIGIN = import.meta.env.DEV
   ? "http://localhost:8080"
   : window.location.href.match(/.*:\d+/)?.[0];
 
-if (import.meta.env.DEV && import.meta.env.VITE_IS_WEB !== "true") {
-  console.log(`backend: ${ORIGIN}`);
-}
-
 export default class ModelDesktop implements IModel {
   private getPutOptions = () =>
     ({
@@ -20,6 +16,14 @@ export default class ModelDesktop implements IModel {
       headers: { "Content-Type": "application/json" },
       mode: "no-cors",
     } as RequestInit);
+
+  getFlags = () => ({
+    canToggleReadOnly: true,
+    canOpenHistory: true,
+    canOpenFileDialog: true,
+    canOpenGithub: false,
+    usePdfjs: false,
+  });
 
   getFileTree = async (): Promise<FileTree> => {
     const res = await fetch(ORIGIN + "/api/files");

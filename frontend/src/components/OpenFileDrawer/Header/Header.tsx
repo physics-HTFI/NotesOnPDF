@@ -22,8 +22,6 @@ import Waiting from "../../Fullscreen/Waiting";
 import UiStateContext from "@/contexts/UiStateContext";
 import ModelContext from "@/contexts/ModelContext";
 
-const IS_MOCK = import.meta.env.VITE_IS_WEB === "true";
-
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
@@ -34,7 +32,7 @@ export default function Header({
   onSelectPdfById?: (id: string) => void;
   onSelectPdfByFile?: (file: File) => void;
 }) {
-  const { model } = useContext(ModelContext);
+  const { model, modelFlags } = useContext(ModelContext);
   const { readOnly, setReadOnly, setAccessFailedReason } =
     useContext(UiStateContext);
   const [openUrl, setOpenUrl] = useState(false);
@@ -42,7 +40,7 @@ export default function Header({
   const [downloading, setDownloading] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
 
-  const handleSelectExternalPdf = IS_MOCK
+  const handleSelectExternalPdf = modelFlags.usePdfjs
     ? () => {
         new Promise<File | null>((resolve, reject) => {
           const input = document.createElement("input");
@@ -111,6 +109,7 @@ export default function Header({
       >
         <span style={{ marginRight: "auto" }}>
           <IconButton
+            disabled={!modelFlags.canToggleReadOnly}
             sx={sxButton}
             onClick={() => {
               setReadOnly(!readOnly);
@@ -126,6 +125,7 @@ export default function Header({
       <Tooltip title="アクセス履歴からPDFファイルを開きます">
         <span>
           <IconButton
+            disabled={!modelFlags.canOpenHistory}
             sx={sxButton}
             onClick={() => {
               setOpenHistory(true);
@@ -149,6 +149,7 @@ export default function Header({
       <Tooltip title="ファイルツリー外のPDFファイルを開きます">
         <span>
           <IconButton
+            disabled={!modelFlags.canOpenFileDialog}
             sx={sxButton}
             size="small"
             onClick={handleSelectExternalPdf}
@@ -179,7 +180,7 @@ export default function Header({
       <Tooltip title="URLからPDFファイルを開きます">
         <span>
           <IconButton
-            disabled={IS_MOCK}
+            disabled={!modelFlags.canOpenFileDialog}
             sx={sxButton}
             size="small"
             onClick={() => {
@@ -190,7 +191,7 @@ export default function Header({
           </IconButton>
         </span>
       </Tooltip>
-      {openUrl && !IS_MOCK && (
+      {openUrl && modelFlags.canOpenFileDialog && (
         <InputStringDialog
           title="URLからPDFファイルを開く"
           label="URL"
@@ -214,19 +215,23 @@ export default function Header({
       )}
 
       {/* 開発ページを開く */}
-      <Divider orientation="vertical" variant="middle" flexItem />
-      <Tooltip title="アプリ開発ページへのリンクを開きます">
-        <IconButton
-          size="small"
-          sx={sxButton}
-          onClick={() => {
-            open("https://github.com/physics-HTFI/NotesOnPDF");
-          }}
-        >
-          <GitHub />
-          {/* <MenuBook /> */}
-        </IconButton>
-      </Tooltip>
+      {modelFlags.canOpenGithub && (
+        <>
+          <Divider orientation="vertical" variant="middle" flexItem />
+          <Tooltip title="NotesOnPdf 開発ページへのリンクを開きます">
+            <IconButton
+              size="small"
+              sx={sxButton}
+              onClick={() => {
+                open("https://github.com/physics-HTFI/NotesOnPDF");
+              }}
+            >
+              <GitHub />
+              {/* <MenuBook /> */}
+            </IconButton>
+          </Tooltip>
+        </>
+      )}
 
       <Waiting isWaiting={downloading} />
     </Box>

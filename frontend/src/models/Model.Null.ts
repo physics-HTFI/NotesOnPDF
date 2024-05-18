@@ -9,6 +9,14 @@ export const sampleId2Path = (id?: string) => (id === "12" ? "文書1.pdf" : "")
 export default class ModelNull implements IModel {
   private wait = () => new Promise((resolve) => setTimeout(resolve, 0));
 
+  getFlags = () => ({
+    canToggleReadOnly: true,
+    canOpenHistory: true,
+    canOpenFileDialog: true,
+    canOpenGithub: true,
+    usePdfjs: false,
+  });
+
   public getFileTree = async (): Promise<FileTree> => {
     await this.wait();
     return [];

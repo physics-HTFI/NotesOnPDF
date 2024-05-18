@@ -10,10 +10,12 @@ export const UiStateContext = createContext<{
   openSettingsDrawer: boolean;
   waiting: boolean;
   readOnly: boolean;
+  snackbarMessage?: JSX.Element;
   setOpenFileTreeDrawer: (openFileTreeDrawer: boolean) => void;
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
   setWaiting: (waiting: boolean) => void;
   setReadOnly: (readOnly: boolean) => void;
+  setSnackbarMessage: (snackbarMessage?: JSX.Element) => void;
   setAccessFailedReason: (reason: string) => void;
 }>({
   openFileTreeDrawer: true,
@@ -24,6 +26,7 @@ export const UiStateContext = createContext<{
   setOpenSettingsDrawer: () => undefined,
   setWaiting: () => undefined,
   setReadOnly: () => undefined,
+  setSnackbarMessage: () => undefined,
   setAccessFailedReason: () => undefined,
 });
 
@@ -37,9 +40,11 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<JSX.Element>();
   const [accessFailedReason, setAccessFailedReason] = useState<string>();
   const handleClose = () => {
     setAccessFailedReason(undefined);
+    setSnackbarMessage(undefined);
   };
 
   return (
@@ -49,10 +54,12 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
         openSettingsDrawer,
         waiting,
         readOnly,
+        snackbarMessage,
         setOpenFileTreeDrawer,
         setOpenSettingsDrawer,
         setWaiting,
         setReadOnly,
+        setSnackbarMessage,
         setAccessFailedReason,
       }}
     >
@@ -71,6 +78,21 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
           NotesOnPdf.exeが起動していないか、入力が不正です
         </Alert>
       </Snackbar>
+
+      {/* メッセージ（`flag && <></>`の形にしているのは非表示時に一瞬からのメッセージが表示されるのを防ぐため） */}
+      {!!snackbarMessage && (
+        <Snackbar open onClose={handleClose}>
+          <Alert
+            elevation={6}
+            variant="filled"
+            onClose={handleClose}
+            severity="info"
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      )}
     </UiStateContext.Provider>
   );
 }

@@ -5,6 +5,8 @@ import AppSettings from "@/types/AppSettings";
 import History from "@/types/History";
 
 export default interface IModel {
+  getFlags(): ModelFlags;
+
   getFileTree(): Promise<FileTree>;
   getHistory(): Promise<History>;
   getIdFromExternalFile(): Promise<string>;
@@ -31,4 +33,12 @@ export interface ResultGetPdfNotes {
   name: string;
   sizes: { width: number; height: number }[];
   notes?: PdfNotes;
+}
+
+export interface ModelFlags {
+  canToggleReadOnly: boolean;
+  canOpenHistory: boolean;
+  canOpenFileDialog: boolean;
+  canOpenGithub: boolean;
+  usePdfjs: boolean;
 }

@@ -9,6 +9,14 @@ export default class ModelWeb implements IModel {
     alert(this.handle.name);
   }
 
+  getFlags = () => ({
+    canToggleReadOnly: true,
+    canOpenHistory: true,
+    canOpenFileDialog: false,
+    canOpenGithub: true,
+    usePdfjs: true,
+  });
+
   private wait = () => new Promise((resolve) => setTimeout(resolve, 0));
 
   public getFileTree = async (): Promise<FileTree> => {
