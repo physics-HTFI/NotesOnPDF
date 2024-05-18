@@ -59,9 +59,8 @@ export default function SelectRootDialog() {
       <DialogContent>
         <TextField
           margin="dense"
-          label={
-            "このフォルダ内のPDFファイルを検索します (ドラッグ＆ドロップも可)"
-          }
+          label={"基準フォルダ"}
+          helperText="このフォルダ内のPDFファイルを検索します (ドラッグ＆ドロップも可)"
           value={dirHandle?.name ?? ""}
           fullWidth
           variant="standard"
@@ -72,7 +71,7 @@ export default function SelectRootDialog() {
           }}
           InputProps={{
             readOnly: true,
-            endAdornment: (
+            startAdornment: (
               <InputAdornment position="start">
                 <IconButton
                   sx={{ color: "steelblue" }}
