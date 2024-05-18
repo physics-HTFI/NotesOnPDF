@@ -111,11 +111,7 @@ export default function SettingsDrawer() {
         />
 
         {/* タブ */}
-        <Tabs
-          tab={tab}
-          pageLabel={`p. ${page?.num ?? "???"}`}
-          setTab={setTab}
-        />
+        <Tabs tab={tab} setTab={setTab} />
 
         {/* ページ設定 */}
         {tab === 0 && (

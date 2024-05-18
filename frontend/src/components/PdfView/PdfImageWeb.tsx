@@ -6,6 +6,7 @@ import UiStateContext from "@/contexts/UiStateContext";
 import { createPdfNotesMock } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
+import usePdfNotes from "@/hooks/usePdfNotes";
 
 if (import.meta.env.VITE_IS_WEB === "true") {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -18,11 +19,12 @@ const options = {
 /**
  * PDF画像を表示するコンポーネント
  */
-export default function PdfImageWeb({ pageLabel }: { pageLabel?: string }) {
+export default function PdfImageWeb() {
   const { id, file, setIdOrFile, setPdfNotes, pdfNotes } =
     useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
   const { setWaiting, setOpenFileTreeDrawer } = useContext(UiStateContext);
+  const { pageLabel } = usePdfNotes();
   const [reading, setReading] = useState(false);
   const { isReading } = useReading();
   if (isReading()) {

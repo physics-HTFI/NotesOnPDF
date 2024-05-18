@@ -12,6 +12,7 @@ export default function usePdfNotes() {
   const { openFileTreeDrawer, waiting } = useContext(UiStateContext);
   const page = pdfNotes?.pages[pdfNotes.currentPage];
   const invalid = !page || openFileTreeDrawer || waiting;
+  const pageLabel = `p. ${page?.num ?? "???"}`;
 
   /**
    * ページをスクロールする
@@ -200,6 +201,7 @@ export default function usePdfNotes() {
     pdfNotes,
     setPdfNotes,
     page: pdfNotes?.pages[pdfNotes.currentPage],
+    pageLabel,
     /**
      * ページをスクロールする
      */

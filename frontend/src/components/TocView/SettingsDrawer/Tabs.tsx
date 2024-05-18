@@ -1,3 +1,4 @@
+import usePdfNotes from "@/hooks/usePdfNotes";
 import { Box, Tab, Tabs as MaterialTabs } from "@mui/material";
 
 /**
@@ -6,12 +7,11 @@ import { Box, Tab, Tabs as MaterialTabs } from "@mui/material";
 export default function Tabs({
   tab,
   setTab,
-  pageLabel,
 }: {
   tab: number;
   setTab: (i: number) => void;
-  pageLabel?: string;
 }): JSX.Element {
+  const { pageLabel } = usePdfNotes();
   return (
     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
       <MaterialTabs
@@ -20,7 +20,7 @@ export default function Tabs({
           setTab(i);
         }}
       >
-        <Tab label={pageLabel ?? "p. ???"} />
+        <Tab label={pageLabel} />
         <Tab label="ファイル" />
         <Tab label="アプリ" />
       </MaterialTabs>

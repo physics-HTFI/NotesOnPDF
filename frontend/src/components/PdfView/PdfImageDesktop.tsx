@@ -4,15 +4,17 @@ import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 import ModelContext from "@/contexts/ModelContext";
 import UiStateContext from "@/contexts/UiStateContext";
+import usePdfNotes from "@/hooks/usePdfNotes";
 
 /**
  * PDF画像を表示するコンポーネント
  */
-export default function PdfImageDesktop({ pageLabel }: { pageLabel?: string }) {
+export default function PdfImageDesktop() {
   const { model } = useContext(ModelContext);
   const { setSnackbarMessage } = useContext(UiStateContext);
   const { pageRect } = useContext(MouseContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
+  const { pageLabel } = usePdfNotes();
   const [src, setSrc] = useState("");
   const [reading, setReading] = useState(false);
   const nextSrc = useRef("");

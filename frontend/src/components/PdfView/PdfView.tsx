@@ -23,15 +23,12 @@ export default function PdfView() {
   const { modelFlags } = useContext(ModelContext);
   const { appSettings } = useContext(AppSettingsContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
-  const { pdfNotes, page, updateNote, scrollPage, handleKeyDown } =
-    usePdfNotes();
+  const { page, updateNote, scrollPage, handleKeyDown } = usePdfNotes();
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mode, setMode] = useState<Mode>(undefined);
   const [editNote, setEditNote] = useState<NoteType>();
   const [moveNote, setMoveNote] = useState<NoteType | Node>();
-
-  const pageLabel = `p. ${pdfNotes?.pages[pdfNotes.currentPage]?.num ?? "???"}`;
 
   // ショートカットキーに対応する
   useEffect(() => {
@@ -114,11 +111,7 @@ export default function PdfView() {
         }}
         disableGutters
       >
-        {modelFlags.usePdfjs ? (
-          <PdfImageWeb pageLabel={pageLabel} />
-        ) : (
-          <PdfImageDesktop pageLabel={pageLabel} />
-        )}
+        {modelFlags.usePdfjs ? <PdfImageWeb /> : <PdfImageDesktop />}
         <Items
           mode={mode}
           moveNote={moveNote}
@@ -155,7 +148,7 @@ export default function PdfView() {
           (!mode && !moveNote && page?.style?.includes("excluded")) ?? false
         }
       />
-      <PageLabelSmall label={pageLabel} hidden={Boolean(moveNote)} />
+      <PageLabelSmall hidden={Boolean(moveNote)} />
       <SpeedDial mode={mode} setMode={setMode} hidden={Boolean(moveNote)} />
       <Palette
         open={paletteOpen}

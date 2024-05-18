@@ -9,14 +9,9 @@ import MouseContext from "@/contexts/MouseContext";
 /**
  * 画面隅のページ数表示コンポーネント
  */
-export default function PageLabelSmall({
-  label,
-  hidden,
-}: {
-  label?: string;
-  hidden: boolean;
-}) {
+export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const { previousPageNum } = useContext(PdfNotesContext);
+  const { pageLabel } = usePdfNotes();
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
   const { jumpPage, page } = usePdfNotes();
@@ -50,7 +45,7 @@ export default function PageLabelSmall({
         <Chip
           variant="outlined"
           color="success"
-          label={label}
+          label={pageLabel}
           size="small"
           sx={{ cursor: "pointer", mr: "2px" }}
           onMouseDown={(e) => {
