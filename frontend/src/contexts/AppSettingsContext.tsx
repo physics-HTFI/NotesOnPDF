@@ -28,7 +28,7 @@ export function AppSettingsContextProvider({
   children: ReactNode;
 }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setAccessFailedReason } = useContext(UiStateContext);
+  const { readOnly, setSnackbarMessage } = useContext(UiStateContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
 
   useEffect(() => {
@@ -38,16 +38,16 @@ export function AppSettingsContextProvider({
         setAppSettings(settings);
       })
       .catch(() => {
-        setAccessFailedReason("設定ファイルの取得");
+        setSnackbarMessage(model.getMessage("設定ファイルの取得"));
       });
-  }, [model, setAccessFailedReason]);
+  }, [model, setSnackbarMessage]);
 
   useEffect(() => {
     if (!appSettings || readOnly) return;
     model.putAppSettings(appSettings).catch(() => {
-      setAccessFailedReason("設定ファイルの保存");
+      setSnackbarMessage(model.getMessage("設定ファイルの保存"));
     });
-  }, [appSettings, model, readOnly, setAccessFailedReason]);
+  }, [appSettings, model, readOnly, setSnackbarMessage]);
 
   return (
     <AppSettingsContext.Provider value={{ appSettings, setAppSettings }}>

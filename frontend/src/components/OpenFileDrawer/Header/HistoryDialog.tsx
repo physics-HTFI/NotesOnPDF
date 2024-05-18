@@ -25,7 +25,7 @@ export default function HistoryDialog({
   onClose: (id?: string) => void;
 }) {
   const { model } = useContext(ModelContext);
-  const { setWaiting, setAccessFailedReason } = useContext(UiStateContext);
+  const { setWaiting, setSnackbarMessage } = useContext(UiStateContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {
@@ -38,12 +38,12 @@ export default function HistoryDialog({
       })
       .catch(() => {
         setHistory([]);
-        setAccessFailedReason("履歴の取得");
+        setSnackbarMessage(model.getMessage("履歴の取得"));
       })
       .finally(() => {
         setWaiting(false);
       });
-  }, [open, model, setWaiting, setAccessFailedReason]);
+  }, [open, model, setWaiting, setSnackbarMessage]);
 
   return (
     <Backdrop

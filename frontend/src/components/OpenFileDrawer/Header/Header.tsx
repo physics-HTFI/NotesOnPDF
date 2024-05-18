@@ -33,7 +33,7 @@ export default function Header({
   onSelectPdfByFile?: (file: File) => void;
 }) {
   const { model, modelFlags } = useContext(ModelContext);
-  const { readOnly, setReadOnly, setAccessFailedReason } =
+  const { readOnly, setReadOnly, setSnackbarMessage } =
     useContext(UiStateContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
@@ -69,7 +69,7 @@ export default function Header({
             onSelectPdfById?.(id);
           })
           .catch(() => {
-            setAccessFailedReason("PDFファイルの取得");
+            setSnackbarMessage(model.getMessage("PDFファイルの取得"));
           })
           .finally(() => {
             setOpenAlert(false);
@@ -205,7 +205,9 @@ export default function Header({
                 onSelectPdfById?.(id);
               })
               .catch(() => {
-                setAccessFailedReason("PDFファイルのダウンロード");
+                setSnackbarMessage(
+                  model.getMessage("PDFファイルのダウンロード")
+                );
               })
               .finally(() => {
                 setDownloading(false);

@@ -10,7 +10,7 @@ import UiStateContext from "@/contexts/UiStateContext";
  */
 export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
   const { model } = useContext(ModelContext);
-  const { setAccessFailedReason } = useContext(UiStateContext);
+  const { setSnackbarMessage } = useContext(UiStateContext);
   const { pageRect } = useContext(MouseContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [src, setSrc] = useState("");
@@ -31,7 +31,7 @@ export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
       height
     );
   } catch {
-    setAccessFailedReason("ページ画像の取得");
+    setSnackbarMessage(model.getMessage("ページ画像の取得"));
   }
   // 現在の読み込みが終了してから次の読み込みを行う
   if (!reading && nextSrc.current !== src) {
@@ -51,7 +51,7 @@ export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
         }}
         onError={() => {
           setReading(false);
-          setAccessFailedReason("ページ画像の取得");
+          setSnackbarMessage(model.getMessage("ページ画像の取得"));
         }}
       />
       <PageLabelLarge label={pageLabel} shown={reading} />

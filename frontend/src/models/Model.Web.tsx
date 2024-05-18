@@ -4,18 +4,21 @@ import IModel, { ResultGetPdfNotes } from "./IModel";
 import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
 import History from "@/types/History";
 
-export const sampleId2Path = (id?: string) => (id === "12" ? "文書1.pdf" : "");
-
-export default class ModelNull implements IModel {
-  private wait = () => new Promise((resolve) => setTimeout(resolve, 0));
+export default class ModelWeb implements IModel {
+  constructor(private handle: FileSystemDirectoryHandle) {
+    alert(this.handle.name);
+  }
 
   getFlags = () => ({
     canToggleReadOnly: true,
     canOpenHistory: true,
-    canOpenFileDialog: true,
+    canOpenFileDialog: false,
     canOpenGithub: true,
-    usePdfjs: false,
+    usePdfjs: true,
   });
+  getMessage = (reason: string) => <>{`${reason}に失敗しました`}</>;
+
+  private wait = () => new Promise((resolve) => setTimeout(resolve, 0));
 
   public getFileTree = async (): Promise<FileTree> => {
     await this.wait();

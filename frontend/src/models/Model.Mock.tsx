@@ -16,6 +16,7 @@ export default class ModelMock implements IModel {
     canOpenGithub: true,
     usePdfjs: false,
   });
+  getMessage = (reason: string) => <>{`${reason}に失敗しました`}</>;
 
   public getFileTree = async (): Promise<FileTree> => {
     await this.wait();

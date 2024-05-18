@@ -25,6 +25,14 @@ export default class ModelDesktop implements IModel {
     usePdfjs: false,
   });
 
+  getMessage = (reason: string) => (
+    <>
+      {`${reason}に失敗しました`}
+      <br />
+      NotesOnPdf.exeが起動していないか、入力が不正です
+    </>
+  );
+
   getFileTree = async (): Promise<FileTree> => {
     const res = await fetch(ORIGIN + "/api/files");
     const fileTree = (await res.json()) as FileTree;

@@ -16,7 +16,6 @@ export const UiStateContext = createContext<{
   setWaiting: (waiting: boolean) => void;
   setReadOnly: (readOnly: boolean) => void;
   setSnackbarMessage: (snackbarMessage?: JSX.Element) => void;
-  setAccessFailedReason: (reason: string) => void;
 }>({
   openFileTreeDrawer: true,
   openSettingsDrawer: false,
@@ -27,7 +26,6 @@ export const UiStateContext = createContext<{
   setWaiting: () => undefined,
   setReadOnly: () => undefined,
   setSnackbarMessage: () => undefined,
-  setAccessFailedReason: () => undefined,
 });
 
 export default UiStateContext;
@@ -41,9 +39,7 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [waiting, setWaiting] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState<JSX.Element>();
-  const [accessFailedReason, setAccessFailedReason] = useState<string>();
   const handleClose = () => {
-    setAccessFailedReason(undefined);
     setSnackbarMessage(undefined);
   };
 
@@ -60,24 +56,10 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
         setWaiting,
         setReadOnly,
         setSnackbarMessage,
-        setAccessFailedReason,
       }}
     >
       {children}
       <Waiting isWaiting={waiting} />
-      <Snackbar open={accessFailedReason !== undefined} onClose={handleClose}>
-        <Alert
-          elevation={6}
-          variant="filled"
-          onClose={handleClose}
-          severity="info"
-          sx={{ width: "100%" }}
-        >
-          {`${accessFailedReason}に失敗しました`}
-          <br />
-          NotesOnPdf.exeが起動していないか、入力が不正です
-        </Alert>
-      </Snackbar>
 
       {/* メッセージ（`flag && <></>`の形にしているのは非表示時に一瞬からのメッセージが表示されるのを防ぐため） */}
       {!!snackbarMessage && (

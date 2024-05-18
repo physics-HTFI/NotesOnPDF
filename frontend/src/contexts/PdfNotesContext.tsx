@@ -36,7 +36,7 @@ export default PdfNotesContext;
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setAccessFailedReason } = useContext(UiStateContext);
+  const { readOnly, setSnackbarMessage } = useContext(UiStateContext);
   const [idOrFile, setIdOrFile_] = useState<string | File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [previousPageNum, setPreviousPageNum] = useState<number>();
@@ -56,11 +56,13 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
           id?: string,
           pdfNotes?: PdfNotes,
           model?: IModel,
-          setAccessFailedReason?: (reason: string) => void
+          setSnackbarMessage?: (
+            snackbarMessage: JSX.Element | undefined
+          ) => void
         ) => {
           if (!pdfNotes || !id) return;
           model?.putPdfNotes(id, pdfNotes).catch(() => {
-            setAccessFailedReason?.("注釈ファイルの保存");
+            setSnackbarMessage?.(model.getMessage("注釈ファイルの保存"));
           });
         },
         1000
@@ -69,15 +71,8 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   );
   useEffect(() => {
     if (readOnly) return;
-    putPdfNotesDebounced(id, pdfNotes, model, setAccessFailedReason);
-  }, [
-    id,
-    pdfNotes,
-    model,
-    readOnly,
-    putPdfNotesDebounced,
-    setAccessFailedReason,
-  ]);
+    putPdfNotesDebounced(id, pdfNotes, model, setSnackbarMessage);
+  }, [id, pdfNotes, model, readOnly, putPdfNotesDebounced, setSnackbarMessage]);
 
   return (
     <PdfNotesContext.Provider

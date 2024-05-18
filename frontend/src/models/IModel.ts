@@ -6,6 +6,7 @@ import History from "@/types/History";
 
 export default interface IModel {
   getFlags(): ModelFlags;
+  getMessage(reason: string): JSX.Element | undefined;
 
   getFileTree(): Promise<FileTree>;
   getHistory(): Promise<History>;
