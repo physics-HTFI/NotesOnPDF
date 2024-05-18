@@ -18,7 +18,7 @@ const options = {
 /**
  * PDF画像を表示するコンポーネント
  */
-export default function PdfImageMock({ pageLabel }: { pageLabel?: string }) {
+export default function PdfImageWeb({ pageLabel }: { pageLabel?: string }) {
   const { id, file, setIdOrFile, setPdfNotes, pdfNotes } =
     useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);

@@ -14,7 +14,7 @@ export default class ModelMock implements IModel {
     canOpenHistory: false,
     canOpenFileDialog: false,
     canOpenGithub: true,
-    usePdfjs: false,
+    usePdfjs: true,
   });
   getMessage = (reason: string) => <>{`${reason}に失敗しました`}</>;
 

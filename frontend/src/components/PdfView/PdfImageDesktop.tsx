@@ -8,7 +8,7 @@ import UiStateContext from "@/contexts/UiStateContext";
 /**
  * PDF画像を表示するコンポーネント
  */
-export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
+export default function PdfImageDesktop({ pageLabel }: { pageLabel?: string }) {
   const { model } = useContext(ModelContext);
   const { setSnackbarMessage } = useContext(UiStateContext);
   const { pageRect } = useContext(MouseContext);

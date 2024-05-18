@@ -12,13 +12,15 @@ import { grey } from "@mui/material/colors";
 import Move from "./Move";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import AppSettingsContext from "@/contexts/AppSettingsContext";
-import PdfImage from "./PdfImage";
-import PdfImageMock from "./PdfImageMock";
+import PdfImageDesktop from "./PdfImageDesktop";
+import PdfImageWeb from "./PdfImageWeb";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * Pdfを表示するコンポーネント
  */
 export default function PdfView() {
+  const { modelFlags } = useContext(ModelContext);
   const { appSettings } = useContext(AppSettingsContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
   const { pdfNotes, page, updateNote, scrollPage, handleKeyDown } =
@@ -112,10 +114,10 @@ export default function PdfView() {
         }}
         disableGutters
       >
-        {import.meta.env.VITE_IS_WEB === "true" ? (
-          <PdfImageMock pageLabel={pageLabel} />
+        {modelFlags.usePdfjs ? (
+          <PdfImageWeb pageLabel={pageLabel} />
         ) : (
-          <PdfImage pageLabel={pageLabel} />
+          <PdfImageDesktop pageLabel={pageLabel} />
         )}
         <Items
           mode={mode}
