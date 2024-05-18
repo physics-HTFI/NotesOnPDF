@@ -28,13 +28,11 @@ export default class ModelWeb implements IModel {
     await this.wait();
     return [];
   };
-  getIdFromExternalFile = async (): Promise<string> => {
-    await this.wait();
-    throw new Error();
-  };
-  getIdFromUrl = async (): Promise<string> => {
-    await this.wait();
-    throw new Error();
+  getIdFromExternalFile = () => Promise.reject();
+  getIdFromUrl = () => Promise.reject();
+  getFileFromId = (id: string) => {
+    console.log(id);
+    return Promise.reject();
   };
 
   public getCoverages = async (): Promise<Coverages> => {

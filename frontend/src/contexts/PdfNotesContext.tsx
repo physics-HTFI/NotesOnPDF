@@ -17,14 +17,13 @@ import UiStateContext from "./UiStateContext";
  */
 const PdfNotesContext = createContext<{
   id?: string;
-  file?: File;
-  setIdOrFile: (idOrFile?: string | File) => void;
+  setId: (id?: string) => void;
   pdfNotes?: PdfNotes;
   setPdfNotes: (pdfNotes?: PdfNotes) => void;
   previousPageNum?: number;
   setPreviousPageNum: (previousPageNum?: number) => void;
 }>({
-  setIdOrFile: () => undefined,
+  setId: () => undefined,
   setPdfNotes: () => undefined,
   setPreviousPageNum: () => undefined,
 });
@@ -37,14 +36,12 @@ export default PdfNotesContext;
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
   const { readOnly, setSnackbarMessage } = useContext(UiStateContext);
-  const [idOrFile, setIdOrFile_] = useState<string | File>();
+  const [id, setId_] = useState<string>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [previousPageNum, setPreviousPageNum] = useState<number>();
 
-  const id = idOrFile instanceof File ? undefined : idOrFile;
-  const file = idOrFile instanceof File ? idOrFile : undefined;
-  const setIdOrFile = (idOrFile?: string | File) => {
-    setIdOrFile_(idOrFile);
+  const setId = (id?: string) => {
+    setId_(id);
     setPreviousPageNum(undefined);
   };
 
@@ -78,8 +75,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     <PdfNotesContext.Provider
       value={{
         id,
-        file,
-        setIdOrFile,
+        setId,
         pdfNotes,
         setPdfNotes,
         previousPageNum,

@@ -46,11 +46,16 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   }, [model, setSnackbarMessage]);
 
   // `id`または`pdfNotes`が変更されたときに、必要であれば`Coverages`を更新する
-  if (id && pdfNotes) {
-    const newCoverages = getNewCoverages(coverages, id, pdfNotes, fileTree);
+  // `readOnly`の時は`set`もしない（そうしないと`readOnly`状態で`pdfNotes`を変更→別のファイルを開いて`readOnly`を解除、としたときに前のファイルの`Coverage`が変化してしまう）
+  if (id && pdfNotes && !readOnly) {
+    const newCoverages = getNewCoveragesOrUndefined(
+      coverages,
+      id,
+      pdfNotes,
+      fileTree
+    );
     if (newCoverages) {
       setCoverages(newCoverages);
-      if (readOnly) return;
       model.putCoverages(newCoverages).catch(() => {
         setSnackbarMessage(model.getMessage("進捗率の保存"));
       });
@@ -83,7 +88,7 @@ async function load(model: IModel) {
 /**
  * 更新済みの`coverages`を返す。更新不要の場合は`undefined`。
  */
-function getNewCoverages(
+function getNewCoveragesOrUndefined(
   coverages?: Coverages,
   id?: string,
   pdfNotes?: PdfNotes,

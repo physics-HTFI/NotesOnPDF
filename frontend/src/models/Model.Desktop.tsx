@@ -59,6 +59,8 @@ export default class ModelDesktop implements IModel {
     return id;
   };
 
+  getFileFromId = () => Promise.reject();
+
   getCoverages = async (): Promise<Coverages> => {
     const res = await fetch(ORIGIN + "/api/coverage");
     return ((await res.json()) ?? GetCoverages_empty()) as Coverages;

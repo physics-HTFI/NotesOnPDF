@@ -12,6 +12,7 @@ export default interface IModel {
   getHistory(): Promise<History>;
   getIdFromExternalFile(): Promise<string>;
   getIdFromUrl(url: string): Promise<string>;
+  getFileFromId(id: string): Promise<string | File>;
 
   getCoverages(): Promise<Coverages>;
   putCoverages(progress: Coverages): Promise<void>;

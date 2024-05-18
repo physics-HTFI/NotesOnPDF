@@ -1,12 +1,12 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { pdfjs, Document, Page } from "react-pdf";
-import { sampleId2Path } from "@/models/Model.Mock";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import UiStateContext from "@/contexts/UiStateContext";
 import { createPdfNotesMock } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 import usePdfNotes from "@/hooks/usePdfNotes";
+import ModelContext from "@/contexts/ModelContext";
 
 if (import.meta.env.VITE_IS_WEB === "true") {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -20,20 +20,35 @@ const options = {
  * PDF画像を表示するコンポーネント
  */
 export default function PdfImageWeb() {
-  const { id, file, setIdOrFile, setPdfNotes, pdfNotes } =
-    useContext(PdfNotesContext);
+  const { model } = useContext(ModelContext);
+  const { id, setId, setPdfNotes, pdfNotes } = useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
-  const { setWaiting, setOpenFileTreeDrawer } = useContext(UiStateContext);
+  const { setWaiting, setOpenFileTreeDrawer, setSnackbarMessage } =
+    useContext(UiStateContext);
   const { pageLabel } = usePdfNotes();
+
+  const [file, setFile] = useState<string | File>();
   const [reading, setReading] = useState(false);
   const { isReading } = useReading();
   if (isReading()) {
     setReading(true);
   }
 
+  useEffect(() => {
+    if (!id) return;
+    model
+      .getFileFromId(id)
+      .then((file) => {
+        setFile(file);
+      })
+      .catch(() => {
+        setSnackbarMessage(model.getMessage("PDFファイルの取得"));
+      });
+  });
+
   return (
     <Document
-      file={file ?? `${import.meta.env.VITE_Pdf_ROOT}${sampleId2Path(id)}`}
+      file={file}
       onLoadSuccess={(doc) => {
         setSizes().catch(() => undefined);
         setWaiting(false);
@@ -53,7 +68,7 @@ export default function PdfImageWeb() {
         }
       }}
       onLoadError={() => {
-        setIdOrFile(undefined);
+        setId(undefined);
         setWaiting(false);
         setOpenFileTreeDrawer(true);
       }}
@@ -84,17 +99,16 @@ export default function PdfImageWeb() {
  */
 function useReading() {
   const [prev, setPrev] = useState<{
-    idOrFile: string | File;
+    id: string;
     page: number;
   }>();
-  const { id, file, pdfNotes } = useContext(PdfNotesContext);
+  const { id, pdfNotes } = useContext(PdfNotesContext);
 
   const isReading = () => {
-    const idOrFile = id ?? file;
-    if (pdfNotes && idOrFile) {
-      if (prev?.idOrFile !== idOrFile || prev.page !== pdfNotes.currentPage) {
+    if (pdfNotes && id) {
+      if (prev?.id !== id || prev.page !== pdfNotes.currentPage) {
         setPrev({
-          idOrFile: idOrFile,
+          id,
           page: pdfNotes.currentPage,
         });
         return true;

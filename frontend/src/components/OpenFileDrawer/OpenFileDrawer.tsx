@@ -13,7 +13,7 @@ import ModelContext from "@/contexts/ModelContext";
 export default function OpenFileDrawer() {
   const { model } = useContext(ModelContext);
   const { setSnackbarMessage } = useContext(UiStateContext);
-  const { id, file, setIdOrFile, setPdfNotes } = useContext(PdfNotesContext);
+  const { id, setId, setPdfNotes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiStateContext);
 
@@ -27,12 +27,12 @@ export default function OpenFileDrawer() {
       }
       setWaiting(true);
       setPdfNotes(undefined);
-      setIdOrFile(undefined);
+      setId(undefined);
       model
         .getPdfNotes(_id)
         .then((result) => {
           setPdfNotes(createOrGetPdfNotes(result));
-          setIdOrFile(_id);
+          setId(_id);
           setOpenFileTreeDrawer(false);
         })
         .catch(() => {
@@ -45,7 +45,7 @@ export default function OpenFileDrawer() {
     [
       id,
       model,
-      setIdOrFile,
+      setId,
       setOpenFileTreeDrawer,
       setPdfNotes,
       setWaiting,
@@ -58,7 +58,7 @@ export default function OpenFileDrawer() {
       anchor="left"
       open={openFileTreeDrawer}
       onClose={() => {
-        if (!id && !file) return;
+        if (!id) return;
         setOpenFileTreeDrawer(false);
       }}
       PaperProps={{
