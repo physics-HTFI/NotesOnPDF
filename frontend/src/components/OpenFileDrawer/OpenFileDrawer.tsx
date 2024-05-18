@@ -53,20 +53,6 @@ export default function OpenFileDrawer() {
     ]
   );
 
-  const handleSelectPdfByFile = (file: File) => {
-    console.count(file.name);
-    /*
-    setOpenLeftDrawer(false);
-    const pdfPathNew = _file.name;
-    if (file?.name === pdfPathNew || !pdfPathNew) return;
-    setWaiting(true); // PDF読み込み中のインジケーターも必要
-    setPdfNotes(undefined);
-    setFile(_file);
-    // TODO
-    setWaiting(false);
-    */
-  };
-
   return (
     <Drawer
       anchor="left"
@@ -90,10 +76,7 @@ export default function OpenFileDrawer() {
       }}
     >
       {/* ヘッダーアイコン */}
-      <Header
-        onSelectPdfByFile={handleSelectPdfByFile}
-        onSelectPdfById={handleSelectPdfById}
-      />
+      <Header onSelectPdfById={handleSelectPdfById} />
 
       {/* ツリービュー */}
       <FileTreeView onSelectPdfById={handleSelectPdfById} />

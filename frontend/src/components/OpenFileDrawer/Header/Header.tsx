@@ -27,10 +27,8 @@ import ModelContext from "@/contexts/ModelContext";
  */
 export default function Header({
   onSelectPdfById,
-  onSelectPdfByFile,
 }: {
   onSelectPdfById?: (id: string) => void;
-  onSelectPdfByFile?: (file: File) => void;
 }) {
   const { model, modelFlags } = useContext(ModelContext);
   const { readOnly, setReadOnly, setSnackbarMessage } =
@@ -39,42 +37,6 @@ export default function Header({
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
-
-  const handleSelectExternalPdf = modelFlags.usePdfjs
-    ? () => {
-        new Promise<File | null>((resolve, reject) => {
-          const input = document.createElement("input");
-          input.type = "file";
-          input.accept = "application/pdf";
-          input.onchange = (e) => {
-            const target = e.target as HTMLInputElement | null;
-            const file = target?.files?.[0];
-            if (!file) reject();
-            else resolve(file);
-          };
-          input.click();
-        })
-          .then((file) => {
-            if (!file) return;
-            onSelectPdfByFile?.(file);
-          })
-          .catch(() => undefined);
-      }
-    : () => {
-        setOpenAlert(true);
-        model
-          .getIdFromExternalFile()
-          .then((id) => {
-            if (id === "") return;
-            onSelectPdfById?.(id);
-          })
-          .catch(() => {
-            setSnackbarMessage(model.getMessage("PDFファイルの取得"));
-          })
-          .finally(() => {
-            setOpenAlert(false);
-          });
-      };
 
   const sxButton = { color: "slategray" };
 
@@ -152,7 +114,21 @@ export default function Header({
             disabled={!modelFlags.canOpenFileDialog}
             sx={sxButton}
             size="small"
-            onClick={handleSelectExternalPdf}
+            onClick={() => {
+              setOpenAlert(true);
+              model
+                .getIdFromExternalFile()
+                .then((id) => {
+                  if (id === "") return;
+                  onSelectPdfById?.(id);
+                })
+                .catch(() => {
+                  setSnackbarMessage(model.getMessage("PDFファイルの取得"));
+                })
+                .finally(() => {
+                  setOpenAlert(false);
+                });
+            }}
           >
             <FolderOpen />
           </IconButton>

@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { pdfjs, Document, Page as PdfPage } from "react-pdf";
+import { pdfjs, Document, Page } from "react-pdf";
 import { sampleId2Path } from "@/models/Model.Mock";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import UiStateContext from "@/contexts/UiStateContext";
@@ -62,7 +62,7 @@ export default function PdfImageWeb() {
       loading={""}
       noData={""}
     >
-      <PdfPage
+      <Page
         pageIndex={pdfNotes?.currentPage}
         width={pageRect?.width}
         error={""}
