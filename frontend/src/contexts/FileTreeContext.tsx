@@ -10,7 +10,8 @@ import Coverages, { Coverage } from "@/types/Coverages";
 import IModel from "@/models/IModel";
 import PdfNotesContext from "./PdfNotesContext";
 import PdfNotes from "@/types/PdfNotes";
-import useModel from "@/hooks/useModel";
+import ModelContext from "./ModelContext";
+import UiStateContext from "./UiStateContext";
 
 /**
  * ファイルツリーと履歴のコンテクスト
@@ -26,7 +27,8 @@ export default FileTreeContext;
  * `FileTreeContext`のプロバイダー
  */
 export function FileTreeContextProvider({ children }: { children: ReactNode }) {
-  const { model, readOnly, setAccessFailedReason } = useModel();
+  const { model } = useContext(ModelContext);
+  const { readOnly, setAccessFailedReason } = useContext(UiStateContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();

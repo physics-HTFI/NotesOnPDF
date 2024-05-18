@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Button,
   Dialog,
@@ -12,15 +12,17 @@ import {
   Typography,
 } from "@mui/material";
 import { Folder, Lock, LockOpen } from "@mui/icons-material";
-import useModel from "@/hooks/useModel";
-import ModelMock from "@/models/Model.Null";
+import ModelMock from "@/models/Model.Mock";
 import ModelWeb from "@/models/Model.Web";
+import UiStateContext from "@/contexts/UiStateContext";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * 文字列を入力するダイアログ
  */
 export default function SelectRootDialog() {
-  const { setModel, readOnly, setReadOnly } = useModel();
+  const { setModel } = useContext(ModelContext);
+  const { readOnly, setReadOnly } = useContext(UiStateContext);
   const [open, setOpen] = useState(true);
   const [dirHandle, setDirHandle] = useState<FileSystemDirectoryHandle>();
   const [draggingColor, setDraggingColor] = useState<string>();

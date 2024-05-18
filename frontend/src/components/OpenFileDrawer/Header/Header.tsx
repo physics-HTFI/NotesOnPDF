@@ -19,8 +19,8 @@ import {
 import InputStringDialog from "./InputStringDialog";
 import HistoryDialog from "./HistoryDialog";
 import Waiting from "../../Fullscreen/Waiting";
-import useModel from "@/hooks/useModel";
 import UiStateContext from "@/contexts/UiStateContext";
+import ModelContext from "@/contexts/ModelContext";
 
 const IS_MOCK = import.meta.env.VITE_IS_WEB === "true";
 
@@ -34,8 +34,9 @@ export default function Header({
   onSelectPdfById?: (id: string) => void;
   onSelectPdfByFile?: (file: File) => void;
 }) {
-  const { model, setAccessFailedReason } = useModel();
-  const { readOnly, setReadOnly } = useContext(UiStateContext);
+  const { model } = useContext(ModelContext);
+  const { readOnly, setReadOnly, setAccessFailedReason } =
+    useContext(UiStateContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);

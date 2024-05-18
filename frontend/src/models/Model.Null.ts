@@ -6,7 +6,7 @@ import History from "@/types/History";
 
 export const sampleId2Path = (id?: string) => (id === "12" ? "文書1.pdf" : "");
 
-export default class ModelMock implements IModel {
+export default class ModelNull implements IModel {
   private wait = () => new Promise((resolve) => setTimeout(resolve, 0));
 
   public getFileTree = async (): Promise<FileTree> => {

@@ -1,6 +1,13 @@
 import AppSettings from "@/types/AppSettings";
-import { ReactNode, createContext, useEffect, useState } from "react";
-import useModel from "@/hooks/useModel";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import ModelContext from "./ModelContext";
+import UiStateContext from "./UiStateContext";
 
 /**
  * アプリ設定のコンテクスト
@@ -20,7 +27,8 @@ export function AppSettingsContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const { model, readOnly, setAccessFailedReason } = useModel();
+  const { model } = useContext(ModelContext);
+  const { readOnly, setAccessFailedReason } = useContext(UiStateContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
 
   useEffect(() => {

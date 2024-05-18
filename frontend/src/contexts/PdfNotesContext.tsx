@@ -1,8 +1,16 @@
 import PdfNotes from "@/types/PdfNotes";
-import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { debounce } from "@mui/material";
 import IModel from "@/models/IModel";
-import useModel from "@/hooks/useModel";
+import ModelContext from "./ModelContext";
+import UiStateContext from "./UiStateContext";
 
 /**
  * 注釈のコンテクスト
@@ -27,7 +35,8 @@ export default PdfNotesContext;
  * `AppSettingsContext`のプロバイダー
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
-  const { model, readOnly, setAccessFailedReason } = useModel();
+  const { model } = useContext(ModelContext);
+  const { readOnly, setAccessFailedReason } = useContext(UiStateContext);
   const [idOrFile, setIdOrFile_] = useState<string | File>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [previousPageNum, setPreviousPageNum] = useState<number>();

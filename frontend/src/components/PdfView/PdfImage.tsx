@@ -2,13 +2,15 @@ import { useContext, useRef, useState } from "react";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
-import useModel from "@/hooks/useModel";
+import ModelContext from "@/contexts/ModelContext";
+import UiStateContext from "@/contexts/UiStateContext";
 
 /**
  * PDF画像を表示するコンポーネント
  */
 export default function PdfImage({ pageLabel }: { pageLabel?: string }) {
-  const { model, setAccessFailedReason } = useModel();
+  const { model } = useContext(ModelContext);
+  const { setAccessFailedReason } = useContext(UiStateContext);
   const { pageRect } = useContext(MouseContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [src, setSrc] = useState("");

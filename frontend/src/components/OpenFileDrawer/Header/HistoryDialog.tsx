@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import History from "@/types/History";
 import UiStateContext from "@/contexts/UiStateContext";
-import useModel from "@/hooks/useModel";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * PDFを開いた履歴
@@ -24,8 +24,8 @@ export default function HistoryDialog({
   open: boolean;
   onClose: (id?: string) => void;
 }) {
-  const { model, setAccessFailedReason } = useModel();
-  const { setWaiting } = useContext(UiStateContext);
+  const { model } = useContext(ModelContext);
+  const { setWaiting, setAccessFailedReason } = useContext(UiStateContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {

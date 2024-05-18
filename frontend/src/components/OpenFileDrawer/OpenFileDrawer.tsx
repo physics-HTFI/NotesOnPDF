@@ -5,13 +5,14 @@ import { createOrGetPdfNotes } from "@/types/PdfNotes";
 import UiStateContext from "@/contexts/UiStateContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import FileTreeView from "./FileTreeView/FileTreeView";
-import useModel from "@/hooks/useModel";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
-  const { model, setAccessFailedReason } = useModel();
+  const { model } = useContext(ModelContext);
+  const { setAccessFailedReason } = useContext(UiStateContext);
   const { id, file, setIdOrFile, setPdfNotes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiStateContext);
