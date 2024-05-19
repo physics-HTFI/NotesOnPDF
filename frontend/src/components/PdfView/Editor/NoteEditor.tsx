@@ -15,6 +15,7 @@ import { blue, grey } from "@mui/material/colors";
 // https://mui.com/base-ui/react-textarea-autosize/
 const Textarea = styled(TextareaAutosize)(
   () => `
+  field-sizing: content;
   min-width: 100px;
   max-width: 50vw;
   font-family: 'IBM Plex Sans', sans-serif;
