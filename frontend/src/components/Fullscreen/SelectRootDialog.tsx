@@ -59,7 +59,26 @@ export default function SelectRootDialog() {
           }
         }}
       >
-        <DialogTitle>基準フォルダの選択</DialogTitle>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            marginBottom: 1,
+          }}
+        >
+          <img src="favicon.svg" style={{ height: 24 }} />
+          NotesOnPDF ウェブ版
+          <span
+            style={{
+              fontSize: "60%",
+              marginTop: 10,
+              color: "darkgray",
+            }}
+          >
+            (Google Chrome, Microsoft Edge)
+          </span>
+        </DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
@@ -96,7 +115,7 @@ export default function SelectRootDialog() {
             }}
           />
 
-          <Stack direction="row" sx={{ mt: 3, height: 150 }}>
+          <Stack direction="row" sx={{ mt: 3, height: 120 }}>
             {/* 読み取り専用 */}
             <IconButton
               sx={{ alignItems: "start", mb: "auto", color: "steelblue" }}
@@ -129,30 +148,25 @@ export default function SelectRootDialog() {
               </Typography>
               <div>
                 {readOnly ? (
-                  <span>閲覧や編集はできますが、保存は一切されません</span>
+                  <span>
+                    閲覧や編集はできますが、保存は一切されません
+                    <br />
+                    自動的にファイルが追加されることもありません
+                  </span>
                 ) : (
                   <span>
                     変更が加えられた際に、注釈ファイルを自動保存します
                     <br />
-                    注釈ファイル名は &quot;(PDFファイル名).json&quot; です
+                    注釈ファイル名は
+                    &quot;(PDFフォルダ)/(PDFファイル名).json&quot; です
                     <br />
-                    基準フォルダ直下に、設定フォルダ &quot;.NotesOnPdf&quot;
-                    が生成されます
+                    また、基準フォルダ直下に、設定フォルダ
+                    &quot;.NotesOnPdf&quot; が生成されます
                   </span>
                 )}
               </div>
             </div>
           </Stack>
-
-          <div
-            style={{
-              fontSize: "80%",
-              color: "darkgray",
-              paddingBottom: "20px",
-            }}
-          >
-            このアプリは Google Chrome または Microsoft Edge で動作します
-          </div>
         </DialogContent>
 
         <DialogActions>
