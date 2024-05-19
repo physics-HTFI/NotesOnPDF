@@ -101,6 +101,7 @@ export default function PdfView() {
         sx={{
           width: pageRect?.width,
           height: pageRect?.height,
+          visibility: pageRect ? "visible" : "collapse",
           position: "absolute",
           top,
           bottom,

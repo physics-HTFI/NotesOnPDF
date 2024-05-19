@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { pdfjs, Document, Page } from "react-pdf";
-import PdfNotesContext from "@/contexts/PdfNotesContext";
+import PdfNotesContext, { PageSize } from "@/contexts/PdfNotesContext";
 import UiStateContext from "@/contexts/UiStateContext";
-import { createPdfNotesMock } from "@/types/PdfNotes";
+import { createOrGetPdfNotes } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 import usePdfNotes from "@/hooks/usePdfNotes";
@@ -21,9 +21,10 @@ const options = {
  */
 export default function PdfImageWeb() {
   const { model } = useContext(ModelContext);
-  const { id, setId, setPdfNotes, pdfNotes } = useContext(PdfNotesContext);
+  const { id, pdfNotes, pageSizes, setId, setPdfNotes, setPageSizes } =
+    useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
-  const { setWaiting, setOpenFileTreeDrawer, setSnackbarMessage } =
+  const { waiting, setWaiting, setOpenFileTreeDrawer, setSnackbarMessage } =
     useContext(UiStateContext);
   const { pageLabel } = usePdfNotes();
 
@@ -35,7 +36,9 @@ export default function PdfImageWeb() {
   }
 
   useEffect(() => {
+    setFile(undefined);
     if (!id) return;
+    setWaiting(true);
     model
       .getFileFromId(id)
       .then((file) => {
@@ -44,27 +47,32 @@ export default function PdfImageWeb() {
       .catch(() => {
         setSnackbarMessage(model.getMessage("PDFファイルの取得"));
       });
-  });
+  }, [id, model, setWaiting, setSnackbarMessage]);
+
+  // 読み込み終了時の処理
+  if (file && waiting && pageSizes && pdfNotes) {
+    const name = file instanceof File ? file.name : file;
+    setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
+    setWaiting(false);
+    setOpenFileTreeDrawer(false);
+  }
 
   return (
     <Document
       file={file}
       onLoadSuccess={(doc) => {
-        setSizes().catch(() => undefined);
-        setWaiting(false);
-        setOpenFileTreeDrawer(false);
+        setSizes().catch(() => undefined); // 読み込みは成功しているのでエラーにはならないはず
 
         async function setSizes() {
-          if (!file) return;
-          const pdfSizes: { width: number; height: number }[] = [];
+          const pageSizes: PageSize[] = [];
           for (let i = 0; i < doc.numPages; i++) {
             const page = await doc.getPage(i + 1);
-            pdfSizes.push({
+            pageSizes.push({
               width: page.view[2] ?? 0,
               height: page.view[3] ?? 0,
             });
           }
-          setPdfNotes(createPdfNotesMock(file, pdfSizes));
+          setPageSizes(pageSizes);
         }
       }}
       onLoadError={() => {

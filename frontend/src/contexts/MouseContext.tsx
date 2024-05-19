@@ -1,7 +1,7 @@
-import usePdfNotes from "@/hooks/usePdfNotes";
 import PdfNotes from "@/types/PdfNotes";
 import { Box } from "@mui/material";
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
+import PdfNotesContext, { PageSize } from "./PdfNotesContext";
 
 interface Mouse {
   pageX: number;
@@ -26,11 +26,11 @@ export default MouseContext;
  * `MouseContext`のプロバイダー
  */
 export function MouseContextProvider({ children }: { children: ReactNode }) {
-  const { pdfNotes } = usePdfNotes();
+  const { pdfNotes, pageSizes } = useContext(PdfNotesContext);
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
   const [refContainer, setRefContainer] = useState<HTMLDivElement>();
   const containerRect = refContainer?.getBoundingClientRect();
-  const { pageRect, top, bottom } = getRect(pdfNotes, containerRect);
+  const { pageRect, top, bottom } = getRect(pdfNotes, pageSizes, containerRect);
 
   const scale =
     !pdfNotes || !pageRect
@@ -51,14 +51,17 @@ export function MouseContextProvider({ children }: { children: ReactNode }) {
  */
 function getRect(
   pdfNotes?: PdfNotes,
+  pageSizes?: PageSize[],
   containerRect?: DOMRect
 ): { pageRect?: DOMRect; top?: number; bottom?: number } {
-  const pdfRatio = pdfNotes?.pages[pdfNotes.currentPage]?.sizeRatio;
-  if (!pdfNotes || !pdfRatio || !containerRect) return {};
+  if (!pdfNotes || !pageSizes || !containerRect) return {};
+  const size = pageSizes[pdfNotes.currentPage];
+  if (!size) return {};
+  const pageRatio = size.width / size.height;
   return preferredSize(
     pdfNotes.settings.offsetTop,
     pdfNotes.settings.offsetBottom,
-    pdfRatio,
+    pageRatio,
     containerRect.width,
     containerRect.height,
     containerRect.x
@@ -70,13 +73,13 @@ function getRect(
   function preferredSize(
     offsetTop: number,
     offsetBottom: number,
-    pdfRatio: number, // width / height
+    pageRatio: number, // width / height
     viewW: number,
     viewH: number,
     viewX: number
   ) {
     const imgH = viewH / (1 - offsetTop - offsetBottom);
-    const imgW = pdfRatio * imgH;
+    const imgW = pageRatio * imgH;
     const top = imgH * offsetTop;
     const bottom = imgH * offsetBottom;
     const ratio = Math.min(1, viewW / imgW); // 画像が横にはみ出しそうな場合にこの係数をかけて縮小する

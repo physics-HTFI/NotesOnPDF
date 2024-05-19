@@ -12,19 +12,27 @@ import IModel from "@/models/IModel";
 import ModelContext from "./ModelContext";
 import UiStateContext from "./UiStateContext";
 
+export interface PageSize {
+  width: number;
+  height: number;
+}
+
 /**
  * 注釈のコンテクスト
  */
 const PdfNotesContext = createContext<{
   id?: string;
-  setId: (id?: string) => void;
   pdfNotes?: PdfNotes;
-  setPdfNotes: (pdfNotes?: PdfNotes) => void;
+  pageSizes?: PageSize[];
   previousPageNum?: number;
+  setId: (id?: string) => void;
+  setPdfNotes: (pdfNotes?: PdfNotes) => void;
+  setPageSizes: (pageSizes?: PageSize[]) => void;
   setPreviousPageNum: (previousPageNum?: number) => void;
 }>({
   setId: () => undefined,
   setPdfNotes: () => undefined,
+  setPageSizes: () => undefined,
   setPreviousPageNum: () => undefined,
 });
 
@@ -38,6 +46,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { readOnly, setSnackbarMessage } = useContext(UiStateContext);
   const [id, setId_] = useState<string>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
+  const [pageSizes, setPageSizes] = useState<PageSize[]>();
   const [previousPageNum, setPreviousPageNum] = useState<number>();
 
   const setId = (id?: string) => {
@@ -75,10 +84,12 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     <PdfNotesContext.Provider
       value={{
         id,
-        setId,
         pdfNotes,
-        setPdfNotes,
+        pageSizes,
         previousPageNum,
+        setId,
+        setPdfNotes,
+        setPageSizes,
         setPreviousPageNum,
       }}
     >

@@ -20,7 +20,7 @@ namespace backend
         /// 注釈ファイルがないときは<c>retval.notes = null</c>になる。
         /// 失敗したら<c>throw</c>する。
         /// </summary>
-        public async Task<OpenPdfResult> OpenPdf(string id)
+        public async Task<ResultGetPdfNotes> OpenPdf(string id)
         {
             (var path, var origin) = GetPath(id);
             var sizes = await pdfReader.Open(path, origin);

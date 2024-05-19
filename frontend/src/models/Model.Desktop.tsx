@@ -4,6 +4,7 @@ import Coverages, { GetCoverages_empty } from "@/types/Coverages";
 import IModel, { ResultGetPdfNotes } from "./IModel";
 import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
 import History from "@/types/History";
+import { PageSize } from "@/contexts/PdfNotesContext";
 
 const ORIGIN = import.meta.env.DEV
   ? "http://localhost:8080"
@@ -76,13 +77,13 @@ export default class ModelDesktop implements IModel {
     const res = await fetch(ORIGIN + `/api/notes/${id}`);
     const { name, sizes, notes } = (await res.json()) as {
       name: string;
-      sizes: { width: number; height: number }[];
+      sizes: PageSize[];
       notes?: string;
     };
     return {
       name,
-      sizes,
-      notes: notes ? (JSON.parse(notes) as PdfNotes) : undefined,
+      pageSizes: sizes,
+      pdfNotes: notes ? (JSON.parse(notes) as PdfNotes) : undefined,
     };
   };
   putPdfNotes = async (id: string, pdfNotes: PdfNotes): Promise<void> => {

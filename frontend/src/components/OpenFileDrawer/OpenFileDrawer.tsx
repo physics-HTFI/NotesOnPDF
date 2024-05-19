@@ -13,7 +13,7 @@ import ModelContext from "@/contexts/ModelContext";
 export default function OpenFileDrawer() {
   const { model } = useContext(ModelContext);
   const { setSnackbarMessage } = useContext(UiStateContext);
-  const { id, setId, setPdfNotes } = useContext(PdfNotesContext);
+  const { id, setId, setPdfNotes, setPageSizes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiStateContext);
 
@@ -26,12 +26,14 @@ export default function OpenFileDrawer() {
         return;
       }
       setWaiting(true);
-      setPdfNotes(undefined);
       setId(undefined);
+      setPdfNotes(undefined);
+      setPageSizes(undefined);
       model
         .getPdfNotes(_id)
         .then((result) => {
           setPdfNotes(createOrGetPdfNotes(result));
+          setPageSizes(result.pageSizes);
           setId(_id);
           setOpenFileTreeDrawer(false);
         })
@@ -48,6 +50,7 @@ export default function OpenFileDrawer() {
       setId,
       setOpenFileTreeDrawer,
       setPdfNotes,
+      setPageSizes,
       setWaiting,
       setSnackbarMessage,
     ]

@@ -91,8 +91,6 @@ export type PageStyle = "break-before" | "break-middle" | "excluded";
 export interface Page {
   /** ページ番号 */
   num: number;
-  /** ページサイズ比（= width/height） */
-  sizeRatio: number;
   /** 本のタイトル */
   volume?: string;
   /** 部のタイトル */
@@ -139,31 +137,30 @@ export interface Settings {
  * 既存の場合はそのまま返す。
  */
 export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
-  if (result.notes) return result.notes;
-  const notes: PdfNotes = {
+  if (
+    result.pdfNotes &&
+    (!result.pageSizes ||
+      result.pageSizes.length <= result.pdfNotes.pages.length)
+  ) {
+    return result.pdfNotes;
+  }
+  const notes: PdfNotes = result.pdfNotes ?? {
     title: result.name,
     version: "1.0",
     currentPage: 0,
     settings: { fontSize: 100, offsetTop: 0, offsetBottom: 0 },
-    pages: result.sizes.map<Page>((s, i) => ({
-      num: i + 1,
-      sizeRatio: s.width / s.height,
-    })),
+    pages: [],
   };
-  if (notes.pages[0]) {
+  // ページ数を`result.sizes`に合わせる
+  for (let i = 0; result.pageSizes && i < result.pageSizes.length; i++) {
+    if (i < notes.pages.length) continue;
+    notes.pages.push({ num: i + 1 });
+  }
+  updatePageNum(notes);
+  if (!result.pdfNotes && notes.pages[0]) {
     notes.pages[0].volume = result.name;
   }
   return notes;
-};
-
-/**
- * `PDF.js`から取得したサイズ情報から`PdfNotes`を生成する。
- */
-export const createPdfNotesMock = (
-  file: File,
-  sizes: { width: number; height: number }[]
-) => {
-  return createOrGetPdfNotes({ name: file.name, sizes });
 };
 
 /**

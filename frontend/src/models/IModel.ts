@@ -3,6 +3,7 @@ import Coverages from "@/types/Coverages";
 import PdfNotes from "@/types/PdfNotes";
 import AppSettings from "@/types/AppSettings";
 import History from "@/types/History";
+import { PageSize } from "@/contexts/PdfNotesContext";
 
 export default interface IModel {
   getFlags(): ModelFlags;
@@ -33,8 +34,8 @@ export default interface IModel {
 
 export interface ResultGetPdfNotes {
   name: string;
-  sizes: { width: number; height: number }[];
-  notes?: PdfNotes;
+  pageSizes?: PageSize[];
+  pdfNotes?: PdfNotes;
 }
 
 export interface ModelFlags {
