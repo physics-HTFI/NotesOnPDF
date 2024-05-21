@@ -108,7 +108,15 @@ export default function Header({
       />
 
       {/* PC内のPDFファイルを開く */}
-      <Tooltip title="ファイルツリー外のPDFファイルを開きます">
+      <Tooltip
+        title={
+          <span>
+            ファイルツリー外のPDFファイルを開きます
+            {modelFlags.usePdfjs && <br />}
+            {modelFlags.usePdfjs && "(ウェブ版では使用できません)"}
+          </span>
+        }
+      >
         <span>
           <IconButton
             disabled={!modelFlags.canOpenFileDialog}
@@ -153,7 +161,15 @@ export default function Header({
       </Backdrop>
 
       {/* URLから開く */}
-      <Tooltip title="URLからPDFファイルを開きます">
+      <Tooltip
+        title={
+          <span>
+            URLからPDFファイルを開きます
+            {modelFlags.usePdfjs && <br />}
+            {modelFlags.usePdfjs && "(ウェブ版では使用できません)"}
+          </span>
+        }
+      >
         <span>
           <IconButton
             disabled={!modelFlags.canOpenFileDialog}
