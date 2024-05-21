@@ -11,11 +11,10 @@ const PATH_HISTORY = ".NotesOnPDF/history.web.json";
 
 export default class ModelWeb implements IModel {
   constructor(private dirHandle: FileSystemDirectoryHandle) {
-    this.history = [];
-
     const getHistory = async () =>
       JSON.parse(await this.getTextFromPath(PATH_HISTORY)) as History;
 
+    this.history = [];
     getHistory()
       .then((h) => (this.history = h))
       .catch(() => undefined);
@@ -71,6 +70,18 @@ export default class ModelWeb implements IModel {
     }
   };
   getHistory = async () => Promise.resolve(this.history);
+  updateHistory = async (id: string, pages: number) => {
+    const entry: HistoryEntry = {
+      id,
+      name: id.split("/").pop() ?? "",
+      pages: String(pages),
+      origin: "ツリー内",
+      accessDate: ModelWeb.now(),
+    };
+    this.history = this.history.filter((e) => e.id !== entry.id);
+    this.history = [entry, ...this.history];
+    await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
+  };
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
   getFileFromId = async (id: string) => {
@@ -93,13 +104,6 @@ export default class ModelWeb implements IModel {
 
   getPdfNotes = async (id: string): Promise<ResultGetPdfNotes> => {
     const { name, jsonPath } = ModelWeb.parseId(id);
-    this.addHistory({
-      id,
-      name: id.split("/").pop() ?? "",
-      pages: "100",
-      origin: "ツリー内",
-      accessDate: ModelWeb.now(),
-    }).catch(() => undefined);
     try {
       return {
         name,
@@ -134,12 +138,6 @@ export default class ModelWeb implements IModel {
   //|
 
   private history: History;
-
-  private addHistory = async (entry: HistoryEntry) => {
-    this.history = this.history.filter((e) => e.id !== entry.id);
-    this.history = [entry, ...this.history];
-    await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
-  };
 
   private getFileHandleFromPath = async (
     path: string,
