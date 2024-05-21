@@ -51,7 +51,7 @@ export default function SpeedDial({
 }) {
   const { openSettingsDrawer, setOpenFileTreeDrawer, setOpenSettingsDrawer } =
     useContext(UiStateContext);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   return (
     <Box

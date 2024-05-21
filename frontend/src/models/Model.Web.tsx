@@ -2,7 +2,7 @@ import FileTree, { FileTreeEntry, GetFileTreeRoot } from "@/types/FileTree";
 import Coverages, { GetCoverages_empty } from "@/types/Coverages";
 import IModel, { ResultGetPdfNotes } from "./IModel";
 import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
-import History from "@/types/History";
+import History, { HistoryEntry } from "@/types/History";
 import PdfNotes from "@/types/PdfNotes";
 
 const PATH_SETTINGS = ".NotesOnPDF/settings.json";
@@ -10,7 +10,16 @@ const PATH_COVERAGES = ".NotesOnPDF/coverages.json";
 const PATH_HISTORY = ".NotesOnPDF/history.web.json";
 
 export default class ModelWeb implements IModel {
-  constructor(private dirHandle: FileSystemDirectoryHandle) {}
+  constructor(private dirHandle: FileSystemDirectoryHandle) {
+    this.history = [];
+
+    const getHistory = async () =>
+      JSON.parse(await this.getTextFromPath(PATH_HISTORY)) as History;
+
+    getHistory()
+      .then((h) => (this.history = h))
+      .catch(() => undefined);
+  }
 
   getFlags = () => ({
     canToggleReadOnly: true,
@@ -21,7 +30,7 @@ export default class ModelWeb implements IModel {
   });
   getMessage = (reason: string) => <>{`${reason}に失敗しました`}</>;
 
-  getFileTree = async (): Promise<FileTree> => {
+  getFileTree = async () => {
     const root = GetFileTreeRoot();
     const fileTree: FileTree = [root];
     await addEntries(fileTree, root, this.dirHandle);
@@ -61,13 +70,7 @@ export default class ModelWeb implements IModel {
       return fileTree;
     }
   };
-  getHistory = async (): Promise<History> => {
-    try {
-      return JSON.parse(await this.getTextFromPath(PATH_HISTORY)) as History;
-    } catch {
-      return [];
-    }
-  };
+  getHistory = async () => Promise.resolve(this.history);
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
   getFileFromId = async (id: string) => {
@@ -75,7 +78,7 @@ export default class ModelWeb implements IModel {
     return await fileHandle.getFile();
   };
 
-  getCoverages = async (): Promise<Coverages> => {
+  getCoverages = async () => {
     try {
       return JSON.parse(
         await this.getTextFromPath(PATH_COVERAGES)
@@ -84,12 +87,19 @@ export default class ModelWeb implements IModel {
       return GetCoverages_empty();
     }
   };
-  putCoverages = async (coverages: Coverages): Promise<void> => {
+  putCoverages = async (coverages: Coverages) => {
     await this.writeToPath(PATH_COVERAGES, JSON.stringify(coverages, null, 2));
   };
 
   getPdfNotes = async (id: string): Promise<ResultGetPdfNotes> => {
     const { name, jsonPath } = ModelWeb.parseId(id);
+    this.addHistory({
+      id,
+      name: id.split("/").pop() ?? "",
+      pages: "100",
+      origin: "ツリー内",
+      accessDate: ModelWeb.now(),
+    }).catch(() => undefined);
     try {
       return {
         name,
@@ -99,14 +109,14 @@ export default class ModelWeb implements IModel {
       return { name };
     }
   };
-  putPdfNotes = async (id: string, pdfNotes: PdfNotes): Promise<void> => {
+  putPdfNotes = async (id: string, pdfNotes: PdfNotes) => {
     const { jsonPath } = ModelWeb.parseId(id);
     await this.writeToPath(jsonPath, JSON.stringify(pdfNotes));
   };
 
   getPageImageUrl = () => "";
 
-  getAppSettings = async (): Promise<AppSettings> => {
+  getAppSettings = async () => {
     try {
       return JSON.parse(
         await this.getTextFromPath(PATH_SETTINGS)
@@ -115,13 +125,21 @@ export default class ModelWeb implements IModel {
       return GetAppSettings_default();
     }
   };
-  putAppSettings = async (appSettings: AppSettings): Promise<void> => {
+  putAppSettings = async (appSettings: AppSettings) => {
     await this.writeToPath(PATH_SETTINGS, JSON.stringify(appSettings, null, 2));
   };
 
   //|
   //| private
   //|
+
+  private history: History;
+
+  private addHistory = async (entry: HistoryEntry) => {
+    this.history = this.history.filter((e) => e.id !== entry.id);
+    this.history = [entry, ...this.history];
+    await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
+  };
 
   private getFileHandleFromPath = async (
     path: string,
@@ -164,4 +182,16 @@ export default class ModelWeb implements IModel {
     if (!name) throw new Error();
     return { name, jsonPath };
   };
+
+  private static now = () =>
+    new Date()
+      .toLocaleDateString("ja-JP", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
+      .replace(/\//g, "-");
 }
