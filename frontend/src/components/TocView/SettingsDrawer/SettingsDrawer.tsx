@@ -116,9 +116,9 @@ export default function SettingsDrawer() {
         {/* ページ設定 */}
         {tab === 0 && (
           <Box sx={{ mx: 1.5, mb: 1.5 }}>
-            {/* 題区切り */}
+            {/* 巻区切り */}
             <CheckboxText
-              label="題区切り"
+              label="巻区切り"
               tooltip="[Alt+Enter]"
               text={page?.volume}
               preferredText={volumeLabel}

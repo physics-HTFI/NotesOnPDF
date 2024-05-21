@@ -1,9 +1,9 @@
 import { Typography } from "@mui/material";
 
 /**
- * 題名要素
+ * 巻名要素
  */
-export default function Book({
+export default function Volume({
   title,
   onClick,
 }: {

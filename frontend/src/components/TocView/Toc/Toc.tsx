@@ -1,6 +1,6 @@
 import { useState } from "react";
 import usePdfNotes from "@/hooks/usePdfNotes";
-import Book from "./Book";
+import Volume from "./Volume";
 import Part from "./Part";
 import Chapter from "./Chapter";
 import Separator from "./Separator";
@@ -29,7 +29,7 @@ const ToC = () => {
     // 第名を追加
     if (page?.volume !== undefined) {
       toc.push(
-        <Book key={`volume-${i}`} title={page.volume} onClick={handleClick} />
+        <Volume key={`volume-${i}`} title={page.volume} onClick={handleClick} />
       );
     }
     // 部名を追加

@@ -91,7 +91,7 @@ export type PageStyle = "break-before" | "break-middle" | "excluded";
 export interface Page {
   /** ページ番号 */
   num: number;
-  /** 本のタイトル */
+  /** 巻のタイトル */
   volume?: string;
   /** 部のタイトル */
   part?: string;
