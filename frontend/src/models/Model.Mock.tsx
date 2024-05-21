@@ -7,7 +7,7 @@ import History from "@/types/History";
 const pdfPath = "/NotesOnPDF/PDFs/文書1.pdf";
 const pdfId = "9999";
 const fileTree: FileTree = [
-  { path: "", id: "root", children: ["1", "9", pdfId] },
+  { path: "", id: "0", children: ["1", "9", pdfId] },
   { path: "dummy1/", id: "1", children: ["2", "6", "7", "8"] },
   { path: "dummy1/dummy11/", id: "2", children: ["3", "4", "5"] },
   { path: "dummy1/dummy11/11A.pdf", id: "3", children: null },

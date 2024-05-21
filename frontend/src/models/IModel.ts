@@ -16,7 +16,7 @@ export default interface IModel {
   getFileFromId(id: string): Promise<string | File>;
 
   getCoverages(): Promise<Coverages>;
-  putCoverages(progress: Coverages): Promise<void>;
+  putCoverages(coverages: Coverages): Promise<void>;
 
   getPdfNotes(id: string): Promise<ResultGetPdfNotes>;
   putPdfNotes(id: string, pdfNotes: PdfNotes): Promise<void>;

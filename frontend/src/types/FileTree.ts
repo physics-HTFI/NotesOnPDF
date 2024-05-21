@@ -1,10 +1,16 @@
+export interface FileTreeEntry {
+  path: string;
+  id: string;
+  children: string[] | null;
+}
+
 /**
- * ルートフォルダの`id`は`root`。
  * フォルダの`children`は、フォルダ内の要素の`id`。
+ * ルートフォルダは`path === ""`。
  * PDFファイルの`children`は`null`。
  * @example
  *  [
- *     { path: "", id: "root", children: ["1", "9", "12"] },
+ *     { path: "", id: "0", children: ["1", "9", "12"] },
  *     { path: "dummy1/", id: "1", children: ["2"] },
  *     { path: "dummy1/dummy11/", id: "2", children: ["3", "4", "5"] },
  *     { path: "dummy1/dummy11/11A.pdf", id: "3", children: null },
@@ -19,10 +25,11 @@
  *     { path: "文書1.pdf", id: "12", children: null },
  *   ]
  */
-type FileTree = {
-  path: string;
-  id: string;
-  children: string[] | null;
-}[];
-
+type FileTree = FileTreeEntry[];
 export default FileTree;
+
+export const GetFileTreeRoot = (): FileTreeEntry => ({
+  id: "0",
+  path: "",
+  children: [],
+});

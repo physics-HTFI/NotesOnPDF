@@ -70,7 +70,8 @@ namespace backend
 
 
         /// <summary>
-        /// 過去に開いたファイルの<c>id</c>とファイル名のリストを返す
+        /// 過去に開いたファイルの<c>id</c>とファイル名のリストを返す。
+        /// <c>throw</c>しない。
         /// </summary>
         public PdfItem[] GetHistory() => history.GetHistory();
 
@@ -112,7 +113,7 @@ namespace backend
             string localPath = origin == PdfOrigin.Web
                 ? Path.Combine(SettingsUtils.DownloadDirectory, Download.UrlToName(path))
                 : Path.Combine(SettingsUtils.RootDirectory, path);
-            return Path.ChangeExtension(localPath, ".json");
+            return localPath + ".json";
         }
 
         (string path, PdfOrigin origin) GetPath(string id)

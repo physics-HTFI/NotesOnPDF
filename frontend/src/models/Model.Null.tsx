@@ -2,15 +2,13 @@ import { GetCoverages_empty } from "@/types/Coverages";
 import IModel from "./IModel";
 import { GetAppSettings_default } from "@/types/AppSettings";
 
-export const sampleId2Path = (id?: string) => (id === "12" ? "文書1.pdf" : "");
-
 export default class ModelNull implements IModel {
   getFlags = () => ({
     canToggleReadOnly: true,
     canOpenHistory: true,
     canOpenFileDialog: true,
     canOpenGithub: true,
-    usePdfjs: false,
+    usePdfjs: true,
   });
   getMessage = () => undefined;
 

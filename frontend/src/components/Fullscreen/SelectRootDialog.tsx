@@ -157,8 +157,7 @@ export default function SelectRootDialog() {
                   <span>
                     変更が加えられた際に、注釈ファイルを自動保存します
                     <br />
-                    注釈ファイル名は
-                    &quot;(PDFフォルダ)/(PDFファイル名).json&quot; です
+                    注釈ファイル名は &quot;(PDFファイルパス).json&quot; です
                     <br />
                     また、基準フォルダ直下に、設定フォルダ
                     &quot;.NotesOnPdf&quot; が生成されます

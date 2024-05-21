@@ -18,9 +18,9 @@ export default function getTreeItems(
   if (id === undefined) {
     return (
       <>
-        {fileTree[0]?.children?.map((id) =>
-          getTreeItems(fileTree, coverages, id)
-        )}
+        {fileTree
+          .find((e) => e.path === "")
+          ?.children?.map((id) => getTreeItems(fileTree, coverages, id))}
       </>
     );
   }

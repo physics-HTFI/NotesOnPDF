@@ -39,9 +39,6 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [waiting, setWaiting] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState<JSX.Element>();
-  const handleClose = () => {
-    setSnackbarMessage(undefined);
-  };
 
   return (
     <UiStateContext.Provider
@@ -61,14 +58,22 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
       {children}
       <Waiting isWaiting={waiting} />
 
-      {/* メッセージ（`flag && <></>`の形にしているのは非表示時に一瞬からのメッセージが表示されるのを防ぐため） */}
+      {/* メッセージ（`flag && <></>`の形にしているのは非表示時に空白のメッセージが一瞬表示されるのを防ぐため） */}
       {!!snackbarMessage && (
-        <Snackbar open onClose={handleClose}>
+        <Snackbar
+          open={!!snackbarMessage}
+          onClose={(_, reason) => {
+            if (reason === "clickaway") return;
+            setSnackbarMessage(undefined);
+          }}
+        >
           <Alert
             elevation={6}
             variant="filled"
-            onClose={handleClose}
             severity="info"
+            onClose={() => {
+              setSnackbarMessage(undefined);
+            }}
             sx={{ width: "100%" }}
           >
             {snackbarMessage}

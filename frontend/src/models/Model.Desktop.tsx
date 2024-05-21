@@ -66,10 +66,10 @@ export default class ModelDesktop implements IModel {
     const res = await fetch(ORIGIN + "/api/coverage");
     return ((await res.json()) ?? GetCoverages_empty()) as Coverages;
   };
-  putCoverages = async (progresses: Coverages): Promise<void> => {
+  putCoverages = async (coverages: Coverages): Promise<void> => {
     await fetch(ORIGIN + "/api/coverage", {
       ...this.getPutOptions(),
-      body: JSON.stringify(progresses, null, 2),
+      body: JSON.stringify(coverages, null, 2),
     });
   };
 
@@ -89,7 +89,7 @@ export default class ModelDesktop implements IModel {
   putPdfNotes = async (id: string, pdfNotes: PdfNotes): Promise<void> => {
     await fetch(ORIGIN + `/api/notes/${id}`, {
       ...this.getPutOptions(),
-      body: JSON.stringify(pdfNotes /*, null, 2*/),
+      body: JSON.stringify(pdfNotes),
     });
   };
 
