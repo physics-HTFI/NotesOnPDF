@@ -45,6 +45,7 @@ export default class ModelWeb implements IModel {
         fileTree.push(entry);
       }
     }
+    // 空ディレクトリがあるとファイルツリー上でPDFファイルとして表示されてしまうので取り除く
     function removeEmptyDirectories(fileTree: FileTree): FileTree {
       for (;;) {
         const length = fileTree.length;

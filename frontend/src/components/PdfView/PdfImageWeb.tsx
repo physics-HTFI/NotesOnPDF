@@ -49,13 +49,23 @@ export default function PdfImageWeb() {
       });
   }, [id, model, setWaiting, setSnackbarMessage]);
 
-  // 読み込み終了時の処理
-  if (file && waiting && pageSizes && pdfNotes) {
-    const name = file instanceof File ? file.name : file;
-    setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
-    setWaiting(false);
-    setOpenFileTreeDrawer(false);
-  }
+  useEffect(() => {
+    // 読み込み終了時の処理
+    if (file && waiting && pageSizes && pdfNotes) {
+      const name = file instanceof File ? file.name : file;
+      setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
+      setWaiting(false);
+      setOpenFileTreeDrawer(false);
+    }
+  }, [
+    file,
+    pageSizes,
+    pdfNotes,
+    setOpenFileTreeDrawer,
+    setPdfNotes,
+    setWaiting,
+    waiting,
+  ]);
 
   return (
     <Document
