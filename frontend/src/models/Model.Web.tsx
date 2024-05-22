@@ -40,17 +40,25 @@ export default class ModelWeb implements IModel {
       root: FileTreeEntry,
       dHandle: FileSystemDirectoryHandle
     ) {
+// フォルダを追加
       for await (const [name, handle] of dHandle) {
+if (handle.kind === "directory") {
         const path = !root.path ? name : `${root.path}/${name}`;
-        const entry: FileTreeEntry = { id: path, path, children: null };
+        const entry: FileTreeEntry = { id: path, path, children: [] };
+await addEntries(fileTree, entry, handle);
+          root.children?.push(path);
+          fileTree.push(entry);
+        }
+      }
+      // ファイルを追加（フォルダの後ろに追加する）
+      for await (const [name, handle] of dHandle) {
         if (handle.kind === "file") {
           if (!name.toLowerCase().endsWith(".pdf")) continue;
-        } else {
-          entry.children = [];
-          await addEntries(fileTree, entry, handle);
-        }
-        root.children?.push(path);
+        const path = !root.path ? name : `${root.path}/${name}`;
+          const entry: FileTreeEntry = { id: path, path, children: null };
+          root.children?.push(path);
         fileTree.push(entry);
+}
       }
     }
     // 空ディレクトリがあるとファイルツリー上でPDFファイルとして表示されてしまうので取り除く
