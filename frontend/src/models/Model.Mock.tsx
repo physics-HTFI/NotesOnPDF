@@ -5,7 +5,7 @@ import { GetAppSettings_default } from "@/types/AppSettings";
 import History, { updateHistory } from "@/types/History";
 
 const pdfPaths = [
-  "/NotesOnPDF/PDFs/文書1.pdf",
+  "NotesOnPDF/PDFs/文書1.pdf",
   "dummy1/",
   "dummy1/dummy11/",
   "dummy1/dummy11/11A.pdf",
@@ -49,22 +49,22 @@ const fileTree: FileTree = [
 const coverages: Coverages = {
   recentId: pdfPaths[0],
   pdfs: {
-    pdfPath: {
+    [pdfPaths[0]]: {
       allPages: 29,
       enabledPages: 23,
       notedPages: 0,
     },
-    "6": {
+    [pdfPaths[6]]: {
       allPages: 100,
       enabledPages: 100,
       notedPages: 20,
     },
-    "7": {
+    [pdfPaths[7]]: {
       allPages: 100,
       enabledPages: 100,
       notedPages: 50,
     },
-    "8": {
+    [pdfPaths[8]]: {
       allPages: 100,
       enabledPages: 100,
       notedPages: 100,
