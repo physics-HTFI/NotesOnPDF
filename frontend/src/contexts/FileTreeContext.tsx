@@ -46,8 +46,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   }, [model, setSnackbarMessage]);
 
   // `id`または`pdfNotes`が変更されたときに、必要であれば`Coverages`を更新する
-  // `readOnly`の時は`set`もしない（そうしないと`readOnly`状態で`pdfNotes`を変更→別のファイルを開いて`readOnly`を解除、としたときに前のファイルの`Coverage`が変化してしまう）
-  if (id && pdfNotes && !readOnly) {
+  if (id && pdfNotes) {
     const newCoverages = getNewCoveragesOrUndefined(
       coverages,
       id,
@@ -55,10 +54,15 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
       fileTree
     );
     if (newCoverages) {
+      // `Coverages`が不整合になることがある：
+      // ・`readOnly`状態で`pdfNotes`を変更→別のファイルを開いて`readOnly`を解除、としたときに前のファイルの`Coverage`が変化してしまう。
+      // だがレアなので気にしない（`!readOnly`状態で`Coverages`が変化しないほうが不自然なので）。
       setCoverages(newCoverages);
-      model.putCoverages(newCoverages).catch(() => {
-        setSnackbarMessage(model.getMessage("進捗率の保存"));
-      });
+      if (!readOnly) {
+        model.putCoverages(newCoverages).catch(() => {
+          setSnackbarMessage(model.getMessage("進捗率の保存"));
+        });
+      }
     }
   }
 
