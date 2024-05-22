@@ -5,7 +5,7 @@ import { GetAppSettings_default } from "@/types/AppSettings";
 import History, { updateHistory } from "@/types/History";
 
 const pdfPaths = [
-  "/NotesOnPDF/PDFs/文書1.pdf",
+  "NotesOnPDF/PDFs/文書1.pdf",
   "dummy1/",
   "dummy1/dummy11/",
   "dummy1/dummy11/11A.pdf",
