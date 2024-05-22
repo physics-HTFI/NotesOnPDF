@@ -2,45 +2,54 @@ import FileTree from "@/types/FileTree";
 import Coverages from "@/types/Coverages";
 import IModel, { ResultGetPdfNotes } from "./IModel";
 import { GetAppSettings_default } from "@/types/AppSettings";
-import History from "@/types/History";
+import History, { updateHistory } from "@/types/History";
 
-const pdfPath = "/NotesOnPDF/PDFs/文書1.pdf";
-const pdfId = "9999";
+const pdfPaths = [
+  "/NotesOnPDF/PDFs/文書1.pdf",
+  "dummy1/",
+  "dummy1/dummy11/",
+  "dummy1/dummy11/11A.pdf",
+  "dummy1/dummy11/11B.pdf",
+  "dummy1/dummy11/11C.pdf",
+  "dummy1/dummy1A.pdf",
+  "dummy1/dummy1B.pdf",
+  "dummy1/dummy1C.pdf",
+  "dummy2/dummy2/",
+  "dummy2/dummy2A.pdf",
+  "dummy2/dummy2B.pdf",
+] as const;
 const fileTree: FileTree = [
-  { path: "", id: "0", children: ["1", "9", pdfId] },
-  { path: "dummy1/", id: "1", children: ["2", "6", "7", "8"] },
-  { path: "dummy1/dummy11/", id: "2", children: ["3", "4", "5"] },
-  { path: "dummy1/dummy11/11A.pdf", id: "3", children: null },
-  { path: "dummy1/dummy11/11B.pdf", id: "4", children: null },
-  { path: "dummy1/dummy11/11C.pdf", id: "5", children: null },
-  { path: "dummy1/dummy1A.pdf", id: "6", children: null },
-  { path: "dummy1/dummy1B.pdf", id: "7", children: null },
-  { path: "dummy1/dummy1C.pdf", id: "8", children: null },
-  { path: "dummy2/dummy2/", id: "9", children: ["10", "11"] },
-  { path: "dummy2/dummy2A.pdf", id: "10", children: null },
-  { path: "dummy2/dummy2B.pdf", id: "11", children: null },
-  { path: "文書1.pdf", id: pdfId, children: null },
-];
-const history: History = [
+  { path: "", id: "0", children: [pdfPaths[1], pdfPaths[9], pdfPaths[0]] },
   {
-    id: pdfId,
-    name: "文書1.pdf",
-    pages: "29",
-    origin: "ツリー",
-    accessDate: "2001-01-01 00:00",
+    path: pdfPaths[1],
+    id: pdfPaths[1],
+    children: [pdfPaths[2], pdfPaths[6], pdfPaths[7], pdfPaths[8]],
   },
   {
-    id: "10",
-    name: "dummy2A.pdf",
-    pages: "???",
-    origin: "ツリー",
-    accessDate: "2000-01-01 00:00",
+    path: pdfPaths[2],
+    id: pdfPaths[2],
+    children: [pdfPaths[3], pdfPaths[4], pdfPaths[5]],
   },
+  { path: pdfPaths[3], id: pdfPaths[3], children: null },
+  { path: pdfPaths[4], id: pdfPaths[4], children: null },
+  { path: pdfPaths[5], id: pdfPaths[5], children: null },
+  { path: pdfPaths[6], id: pdfPaths[6], children: null },
+  { path: pdfPaths[7], id: pdfPaths[7], children: null },
+  { path: pdfPaths[8], id: pdfPaths[8], children: null },
+  {
+    path: pdfPaths[9],
+    id: pdfPaths[9],
+    children: [pdfPaths[10], pdfPaths[11]],
+  },
+  { path: pdfPaths[10], id: pdfPaths[10], children: null },
+  { path: pdfPaths[11], id: pdfPaths[11], children: null },
+  { path: pdfPaths[0], id: pdfPaths[0], children: null },
 ];
+
 const coverages: Coverages = {
-  recentId: pdfId,
+  recentId: pdfPaths[0],
   pdfs: {
-    pdfId: {
+    pdfPath: {
       allPages: 29,
       enabledPages: 23,
       notedPages: 0,
@@ -258,6 +267,8 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
 };
 
 export default class ModelMock implements IModel {
+  private history: History = [];
+
   getFlags = () => ({
     canToggleReadOnly: false,
     canOpenHistory: true,
@@ -268,19 +279,24 @@ export default class ModelMock implements IModel {
   getMessage = (reason: string) => <>{`${reason}に失敗しました`}</>;
 
   getFileTree = () => Promise.resolve(fileTree);
-  getHistory = () => Promise.resolve(history);
+
+  getHistory = () => Promise.resolve(this.history);
+  updateHistory = (id: string, pages: number) => {
+    this.history = updateHistory(this.history, id, pages);
+    return Promise.resolve();
+  };
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
   getFileFromId = (id: string) => {
-    if (id !== pdfId) return Promise.reject();
-    return Promise.resolve(pdfPath);
+    if (id !== pdfPaths[0]) return Promise.reject();
+    return Promise.resolve(pdfPaths[0]);
   };
 
   getCoverages = () => Promise.resolve(coverages);
   putCoverages = () => Promise.reject();
 
   getPdfNotes = (id: string): Promise<ResultGetPdfNotes> => {
-    if (id !== pdfId) return Promise.reject();
+    if (id !== pdfPaths[0]) return Promise.reject();
     return Promise.resolve(resultGetPdfNotes);
   };
   putPdfNotes = () => Promise.reject();

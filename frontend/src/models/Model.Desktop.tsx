@@ -39,6 +39,7 @@ export default class ModelDesktop implements IModel {
     const fileTree = (await res.json()) as FileTree;
     return fileTree;
   };
+  updateHistory = () => Promise.reject();
 
   getHistory = async (): Promise<History> => {
     const res = await fetch(ORIGIN + "/api/history");

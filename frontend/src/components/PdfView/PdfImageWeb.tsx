@@ -7,7 +7,6 @@ import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import ModelContext from "@/contexts/ModelContext";
-import ModelWeb from "@/models/Model.Web";
 
 if (import.meta.env.VITE_IS_WEB === "true") {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -84,7 +83,7 @@ export default function PdfImageWeb() {
             });
           }
           setPageSizes(pageSizes);
-          if (id && model instanceof ModelWeb) {
+          if (id) {
             await model.updateHistory(id, pageSizes.length);
           }
         }

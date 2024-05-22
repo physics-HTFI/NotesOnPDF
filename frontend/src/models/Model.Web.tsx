@@ -2,7 +2,7 @@ import FileTree, { FileTreeEntry, GetFileTreeRoot } from "@/types/FileTree";
 import Coverages, { GetCoverages_empty } from "@/types/Coverages";
 import IModel, { ResultGetPdfNotes } from "./IModel";
 import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
-import History, { HistoryEntry } from "@/types/History";
+import History, { updateHistory } from "@/types/History";
 import PdfNotes from "@/types/PdfNotes";
 
 const PATH_SETTINGS = ".NotesOnPDF/settings.json";
@@ -40,12 +40,12 @@ export default class ModelWeb implements IModel {
       root: FileTreeEntry,
       dHandle: FileSystemDirectoryHandle
     ) {
-// フォルダを追加
+      // フォルダを追加
       for await (const [name, handle] of dHandle) {
-if (handle.kind === "directory") {
-        const path = !root.path ? name : `${root.path}/${name}`;
-        const entry: FileTreeEntry = { id: path, path, children: [] };
-await addEntries(fileTree, entry, handle);
+        if (handle.kind === "directory") {
+          const path = !root.path ? name : `${root.path}/${name}`;
+          const entry: FileTreeEntry = { id: path, path, children: [] };
+          await addEntries(fileTree, entry, handle);
           root.children?.push(path);
           fileTree.push(entry);
         }
@@ -54,11 +54,11 @@ await addEntries(fileTree, entry, handle);
       for await (const [name, handle] of dHandle) {
         if (handle.kind === "file") {
           if (!name.toLowerCase().endsWith(".pdf")) continue;
-        const path = !root.path ? name : `${root.path}/${name}`;
+          const path = !root.path ? name : `${root.path}/${name}`;
           const entry: FileTreeEntry = { id: path, path, children: null };
           root.children?.push(path);
-        fileTree.push(entry);
-}
+          fileTree.push(entry);
+        }
       }
     }
     // 空ディレクトリがあるとファイルツリー上でPDFファイルとして表示されてしまうので取り除く
@@ -79,15 +79,7 @@ await addEntries(fileTree, entry, handle);
   };
   getHistory = async () => Promise.resolve(this.history);
   updateHistory = async (id: string, pages: number) => {
-    const entry: HistoryEntry = {
-      id,
-      name: id.split("/").pop() ?? "",
-      pages: String(pages),
-      origin: "ツリー内",
-      accessDate: ModelWeb.now(),
-    };
-    this.history = this.history.filter((e) => e.id !== entry.id);
-    this.history = [entry, ...this.history];
+    this.history = updateHistory(this.history, id, pages);
     await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
   };
   getIdFromExternalFile = () => Promise.reject();
@@ -188,16 +180,4 @@ await addEntries(fileTree, entry, handle);
     if (!name) throw new Error();
     return { name, jsonPath };
   };
-
-  private static now = () =>
-    new Date()
-      .toLocaleDateString("ja-JP", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      })
-      .replace(/\//g, "-");
 }

@@ -33,7 +33,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
       <Tooltip
         title={
           <span>
-            クリックすると指定したページにジャンプできます <br />
+            ここをクリックすると指定したページにジャンプできます <br />
             <br />
             その他ページ移動操作: <br />
             ・ページ移動: ←→ or マウスホイール <br />

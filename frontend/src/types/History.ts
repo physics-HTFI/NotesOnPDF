@@ -9,3 +9,33 @@ export interface HistoryEntry {
 type History = HistoryEntry[];
 
 export default History;
+
+export function updateHistory(
+  history: History,
+  id: string,
+  pages: number
+): History {
+  const entry: HistoryEntry = {
+    id,
+    name: id.split("/").pop() ?? "",
+    pages: String(pages),
+    origin: "ツリー内",
+    accessDate: nowToString(),
+  };
+  history = history.filter((e) => e.id !== entry.id);
+  history = [entry, ...history];
+  return history;
+}
+
+function nowToString(): string {
+  return new Date()
+    .toLocaleDateString("ja-JP", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
+    .replace(/\//g, "-");
+}
