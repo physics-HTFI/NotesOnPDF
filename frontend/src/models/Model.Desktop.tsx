@@ -39,12 +39,18 @@ export default class ModelDesktop implements IModel {
     const fileTree = (await res.json()) as FileTree;
     return fileTree;
   };
-  updateHistory = () => Promise.reject();
 
   getHistory = async (): Promise<History> => {
     const res = await fetch(ORIGIN + "/api/history");
     const history = (await res.json()) as History;
     return history;
+  };
+  updateHistory = () => Promise.reject();
+  clearHistory = async () => {
+    // バックエンド側で{method: "DELETE"}を受け取る方法が不明なので、POSTで対応する。
+    await fetch(ORIGIN + "/api/history/delete", {
+      ...this.getPutOptions(),
+    });
   };
 
   getIdFromExternalFile = async (): Promise<string> => {
@@ -75,16 +81,16 @@ export default class ModelDesktop implements IModel {
   };
 
   getPdfNotes = async (id: string): Promise<ResultGetPdfNotes> => {
-    const res = await fetch(ORIGIN + `/api/notes/${id}`);
-    const { name, sizes, notes } = (await res.json()) as {
+    const res = await fetch(ORIGIN + `/api/notes/${encodeURIComponent(id)}`);
+    const { name, pageSizes, pdfNotes } = (await res.json()) as {
       name: string;
-      sizes: PageSize[];
-      notes?: string;
+      pageSizes: PageSize[];
+      pdfNotes?: string;
     };
     return {
       name,
-      pageSizes: sizes,
-      pdfNotes: notes ? (JSON.parse(notes) as PdfNotes) : undefined,
+      pageSizes,
+      pdfNotes: pdfNotes ? (JSON.parse(pdfNotes) as PdfNotes) : undefined,
     };
   };
   putPdfNotes = async (id: string, pdfNotes: PdfNotes): Promise<void> => {

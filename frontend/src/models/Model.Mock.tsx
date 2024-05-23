@@ -5,7 +5,7 @@ import { GetAppSettings_default } from "@/types/AppSettings";
 import History, { updateHistory } from "@/types/History";
 
 const pdfPaths = [
-  "NotesOnPDF/PDFs/文書1.pdf",
+  "/NotesOnPDF/PDFs/文書1.pdf",
   "dummy1/",
   "dummy1/dummy11/",
   "dummy1/dummy11/11A.pdf",
@@ -285,6 +285,11 @@ export default class ModelMock implements IModel {
     this.history = updateHistory(this.history, id, pages);
     return Promise.resolve();
   };
+  clearHistory = () => {
+    this.history = [];
+    return Promise.resolve();
+  };
+
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
   getFileFromId = (id: string) => {

@@ -51,6 +51,7 @@ namespace backend
         /// </summary>
         public async Task<string> GetWebPdfId(string url)
         {
+            if (!url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)) throw new Exception();
             await Download.FromUrl(url);
             string id = PathUtils.Path2Id(url);
             history.Add(id, url, PdfOrigin.Web);
@@ -74,6 +75,12 @@ namespace backend
         /// <c>throw</c>しない。
         /// </summary>
         public PdfItem[] GetHistory() => history.GetHistory();
+
+        /// <summary>
+        /// 過去に開いたファイルの<c>id</c>とファイル名のリストを返す。
+        /// <c>throw</c>しない。
+        /// </summary>
+        public void ClearHistory() => history.ClearHistory();
 
 
         /// <summary>
@@ -112,7 +119,7 @@ namespace backend
             var (path, origin) = GetPath(id);
             string localPath = origin == PdfOrigin.Web
                 ? Path.Combine(SettingsUtils.DownloadDirectory, Download.UrlToName(path))
-                : Path.Combine(SettingsUtils.RootDirectory, path);
+                : path;
             return localPath + ".json";
         }
 
@@ -120,7 +127,7 @@ namespace backend
         {
             if (pdfTree.GetPath(id) is string path)
             {
-                return new(path, PdfOrigin.InsideTree);
+                return new(Path.Combine(SettingsUtils.RootDirectory, path), PdfOrigin.InsideTree);
             }
             if (history.GetItem(id) is History.Item item)
             {

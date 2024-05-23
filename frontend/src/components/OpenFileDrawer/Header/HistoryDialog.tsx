@@ -2,17 +2,21 @@ import { useContext, useEffect, useState } from "react";
 import {
   Backdrop,
   Box,
+  IconButton,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import History from "@/types/History";
 import UiStateContext from "@/contexts/UiStateContext";
 import ModelContext from "@/contexts/ModelContext";
+import { Delete } from "@mui/icons-material";
 
 /**
  * PDFを開いた履歴
@@ -54,11 +58,35 @@ export default function HistoryDialog({
       }}
     >
       <Box
+        sx={{ userSelect: "none" }}
         onClick={(e) => {
           e.stopPropagation();
         }}
       >
-        <Typography variant="body1">履歴からPDFファイルを開く</Typography>
+        <Stack direction="row">
+          <Typography variant="body1">履歴からPDFファイルを開く</Typography>
+          <Tooltip title="履歴を消去します" placement="top" disableInteractive>
+            <span style={{ marginLeft: "auto" }}>
+              <IconButton
+                sx={{ color: "white", paddingTop: 0 }}
+                onClick={() => {
+                  model
+                    .clearHistory()
+                    .then(() => {
+                      setHistory([]);
+                    })
+                    .catch(() => {
+                      setSnackbarMessage(model.getMessage("履歴の消去"));
+                    });
+                }}
+                size="small"
+              >
+                <Delete />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </Stack>
+
         <TableContainer
           component={Box}
           sx={{

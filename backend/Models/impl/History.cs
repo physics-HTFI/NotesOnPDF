@@ -1,4 +1,5 @@
-﻿using System;
+﻿using backend.Models.impl;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,9 +20,11 @@ namespace backend
             try
             {
                 pages ??= Items.FirstOrDefault(i => i.Id == id)?.Pages;
+                bool isUrl = origin == PdfOrigin.Web;
                 Item item = new(
                     id,
-                    origin == PdfOrigin.Web ? path : Path.GetFullPath(path),
+                    isUrl ? path : Path.GetFullPath(path),
+                    isUrl ? path : Path.GetFileName(path),
                     origin,
                     pages ?? 0,
                     DateTime.Now
@@ -42,14 +45,13 @@ namespace backend
             try
             {
                 return Items.Select(i => 
-                    new PdfItem(i.Id, toName(i), pagesToString(i.Pages), prefix(i.Origin), i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
+                    new PdfItem(i.Id, i.Name, pagesToString(i.Pages), prefix(i.Origin), i.AccessDate.ToString("yyyy-MM-dd HH:mm"))
                 ).ToArray();
             }
             catch
             {
                 return [];
             }
-            static string toName(Item i) => i.Origin == PdfOrigin.Web ? i.Path : Path.GetFileName(i.Path);
             static string pagesToString(int pages) => pages <= 0 ? "???" : pages.ToString();
             static string prefix(PdfOrigin origin) => origin switch
             {
@@ -60,11 +62,20 @@ namespace backend
         }
 
         /// <summary>
+        /// <c>throw</c>しない
+        /// </summary>
+        public void ClearHistory()
+        {
+            Items.Clear();
+            Save();
+        }
+
+        /// <summary>
         /// <c>id</c>をPDFファイルパスに変換する。失敗したら<c>null</c>。
         /// </summary>
         public Item? GetItem(string id) => Items.FirstOrDefault(i => i.Id == id);
 
-        public record Item(string Id, string Path, PdfOrigin Origin, int Pages, DateTime AccessDate);
+        public record Item(string Id, string Path, string Name, PdfOrigin Origin, int Pages, DateTime AccessDate);
 
 
         //|

@@ -77,11 +77,17 @@ export default class ModelWeb implements IModel {
       return fileTree;
     }
   };
+
   getHistory = async () => Promise.resolve(this.history);
   updateHistory = async (id: string, pages: number) => {
     this.history = updateHistory(this.history, id, pages);
     await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
   };
+  clearHistory = async () => {
+    this.history = [];
+    await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
+  };
+
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
   getFileFromId = async (id: string) => {

@@ -150,13 +150,16 @@ namespace backend
             using var stream = new StreamReader(request.InputStream, request.ContentEncoding);
             var body = stream.ReadToEnd();
 
-            switch(request.RawUrl)
+            switch (request.RawUrl)
             {
                 case "/api/settings":
                     model.SaveFrontendSettings(body);
                     return;
                 case "/api/coverage":
                     model.SaveCoverage(body);
+                    return;
+                case "/api/history/delete":
+                    model.ClearHistory();
                     return;
                 case string s when Regex.IsMatch(s, @"/api/notes/[^/]+"):
                     model.SaveNotes(id: s.Split('/')[^1], body);
@@ -165,7 +168,6 @@ namespace backend
                     throw new Exception();
             }
         }
-
 
         record Response(byte[] Bytes, string Mime);
 

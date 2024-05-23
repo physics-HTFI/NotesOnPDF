@@ -97,7 +97,7 @@ namespace backend
 
                 // `dir`を追加
                 {
-                    string[] children = dirs.Concat(pdfs).Select(PathUtils.Path2Id).ToArray();
+                    string[] children = dirs.Concat(pdfs).Select(toId).ToArray();
                     addItem(dir, children);
                 }
                 // `dir`内のファイルを追加
@@ -115,7 +115,14 @@ namespace backend
             bool hasPdf(string dir) => Directory.GetFiles(dir, "*.pdf", SearchOption.AllDirectories).Length != 0;
             void addItem(string path, string[]? children)
             {
-                items.Add(new(PathUtils.Path2Id(path), path.Replace('\\', '/'), children));
+                items.Add(new(toId(path), toRelative(path), children));
+            }
+            string toId(string path) => PathUtils.Path2Id(toRelative(path));
+            string toRelative(string path)
+            {
+                // ウェブ版とIDをそろえるために`RootDirectory`を取り除いて、デリミタを/にする
+                if (!path.StartsWith(SettingsUtils.RootDirectory)) throw new Exception();
+                return path[SettingsUtils.RootDirectory.Length..].Replace('\\', '/');
             }
         }
     }
