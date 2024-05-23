@@ -4,6 +4,7 @@ import IModel, { ResultGetPdfNotes } from "./IModel";
 import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
 import History, { updateHistory } from "@/types/History";
 import PdfNotes from "@/types/PdfNotes";
+import { md5 } from "js-md5";
 
 const PATH_SETTINGS = ".NotesOnPDF/settings.json";
 const PATH_COVERAGES = ".NotesOnPDF/coverages.json";
@@ -14,6 +15,7 @@ export default class ModelWeb implements IModel {
     const getHistory = async () =>
       JSON.parse(await this.getTextFromPath(PATH_HISTORY)) as History;
 
+    this.fileTree = [];
     this.history = [];
     getHistory()
       .then((h) => (this.history = h))
@@ -33,7 +35,8 @@ export default class ModelWeb implements IModel {
     const root = GetFileTreeRoot();
     const fileTree: FileTree = [root];
     await addEntries(fileTree, root, this.dirHandle);
-    return removeEmptyDirectories(fileTree);
+    this.fileTree = removeEmptyDirectories(fileTree);
+    return fileTree;
 
     async function addEntries(
       fileTree: FileTree,
@@ -44,9 +47,10 @@ export default class ModelWeb implements IModel {
       for await (const [name, handle] of dHandle) {
         if (handle.kind === "directory") {
           const path = !root.path ? name : `${root.path}/${name}`;
-          const entry: FileTreeEntry = { id: path, path, children: [] };
+          const id = md5(path).substring(0, 10);
+          const entry: FileTreeEntry = { id, path, children: [] };
           await addEntries(fileTree, entry, handle);
-          root.children?.push(path);
+          root.children?.push(id);
           fileTree.push(entry);
         }
       }
@@ -55,8 +59,9 @@ export default class ModelWeb implements IModel {
         if (handle.kind === "file") {
           if (!name.toLowerCase().endsWith(".pdf")) continue;
           const path = !root.path ? name : `${root.path}/${name}`;
-          const entry: FileTreeEntry = { id: path, path, children: null };
-          root.children?.push(path);
+          const id = md5(path).substring(0, 10);
+          const entry: FileTreeEntry = { id, path, children: null };
+          root.children?.push(id);
           fileTree.push(entry);
         }
       }
@@ -80,7 +85,7 @@ export default class ModelWeb implements IModel {
 
   getHistory = async () => Promise.resolve(this.history);
   updateHistory = async (id: string, pages: number) => {
-    this.history = updateHistory(this.history, id, pages);
+    this.history = updateHistory(this.history, this.idToPath(id), pages);
     await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
   };
   clearHistory = async () => {
@@ -91,7 +96,10 @@ export default class ModelWeb implements IModel {
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
   getFileFromId = async (id: string) => {
-    const fileHandle = await this.getFileHandleFromPath(id, false);
+    const fileHandle = await this.getFileHandleFromPath(
+      this.idToPath(id),
+      false
+    );
     return await fileHandle.getFile();
   };
 
@@ -109,7 +117,7 @@ export default class ModelWeb implements IModel {
   };
 
   getPdfNotes = async (id: string): Promise<ResultGetPdfNotes> => {
-    const { name, jsonPath } = ModelWeb.parseId(id);
+    const { name, jsonPath } = this.parseId(id);
     try {
       return {
         name,
@@ -120,7 +128,7 @@ export default class ModelWeb implements IModel {
     }
   };
   putPdfNotes = async (id: string, pdfNotes: PdfNotes) => {
-    const { jsonPath } = ModelWeb.parseId(id);
+    const { jsonPath } = this.parseId(id);
     await this.writeToPath(jsonPath, JSON.stringify(pdfNotes));
   };
 
@@ -143,7 +151,14 @@ export default class ModelWeb implements IModel {
   //| private
   //|
 
+  private fileTree: FileTree;
   private history: History;
+
+  private idToPath = (id: string) => {
+    const entry = this.fileTree.find((e) => e.id === id);
+    if (!entry) throw new Error();
+    return entry.path;
+  };
 
   private getFileHandleFromPath = async (
     path: string,
@@ -180,9 +195,10 @@ export default class ModelWeb implements IModel {
     await file.close();
   };
 
-  private static parseId = (id: string) => {
-    const match = id.match(/([^/]+)\.[^.]*$/);
-    const [name, jsonPath] = [match?.[1], `${id}.json`];
+  private parseId = (id: string) => {
+    const path = this.idToPath(id);
+    const match = path.match(/([^/]+)\.[^.]*$/);
+    const [name, jsonPath] = [match?.[1], `${path}.json`];
     if (!name) throw new Error();
     return { name, jsonPath };
   };
