@@ -36,25 +36,29 @@ export default class ModelDesktop implements IModel {
 
   getFileTree = async (): Promise<FileTree> => {
     const res = await fetch(ORIGIN + "/api/files");
+    if (!res.ok) return Promise.reject();
     const fileTree = (await res.json()) as FileTree;
     return fileTree;
   };
 
   getHistory = async (): Promise<History> => {
     const res = await fetch(ORIGIN + "/api/history");
+    if (!res.ok) return Promise.reject();
     const history = (await res.json()) as History;
     return history;
   };
   updateHistory = () => Promise.reject();
   clearHistory = async () => {
     // バックエンド側で{method: "DELETE"}を受け取る方法が不明なので、POSTで対応する。
-    await fetch(ORIGIN + "/api/history/delete", {
+    const res = await fetch(ORIGIN + "/api/history/delete", {
       ...this.getPutOptions(),
     });
+    if (!res.ok) return Promise.reject();
   };
 
   getIdFromExternalFile = async (): Promise<string> => {
     const res = await fetch(ORIGIN + "/api/external-pdf-id");
+    if (!res.ok) return Promise.reject();
     const id = (await res.json()) as string;
     return id;
   };
@@ -63,6 +67,7 @@ export default class ModelDesktop implements IModel {
     const res = await fetch(
       ORIGIN + `/api/web-pdf-id?${encodeURIComponent(url)}`
     );
+    if (!res.ok) return Promise.reject();
     const id = (await res.json()) as string;
     return id;
   };
@@ -71,17 +76,20 @@ export default class ModelDesktop implements IModel {
 
   getCoverages = async (): Promise<Coverages> => {
     const res = await fetch(ORIGIN + "/api/coverage");
+    if (!res.ok) return Promise.reject();
     return ((await res.json()) ?? GetCoverages_empty()) as Coverages;
   };
   putCoverages = async (coverages: Coverages): Promise<void> => {
-    await fetch(ORIGIN + "/api/coverage", {
+    const res = await fetch(ORIGIN + "/api/coverage", {
       ...this.getPutOptions(),
       body: JSON.stringify(coverages, null, 2),
     });
+    if (!res.ok) return Promise.reject();
   };
 
   getPdfNotes = async (id: string): Promise<ResultGetPdfNotes> => {
     const res = await fetch(ORIGIN + `/api/notes/${encodeURIComponent(id)}`);
+    if (!res.ok) return Promise.reject();
     const { name, pageSizes, pdfNotes } = (await res.json()) as {
       name: string;
       pageSizes: PageSize[];
@@ -94,10 +102,11 @@ export default class ModelDesktop implements IModel {
     };
   };
   putPdfNotes = async (id: string, pdfNotes: PdfNotes): Promise<void> => {
-    await fetch(ORIGIN + `/api/notes/${id}`, {
+    const res = await fetch(ORIGIN + `/api/notes/${id}`, {
       ...this.getPutOptions(),
       body: JSON.stringify(pdfNotes),
     });
+    if (!res.ok) return Promise.reject();
   };
 
   getPageImageUrl = (id: string, page: number, width: number, height: number) =>
@@ -105,14 +114,16 @@ export default class ModelDesktop implements IModel {
 
   getAppSettings = async (): Promise<AppSettings> => {
     const res = await fetch(ORIGIN + "/api/settings");
+    if (!res.ok) return Promise.reject();
     const appSettings = ((await res.json()) ??
       GetAppSettings_default()) as AppSettings;
     return appSettings;
   };
   putAppSettings = async (appSettings: AppSettings): Promise<void> => {
-    await fetch(ORIGIN + "/api/settings", {
+    const res = await fetch(ORIGIN + "/api/settings", {
       ...this.getPutOptions(),
       body: JSON.stringify(appSettings, null, 2),
     });
+    if (!res.ok) return Promise.reject();
   };
 }
