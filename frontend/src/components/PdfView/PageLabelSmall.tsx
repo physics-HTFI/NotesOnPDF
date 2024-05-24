@@ -5,44 +5,49 @@ import usePdfNotes from "@/hooks/usePdfNotes";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import EditorBase from "./Editor/EditorBase";
 import MouseContext from "@/contexts/MouseContext";
+import PdfNotes from "@/types/PdfNotes";
+import Progress from "../OpenFileDrawer/FileTreeView/Progress";
+import FileTreeContext from "@/contexts/FileTreeContext";
+
+const getPageNums = (pdfNotes: PdfNotes) => {
+  const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
+  let found = false;
+  for (let i = 0; i < pdfNotes.pages.length; i++) {
+    const p = pdfNotes.pages[i];
+    if (!p) continue;
+    const before = i <= pdfNotes.currentPage;
+    const isChapterStart =
+      p.volume !== undefined || p.part !== undefined || p.chapter !== undefined;
+    if (isChapterStart) {
+      found = !before;
+      if (!found) {
+        pageNums.curChapter = 0;
+        pageNums.chapter = 0;
+      }
+    }
+    if (p.style && p.style.includes("excluded")) continue;
+    ++pageNums.total;
+    if (before) ++pageNums.curTotal;
+    if (!found) {
+      ++pageNums.chapter;
+      if (before) ++pageNums.curChapter;
+    }
+  }
+  return pageNums;
+};
 
 /**
  * 画面隅のページ数表示コンポーネント
  */
 export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
-  const { previousPageNum } = useContext(PdfNotesContext);
+  const { previousPageNum, id } = useContext(PdfNotesContext);
+  const { coverages } = useContext(FileTreeContext);
   const { jumpPage, page, pageLabel, pdfNotes } = usePdfNotes();
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
-  if (!pdfNotes) return <></>;
+  if (!pdfNotes || !id) return <></>;
 
-  const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
-  {
-    let found = false;
-    for (let i = 0; i < pdfNotes.pages.length; i++) {
-      const p = pdfNotes.pages[i];
-      if (!p) continue;
-      const before = i <= pdfNotes.currentPage;
-      const isChapterStart =
-        p.volume !== undefined ||
-        p.part !== undefined ||
-        p.chapter !== undefined;
-      if (isChapterStart) {
-        found = !before;
-        if (!found) {
-          pageNums.curChapter = 0;
-          pageNums.chapter = 0;
-        }
-      }
-      if (p.style && p.style.includes("excluded")) continue;
-      ++pageNums.total;
-      if (before) ++pageNums.curTotal;
-      if (!found) {
-        ++pageNums.chapter;
-        if (before) ++pageNums.curChapter;
-      }
-    }
-  }
+  const { curTotal, total, curChapter, chapter } = getPageNums(pdfNotes);
 
   return (
     <Stack
@@ -61,10 +66,13 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
     >
       <Stack direction="column">
         {/* 進捗 */}
-        <Tooltip title="aaa" disableInteractive>
+        <Tooltip
+          title={<Progress coverage={coverages?.pdfs[id]} />}
+          disableInteractive
+        >
           <progress
             max="100"
-            value={50}
+            value={coverages?.pdfs[id]?.percent ?? 0}
             style={{
               width: "calc(100% - 4px)",
               margin: "0 2px 5px",
@@ -80,9 +88,8 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
             <span>
               【現在地】
               <br />
-              {`チャプター内： ${pageNums.curChapter} / ${pageNums.chapter}`}
-              <br />
-              {`全体： ${pageNums.curTotal} / ${pageNums.total}`} <br />
+              {`全体： ${curTotal} / ${total}`} <br />
+              {`チャプター内： ${curChapter} / ${chapter}`} <br />
               <br />
               クリックすると指定したページにジャンプできます <br />
             </span>

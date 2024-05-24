@@ -8,6 +8,8 @@ export interface Coverage {
   enabledPages: number;
   /** 注釈がついているページ数 */
   notedPages: number;
+  /** 進捗率 */
+  percent: number;
 }
 
 /**

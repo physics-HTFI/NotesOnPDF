@@ -2,6 +2,7 @@ import { alpha, styled } from "@mui/material/styles";
 import { Box, Tooltip, Typography } from "@mui/material";
 import { TreeItem, TreeItemProps, treeItemClasses } from "@mui/x-tree-view";
 import { Coverage } from "@/types/Coverages";
+import Progress from "./Progress";
 
 /**
  * `TreeItem`を「開閉アイコンの下に鉛直線が入る」様にしたもの
@@ -19,42 +20,21 @@ const StyledTreeItem = styled(TreeItem)(({ theme }) => ({
  */
 interface Props extends TreeItemProps {
   label: string;
-  progress?: Coverage;
+  coverage?: Coverage;
 }
 
 /**
  * `TreeItem`の右端に進捗バーとツールチップを表示できるようにしたもの
  */
-export default function TreeItemWithInfo({ label, progress, ...other }: Props) {
-  // 進捗
-  const percent =
-    progress &&
-    Math.min(
-      100,
-      Math.max(
-        0,
-        Math.round(
-          (100 * progress.notedPages) / Math.max(1, progress.enabledPages)
-        )
-      )
-    );
-
-  // ツールチップ
-  const tooltip = progress ? (
-    <>
-      <div>総ページ： {`${progress.allPages}`} ページ</div>
-      {progress.allPages !== progress.enabledPages && (
-        <div>有効ページ： {`${progress.enabledPages}`} ページ</div>
-      )}
-      <div>ノート付き： {`${progress.notedPages}`} ページ</div>
-      <div>ノート率： {`${percent}`}%</div>
-    </>
-  ) : undefined;
-
+export default function TreeItemWithInfo({ label, coverage, ...other }: Props) {
   return (
     <StyledTreeItem
       label={
-        <Tooltip title={tooltip} placement="right" disableInteractive>
+        <Tooltip
+          title={<Progress coverage={coverage} />}
+          placement="right"
+          disableInteractive
+        >
           <Box
             sx={{
               display: "flex",
@@ -69,10 +49,10 @@ export default function TreeItemWithInfo({ label, progress, ...other }: Props) {
             </Typography>
 
             {/* 進捗 */}
-            {percent !== undefined && (
+            {coverage?.percent !== undefined && (
               <progress
                 max="100"
-                value={percent}
+                value={coverage.percent}
                 style={{ width: 20, height: 12, marginLeft: 8 }}
               />
             )}

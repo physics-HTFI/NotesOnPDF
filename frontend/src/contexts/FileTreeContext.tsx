@@ -102,14 +102,20 @@ function getNewCoveragesOrUndefined(
   if (!fileTree.find((f) => f.id === id)) return undefined;
 
   const oldCov = coverages.pdfs[id];
+  const enabledPages =
+    pdfNotes.pages.length -
+    pdfNotes.pages.filter((p) => p.style?.includes("excluded")).length;
+  const notedPages = pdfNotes.pages.filter(
+    (p) => !p.style?.includes("excluded") && p.notes?.length
+  ).length;
   const newCov: Coverage = {
     allPages: pdfNotes.pages.length,
-    enabledPages:
-      pdfNotes.pages.length -
-      pdfNotes.pages.filter((p) => p.style?.includes("excluded")).length,
-    notedPages: pdfNotes.pages.filter(
-      (p) => !p.style?.includes("excluded") && p.notes?.length
-    ).length,
+    enabledPages,
+    notedPages,
+    percent: Math.min(
+      100,
+      Math.max(0, Math.round((100 * notedPages) / Math.max(1, enabledPages)))
+    ),
   };
   const unchanged =
     coverages.recentId === id &&

@@ -33,7 +33,7 @@ export default function getTreeItems(
     return (
       <TreeItemWithInfo
         label={getFileName(entry.path)}
-        progress={coverages?.pdfs[entry.id]}
+        coverage={coverages?.pdfs[entry.id]}
         nodeId={entry.path}
         key={entry.path}
       />

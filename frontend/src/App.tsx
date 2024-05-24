@@ -74,33 +74,37 @@ export default function App() {
         <AppSettingsContextProvider>
           <MathJaxContext version={3} config={mathjaxConfig}>
             <PdfNotesContextProvider>
-              <Box sx={{ userSelect: "none" }}>
-                {/* ファイルツリー */}
-                <FileTreeContextProvider>
+              <FileTreeContextProvider>
+                <Box sx={{ userSelect: "none" }}>
+                  {/* ファイルツリー */}
                   <OpenFileDrawer />
-                </FileTreeContextProvider>
 
-                <PanelGroup direction="horizontal">
-                  {/* 目次 */}
-                  <Panel defaultSizePixels={270} minSizePixels={40}>
-                    <TocView />
-                  </Panel>
+                  <PanelGroup direction="horizontal">
+                    {/* 目次 */}
+                    <Panel defaultSizePixels={270} minSizePixels={40}>
+                      <TocView />
+                    </Panel>
 
-                  {/* リサイズハンドル */}
-                  <PanelResizeHandle>
-                    <Box
-                      sx={{ width: 5, height: "100vh", background: grey[400] }}
-                    />
-                  </PanelResizeHandle>
+                    {/* リサイズハンドル */}
+                    <PanelResizeHandle>
+                      <Box
+                        sx={{
+                          width: 5,
+                          height: "100vh",
+                          background: grey[400],
+                        }}
+                      />
+                    </PanelResizeHandle>
 
-                  {/* PDFビュー */}
-                  <Panel minSizePixels={200}>
-                    <MouseContextProvider>
-                      <PdfView />
-                    </MouseContextProvider>
-                  </Panel>
-                </PanelGroup>
-              </Box>
+                    {/* PDFビュー */}
+                    <Panel minSizePixels={200}>
+                      <MouseContextProvider>
+                        <PdfView />
+                      </MouseContextProvider>
+                    </Panel>
+                  </PanelGroup>
+                </Box>
+              </FileTreeContextProvider>
             </PdfNotesContextProvider>
           </MathJaxContext>
         </AppSettingsContextProvider>

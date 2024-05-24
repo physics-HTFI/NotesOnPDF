@@ -52,22 +52,26 @@ const coverages: Coverages = {
     [pdfPaths[0]]: {
       allPages: 29,
       enabledPages: 23,
-      notedPages: 0,
+      notedPages: 1,
+      percent: 4,
     },
     [pdfPaths[6]]: {
       allPages: 100,
       enabledPages: 100,
       notedPages: 20,
+      percent: 20,
     },
     [pdfPaths[7]]: {
       allPages: 100,
       enabledPages: 100,
       notedPages: 50,
+      percent: 50,
     },
     [pdfPaths[8]]: {
       allPages: 100,
       enabledPages: 100,
       notedPages: 100,
+      percent: 100,
     },
   },
 };
