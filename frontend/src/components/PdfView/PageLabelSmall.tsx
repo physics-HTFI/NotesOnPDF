@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from "react";
-import { Box, Chip, IconButton, TextField, Tooltip } from "@mui/material";
+import { Chip, IconButton, Stack, TextField, Tooltip } from "@mui/material";
 import { Reply } from "@mui/icons-material";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
@@ -11,12 +11,42 @@ import MouseContext from "@/contexts/MouseContext";
  */
 export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const { previousPageNum } = useContext(PdfNotesContext);
-  const { pageLabel } = usePdfNotes();
+  const { jumpPage, page, pageLabel, pdfNotes } = usePdfNotes();
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
-  const { jumpPage, page } = usePdfNotes();
+  if (!pdfNotes) return <></>;
+
+  const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
+  {
+    let found = false;
+    for (let i = 0; i < pdfNotes.pages.length; i++) {
+      const p = pdfNotes.pages[i];
+      if (!p) continue;
+      const before = i <= pdfNotes.currentPage;
+      const isChapterStart =
+        p.volume !== undefined ||
+        p.part !== undefined ||
+        p.chapter !== undefined;
+      if (isChapterStart) {
+        found = !before;
+        if (!found) {
+          pageNums.curChapter = 0;
+          pageNums.chapter = 0;
+        }
+      }
+      if (p.style && p.style.includes("excluded")) continue;
+      ++pageNums.total;
+      if (before) ++pageNums.curTotal;
+      if (!found) {
+        ++pageNums.chapter;
+        if (before) ++pageNums.curChapter;
+      }
+    }
+  }
+
   return (
-    <Box
+    <Stack
+      direction="row"
       sx={{
         position: "absolute",
         left: 7,
@@ -29,31 +59,48 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
         e.stopPropagation();
       }}
     >
-      {/* ページラベル */}
-      <Tooltip
-        title={
-          <span>
-            ここをクリックすると指定したページにジャンプできます <br />
-            <br />
-            その他ページ移動操作: <br />
-            ・ページ移動: ←→ or マウスホイール <br />
-            ・節移動: Shift + (←→ or マウスホイール) <br />
-            ・章移動: ↑↓ or Ctrl + マウスホイール
-          </span>
-        }
-      >
-        <Chip
-          variant="outlined"
-          color="success"
-          label={pageLabel}
-          size="small"
-          sx={{ cursor: "pointer", mr: "2px" }}
-          onMouseDown={(e) => {
-            setOpenJumpDialog(true);
-            setMouse({ pageX: e.pageX, pageY: e.pageY });
-          }}
-        />
-      </Tooltip>
+      <Stack direction="column">
+        {/* 進捗 */}
+        <Tooltip title="aaa" disableInteractive>
+          <progress
+            max="100"
+            value={50}
+            style={{
+              width: "calc(100% - 4px)",
+              margin: "0 2px 5px",
+              height: "14px",
+              accentColor: "#2e7d32",
+            }}
+          />
+        </Tooltip>
+        {/* ページラベル */}
+        <Tooltip
+          disableInteractive
+          title={
+            <span>
+              【現在地】
+              <br />
+              {`チャプター内： ${pageNums.curChapter} / ${pageNums.chapter}`}
+              <br />
+              {`全体： ${pageNums.curTotal} / ${pageNums.total}`} <br />
+              <br />
+              クリックすると指定したページにジャンプできます <br />
+            </span>
+          }
+        >
+          <Chip
+            variant="outlined"
+            color="success"
+            label={pageLabel}
+            size="small"
+            sx={{ cursor: "pointer", mb: 0.5 }}
+            onMouseDown={(e) => {
+              setOpenJumpDialog(true);
+              setMouse({ pageX: e.pageX, pageY: e.pageY });
+            }}
+          />
+        </Tooltip>
+      </Stack>
       {page && openJumpDialog && (
         <JumpDialog
           page={page.num}
@@ -64,9 +111,24 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
           }}
         />
       )}
+
       {/* 直前に表示していたページに移動 */}
-      <Tooltip title="直前に表示していたページに移動します [Space]">
-        <span>
+      <Tooltip
+        title={
+          <span>
+            直前に表示していたページに移動します [Space] <br />
+            <br />
+            その他の移動操作
+            <br />
+            ・ページ移動： ←→ or マウスホイール <br />
+            ・節移動： Shift + (←→ or マウスホイール) <br />
+            ・章移動： ↑↓ or Ctrl + マウスホイール
+          </span>
+        }
+        placement="right"
+        disableInteractive
+      >
+        <span style={{ marginLeft: 2, alignContent: "end" }}>
           <IconButton
             disabled={previousPageNum === undefined}
             color="success"
@@ -80,7 +142,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
           </IconButton>
         </span>
       </Tooltip>
-    </Box>
+    </Stack>
   );
 }
 

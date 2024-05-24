@@ -17,9 +17,6 @@ export default function FileTreeView({
   const { fileTree, coverages } = useContext(FileTreeContext);
   const [expanded, setExpanded] = useState<string[]>([]);
   const [selectedPath, setSelectedPath] = useState<string>();
-  // TODO
-  console.log();
-  console.log(JSON.stringify(fileTree, null, 2));
 
   // 前回のファイルを選択した状態にする
   if (
