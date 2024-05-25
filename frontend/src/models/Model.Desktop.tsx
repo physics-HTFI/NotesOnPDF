@@ -11,13 +11,6 @@ const ORIGIN = import.meta.env.DEV
   : window.location.href.match(/.*:\d+/)?.[0];
 
 export default class ModelDesktop implements IModel {
-  private getPutOptions = () =>
-    ({
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      mode: "no-cors",
-    } as RequestInit);
-
   getFlags = () => ({
     canToggleReadOnly: true,
     canOpenHistory: true,
@@ -35,7 +28,7 @@ export default class ModelDesktop implements IModel {
   );
 
   getFileTree = async (): Promise<FileTree> => {
-    const res = await fetch(ORIGIN + "/api/files");
+    const res = await fetch(ORIGIN + "/api/file-tree");
     if (!res.ok) return Promise.reject();
     const fileTree = (await res.json()) as FileTree;
     return fileTree;
@@ -49,9 +42,8 @@ export default class ModelDesktop implements IModel {
   };
   updateHistory = () => Promise.reject();
   clearHistory = async () => {
-    // バックエンド側で{method: "DELETE"}を受け取る方法が不明なので、POSTで対応する。
-    const res = await fetch(ORIGIN + "/api/history/delete", {
-      ...this.getPutOptions(),
+    const res = await fetch(ORIGIN + "/api/history", {
+      method: "DELETE",
     });
     if (!res.ok) return Promise.reject();
   };
@@ -81,7 +73,7 @@ export default class ModelDesktop implements IModel {
   };
   putCoverages = async (coverages: Coverages): Promise<void> => {
     const res = await fetch(ORIGIN + "/api/coverage", {
-      ...this.getPutOptions(),
+      method: "PUT",
       body: JSON.stringify(coverages, null, 2),
     });
     if (!res.ok) return Promise.reject();
@@ -103,7 +95,7 @@ export default class ModelDesktop implements IModel {
   };
   putPdfNotes = async (id: string, pdfNotes: PdfNotes): Promise<void> => {
     const res = await fetch(ORIGIN + `/api/notes/${id}`, {
-      ...this.getPutOptions(),
+      method: "PUT",
       body: JSON.stringify(pdfNotes),
     });
     if (!res.ok) return Promise.reject();
@@ -121,7 +113,7 @@ export default class ModelDesktop implements IModel {
   };
   putAppSettings = async (appSettings: AppSettings): Promise<void> => {
     const res = await fetch(ORIGIN + "/api/settings", {
-      ...this.getPutOptions(),
+      method: "PUT",
       body: JSON.stringify(appSettings, null, 2),
     });
     if (!res.ok) return Promise.reject();

@@ -39,7 +39,9 @@ namespace backend
                         HttpListenerRequest request = context.Request;
 
                         using var response = context.Response;
-                        response.AppendHeader("Access-Control-Allow-Origin", "*"); // 開発時にloclhost:5173からアクセスする必要があるため
+                        response.AppendHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // 開発時にloclhost:5173からアクセスする必要がある
+                        response.AppendHeader("Access-Control-Allow-Headers", "*"); // これがないとフロントエンド側でresponse.okが常にfalseになる
+                        response.AppendHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"); // PUT, DELETEを使うために必要
 
                         try
                         {
@@ -59,6 +61,18 @@ namespace backend
                             if (request.HttpMethod == "POST")
                             {
                                 ProcessPost(request);
+                            }
+
+                            // PUT
+                            if (request.HttpMethod == "PUT")
+                            {
+                                ProcessPut(request);
+                            }
+
+                            // POST
+                            if (request.HttpMethod == "DELETE")
+                            {
+                                ProcessDelete(request);
                             }
                         }
                         catch
@@ -91,38 +105,44 @@ namespace backend
             if (url.Contains("..")) throw new Exception(); // 上の階層にアクセスできなくする
 
             // API
-            // 致命的なエラーの場合は<c>return null</c>。
+            // 致命的なエラーの場合は<c>throw</c>。
             // ファイルが未作成なだけの場合は文字列"null"が返る：<c>return "null"</c>。
-            if (url == "/api/files")
+            if (url == "/api/file-tree")
             {
-                return getResponse(JsonSerializer.Serialize(model.GetPdfTree()));
+                var res = model.GetPdfTree();
+                return getResponse(JsonSerializer.Serialize(res));
             }
             if (url == "/api/history")
             {
-                return getResponse(JsonSerializer.Serialize(model.GetHistory()));
+                var res = model.GetHistory();
+                return getResponse(JsonSerializer.Serialize(res));
             }
             if (url == "/api/settings")
             {
-                return getResponse(model.GetFrontendSettings());
+                var res = model.GetFrontendSettings();
+                return getResponse(res);
             }
             if (url == "/api/coverage")
             {
-                return getResponse(model.GetCoverage());
+                var res = model.GetCoverage();
+                return getResponse(res);
             }
             if (url == "/api/external-pdf-id")
             {
-                return getResponse(JsonSerializer.Serialize(model.GetExternalPdfId()));
+                var res = model.GetExternalPdfId();
+                return getResponse(JsonSerializer.Serialize(res));
             }
             if (url == "/api/web-pdf-id")
             {
                 string query = uri.GetComponents(UriComponents.Query, UriFormat.Unescaped);
-                return getResponse(JsonSerializer.Serialize(await model.GetWebPdfId(query)));
+                var res = await model.GetWebPdfId(query);
+                return getResponse(JsonSerializer.Serialize(res));
             }
             if (Regex.IsMatch(url, @"/api/notes/[^/]+$"))
             {
                 string id = url.Split('/')[3];
-                var body = await model.OpenPdf(id);
-                return getResponse(JsonSerializer.Serialize(body));
+                var res = await model.OpenPdf(id);
+                return getResponse(JsonSerializer.Serialize(res));
             }
             if (Regex.IsMatch(url, @"/api/images/[^/]+/[^/]+$"))
             {
@@ -134,7 +154,7 @@ namespace backend
                     );
                 return new(png, MimeType(".jpg"));
             }
-            Response getResponse(string? body) => new(
+            static Response getResponse(string? body) => new(
                 Encoding.UTF8.GetBytes(body ?? "null"),
                 MimeType(".json")
                 );
@@ -147,6 +167,11 @@ namespace backend
 
         void ProcessPost(HttpListenerRequest request)
         {
+            throw new Exception();
+        }
+
+        void ProcessPut(HttpListenerRequest request)
+        {
             using var stream = new StreamReader(request.InputStream, request.ContentEncoding);
             var body = stream.ReadToEnd();
 
@@ -158,16 +183,26 @@ namespace backend
                 case "/api/coverage":
                     model.SaveCoverage(body);
                     return;
-                case "/api/history/delete":
-                    model.ClearHistory();
-                    return;
-                case string s when Regex.IsMatch(s, @"/api/notes/[^/]+"):
+                case string s when Regex.IsMatch(s, @"^/api/notes/[^/]+$"):
                     model.SaveNotes(id: s.Split('/')[^1], body);
                     return;
                 default:
                     throw new Exception();
             }
         }
+
+        void ProcessDelete(HttpListenerRequest request)
+        {
+            switch (request.RawUrl)
+            {
+                case "/api/history":
+                    model.ClearHistory();
+                    return;
+                default:
+                    throw new Exception();
+            }
+        }
+
 
         record Response(byte[] Bytes, string Mime);
 
