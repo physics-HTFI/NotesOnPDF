@@ -31,7 +31,7 @@ export default function TreeItemWithInfo({ label, coverage, ...other }: Props) {
     <StyledTreeItem
       label={
         <Tooltip
-          title={<Progress coverage={coverage} />}
+          title={coverage ? <Progress coverage={coverage} /> : undefined}
           placement="right"
           disableInteractive
         >
