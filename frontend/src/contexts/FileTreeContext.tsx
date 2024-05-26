@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import FileTree from "@/types/FileTree";
-import Coverages, { Coverage } from "@/types/Coverages";
+import Coverages, { Coverage, GetCoverage } from "@/types/Coverages";
 import IModel from "@/models/IModel";
 import PdfNotesContext from "./PdfNotesContext";
 import PdfNotes from "@/types/PdfNotes";
@@ -57,7 +57,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
     if (newCoverages) {
       // `Coverages`が不整合になることがある：
       // ・`readOnly`状態で`pdfNotes`を変更→別のファイルを開いて`readOnly`を解除、としたときに前のファイルの`Coverage`が変化してしまう。
-      // だがレアなので気にしない（`!readOnly`状態で`Coverages`が変化しないほうが不自然なので）。
+      // だが稀なので気にしない（`!readOnly`状態で`Coverages`が変化しないほうが不自然なので）。
       setCoverages(newCoverages);
       if (!readOnly) {
         setSnackbarMessage(undefined);
@@ -104,21 +104,7 @@ function getNewCoveragesOrUndefined(
   if (!fileTree.find((f) => f.id === id)) return undefined;
 
   const oldCov = coverages.pdfs[id];
-  const enabledPages =
-    pdfNotes.pages.length -
-    pdfNotes.pages.filter((p) => p.style?.includes("excluded")).length;
-  const notedPages = pdfNotes.pages.filter(
-    (p) => !p.style?.includes("excluded") && p.notes?.length
-  ).length;
-  const newCov: Coverage = {
-    allPages: pdfNotes.pages.length,
-    enabledPages,
-    notedPages,
-    percent: Math.min(
-      100,
-      Math.max(0, Math.round((100 * notedPages) / Math.max(1, enabledPages)))
-    ),
-  };
+  const newCov = GetCoverage(pdfNotes);
   const unchanged =
     coverages.recentId === id &&
     oldCov?.allPages === newCov.allPages &&

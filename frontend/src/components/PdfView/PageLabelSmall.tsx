@@ -7,7 +7,7 @@ import EditorBase from "./Editor/EditorBase";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotes from "@/types/PdfNotes";
 import Progress from "../OpenFileDrawer/FileTreeView/Progress";
-import FileTreeContext from "@/contexts/FileTreeContext";
+import { GetCoverage } from "@/types/Coverages";
 
 const getPageNums = (pdfNotes: PdfNotes) => {
   const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
@@ -41,11 +41,11 @@ const getPageNums = (pdfNotes: PdfNotes) => {
  */
 export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const { previousPageNum, id } = useContext(PdfNotesContext);
-  const { coverages } = useContext(FileTreeContext);
   const { jumpPage, page, pageLabel, pdfNotes } = usePdfNotes();
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
   if (!pdfNotes || !id) return <></>;
+  const coverage = GetCoverage(pdfNotes);
 
   const { curTotal, total, curChapter, chapter } = getPageNums(pdfNotes);
 
@@ -66,13 +66,10 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
     >
       <Stack direction="column">
         {/* 進捗 */}
-        <Tooltip
-          title={<Progress coverage={coverages?.pdfs[id]} />}
-          disableInteractive
-        >
+        <Tooltip title={<Progress coverage={coverage} />} disableInteractive>
           <progress
             max="100"
-            value={coverages?.pdfs[id]?.percent ?? 0}
+            value={coverage.percent}
             style={{
               width: "calc(100% - 4px)",
               margin: "0 2px 5px",

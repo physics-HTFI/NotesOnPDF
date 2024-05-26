@@ -1,3 +1,5 @@
+import PdfNotes from "./PdfNotes";
+
 /**
  * 1つのPDFファイルの進捗情報
  */
@@ -24,3 +26,21 @@ export default interface Coverages {
 
 /** `coverages.json`がない場合の初期値 */
 export const GetCoverages_empty: () => Coverages = () => ({ pdfs: {} });
+
+export const GetCoverage = (pdfNotes: PdfNotes): Coverage => {
+  const enabledPages =
+    pdfNotes.pages.length -
+    pdfNotes.pages.filter((p) => p.style?.includes("excluded")).length;
+  const notedPages = pdfNotes.pages.filter(
+    (p) => !p.style?.includes("excluded") && p.notes?.length
+  ).length;
+  return {
+    allPages: pdfNotes.pages.length,
+    enabledPages,
+    notedPages,
+    percent: Math.min(
+      100,
+      Math.max(0, Math.round((100 * notedPages) / Math.max(1, enabledPages)))
+    ),
+  };
+};
