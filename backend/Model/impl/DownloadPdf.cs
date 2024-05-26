@@ -9,19 +9,24 @@ using System.Threading.Tasks;
 
 namespace backend.Models.impl
 {
-    internal class Download
+    internal class DownloadPdf
     {
+        //|
+        //| public
+        //|
+
         /// <summary>
         /// URLのPDFファイルをダウンロードフォルダに保存する。
         /// 既に存在する場合は何もしない。
         /// 失敗したら<c>throw</c>。
+        /// URLが<c>.pdf</c>で終わらない場合も<c>throw</c>。
         /// </summary>
-        public static async Task<string> FromUrl(string url)
+        /// <returns>ダウンロードしたPDFファイルのパス</returns>
+        public static async Task<string> FromUrlIfNeeded(string url)
         {
-            string name = UrlToName(url);
-            string path = Path.Combine(SettingsUtils.DownloadDirectory, name);
-            if (!name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)) throw new Exception();
+            if (!url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)) throw new Exception();
 
+            string path = Path.Combine(SettingsUtils.DownloadDirectory, UrlToName(url));
             if (!File.Exists(path))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path) ?? throw new Exception());
@@ -35,14 +40,20 @@ namespace backend.Models.impl
         /// <summary>
         /// URLをダウンロード時のファイル名に変換する。
         /// 失敗したら<c>throw</c>。
+        /// <code>
+        /// "http://www.aaa.bbb.ac.jp/ccc/ddd.pdf"
+        /// ↓
+        /// "http___www_aaa_bbb_ac_jp_ccc_ddd.pdf"
+        /// </code>
         /// </summary>
         public static string UrlToName(string url)
         {
             var match = Regex.Match(url, @"^(.+)(\.[^.]*)$");
             var name = match.Groups[1].Value;
             var ext = match.Groups[2].Value;
-            static bool invalid(char c) => c == '.' || Path.GetInvalidFileNameChars().Contains(c);
             return new string([.. name.Select(c => invalid(c) ? '_' : c)]) + ext;
+
+            static bool invalid(char c) => c == '.' || Path.GetInvalidFileNameChars().Contains(c);
         }
 
         //|
@@ -55,11 +66,11 @@ namespace backend.Models.impl
         /// </summary>
         static readonly HttpClient Http;
 
-        static Download()
+        static DownloadPdf()
         {
             Http = new();
             // エージェントを偽装しないとダウンロードできない場合への対応。
-            // ex) https://opac.ll.chiba-u.jp/da/curator/900121233/qm_a.pdf
+            // 例えば) https://opac.ll.chiba-u.jp/da/curator/900121233/qm_a.pdf
             Http.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 Edg/124.0.0.0");
         }
     }

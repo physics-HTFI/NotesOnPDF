@@ -75,7 +75,7 @@ namespace backend
         /// ブラウザで開くコマンド
         /// </summary>
         [RelayCommand]
-        void OpenWithBrowser()
+        void OpenInBrowser()
         {
             try
             {

@@ -63,7 +63,10 @@ namespace backend
             return null;
         }
 
-        static public string Path2Id(string path) => MD5.FromString(path);
+        /// <summary>
+        /// パスからID文字列を生成する（フロントエンドからこのIDを使ってファイルを指定する）、
+        /// </summary>
+        static public string PathToId(string path) => MD5.FromString(path);
 
 
 

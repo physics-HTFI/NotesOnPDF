@@ -14,7 +14,7 @@ namespace backend
 
         public bool IsOpened { get; }
         public int PageCount { get; }
-        public Size GetSize(int index);
+        public SizeF GetSize(int index);
         public Task<byte[]?> Render(int pageIndex, int width, int height);
     }
 }

@@ -4,20 +4,8 @@ using System.Windows;
 
 namespace backend
 {
-    internal class PdfTree
+    internal class FileTree
     {
-        //|
-        //| public
-        //|
-
-        /// <summary>
-        /// ルートフォルダ内のPDFファイル一覧（フロントエンドに渡す情報）。<c>throw</c>しない。
-        /// </summary>
-        public Item[] GetPdfTree()
-        {
-            ReadItems();
-            return [.. items];
-        }
 
         /// <summary>
         /// ルートフォルダ内の1つのファイル／フォルダの情報（フロントエンドに渡すので小文字にしている）
@@ -27,12 +15,26 @@ namespace backend
         /// <param name="children">フォルダ中の子要素のID、ファイルの場合はnull</param>
         public record Item(string id, string path, string[]? children);
 
+
+        //|
+        //| public
+        //|
+
+        /// <summary>
+        /// ルートフォルダ内のPDFファイル一覧（フロントエンドに渡す）。<c>throw</c>しない。
+        /// </summary>
+        public Item[] GeFileTree()
+        {
+            ReadItems();
+            return [.. items];
+        }
+
         /// <summary>
         /// <c>id</c>をPDFファイルパスに変換する。失敗したら<c>null</c>。
         /// </summary>
-        public string? GetPath(string id)
+        public string? IdToPath(string id)
         {
-            if(items.Count == 0) ReadItems();
+            if (items.Count == 0) ReadItems();
             return items.FirstOrDefault(i => i.id == id)?.path;
         }
 
@@ -44,7 +46,7 @@ namespace backend
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public PdfTree()
+        public FileTree()
         {
             Properties.Settings.Default.PropertyChanged += BackendSettingsChanged;
         }
@@ -52,7 +54,7 @@ namespace backend
         /// <summary>
         /// デストラクタ
         /// </summary>
-        ~PdfTree()
+        ~FileTree()
         {
             Properties.Settings.Default.PropertyChanged -= BackendSettingsChanged;
         }
@@ -87,7 +89,11 @@ namespace backend
                 items.Clear();
                 addDirectory(SettingsUtils.RootDirectory);
             }
-            catch { }
+            catch
+            {
+                items.Clear();
+            }
+            return;
 
             void addDirectory(string dir)
             {
@@ -117,11 +123,11 @@ namespace backend
             {
                 items.Add(new(toId(path), toRelative(path), children));
             }
-            string toId(string path) => PathUtils.Path2Id(toRelative(path));
+            string toId(string path) => PathUtils.PathToId(toRelative(path));
             string toRelative(string path)
             {
                 // ウェブ版とIDをそろえるために`RootDirectory`を取り除いて、デリミタを/にする
-                if (!path.StartsWith(SettingsUtils.RootDirectory)) throw new Exception();
+                if (!path.StartsWith(SettingsUtils.RootDirectory)) return path;
                 return path[SettingsUtils.RootDirectory.Length..].Replace('\\', '/');
             }
         }

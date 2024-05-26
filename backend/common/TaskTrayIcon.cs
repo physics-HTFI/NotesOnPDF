@@ -5,9 +5,6 @@
     /// </summary>
     class TaskTrayIcon : IDisposable
     {
-        private readonly ContextMenuStrip _menu;
-        private readonly NotifyIcon _notifyIcon;
-
         public TaskTrayIcon(string text, string icon, Action onClick, Action onExit)
         {
             _menu = GetMenu(onExit);
@@ -20,6 +17,12 @@
             _notifyIcon?.Dispose();
         }
 
+        //|
+        //| private
+        //|
+
+        private readonly ContextMenuStrip _menu;
+        private readonly NotifyIcon _notifyIcon;
 
         //|
         //| static private

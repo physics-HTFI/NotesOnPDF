@@ -1,6 +1,4 @@
 ﻿using backend.Models.impl;
-using System.IO;
-using System.Xml.Linq;
 
 namespace backend
 {
@@ -8,11 +6,22 @@ namespace backend
     {
 
         /// <summary>
+        /// PDFを開いたときにフロントエンドに渡す情報。
+        /// フロントエンドに渡すので、小文字にしている。
+        /// </summary>
+        public record ResultGetPdfNotes(string name, PdfReader.Size[] pageSizes, string? pdfNotes);
+
+
+        //|
+        //| public
+        //|
+
+        /// <summary>
         /// 現在のルートフォルダ内のPDF一覧を取得。
         /// ルートフォルダが変更されている場合は、呼び直せば最新のものになる。
         /// <c>throw</c>しない。
         /// </summary>
-        public PdfTree.Item[] GetPdfTree() => pdfTree.GetPdfTree();
+        public FileTree.Item[] GetFileTree() => pathModel.GetFileTree();
 
 
         /// <summary>
@@ -22,12 +31,11 @@ namespace backend
         /// </summary>
         public async Task<ResultGetPdfNotes> OpenPdf(string id)
         {
-            (var path, var origin) = GetPath(id);
-            var sizes = await pdfReader.Open(path, origin);
-            string? notes = PathUtils.ReadAllText(GetNotesPath(id));
-            history.Add(id, path, origin, sizes.Length);
-            var name = origin == PdfOrigin.Web ? path : Path.GetFileNameWithoutExtension(path);
-            return new(name, sizes, notes);
+            var paths = await pathModel.GetPaths(id);
+            var sizes = await pdfReader.GetSizes(paths.PdfPath);
+            string? notes = PathUtils.ReadAllText(paths.NotesPath);
+            await pathModel.AddHistory(id, sizes.Length);
+            return new(paths.Name, sizes, notes);
         }
 
 
@@ -39,8 +47,8 @@ namespace backend
         {
             string? path = PathUtils.SelectPdf();
             if (path is null) return "";
-            string id = PathUtils.Path2Id(path);
-            history.Add(id, path, PdfOrigin.OutsideTree);
+            string id = PathUtils.PathToId(path);
+            pathModel.AddHistory(id, path, History.Origin.OutsideTree);
             return id;
         }
 
@@ -51,10 +59,9 @@ namespace backend
         /// </summary>
         public async Task<string> GetWebPdfId(string url)
         {
-            if (!url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)) throw new Exception();
-            await Download.FromUrl(url);
-            string id = PathUtils.Path2Id(url);
-            history.Add(id, url, PdfOrigin.Web);
+            await DownloadPdf.FromUrlIfNeeded(url);
+            string id = PathUtils.PathToId(url);
+            pathModel.AddHistory(id, url, History.Origin.Web);
             return id;
         }
 
@@ -65,8 +72,8 @@ namespace backend
         /// </summary>
         public async Task<byte[]> GetPagePng(string id, int pageNum, int width, int height)
         {
-            (var path, var origin) = GetPath(id);
-            return await pdfReader.GetPagePng(path, origin, pageNum, width, height);
+            string path = (await pathModel.GetPaths(id)).PdfPath;
+            return await pdfReader.GetPagePng(path, pageNum, width, height);
         }
 
 
@@ -74,17 +81,18 @@ namespace backend
         /// 過去に開いたファイルの<c>id</c>とファイル名のリストを返す。
         /// <c>throw</c>しない。
         /// </summary>
-        public PdfItem[] GetHistory() => history.GetHistory();
+        public History.Item[] GetHistory() => pathModel.GetHistory();
 
         /// <summary>
-        /// 過去に開いたファイルの<c>id</c>とファイル名のリストを返す。
+        /// 履歴を消去。
         /// <c>throw</c>しない。
         /// </summary>
-        public void ClearHistory() => history.ClearHistory();
+        public void DeleteHistory(string? id = null) => pathModel.DeleteHistory(id);
 
 
         /// <summary>
         /// <c>settings.json</c>の中身を返す。
+        /// 存在しない場合は<c>null</c>を返す。
         /// <c>throw</c>しない。
         /// </summary>
         public string? GetFrontendSettings() => PathUtils.ReadAllText(SettingsUtils.SettingsPath);
@@ -92,6 +100,7 @@ namespace backend
 
         /// <summary>
         /// <c>coverage.json</c>の中身を返す。
+        /// 存在しない場合は<c>null</c>を返す。
         /// <c>throw</c>しない。
         /// </summary>
         public string? GetCoverage() => PathUtils.ReadAllText(SettingsUtils.CoveragePath);
@@ -99,41 +108,14 @@ namespace backend
 
         public void SaveFrontendSettings(string body) => PathUtils.WriteAllText(SettingsUtils.SettingsPath, body);
         public void SaveCoverage(string body) => PathUtils.WriteAllText(SettingsUtils.CoveragePath, body);
-        public void SaveNotes(string id, string body) => PathUtils.WriteAllText(GetNotesPath(id), body);
+        public async Task SaveNotes(string id, string body) => PathUtils.WriteAllText((await pathModel.GetPaths(id)).NotesPath, body);
 
 
         //|
         //| private
         //|
 
-        readonly PdfTree pdfTree = new();
+        readonly PathModel pathModel = new();
         readonly PdfReader pdfReader = new();
-        readonly History history = new();
-
-        /// <summary>
-        /// 注釈ファイルのパスを返す。失敗したら<c>throw</c>。
-        /// </summary>
-        string GetNotesPath(string id)
-        {
-            // ウェブから取得したファイルの場合は、URLをファイル名に直す
-            var (path, origin) = GetPath(id);
-            string localPath = origin == PdfOrigin.Web
-                ? Path.Combine(SettingsUtils.DownloadDirectory, Download.UrlToName(path))
-                : path;
-            return localPath + ".json";
-        }
-
-        (string path, PdfOrigin origin) GetPath(string id)
-        {
-            if (pdfTree.GetPath(id) is string path)
-            {
-                return new(Path.Combine(SettingsUtils.RootDirectory, path), PdfOrigin.InsideTree);
-            }
-            if (history.GetItem(id) is History.Item item)
-            {
-                return new(item.Path, item.Origin);
-            }
-            throw new Exception();
-        }
     }
 }

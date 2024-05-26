@@ -13,7 +13,7 @@ namespace backend
     {
         public Task Open(string path)
         {
-            pdf= new DocumentRenderer(path);
+            pdf = new DocumentRenderer(path);
             pdf.RenderOption.Background = Color.White;
             return Task.CompletedTask;
         }
@@ -24,15 +24,15 @@ namespace backend
             pdf?.Dispose();
         }
 
-        public bool IsOpened  => pdf is not null; 
+        public bool IsOpened => pdf is not null;
 
         public int PageCount => pdf?.File.Count ?? 0;
 
-        public Size GetSize(int pageIndex)
+        public SizeF GetSize(int pageIndex)
         {
-            if(pdf is null) return new Size(0, 0);
+            if (pdf is null) return new(0, 0);
             var page = pdf.GetPage(pageIndex + 1);
-            return new Size(page.Size.Width, page.Size.Height);
+            return new(page.Size.Width, page.Size.Height);
         }
 
         public Task<byte[]?> Render(int pageIndex, int width, int height)

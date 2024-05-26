@@ -3,6 +3,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 // https://rikoubou.hatenablog.com/entry/2023/11/09/130144
 // https://qiita.com/washikawau/items/bfcd8babcffab30e6d26
@@ -66,7 +67,7 @@ namespace backend
                             // PUT
                             if (request.HttpMethod == "PUT")
                             {
-                                ProcessPut(request);
+                                await ProcessPut(request);
                             }
 
                             // POST
@@ -109,7 +110,7 @@ namespace backend
             // ファイルが未作成なだけの場合は文字列"null"が返る：<c>return "null"</c>。
             if (url == "/api/file-tree")
             {
-                var res = model.GetPdfTree();
+                var res = model.GetFileTree();
                 return getResponse(JsonSerializer.Serialize(res));
             }
             if (url == "/api/history")
@@ -170,7 +171,7 @@ namespace backend
             throw new Exception();
         }
 
-        void ProcessPut(HttpListenerRequest request)
+        async Task ProcessPut(HttpListenerRequest request)
         {
             using var stream = new StreamReader(request.InputStream, request.ContentEncoding);
             var body = stream.ReadToEnd();
@@ -184,7 +185,7 @@ namespace backend
                     model.SaveCoverage(body);
                     return;
                 case string s when Regex.IsMatch(s, @"^/api/notes/[^/]+$"):
-                    model.SaveNotes(id: s.Split('/')[^1], body);
+                    await model.SaveNotes(id: s.Split('/')[^1], body);
                     return;
                 default:
                     throw new Exception();
@@ -196,7 +197,10 @@ namespace backend
             switch (request.RawUrl)
             {
                 case "/api/history":
-                    model.ClearHistory();
+                    model.DeleteHistory();
+                    return;
+                case string s when Regex.IsMatch(s, @"^/api/history/[^/]+$"):
+                    model.DeleteHistory(id: s.Split('/')[^1]);
                     return;
                 default:
                     throw new Exception();

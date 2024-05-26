@@ -24,15 +24,15 @@ namespace backend
             randomAccessStream?.Dispose();
         }
 
-        public bool IsOpened  => pdf is not null; 
+        public bool IsOpened => pdf is not null;
 
         public int PageCount => (int)(pdf?.PageCount ?? 0);
 
-        public Size GetSize(int index)
+        public SizeF GetSize(int index)
         {
-            if(pdf is null) return new Size(0, 0);
+            if (pdf is null) return new(0, 0);
             using var page = pdf.GetPage((uint)index);
-            return new Size(page.Size.Width, page.Size.Height);
+            return new((float)page.Size.Width, (float)page.Size.Height);
         }
 
         public async Task<byte[]?> Render(int pageIndex, int width, int height)

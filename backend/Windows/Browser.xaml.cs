@@ -10,7 +10,7 @@ namespace backend
         public Browser()
         {
             InitializeComponent();
-            if(!IsWebView2Installed)
+            if (!IsWebView2Installed)
             {
                 webView.Visibility = Visibility.Collapsed;
                 textNoWebView2.Visibility = Visibility.Visible;
@@ -22,6 +22,7 @@ namespace backend
                 webView.CoreWebView2.Settings.AreDevToolsEnabled = false;
                 webView.CoreWebView2.NewWindowRequested += (_, e) =>
                 {
+                    // HTML内でリンクをクリックしたときは、ブラウザを立ち上げて開く
                     OpenUrl.OpenInBrowser(e.Uri);
                     e.Handled = true;
                 };
@@ -35,6 +36,7 @@ namespace backend
 
         void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
+            // WebView2のダウンロードページへのリンクをクリックしたときは、ブラウザを立ち上げて開く
             OpenUrl.OpenInBrowser(e.Uri.AbsoluteUri);
             e.Handled = true;
         }

@@ -9,6 +9,10 @@ namespace backend
 {
     class OpenUrl
     {
+        /// <summary>
+        /// <c>url</c>をブラウザで開く
+        /// </summary>
+        /// <param name="url"></param>
         public static void OpenInBrowser(string url)
         {
             ProcessStartInfo pi = new()

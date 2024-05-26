@@ -95,7 +95,7 @@
                         <Button
                             Grid.Row="0"
                             Grid.Column="0"
-                            Command="{Binding OpenWithBrowserCommand}"
+                            Command="{Binding OpenInBrowserCommand}"
                             Margin="15 10"
                             Width="Auto"
                             Height="Auto">
