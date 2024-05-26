@@ -128,7 +128,7 @@ namespace backend
             {
                 // ウェブ版とIDをそろえるために`RootDirectory`を取り除いて、デリミタを/にする
                 if (!path.StartsWith(SettingsUtils.RootDirectory)) return path;
-                return path[SettingsUtils.RootDirectory.Length..].Replace('\\', '/');
+                return path[SettingsUtils.RootDirectory.Length..].Replace('\\', '/').TrimStart('/');
             }
         }
     }

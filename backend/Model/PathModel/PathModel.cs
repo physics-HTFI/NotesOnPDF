@@ -26,12 +26,12 @@ namespace backend
 
         /// <summary>
         /// ツリー外ファイルやWebファイルを履歴の最上位に追加する。
-        /// <c>origin==Origin.Web</c>の場合、<c>path</c>にはURLを入れる。
+        /// <c>origin==Origin.Web</c>の場合、<c>path</c>はURL、それ以外はPDFへのフルパス。
         /// 失敗したら<c>throw</c>
         /// </summary>
-        public void AddHistory(string id, string pathorUrl, History.Origin origin)
+        public void AddHistory(string id, string pathOrUrl, History.Origin origin)
         {
-            history.Add(id, pathorUrl, origin);
+            history.Add(id, pathOrUrl, origin);
         }
 
         /// <summary>
@@ -41,7 +41,8 @@ namespace backend
         public async Task AddHistory(string id, int pages)
         {
             var paths = await GetPaths(id);
-            history.Add(id, paths.PathOrUrl, paths.Origin, pages);
+            var pathOrUrl = paths.Origin == History.Origin.Web ? paths.PathOrUrl : paths.PdfPath;
+            history.Add(id, pathOrUrl, paths.Origin, pages);
         }
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace backend
             if (fileTree.IdToPath(id) is string tPath)
             {
                 var name = Path.GetFileNameWithoutExtension(tPath);
-                string pdfPath = Path.Combine(SettingsUtils.RootDirectory, tPath);
+                string pdfPath = Path.Combine(Environment.CurrentDirectory, SettingsUtils.RootDirectory, tPath);
                 paths = new(id, name, pdfPath, pdfPath + ".json", tPath, History.Origin.InsideTree);
             }
             if (history.IdToPath(id) is (string hPathOrUrl, History.Origin hOrigin))

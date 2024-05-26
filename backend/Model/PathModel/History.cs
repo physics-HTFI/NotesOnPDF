@@ -27,7 +27,7 @@ namespace backend
         //|
 
         /// <summary>
-        /// <c>origin==Origin.Web</c>の場合、<c>path</c>にはURLを入れる。
+        /// <c>origin==Origin.Web</c>の場合、<c>path</c>はURL、それ以外はPDFへのフルパス。
         /// <c>throw</c>しない。
         /// </summary>
         public void Add(string id, string pathOrUrl, Origin origin, int? pages = null)
