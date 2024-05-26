@@ -39,8 +39,14 @@ export default class ModelDesktop implements IModel {
     return history;
   };
   updateHistory = () => Promise.reject();
-  clearHistory = async () => {
+  deleteHistoryAll = async () => {
     const res = await fetch(this.origin + "/api/history", {
+      method: "DELETE",
+    });
+    if (!res.ok) return Promise.reject();
+  };
+  deleteHistory = async (id: string) => {
+    const res = await fetch(this.origin + `/api/history/${id}`, {
       method: "DELETE",
     });
     if (!res.ok) return Promise.reject();

@@ -67,6 +67,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
           ) => void
         ) => {
           if (!pdfNotes || !id) return;
+          setSnackbarMessage?.(undefined);
           model?.putPdfNotes(id, pdfNotes).catch(() => {
             setSnackbarMessage?.(model.getMessage("注釈ファイルの保存"));
           });

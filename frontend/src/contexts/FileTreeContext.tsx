@@ -35,6 +35,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
 
   // `FileTree`と`Coverages`を取得する
   useEffect(() => {
+    setSnackbarMessage(undefined);
     load(model)
       .then(({ fileTree, coverages }) => {
         setFileTree(fileTree);
@@ -59,6 +60,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
       // だがレアなので気にしない（`!readOnly`状態で`Coverages`が変化しないほうが不自然なので）。
       setCoverages(newCoverages);
       if (!readOnly) {
+        setSnackbarMessage(undefined);
         model.putCoverages(newCoverages).catch(() => {
           setSnackbarMessage(model.getMessage("進捗率の保存"));
         });
@@ -81,11 +83,11 @@ async function load(model: IModel) {
   const coverages = await model.getCoverages();
   // ファイルツリー内に存在しないファイルの情報を削除する
   const pdfs: Record<string, Coverage> = {};
-  for (const pdf of Object.entries(coverages.pdfs)) {
-    const entry = fileTree.find((f) => f.id === pdf[0]);
-    if (!entry) continue;
-    pdfs[pdf[0]] = pdf[1];
+  for (const [id, coverage] of Object.entries(coverages.pdfs)) {
+    if (!fileTree.some((f) => f.id === id)) continue;
+    pdfs[id] = coverage;
   }
+  coverages.pdfs = pdfs;
   return { fileTree, coverages };
 }
 

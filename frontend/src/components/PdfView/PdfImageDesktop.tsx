@@ -26,6 +26,7 @@ export default function PdfImageDesktop() {
   const width = Math.round(pageRect.width);
   const height = Math.round(pageRect.height);
   try {
+    setSnackbarMessage(undefined);
     nextSrc.current = model.getPageImageUrl(
       id,
       pdfNotes.currentPage,
@@ -50,6 +51,7 @@ export default function PdfImageDesktop() {
         style={{ width, height }}
         onLoad={() => {
           setReading(false);
+          setSnackbarMessage(undefined);
         }}
         onError={() => {
           setReading(false);

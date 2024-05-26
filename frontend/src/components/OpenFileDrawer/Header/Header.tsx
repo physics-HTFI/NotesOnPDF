@@ -64,7 +64,7 @@ export default function Header({
               <br />
               変更が加えられた際に、注釈ファイルを自動保存します
               <br />
-              注釈ファイル名は&quot;(PDFファイル名).json&quot;です
+              注釈ファイル名は &quot;(PDFファイルパス).json&quot; です
             </span>
           )
         }

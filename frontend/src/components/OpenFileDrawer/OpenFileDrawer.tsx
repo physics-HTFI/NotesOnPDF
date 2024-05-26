@@ -29,6 +29,7 @@ export default function OpenFileDrawer() {
       setId(undefined);
       setPdfNotes(undefined);
       setPageSizes(undefined);
+      setSnackbarMessage(undefined);
       model
         .getPdfNotes(_id)
         .then((result) => {
@@ -38,7 +39,9 @@ export default function OpenFileDrawer() {
           setOpenFileTreeDrawer(false);
         })
         .catch(() => {
-          setSnackbarMessage(model.getMessage("注釈ファイルの読み込み"));
+          setSnackbarMessage(
+            model.getMessage("PDFファイル (または注釈ファイル) の読み込み")
+          );
         })
         .finally(() => {
           setWaiting(false);

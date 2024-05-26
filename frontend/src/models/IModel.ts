@@ -12,7 +12,8 @@ export default interface IModel {
   getFileTree(): Promise<FileTree>;
   getHistory(): Promise<History>;
   updateHistory(id: string, pages: number): Promise<void>;
-  clearHistory(): Promise<void>;
+  deleteHistoryAll(): Promise<void>;
+  deleteHistory(id: string): Promise<void>;
   getIdFromExternalFile(): Promise<string>;
   getIdFromUrl(url: string): Promise<string>;
   getFileFromId(id: string): Promise<string | File>;

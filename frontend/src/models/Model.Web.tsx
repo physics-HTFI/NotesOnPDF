@@ -88,8 +88,12 @@ export default class ModelWeb implements IModel {
     this.history = updateHistory(this.history, this.idToPath(id), pages);
     await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
   };
-  clearHistory = async () => {
+  deleteHistoryAll = async () => {
     this.history = [];
+    await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
+  };
+  deleteHistory = async (id: string) => {
+    this.history = this.history.filter((h) => h.id !== id);
     await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
   };
 

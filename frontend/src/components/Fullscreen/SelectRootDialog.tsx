@@ -151,7 +151,7 @@ export default function SelectRootDialog() {
                   <span>
                     閲覧や編集はできますが、保存は一切されません
                     <br />
-                    自動的にファイルが追加されることもありません
+                    ファイルが追加されることもありません
                   </span>
                 ) : (
                   <span>

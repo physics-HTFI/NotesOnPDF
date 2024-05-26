@@ -32,6 +32,7 @@ export function AppSettingsContextProvider({
   const [appSettings, setAppSettings] = useState<AppSettings>();
 
   useEffect(() => {
+    setSnackbarMessage(undefined);
     model
       .getAppSettings()
       .then((settings) => {
@@ -44,6 +45,7 @@ export function AppSettingsContextProvider({
 
   useEffect(() => {
     if (!appSettings || readOnly) return;
+    setSnackbarMessage(undefined);
     model.putAppSettings(appSettings).catch(() => {
       setSnackbarMessage(model.getMessage("設定ファイルの保存"));
     });

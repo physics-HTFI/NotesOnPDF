@@ -65,13 +65,17 @@ export default function HistoryDialog({
       >
         <Stack direction="row">
           <Typography variant="body1">履歴からPDFファイルを開く</Typography>
-          <Tooltip title="履歴を消去します" placement="top" disableInteractive>
+          <Tooltip
+            title="履歴を全て消去します"
+            placement="top"
+            disableInteractive
+          >
             <span style={{ marginLeft: "auto" }}>
               <IconButton
                 sx={{ color: "white", paddingTop: 0 }}
                 onClick={() => {
                   model
-                    .clearHistory()
+                    .deleteHistoryAll()
                     .then(() => {
                       setHistory([]);
                     })
@@ -112,6 +116,7 @@ export default function HistoryDialog({
                 <TableCell align="center" sx={{ width: 130, color: "white" }}>
                   アクセス日時
                 </TableCell>
+                <TableCell align="center" sx={{ width: 30, color: "white" }} />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -130,6 +135,36 @@ export default function HistoryDialog({
                   <TableCell align="center">{row.origin}</TableCell>
                   <TableCell align="center">{row.pages}</TableCell>
                   <TableCell align="center">{row.accessDate}</TableCell>
+                  <TableCell align="center">
+                    <Tooltip
+                      title="この履歴を消去します"
+                      placement="right"
+                      disableInteractive
+                    >
+                      <IconButton
+                        sx={{ color: "#72a0db" }}
+                        onClick={(e) => {
+                          model
+                            .deleteHistory(row.id)
+                            .then(() => {
+                              setHistory(
+                                history.filter((h) => h.id !== row.id)
+                              );
+                            })
+                            .catch(() => {
+                              setSnackbarMessage(
+                                model.getMessage("履歴の消去")
+                              );
+                            });
+                          e.stopPropagation();
+                          e.preventDefault();
+                        }}
+                        size="small"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

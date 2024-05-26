@@ -39,6 +39,7 @@ export default function PdfImageWeb() {
     setFile(undefined);
     if (!id) return;
     setWaiting(true);
+    setSnackbarMessage(undefined);
     model
       .getFileFromId(id)
       .then((file) => {
