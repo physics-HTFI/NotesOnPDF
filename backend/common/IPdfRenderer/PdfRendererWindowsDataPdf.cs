@@ -32,7 +32,9 @@ namespace backend
         {
             if (pdf is null) return new(0, 0);
             using var page = pdf.GetPage((uint)index);
-            return new((float)page.Size.Width, (float)page.Size.Height);
+            return (page.Rotation == PdfPageRotation.Normal || page.Rotation == PdfPageRotation.Rotate180)
+                ? new((float)page.Size.Width, (float)page.Size.Height)
+                : new((float)page.Size.Height, (float)page.Size.Width);
         }
 
         public async Task<byte[]?> Render(int pageIndex, int width, int height)
