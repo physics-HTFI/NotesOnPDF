@@ -16,8 +16,8 @@ namespace backend.Models.impl
         //|
 
         /// <summary>
-        /// URLのPDFファイルをダウンロードフォルダに保存する。
-        /// 既に存在する場合は何もしない。
+        /// URLのPDFファイルをダウンロードフォルダに保存して、そのパスを返す。
+        /// 既に存在する場合はパスだけ返す。
         /// 失敗したら<c>throw</c>。
         /// URLが<c>.pdf</c>で終わらない場合も<c>throw</c>。
         /// </summary>
@@ -37,6 +37,11 @@ namespace backend.Models.impl
             return path;
         }
 
+        //|
+        //| private
+        //|
+
+
         /// <summary>
         /// URLをダウンロード時のファイル名に変換する。
         /// 失敗したら<c>throw</c>。
@@ -46,7 +51,7 @@ namespace backend.Models.impl
         /// "http___www_aaa_bbb_ac_jp_ccc_ddd.pdf"
         /// </code>
         /// </summary>
-        public static string UrlToName(string url)
+        static string UrlToName(string url)
         {
             var match = Regex.Match(url, @"^(.+)(\.[^.]*)$");
             var name = match.Groups[1].Value;
@@ -55,10 +60,6 @@ namespace backend.Models.impl
 
             static bool invalid(char c) => c == '.' || Path.GetInvalidFileNameChars().Contains(c);
         }
-
-        //|
-        //| private
-        //|
 
         /// <summary>
         /// <c>HttpClient</c>は生成したものを使いまわす。
