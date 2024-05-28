@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Paper } from "@mui/material";
+import { Paper, SxProps } from "@mui/material";
 import MouseContext from "@/contexts/MouseContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import { Node, NoteType } from "@/types/PdfNotes";
@@ -15,6 +15,8 @@ import {
   RectIcon,
 } from "./Icons";
 import Divider from "./Divider";
+import { PaletteIconType } from "@/types/AppSettings";
+import AppSettingsContext from "@/contexts/AppSettingsContext";
 
 /**
  * PDFビュークリック時に表示されるパレット型コントロール
@@ -27,6 +29,7 @@ export default function Palette({
   onClose: (note: NoteType | Node) => void;
 }) {
   const { mouse, pageRect } = useContext(MouseContext);
+  const { appSettings } = useContext(AppSettingsContext);
   const { pdfNotes } = usePdfNotes();
   if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
 
@@ -72,17 +75,33 @@ export default function Palette({
       }}
     >
       {/* 各アイコン */}
-      <MarkerIcon sx={sx(0)} {...iconProps} />
-      <ArrowIcon sx={sx(1)} {...iconProps} />
-      <BracketIcon sx={sx(2)} {...iconProps} />
-      <PolygonIcon sx={sx(3)} {...iconProps} />
-      <ChipIcon sx={sx(4)} {...iconProps} />
-      <PageLinkIcon sx={sx(5)} {...iconProps} />
-      <MemoIcon sx={sx(6)} {...iconProps} />
-      <RectIcon sx={sx(7)} {...iconProps} />
+      {getIcon(appSettings?.paletteIcons[0], sx(0), iconProps)}
+      {getIcon(appSettings?.paletteIcons[1], sx(1), iconProps)}
+      {getIcon(appSettings?.paletteIcons[2], sx(2), iconProps)}
+      {getIcon(appSettings?.paletteIcons[3], sx(3), iconProps)}
+      {getIcon(appSettings?.paletteIcons[4], sx(4), iconProps)}
+      {getIcon(appSettings?.paletteIcons[5], sx(5), iconProps)}
+      {getIcon(appSettings?.paletteIcons[6], sx(6), iconProps)}
+      {getIcon(appSettings?.paletteIcons[7], sx(7), iconProps)}
 
       {/* 分割線 */}
       <Divider L={L} divisions={DIVISIONS} />
     </Paper>
   );
+}
+
+function getIcon(
+  type: PaletteIconType | undefined,
+  sx: SxProps,
+  iconProps: Omit<IconProps, "sx">
+) {
+  if (type === "Arrow") return <ArrowIcon sx={sx} {...iconProps} />;
+  if (type === "Bracket") return <BracketIcon sx={sx} {...iconProps} />;
+  if (type === "Chip") return <ChipIcon sx={sx} {...iconProps} />;
+  if (type === "Marker") return <MarkerIcon sx={sx} {...iconProps} />;
+  if (type === "Memo") return <MemoIcon sx={sx} {...iconProps} />;
+  if (type === "PageLink") return <PageLinkIcon sx={sx} {...iconProps} />;
+  if (type === "Polygon") return <PolygonIcon sx={sx} {...iconProps} />;
+  if (type === "Rect") return <RectIcon sx={sx} {...iconProps} />;
+  return undefined;
 }

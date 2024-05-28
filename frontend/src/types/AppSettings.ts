@@ -4,6 +4,19 @@
 export type ClickOption = null | "edit" | "move" | "delete";
 
 /**
+ * 注釈の右／中クリック時の動作
+ */
+export type PaletteIconType =
+  | "Arrow"
+  | "Bracket"
+  | "Chip"
+  | "Marker"
+  | "Memo"
+  | "PageLink"
+  | "Polygon"
+  | "Rect";
+
+/**
  * アプリ設定
  */
 export default interface AppSettings {
@@ -15,6 +28,8 @@ export default interface AppSettings {
   rightClick: ClickOption;
   /** 注釈の中クリック時の動作 */
   middleClick: ClickOption;
+  /** パレットのアイコン順序（右側から時計回り） */
+  paletteIcons: PaletteIconType[];
 }
 
 /** デフォルトのアプリ設定 */
@@ -23,4 +38,14 @@ export const GetAppSettings_default: () => AppSettings = () => ({
   snapNotes: true,
   rightClick: null,
   middleClick: null,
+  paletteIcons: [
+    "Marker",
+    "Arrow",
+    "Bracket",
+    "Polygon",
+    "Chip",
+    "PageLink",
+    "Memo",
+    "Rect",
+  ],
 });
