@@ -12,6 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="backend.test\**" />
+    <EmbeddedResource Remove="backend.test\**" />
+    <None Remove="backend.test\**" />
+    <Page Remove="backend.test\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="icon.ico" />
   </ItemGroup>
 

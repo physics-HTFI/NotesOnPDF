@@ -23,19 +23,16 @@ namespace backend
         /// <summary>
         /// ルートフォルダ内のPDFファイル一覧（フロントエンドに渡す）。<c>throw</c>しない。
         /// </summary>
-        public Item[] GeFileTree()
-        {
-            ReadItems();
-            return [.. items];
-        }
+        public Item[] GetFileTree() => [.. items];
 
         /// <summary>
         /// <c>id</c>をPDFファイルパスに変換する。失敗したら<c>null</c>。
         /// </summary>
         public string? IdToPath(string id)
         {
-            if (items.Count == 0) ReadItems();
-            return items.FirstOrDefault(i => i.id == id)?.path;
+            var item = items.FirstOrDefault(i => i.id == id);
+            if (item is null || item.children != null) return null;
+            return item.path;
         }
 
 
@@ -48,6 +45,7 @@ namespace backend
         /// </summary>
         public FileTree()
         {
+            ReadItems();
             Properties.Settings.Default.PropertyChanged += BackendSettingsChanged;
         }
 

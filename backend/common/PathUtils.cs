@@ -6,7 +6,7 @@ namespace backend
     /// <summary>
     /// パスの選択やファイルの入出力を行う
     /// </summary>
-    public static class PathUtils
+    internal static class PathUtils
     {
 
         /// <summary>

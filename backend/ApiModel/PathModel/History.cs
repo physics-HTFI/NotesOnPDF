@@ -15,8 +15,8 @@ namespace backend
     {
 
         /// <summary>
-        /// フロントエンドに渡す1ファイル分の履歴情報。
-        /// <c>origin</c>は"ツリー内", "ツリー外", "ウェブ"のいずれか
+        /// フロントエンドの履歴に表示される情報（1ファイル分）。
+        /// <c>origin</c>は"ツリー内", "ツリー外", "ウェブ"のいずれか。
         /// </summary>
         public record Item(string id, string name, string pages, string origin, string accessDate);
 
@@ -52,7 +52,7 @@ namespace backend
         /// <summary>
         /// <c>throw</c>しない
         /// </summary>
-        public Item[] GetHistory()
+        public Item[] Get()
         {
             try
             {
@@ -79,7 +79,7 @@ namespace backend
         /// 引数を省略すると全消去
         /// 失敗したら<c>throw</c>
         /// </summary>
-        public void DeleteHistory(string? id = null)
+        public void Delete(string? id = null)
         {
             if (id is null)
             {

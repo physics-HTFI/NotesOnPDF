@@ -3,7 +3,7 @@ using System.IO;
 
 namespace backend
 {
-    public class DirectoryExistsAttribute : ValidationAttribute
+    internal class DirectoryExistsAttribute : ValidationAttribute
     {
 
         protected override ValidationResult? IsValid(object? value, ValidationContext context)

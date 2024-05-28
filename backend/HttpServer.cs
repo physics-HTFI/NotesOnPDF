@@ -3,7 +3,6 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 // https://rikoubou.hatenablog.com/entry/2023/11/09/130144
 // https://qiita.com/washikawau/items/bfcd8babcffab30e6d26
@@ -18,7 +17,7 @@ namespace backend
     class HttpServer
     {
         HttpListener? listener;
-        readonly Model model = new();
+        readonly ApiModel model = new();
 
         public async Task StartAsync()
         {
@@ -142,7 +141,7 @@ namespace backend
             if (Regex.IsMatch(url, @"/api/notes/[^/]+$"))
             {
                 string id = url.Split('/')[3];
-                var res = await model.OpenPdf(id);
+                var res = await model.GetPdfNotes(id);
                 return getResponse(JsonSerializer.Serialize(res));
             }
             if (Regex.IsMatch(url, @"/api/images/[^/]+/[^/]+$"))

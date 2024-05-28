@@ -2,7 +2,7 @@
 
 namespace backend
 {
-    internal class Model
+    internal class ApiModel
     {
 
         /// <summary>
@@ -29,12 +29,12 @@ namespace backend
         /// 注釈ファイルがないときは<c>retval.notes = null</c>になる。
         /// 失敗したら<c>throw</c>する。
         /// </summary>
-        public async Task<ResultGetPdfNotes> OpenPdf(string id)
+        public async Task<ResultGetPdfNotes> GetPdfNotes(string id)
         {
             var paths = await pathModel.GetPaths(id);
             var sizes = await pdfReader.GetSizes(paths.PdfPath);
             string? notes = PathUtils.ReadAllText(paths.NotesPath);
-            await pathModel.AddHistory(id, sizes.Length);
+            await pathModel.AddHistoryWithPages(id, sizes.Length);
             return new(paths.Name, sizes, notes);
         }
 
@@ -48,7 +48,7 @@ namespace backend
             string? path = PathUtils.SelectPdf();
             if (path is null) return "";
             string id = PathUtils.PathToId(path);
-            pathModel.AddHistory(id, path, History.Origin.OutsideTree);
+            pathModel.AddHistoryWithPath(id, path, History.Origin.OutsideTree);
             return id;
         }
 
@@ -61,7 +61,7 @@ namespace backend
         {
             await DownloadPdf.FromUrlIfNeeded(url);
             string id = PathUtils.PathToId(url);
-            pathModel.AddHistory(id, url, History.Origin.Web);
+            pathModel.AddHistoryWithPath(id, url, History.Origin.Web);
             return id;
         }
 

@@ -2,3 +2,5 @@
 /backend/obj
 /backend/backend.csproj.user
 /backend/.vs
+/backend/backend.test/obj
+/backend/backend.test/bin
