@@ -59,14 +59,13 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     () =>
       debounce(
         (
-          id?: string,
-          pdfNotes?: PdfNotes,
+          id: string,
+          pdfNotes: PdfNotes,
           model?: IModel,
           setSnackbarMessage?: (
             snackbarMessage: JSX.Element | undefined
           ) => void
         ) => {
-          if (!pdfNotes || !id) return;
           setSnackbarMessage?.(undefined);
           model?.putPdfNotes(id, pdfNotes).catch(() => {
             setSnackbarMessage?.(model.getMessage("注釈ファイルの保存"));
@@ -77,8 +76,13 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     []
   );
   useEffect(() => {
+    if (!pdfNotes || !id) return;
+    document
+      .getElementById(String(pdfNotes.currentPage))
+      ?.scrollIntoView({ block: "nearest" });
     if (readOnly) return;
     putPdfNotesDebounced(id, pdfNotes, model, setSnackbarMessage);
+    // 目次パネル中の選択されたページが隠れないようにスクロールする
   }, [id, pdfNotes, model, readOnly, putPdfNotesDebounced, setSnackbarMessage]);
 
   return (

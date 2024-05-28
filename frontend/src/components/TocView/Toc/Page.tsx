@@ -49,6 +49,7 @@ export default function Page({
   const openTooltip = index !== undefined && openTooltips?.[index];
   return (
     <span
+      id={String(index)}
       style={openTooltip ? undefined : style}
       onClick={onClick}
       onMouseEnter={() => {
