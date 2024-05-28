@@ -172,7 +172,7 @@ export default function SettingsDrawer() {
             {/* ページ除外 */}
             <Checkbox
               label="このページをグレーアウトする"
-              tooltip="[Esc]"
+              tooltip="[Escape]"
               checked={page?.style?.includes("excluded")}
               onChange={(excluded) => {
                 const style = editPageStyle(page?.style, "excluded", excluded);

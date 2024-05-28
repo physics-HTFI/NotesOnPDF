@@ -29,6 +29,7 @@ export default function SelectRootDialog() {
   const [draggingColor, setDraggingColor] = useState<string>();
 
   const ok = dirHandle !== undefined;
+  const readOnlyColor = readOnly ? "firebrick" : "steelblue";
 
   return (
     <>
@@ -118,7 +119,7 @@ export default function SelectRootDialog() {
           <Stack direction="row" sx={{ mt: 3, height: 120 }}>
             {/* 読み取り専用 */}
             <IconButton
-              sx={{ alignItems: "start", mb: "auto", color: "steelblue" }}
+              sx={{ alignItems: "start", mb: "auto", color: readOnlyColor }}
               onClick={() => {
                 setReadOnly(!readOnly);
               }}
@@ -129,7 +130,7 @@ export default function SelectRootDialog() {
             <div>
               <Typography
                 component={
-                  "span" /* デフォルトだと<P>になってクリック判定が横に伸びてしまう */
+                  "span" /* デフォルトだと<p>になってクリック判定が横に伸びてしまう */
                 }
                 variant="body1"
                 sx={{
@@ -137,7 +138,7 @@ export default function SelectRootDialog() {
                   py: "5px",
                   display: "inline-block",
                   lineHeight: 1.9,
-                  color: "steelblue",
+                  color: readOnlyColor,
                   cursor: "pointer",
                 }}
                 onClick={() => {

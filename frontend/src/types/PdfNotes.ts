@@ -17,7 +17,7 @@ export type NoteType =
   | Arrow
   | Bracket
   | Marker
-  | Note
+  | Memo
   | PageLink
   | Chip;
 export type Heads = "end" | "start" | "both" | "none";
@@ -51,8 +51,8 @@ export interface Marker {
   x2: number;
   y2: number;
 }
-export interface Note {
-  type: "Note";
+export interface Memo {
+  type: "Memo";
   x: number;
   y: number;
   html: string;

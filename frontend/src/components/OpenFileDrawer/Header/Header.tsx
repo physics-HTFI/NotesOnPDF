@@ -72,7 +72,7 @@ export default function Header({
         <span style={{ marginRight: "auto" }}>
           <IconButton
             disabled={!modelFlags.canToggleReadOnly}
-            sx={sxButton}
+            sx={readOnly ? { color: "firebrick" } : sxButton}
             onClick={() => {
               setReadOnly(!readOnly);
             }}

@@ -11,8 +11,8 @@ import ModelContext from "@/contexts/ModelContext";
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
-  const { model } = useContext(ModelContext);
-  const { setSnackbarMessage } = useContext(UiStateContext);
+  const { model, modelFlags } = useContext(ModelContext);
+  const { readOnly, setSnackbarMessage } = useContext(UiStateContext);
   const { id, setId, setPdfNotes, setPageSizes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiStateContext);
@@ -75,6 +75,10 @@ export default function OpenFileDrawer() {
           maxWidth: 500,
           minWidth: 280,
           overflowX: "hidden",
+          background:
+            readOnly && modelFlags.canToggleReadOnly
+              ? `repeating-linear-gradient(-60deg, #fffcfc, #fffcfc 5px, white 5px, white 10px)`
+              : undefined,
         },
       }}
       onWheel={(e) => {

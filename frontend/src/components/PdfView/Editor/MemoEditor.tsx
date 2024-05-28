@@ -6,7 +6,7 @@ import {
   styled,
   tooltipClasses,
 } from "@mui/material";
-import { Note } from "@/types/PdfNotes";
+import { Memo } from "@/types/PdfNotes";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
@@ -43,13 +43,13 @@ const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
 });
 
 /**
- * 注釈コメントの編集ダイアログ
+ * 注釈メモの編集ダイアログ
  */
-export default function NoteEditor({
+export default function MemoEditor({
   params,
   onClose,
 }: {
-  params: Note;
+  params: Memo;
   onClose: () => void;
 }) {
   const { updateNote } = usePdfNotes();

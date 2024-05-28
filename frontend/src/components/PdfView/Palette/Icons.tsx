@@ -131,14 +131,14 @@ export const BracketIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
 );
 
 /**
- * パレットのNoteアイコン
+ * パレットのMemoアイコン
  */
-export const NoteIcon: FC<IconProps> = ({ sx, onClose, x, y }) => (
+export const MemoIcon: FC<IconProps> = ({ sx, onClose, x, y }) => (
   <Box
     sx={sx}
     onMouseEnter={() => {
       onClose({
-        type: "Note",
+        type: "Memo",
         x,
         y,
         html: "",

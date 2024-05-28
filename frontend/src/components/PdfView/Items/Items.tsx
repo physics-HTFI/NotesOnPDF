@@ -2,7 +2,7 @@ import { MouseEvent, useContext } from "react";
 import Arrow from "./Arrow";
 import Bracket from "./Bracket";
 import Marker from "./Marker";
-import Note from "./Note";
+import Memo from "./Memo";
 import PageLink from "./PageLink";
 import Rect from "./Rect";
 import Polygon from "./Polygon";
@@ -81,7 +81,7 @@ export default function Items({
         })}
       </Svg>
       {notes.map((n) => {
-        return n.type === "Note" ? <Note {...props(n)} /> : undefined;
+        return n.type === "Memo" ? <Memo {...props(n)} /> : undefined;
       })}
       {notes.map((n) => {
         return n.type === "Chip" ? <Chip {...props(n)} /> : undefined;

@@ -9,7 +9,7 @@ import {
   ChipIcon,
   IconProps,
   MarkerIcon,
-  NoteIcon,
+  MemoIcon,
   PageLinkIcon,
   PolygonIcon,
   RectIcon,
@@ -78,7 +78,7 @@ export default function Palette({
       <PolygonIcon sx={sx(3)} {...iconProps} />
       <ChipIcon sx={sx(4)} {...iconProps} />
       <PageLinkIcon sx={sx(5)} {...iconProps} />
-      <NoteIcon sx={sx(6)} {...iconProps} />
+      <MemoIcon sx={sx(6)} {...iconProps} />
       <RectIcon sx={sx(7)} {...iconProps} />
 
       {/* 分割線 */}

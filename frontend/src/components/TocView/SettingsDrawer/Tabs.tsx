@@ -1,5 +1,5 @@
 import usePdfNotes from "@/hooks/usePdfNotes";
-import { Box, Tab, Tabs as MaterialTabs } from "@mui/material";
+import { Box, Tab, Tabs as MaterialTabs, Tooltip } from "@mui/material";
 
 /**
  * タブ
@@ -21,8 +21,36 @@ export default function Tabs({
         }}
       >
         <Tab label={pageLabel} />
-        <Tab label="ファイル" />
-        <Tab label="アプリ" />
+        <Tab
+          label={
+            <Tooltip
+              title="ファイル設定は注釈ファイルに保存されます"
+              placement="top"
+              disableInteractive
+            >
+              <span>ファイル</span>
+            </Tooltip>
+          }
+        />
+        <Tab
+          label={
+            <Tooltip
+              title={
+                <span>
+                  アプリ設定は
+                  <br />
+                  {'"(基準フォルダ)/.NoteOnPdf/settings.json"'}
+                  <br />
+                  に保存されます
+                </span>
+              }
+              placement="top"
+              disableInteractive
+            >
+              <span>アプリ</span>
+            </Tooltip>
+          }
+        />
       </MaterialTabs>
     </Box>
   );

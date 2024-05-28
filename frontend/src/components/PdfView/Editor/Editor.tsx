@@ -2,7 +2,7 @@ import { NoteType } from "@/types/PdfNotes";
 import ChipEditor from "./ChipEditor";
 import RectEditor from "./RectEditor";
 import PageLinkEditor from "./PageLinkEditor";
-import NoteEditor from "./NoteEditor";
+import MemoEditor from "./MemoEditor";
 import ArrowEditor from "./ArrowEditor";
 
 /**
@@ -27,8 +27,8 @@ export default function Editor({
       return <ChipEditor params={params} onClose={onClose} />;
     case "Marker":
       return <></>;
-    case "Note":
-      return <NoteEditor params={params} onClose={onClose} />;
+    case "Memo":
+      return <MemoEditor params={params} onClose={onClose} />;
     case "PageLink":
       return <PageLinkEditor params={params} onClose={onClose} />;
     case "Polygon":

@@ -2,7 +2,7 @@ import { useContext, useRef, useState } from "react";
 import Arrow from "./Items/Arrow";
 import Bracket from "./Items/Bracket";
 import Marker from "./Items/Marker";
-import Note from "./Items/Note";
+import Memo from "./Items/Memo";
 import PageLink from "./Items/PageLink";
 import Rect from "./Items/Rect";
 import Polygon from "./Items/Polygon";
@@ -85,7 +85,7 @@ export default function Move({
           )}
         </Svg>
         {newParams.type === "Chip" && <Chip params={newParams} />}
-        {newParams.type === "Note" && <Note params={newParams} />}
+        {newParams.type === "Memo" && <Memo params={newParams} />}
         {newParams.type === "PageLink" && <PageLink params={newParams} />}
       </Box>
 
@@ -171,7 +171,7 @@ function getTranslated(params: NoteType, dxy?: [number, number]) {
   const newParams: NoteType = { ...params };
   switch (newParams.type) {
     case "Chip":
-    case "Note":
+    case "Memo":
     case "PageLink":
       newParams.x += dx;
       newParams.y += dy;
