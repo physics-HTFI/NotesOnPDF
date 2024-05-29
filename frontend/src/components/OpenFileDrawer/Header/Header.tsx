@@ -1,13 +1,5 @@
 import { useContext, useState } from "react";
-import {
-  Alert,
-  Backdrop,
-  Box,
-  Divider,
-  IconButton,
-  Snackbar,
-  Tooltip,
-} from "@mui/material";
+import { Box, Divider, IconButton, Tooltip } from "@mui/material";
 import {
   FolderOpen,
   GitHub,
@@ -31,11 +23,11 @@ export default function Header({
   onSelectPdfById?: (id: string) => void;
 }) {
   const { model, modelFlags } = useContext(ModelContext);
-  const { readOnly, setReadOnly, setErrorMessage } = useContext(UiStateContext);
+  const { readOnly, setReadOnly, setErrorMessage, setInfoMessage } =
+    useContext(UiStateContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [openAlert, setOpenAlert] = useState(false);
 
   const sxButton = { color: "slategray" };
 
@@ -122,7 +114,13 @@ export default function Header({
             sx={sxButton}
             size="small"
             onClick={() => {
-              setOpenAlert(true);
+              setInfoMessage(
+                <span>
+                  ファイルを選択してください
+                  <br />
+                  選択ダイアログは、ブラウザの後ろに隠れていることがあります
+                </span>
+              );
               model
                 .getIdFromExternalFile()
                 .then((id) => {
@@ -133,7 +131,7 @@ export default function Header({
                   setErrorMessage(model.getMessage("PDFファイルの取得"));
                 })
                 .finally(() => {
-                  setOpenAlert(false);
+                  setInfoMessage(undefined);
                 });
             }}
           >
@@ -141,23 +139,6 @@ export default function Header({
           </IconButton>
         </span>
       </Tooltip>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={openAlert}
-      >
-        <Snackbar open>
-          <Alert
-            elevation={6}
-            variant="filled"
-            severity="info"
-            sx={{ width: "100%" }}
-          >
-            ファイルを選択してください
-            <br />
-            選択ダイアログは、ブラウザの後ろに隠れていることがあります
-          </Alert>
-        </Snackbar>
-      </Backdrop>
 
       {/* URLから開く */}
       <Tooltip

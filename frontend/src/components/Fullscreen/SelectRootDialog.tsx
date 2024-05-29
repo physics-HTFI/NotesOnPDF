@@ -22,7 +22,7 @@ import ModelContext from "@/contexts/ModelContext";
  */
 export default function SelectRootDialog() {
   const { setModel } = useContext(ModelContext);
-  const { readOnly, setReadOnly, setErrorMessage } = useContext(UiStateContext);
+  const { readOnly, setReadOnly, setInfoMessage } = useContext(UiStateContext);
   const [open, setOpen] = useState(true);
   const [dirHandle, setDirHandle] = useState<FileSystemDirectoryHandle>();
   const [draggingColor, setDraggingColor] = useState<string>();
@@ -46,9 +46,9 @@ export default function SelectRootDialog() {
           e.preventDefault();
           setDraggingColor(undefined);
           setDirHandle(undefined);
-          set().catch(() => undefined);
+          setHandle().catch(() => undefined);
 
-          async function set() {
+          async function setHandle() {
             for (const item of e.dataTransfer.items) {
               const handle = await item.getAsFileSystemHandle();
               if (!handle) continue;
@@ -175,7 +175,7 @@ export default function SelectRootDialog() {
             onClick={() => {
               setModel(new ModelMock());
               setReadOnly(true);
-              setErrorMessage(
+              setInfoMessage(
                 <>
                   これはサンプルです。
                   <br />

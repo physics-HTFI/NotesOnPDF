@@ -15,6 +15,7 @@ export const UiStateContext = createContext<{
   setWaiting: (waiting: boolean) => void;
   setReadOnly: (readOnly: boolean) => void;
   setErrorMessage: (snackbarMessage?: JSX.Element) => void;
+  setInfoMessage: (snackbarMessage?: JSX.Element) => void;
 }>({
   openFileTreeDrawer: true,
   openSettingsDrawer: false,
@@ -25,6 +26,7 @@ export const UiStateContext = createContext<{
   setWaiting: () => undefined,
   setReadOnly: () => undefined,
   setErrorMessage: () => undefined,
+  setInfoMessage: () => undefined,
 });
 
 export default UiStateContext;
@@ -38,6 +40,7 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [waiting, setWaiting] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
   const [errorMessage, setErrorMessage] = useState<JSX.Element>();
+  const [infoMessage, setInfoMessage] = useState<JSX.Element>();
 
   return (
     <UiStateContext.Provider
@@ -51,6 +54,7 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
         setWaiting,
         setReadOnly,
         setErrorMessage,
+        setInfoMessage,
       }}
     >
       {children}
@@ -76,6 +80,27 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
             sx={{ width: "100%" }}
           >
             {errorMessage}
+          </Alert>
+        </Snackbar>
+      )}
+      {!!infoMessage && (
+        <Snackbar
+          open={!!infoMessage}
+          onClose={(_, reason) => {
+            if (reason === "clickaway") return;
+            setInfoMessage(undefined);
+          }}
+        >
+          <Alert
+            elevation={6}
+            variant="filled"
+            severity="info"
+            onClose={() => {
+              setInfoMessage(undefined);
+            }}
+            sx={{ width: "100%" }}
+          >
+            {infoMessage}
           </Alert>
         </Snackbar>
       )}
