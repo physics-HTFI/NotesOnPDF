@@ -24,8 +24,13 @@ export default function PdfImageWeb() {
   const { id, pdfNotes, pageSizes, setId, setPdfNotes, setPageSizes } =
     useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
-  const { waiting, setWaiting, setOpenFileTreeDrawer, setSnackbarMessage } =
-    useContext(UiStateContext);
+  const {
+    readOnly,
+    waiting,
+    setWaiting,
+    setOpenFileTreeDrawer,
+    setSnackbarMessage,
+  } = useContext(UiStateContext);
   const { pageLabel } = usePdfNotes();
 
   const [file, setFile] = useState<string | File>();
@@ -57,6 +62,7 @@ export default function PdfImageWeb() {
       setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
       setWaiting(false);
       setOpenFileTreeDrawer(false);
+      setSnackbarMessage(undefined);
     }
   }, [
     file,
@@ -66,6 +72,7 @@ export default function PdfImageWeb() {
     setPdfNotes,
     setWaiting,
     waiting,
+    setSnackbarMessage,
   ]);
 
   return (
@@ -84,7 +91,7 @@ export default function PdfImageWeb() {
             });
           }
           setPageSizes(pageSizes);
-          if (id) {
+          if (id && !readOnly) {
             await model.updateHistory(id, pageSizes.length);
           }
         }

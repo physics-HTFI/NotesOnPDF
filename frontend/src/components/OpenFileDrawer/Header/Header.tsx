@@ -56,7 +56,7 @@ export default function Header({
             <span>
               【読み取り専用モード】
               <br />
-              編集はできますが、保存は一切されません
+              閲覧・編集はできますが、保存は一切されません
             </span>
           ) : (
             <span>
@@ -124,6 +124,7 @@ export default function Header({
             size="small"
             onClick={() => {
               setOpenAlert(true);
+              setSnackbarMessage(undefined);
               model
                 .getIdFromExternalFile()
                 .then((id) => {
@@ -191,6 +192,7 @@ export default function Header({
             setOpenUrl(false);
             if (!url) return;
             setDownloading(true);
+            setSnackbarMessage(undefined);
             model
               .getIdFromUrl(url)
               .then((id) => {

@@ -40,6 +40,7 @@ export default function PdfImageDesktop() {
   if (!reading && nextSrc.current !== src) {
     setSrc(nextSrc.current);
     if (nextSrc.current.split("?")[0] != src.split("?")[0]) {
+      setSnackbarMessage(undefined);
       setReading(true);
     }
   }

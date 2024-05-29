@@ -29,12 +29,14 @@ export default function HistoryDialog({
   onClose: (id?: string) => void;
 }) {
   const { model } = useContext(ModelContext);
-  const { setWaiting, setSnackbarMessage } = useContext(UiStateContext);
+  const { readOnly, setWaiting, setSnackbarMessage } =
+    useContext(UiStateContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {
     if (!open) return;
     setWaiting(true);
+    setSnackbarMessage(undefined);
     model
       .getHistory()
       .then((h) => {
@@ -74,6 +76,13 @@ export default function HistoryDialog({
               <IconButton
                 sx={{ color: "white", paddingTop: 0 }}
                 onClick={() => {
+                  setSnackbarMessage(undefined);
+                  if (readOnly) {
+                    setSnackbarMessage(
+                      <span>読み取り専用モードのため消去できません</span>
+                    );
+                    return;
+                  }
                   model
                     .deleteHistoryAll()
                     .then(() => {
@@ -141,28 +150,38 @@ export default function HistoryDialog({
                       placement="right"
                       disableInteractive
                     >
-                      <IconButton
-                        sx={{ color: "#72a0db" }}
-                        onClick={(e) => {
-                          model
-                            .deleteHistory(row.id)
-                            .then(() => {
-                              setHistory(
-                                history.filter((h) => h.id !== row.id)
-                              );
-                            })
-                            .catch(() => {
+                      <span>
+                        <IconButton
+                          sx={{ color: "#72a0db" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSnackbarMessage(undefined);
+                            if (readOnly) {
                               setSnackbarMessage(
-                                model.getMessage("履歴の消去")
+                                <span>
+                                  読み取り専用モードのため消去できません
+                                </span>
                               );
-                            });
-                          e.stopPropagation();
-                          e.preventDefault();
-                        }}
-                        size="small"
-                      >
-                        <Delete />
-                      </IconButton>
+                              return;
+                            }
+                            model
+                              .deleteHistory(row.id)
+                              .then(() => {
+                                setHistory(
+                                  history.filter((h) => h.id !== row.id)
+                                );
+                              })
+                              .catch(() => {
+                                setSnackbarMessage(
+                                  model.getMessage("履歴の消去")
+                                );
+                              });
+                          }}
+                          size="small"
+                        >
+                          <Delete />
+                        </IconButton>
+                      </span>
                     </Tooltip>
                   </TableCell>
                 </TableRow>

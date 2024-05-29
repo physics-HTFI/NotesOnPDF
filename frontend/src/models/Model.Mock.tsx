@@ -275,7 +275,7 @@ export default class ModelMock implements IModel {
 
   getFlags = () => ({
     canToggleReadOnly: false,
-    canOpenHistory: true,
+    canOpenHistory: false,
     canOpenFileDialog: false,
     canOpenGithub: true,
     usePdfjs: true,

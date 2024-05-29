@@ -59,12 +59,11 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
       // ・`readOnly`状態で`pdfNotes`を変更→別のファイルを開いて`readOnly`を解除、としたときに前のファイルの`Coverage`が変化してしまう。
       // だが稀なので気にしない（`!readOnly`状態で`Coverages`が変化しないほうが不自然なので）。
       setCoverages(newCoverages);
-      if (!readOnly) {
-        setSnackbarMessage(undefined);
-        model.putCoverages(newCoverages).catch(() => {
-          setSnackbarMessage(model.getMessage("進捗率の保存"));
-        });
-      }
+      if (readOnly) return;
+      setSnackbarMessage(undefined);
+      model.putCoverages(newCoverages).catch(() => {
+        setSnackbarMessage(model.getMessage("進捗率の保存"));
+      });
     }
   }
 

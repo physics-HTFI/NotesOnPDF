@@ -66,7 +66,6 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
             snackbarMessage: JSX.Element | undefined
           ) => void
         ) => {
-          setSnackbarMessage?.(undefined);
           model?.putPdfNotes(id, pdfNotes).catch(() => {
             setSnackbarMessage?.(model.getMessage("注釈ファイルの保存"));
           });
@@ -77,6 +76,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   );
   useEffect(() => {
     if (!pdfNotes || !id) return;
+    setSnackbarMessage(undefined);
     document
       .getElementById(String(pdfNotes.currentPage))
       ?.scrollIntoView({ block: "nearest" });
