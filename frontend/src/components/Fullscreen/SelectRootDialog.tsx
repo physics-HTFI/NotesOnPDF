@@ -22,8 +22,7 @@ import ModelContext from "@/contexts/ModelContext";
  */
 export default function SelectRootDialog() {
   const { setModel } = useContext(ModelContext);
-  const { readOnly, setReadOnly, setSnackbarMessage } =
-    useContext(UiStateContext);
+  const { readOnly, setReadOnly, setErrorMessage } = useContext(UiStateContext);
   const [open, setOpen] = useState(true);
   const [dirHandle, setDirHandle] = useState<FileSystemDirectoryHandle>();
   const [draggingColor, setDraggingColor] = useState<string>();
@@ -176,7 +175,7 @@ export default function SelectRootDialog() {
             onClick={() => {
               setModel(new ModelMock());
               setReadOnly(true);
-              setSnackbarMessage(
+              setErrorMessage(
                 <>
                   これはサンプルです。
                   <br />

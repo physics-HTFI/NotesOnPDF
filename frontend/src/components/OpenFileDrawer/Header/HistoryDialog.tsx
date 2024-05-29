@@ -29,14 +29,12 @@ export default function HistoryDialog({
   onClose: (id?: string) => void;
 }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setWaiting, setSnackbarMessage } =
-    useContext(UiStateContext);
+  const { readOnly, setWaiting, setErrorMessage } = useContext(UiStateContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {
     if (!open) return;
     setWaiting(true);
-    setSnackbarMessage(undefined);
     model
       .getHistory()
       .then((h) => {
@@ -44,12 +42,12 @@ export default function HistoryDialog({
       })
       .catch(() => {
         setHistory([]);
-        setSnackbarMessage(model.getMessage("履歴の取得"));
+        setErrorMessage(model.getMessage("履歴の取得"));
       })
       .finally(() => {
         setWaiting(false);
       });
-  }, [open, model, setWaiting, setSnackbarMessage]);
+  }, [open, model, setWaiting, setErrorMessage]);
 
   return (
     <Backdrop
@@ -76,9 +74,8 @@ export default function HistoryDialog({
               <IconButton
                 sx={{ color: "white", paddingTop: 0 }}
                 onClick={() => {
-                  setSnackbarMessage(undefined);
                   if (readOnly) {
-                    setSnackbarMessage(
+                    setErrorMessage(
                       <span>読み取り専用モードのため消去できません</span>
                     );
                     return;
@@ -89,7 +86,7 @@ export default function HistoryDialog({
                       setHistory([]);
                     })
                     .catch(() => {
-                      setSnackbarMessage(model.getMessage("履歴の消去"));
+                      setErrorMessage(model.getMessage("履歴の消去"));
                     });
                 }}
                 size="small"
@@ -155,9 +152,8 @@ export default function HistoryDialog({
                           sx={{ color: "#72a0db" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSnackbarMessage(undefined);
                             if (readOnly) {
-                              setSnackbarMessage(
+                              setErrorMessage(
                                 <span>
                                   読み取り専用モードのため消去できません
                                 </span>
@@ -172,9 +168,7 @@ export default function HistoryDialog({
                                 );
                               })
                               .catch(() => {
-                                setSnackbarMessage(
-                                  model.getMessage("履歴の消去")
-                                );
+                                setErrorMessage(model.getMessage("履歴の消去"));
                               });
                           }}
                           size="small"

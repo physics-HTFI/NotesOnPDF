@@ -29,7 +29,7 @@ export default function PdfImageWeb() {
     waiting,
     setWaiting,
     setOpenFileTreeDrawer,
-    setSnackbarMessage,
+    setErrorMessage,
   } = useContext(UiStateContext);
   const { pageLabel } = usePdfNotes();
 
@@ -44,16 +44,15 @@ export default function PdfImageWeb() {
     setFile(undefined);
     if (!id) return;
     setWaiting(true);
-    setSnackbarMessage(undefined);
     model
       .getFileFromId(id)
       .then((file) => {
         setFile(file);
       })
       .catch(() => {
-        setSnackbarMessage(model.getMessage("PDFファイルの取得"));
+        setErrorMessage(model.getMessage("PDFファイルの取得"));
       });
-  }, [id, model, setWaiting, setSnackbarMessage]);
+  }, [id, model, setWaiting, setErrorMessage]);
 
   useEffect(() => {
     // 読み込み終了時の処理
@@ -62,7 +61,6 @@ export default function PdfImageWeb() {
       setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
       setWaiting(false);
       setOpenFileTreeDrawer(false);
-      setSnackbarMessage(undefined);
     }
   }, [
     file,
@@ -72,7 +70,7 @@ export default function PdfImageWeb() {
     setPdfNotes,
     setWaiting,
     waiting,
-    setSnackbarMessage,
+    setErrorMessage,
   ]);
 
   return (

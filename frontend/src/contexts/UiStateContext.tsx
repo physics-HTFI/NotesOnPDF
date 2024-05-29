@@ -10,12 +10,11 @@ export const UiStateContext = createContext<{
   openSettingsDrawer: boolean;
   waiting: boolean;
   readOnly: boolean;
-  snackbarMessage?: JSX.Element;
   setOpenFileTreeDrawer: (openFileTreeDrawer: boolean) => void;
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
   setWaiting: (waiting: boolean) => void;
   setReadOnly: (readOnly: boolean) => void;
-  setSnackbarMessage: (snackbarMessage?: JSX.Element) => void;
+  setErrorMessage: (snackbarMessage?: JSX.Element) => void;
 }>({
   openFileTreeDrawer: true,
   openSettingsDrawer: false,
@@ -25,7 +24,7 @@ export const UiStateContext = createContext<{
   setOpenSettingsDrawer: () => undefined,
   setWaiting: () => undefined,
   setReadOnly: () => undefined,
-  setSnackbarMessage: () => undefined,
+  setErrorMessage: () => undefined,
 });
 
 export default UiStateContext;
@@ -38,7 +37,7 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<JSX.Element>();
+  const [errorMessage, setErrorMessage] = useState<JSX.Element>();
 
   return (
     <UiStateContext.Provider
@@ -47,36 +46,36 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
         openSettingsDrawer,
         waiting,
         readOnly,
-        snackbarMessage,
         setOpenFileTreeDrawer,
         setOpenSettingsDrawer,
         setWaiting,
         setReadOnly,
-        setSnackbarMessage,
+        setErrorMessage,
       }}
     >
       {children}
       <Waiting isWaiting={waiting} />
 
       {/* メッセージ（`flag && <></>`の形にしているのは非表示時に空白のメッセージが一瞬表示されるのを防ぐため） */}
-      {!!snackbarMessage && (
+      {!!errorMessage && (
         <Snackbar
-          open={!!snackbarMessage}
+          autoHideDuration={3000}
+          open={!!errorMessage}
           onClose={(_, reason) => {
             if (reason === "clickaway") return;
-            setSnackbarMessage(undefined);
+            setErrorMessage(undefined);
           }}
         >
           <Alert
             elevation={6}
             variant="filled"
-            severity="info"
+            severity="error"
             onClose={() => {
-              setSnackbarMessage(undefined);
+              setErrorMessage(undefined);
             }}
             sx={{ width: "100%" }}
           >
-            {snackbarMessage}
+            {errorMessage}
           </Alert>
         </Snackbar>
       )}

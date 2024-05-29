@@ -12,7 +12,7 @@ import ModelContext from "@/contexts/ModelContext";
  */
 export default function OpenFileDrawer() {
   const { model, modelFlags } = useContext(ModelContext);
-  const { readOnly, setSnackbarMessage } = useContext(UiStateContext);
+  const { readOnly, setErrorMessage } = useContext(UiStateContext);
   const { id, setId, setPdfNotes, setPageSizes } = useContext(PdfNotesContext);
   const { setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiStateContext);
@@ -29,7 +29,6 @@ export default function OpenFileDrawer() {
       setId(undefined);
       setPdfNotes(undefined);
       setPageSizes(undefined);
-      setSnackbarMessage(undefined);
       model
         .getPdfNotes(_id)
         .then((result) => {
@@ -39,7 +38,7 @@ export default function OpenFileDrawer() {
           setOpenFileTreeDrawer(false);
         })
         .catch(() => {
-          setSnackbarMessage(
+          setErrorMessage(
             model.getMessage("PDFファイル (または注釈ファイル) の読み込み")
           );
         })
@@ -55,7 +54,7 @@ export default function OpenFileDrawer() {
       setPdfNotes,
       setPageSizes,
       setWaiting,
-      setSnackbarMessage,
+      setErrorMessage,
     ]
   );
 

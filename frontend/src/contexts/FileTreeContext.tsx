@@ -28,23 +28,22 @@ export default FileTreeContext;
  */
 export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setSnackbarMessage } = useContext(UiStateContext);
+  const { readOnly, setErrorMessage } = useContext(UiStateContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
 
   // `FileTree`と`Coverages`を取得する
   useEffect(() => {
-    setSnackbarMessage(undefined);
     load(model)
       .then(({ fileTree, coverages }) => {
         setFileTree(fileTree);
         setCoverages(coverages);
       })
       .catch(() => {
-        setSnackbarMessage(model.getMessage("ファイルツリーの取得"));
+        setErrorMessage(model.getMessage("ファイルツリーの取得"));
       });
-  }, [model, setSnackbarMessage]);
+  }, [model, setErrorMessage]);
 
   // `id`または`pdfNotes`が変更されたときに、必要であれば`Coverages`を更新する
   if (id && pdfNotes) {
@@ -60,9 +59,8 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
       // だが稀なので気にしない（`!readOnly`状態で`Coverages`が変化しないほうが不自然なので）。
       setCoverages(newCoverages);
       if (readOnly) return;
-      setSnackbarMessage(undefined);
       model.putCoverages(newCoverages).catch(() => {
-        setSnackbarMessage(model.getMessage("進捗率の保存"));
+        setErrorMessage(model.getMessage("進捗率の保存"));
       });
     }
   }

@@ -11,7 +11,7 @@ import usePdfNotes from "@/hooks/usePdfNotes";
  */
 export default function PdfImageDesktop() {
   const { model } = useContext(ModelContext);
-  const { setSnackbarMessage } = useContext(UiStateContext);
+  const { setErrorMessage } = useContext(UiStateContext);
   const { pageRect } = useContext(MouseContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const { pageLabel } = usePdfNotes();
@@ -26,7 +26,6 @@ export default function PdfImageDesktop() {
   const width = Math.round(pageRect.width);
   const height = Math.round(pageRect.height);
   try {
-    setSnackbarMessage(undefined);
     nextSrc.current = model.getPageImageUrl(
       id,
       pdfNotes.currentPage,
@@ -34,13 +33,12 @@ export default function PdfImageDesktop() {
       height
     );
   } catch {
-    setSnackbarMessage(model.getMessage("ページ画像の取得"));
+    setErrorMessage(model.getMessage("ページ画像の取得"));
   }
   // 現在の読み込みが終了してから次の読み込みを行う
   if (!reading && nextSrc.current !== src) {
     setSrc(nextSrc.current);
     if (nextSrc.current.split("?")[0] != src.split("?")[0]) {
-      setSnackbarMessage(undefined);
       setReading(true);
     }
   }
@@ -52,11 +50,10 @@ export default function PdfImageDesktop() {
         style={{ width, height }}
         onLoad={() => {
           setReading(false);
-          setSnackbarMessage(undefined);
         }}
         onError={() => {
           setReading(false);
-          setSnackbarMessage(model.getMessage("ページ画像の取得"));
+          setErrorMessage(model.getMessage("ページ画像の取得"));
         }}
       />
       <PageLabelLarge label={pageLabel} shown={reading} />

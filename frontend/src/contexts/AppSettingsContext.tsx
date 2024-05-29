@@ -28,28 +28,26 @@ export function AppSettingsContextProvider({
   children: ReactNode;
 }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setSnackbarMessage } = useContext(UiStateContext);
+  const { readOnly, setErrorMessage } = useContext(UiStateContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
 
   useEffect(() => {
-    setSnackbarMessage(undefined);
     model
       .getAppSettings()
       .then((settings) => {
         setAppSettings(settings);
       })
       .catch(() => {
-        setSnackbarMessage(model.getMessage("設定ファイルの取得"));
+        setErrorMessage(model.getMessage("設定ファイルの取得"));
       });
-  }, [model, setSnackbarMessage]);
+  }, [model, setErrorMessage]);
 
   useEffect(() => {
     if (!appSettings || readOnly) return;
-    setSnackbarMessage(undefined);
     model.putAppSettings(appSettings).catch(() => {
-      setSnackbarMessage(model.getMessage("設定ファイルの保存"));
+      setErrorMessage(model.getMessage("設定ファイルの保存"));
     });
-  }, [appSettings, model, readOnly, setSnackbarMessage]);
+  }, [appSettings, model, readOnly, setErrorMessage]);
 
   return (
     <AppSettingsContext.Provider value={{ appSettings, setAppSettings }}>

@@ -43,7 +43,7 @@ export default PdfNotesContext;
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setSnackbarMessage } = useContext(UiStateContext);
+  const { readOnly, setErrorMessage } = useContext(UiStateContext);
   const [id, setId_] = useState<string>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [pageSizes, setPageSizes] = useState<PageSize[]>();
@@ -62,12 +62,10 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
           id: string,
           pdfNotes: PdfNotes,
           model?: IModel,
-          setSnackbarMessage?: (
-            snackbarMessage: JSX.Element | undefined
-          ) => void
+          setErrorMessage?: (snackbarMessage: JSX.Element | undefined) => void
         ) => {
           model?.putPdfNotes(id, pdfNotes).catch(() => {
-            setSnackbarMessage?.(model.getMessage("注釈ファイルの保存"));
+            setErrorMessage?.(model.getMessage("注釈ファイルの保存"));
           });
         },
         1000
@@ -76,14 +74,13 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   );
   useEffect(() => {
     if (!pdfNotes || !id) return;
-    setSnackbarMessage(undefined);
     document
       .getElementById(String(pdfNotes.currentPage))
       ?.scrollIntoView({ block: "nearest" });
     if (readOnly) return;
-    putPdfNotesDebounced(id, pdfNotes, model, setSnackbarMessage);
+    putPdfNotesDebounced(id, pdfNotes, model, setErrorMessage);
     // 目次パネル中の選択されたページが隠れないようにスクロールする
-  }, [id, pdfNotes, model, readOnly, putPdfNotesDebounced, setSnackbarMessage]);
+  }, [id, pdfNotes, model, readOnly, putPdfNotesDebounced, setErrorMessage]);
 
   return (
     <PdfNotesContext.Provider

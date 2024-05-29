@@ -31,8 +31,7 @@ export default function Header({
   onSelectPdfById?: (id: string) => void;
 }) {
   const { model, modelFlags } = useContext(ModelContext);
-  const { readOnly, setReadOnly, setSnackbarMessage } =
-    useContext(UiStateContext);
+  const { readOnly, setReadOnly, setErrorMessage } = useContext(UiStateContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -124,7 +123,6 @@ export default function Header({
             size="small"
             onClick={() => {
               setOpenAlert(true);
-              setSnackbarMessage(undefined);
               model
                 .getIdFromExternalFile()
                 .then((id) => {
@@ -132,7 +130,7 @@ export default function Header({
                   onSelectPdfById?.(id);
                 })
                 .catch(() => {
-                  setSnackbarMessage(model.getMessage("PDFファイルの取得"));
+                  setErrorMessage(model.getMessage("PDFファイルの取得"));
                 })
                 .finally(() => {
                   setOpenAlert(false);
@@ -192,16 +190,13 @@ export default function Header({
             setOpenUrl(false);
             if (!url) return;
             setDownloading(true);
-            setSnackbarMessage(undefined);
             model
               .getIdFromUrl(url)
               .then((id) => {
                 onSelectPdfById?.(id);
               })
               .catch(() => {
-                setSnackbarMessage(
-                  model.getMessage("PDFファイルのダウンロード")
-                );
+                setErrorMessage(model.getMessage("PDFファイルのダウンロード"));
               })
               .finally(() => {
                 setDownloading(false);
