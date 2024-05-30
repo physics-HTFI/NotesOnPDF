@@ -1,5 +1,5 @@
 import ModelContext from "@/contexts/ModelContext";
-import { Alert, Backdrop, Snackbar } from "@mui/material";
+import { Alert, Backdrop, Button, Snackbar, Stack } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 
 /**
@@ -55,9 +55,23 @@ export default function ServerSideEvents() {
           severity="error"
           sx={{ width: "100%" }}
         >
-          設定が変更されました
-          <br />
-          リロードしてください
+          <Stack direction="row">
+            <span>
+              設定が変更されました
+              <br />
+              リロードしてください
+            </span>
+            <Button
+              variant="contained"
+              color="warning"
+              sx={{ ml: 2 }}
+              onClick={() => {
+                location.reload();
+              }}
+            >
+              リロード
+            </Button>
+          </Stack>
         </Alert>
       </Snackbar>
     </Backdrop>
