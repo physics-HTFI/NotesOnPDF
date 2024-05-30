@@ -14,7 +14,7 @@ export default class ModelDesktop implements IModel {
     canOpenHistory: true,
     canOpenFileDialog: true,
     canOpenGithub: false,
-    usePdfjs: false,
+    isWeb: false,
   });
 
   getMessage = (reason: string) => (
@@ -24,6 +24,9 @@ export default class ModelDesktop implements IModel {
       NotesOnPdf.exeが起動していないか、入力が不正です
     </>
   );
+
+  getEventSource = () =>
+    new EventSource(this.origin + "/api/server-sent-events");
 
   getFileTree = async (): Promise<FileTree> => {
     const res = await fetch(this.origin + "/api/file-tree");

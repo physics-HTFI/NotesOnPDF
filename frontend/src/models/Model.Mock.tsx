@@ -278,9 +278,10 @@ export default class ModelMock implements IModel {
     canOpenHistory: false,
     canOpenFileDialog: false,
     canOpenGithub: true,
-    usePdfjs: true,
+    isWeb: true,
   });
   getMessage = (reason: string) => <>{`${reason}に失敗しました`}</>;
+  getEventSource = () => undefined;
 
   getFileTree = () => Promise.resolve(fileTree);
 

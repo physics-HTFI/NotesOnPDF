@@ -27,9 +27,10 @@ export default class ModelWeb implements IModel {
     canOpenHistory: true,
     canOpenFileDialog: false,
     canOpenGithub: true,
-    usePdfjs: true,
+    isWeb: true,
   });
   getMessage = (reason: string) => <>{`${reason}に失敗しました`}</>;
+  getEventSource = () => undefined;
 
   getFileTree = async () => {
     const root = GetFileTreeRoot();

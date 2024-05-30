@@ -103,8 +103,8 @@ export default function Header({
         title={
           <span>
             ファイルツリー外のPDFファイルを開きます
-            {modelFlags.usePdfjs && <br />}
-            {modelFlags.usePdfjs && "(ウェブ版では使用できません)"}
+            {modelFlags.isWeb && <br />}
+            {modelFlags.isWeb && "(ウェブ版では使用できません)"}
           </span>
         }
       >
@@ -145,8 +145,8 @@ export default function Header({
         title={
           <span>
             URLからPDFファイルを開きます
-            {modelFlags.usePdfjs && <br />}
-            {modelFlags.usePdfjs && "(ウェブ版では使用できません)"}
+            {modelFlags.isWeb && <br />}
+            {modelFlags.isWeb && "(ウェブ版では使用できません)"}
           </span>
         }
       >

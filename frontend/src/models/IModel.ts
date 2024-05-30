@@ -8,12 +8,15 @@ import { PageSize } from "@/contexts/PdfNotesContext";
 export default interface IModel {
   getFlags(): ModelFlags;
   getMessage(reason: string): JSX.Element | undefined;
+  getEventSource(): EventSource | undefined;
 
   getFileTree(): Promise<FileTree>;
+
   getHistory(): Promise<History>;
   updateHistory(id: string, pages: number): Promise<void>;
   deleteHistoryAll(): Promise<void>;
   deleteHistory(id: string): Promise<void>;
+
   getIdFromExternalFile(): Promise<string>;
   getIdFromUrl(url: string): Promise<string>;
   getFileFromId(id: string): Promise<string | File>;
@@ -46,5 +49,5 @@ export interface ModelFlags {
   canOpenHistory: boolean;
   canOpenFileDialog: boolean;
   canOpenGithub: boolean;
-  usePdfjs: boolean;
+  isWeb: boolean;
 }

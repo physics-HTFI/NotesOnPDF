@@ -112,7 +112,7 @@ export default function PdfView() {
         }}
         disableGutters
       >
-        {modelFlags.usePdfjs ? <PdfImageWeb /> : <PdfImageDesktop />}
+        {modelFlags.isWeb ? <PdfImageWeb /> : <PdfImageDesktop />}
         <Items
           mode={mode}
           moveNote={moveNote}

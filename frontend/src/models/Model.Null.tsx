@@ -8,9 +8,10 @@ export default class ModelNull implements IModel {
     canOpenHistory: true,
     canOpenFileDialog: true,
     canOpenGithub: true,
-    usePdfjs: true,
+    isWeb: true,
   });
   getMessage = () => undefined;
+  getEventSource = () => undefined;
 
   getFileTree = () => Promise.resolve([]);
   getHistory = () => Promise.resolve([]);

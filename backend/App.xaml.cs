@@ -10,7 +10,7 @@ namespace backend
         TaskTrayIcon? taskTrayIcon;
         readonly HttpServer httpServer = new();
 
-        protected override async void OnStartup(StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
@@ -41,7 +41,7 @@ namespace backend
                 );
 
             // サーバー起動
-            await httpServer.StartAsync();
+            httpServer.Start(() => Current.Dispatcher.Invoke(mainWindow.Show));
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -49,6 +49,7 @@ namespace backend
             mutex?.Dispose();
             mainWindow?.Close();
             taskTrayIcon?.Dispose();
+            httpServer.Dispose();
             base.OnExit(e);
         }
     }

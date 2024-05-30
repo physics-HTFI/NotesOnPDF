@@ -13,6 +13,7 @@ import { MouseContextProvider } from "./contexts/MouseContext";
 import { FileTreeContextProvider } from "./contexts/FileTreeContext";
 import SelectRootDialog from "./components/Fullscreen/SelectRootDialog";
 import { ModelContextProvider } from "./contexts/ModelContext";
+import ServerSideEvents from "./components/Fullscreen/ServerSideEvents";
 
 /**
  * 数式表示のコンフィグ
@@ -104,6 +105,7 @@ export default function App() {
                     </Panel>
                   </PanelGroup>
                 </Box>
+                <ServerSideEvents />
               </FileTreeContextProvider>
             </PdfNotesContextProvider>
           </MathJaxContext>

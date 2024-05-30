@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Net;
+using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -14,87 +15,126 @@ using System.Text.RegularExpressions;
 
 namespace backend
 {
-    class HttpServer
+    class HttpServer : IDisposable
     {
-        HttpListener? listener;
+        HttpListener listener = new();
+        Action onConnectionEnd = () => { };
         readonly ApiModel model = new();
+        readonly SemaphoreSlim semaphore = new(1, 1);
+        bool needsReload = false;
 
-        public async Task StartAsync()
+        public HttpServer()
         {
-            while (true)
+            Properties.Settings.Default.PropertyChanged += BackendSettingsChanged;
+        }
+
+        public void Start(Action onConnectionEnd)
+        {
+            this.onConnectionEnd = onConnectionEnd;
+            listener.Prefixes.Add(SettingsUtils.Url);
+            listener.Start();
+            listener.BeginGetContext(OnContext, null);
+        }
+
+        void OnContext(IAsyncResult ar)
+        {
+            var _ = OnContextAsync(ar);
+        }
+
+
+        async Task OnContextAsync(IAsyncResult ar)
+        {
+            if (!listener.IsListening) return;
+            HttpListenerContext context = listener.EndGetContext(ar);
+            listener.BeginGetContext(OnContext, null);
+
+            HttpListenerRequest request = context.Request;
+            using var response = context.Response;
+            response.AppendHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // 開発時にloclhost:5173からアクセスする必要がある
+            response.AppendHeader("Access-Control-Allow-Headers", "*"); // これがないとフロントエンド側でresponse.okが常にfalseになる
+            response.AppendHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"); // PUT, DELETEを使うために必要
+
+            try
             {
-                try
+                // ここは非同期的に実行する
+
+                // Server-Sent Events を使ってブラウザ側にメッセージを送る
+                if (request.Url?.AbsolutePath == "/api/server-sent-events")
                 {
-                    listener = new HttpListener();
-                    listener.Prefixes.Add(SettingsUtils.Url);
-                    listener.Start();
-
-                    while (listener.IsListening)
+                    response.ContentType = "text/event-stream";
+                    using Stream output = response.OutputStream;
+                    needsReload = false;
+                    try
                     {
-                        // リクエストを待つ
-                        HttpListenerContext context = await listener.GetContextAsync();
-                        if (!listener.IsListening) break;
-
-                        // リクエストを取得
-                        HttpListenerRequest request = context.Request;
-
-                        using var response = context.Response;
-                        response.AppendHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // 開発時にloclhost:5173からアクセスする必要がある
-                        response.AppendHeader("Access-Control-Allow-Headers", "*"); // これがないとフロントエンド側でresponse.okが常にfalseになる
-                        response.AppendHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"); // PUT, DELETEを使うために必要
-
-                        try
+                        while (true)
                         {
-                            // GET
-                            if (request.HttpMethod == "GET")
+                            await output.WriteAsync(Encoding.ASCII.GetBytes($"data: alive\n\n"));
+                            if (needsReload)
                             {
-                                response.ContentLength64 = 0;
-                                (byte[] bytes, string mime) = await ProcessGet(request.Url);
-                                response.ContentLength64 = bytes.Length;
-                                response.ContentType = mime;
-                                response.ContentEncoding = Encoding.UTF8;
-                                using Stream output = response.OutputStream;
-                                await output.WriteAsync(bytes);
+                                await output.WriteAsync(Encoding.ASCII.GetBytes($"data: reload\n\n"));
                             }
-
-                            // POST
-                            if (request.HttpMethod == "POST")
-                            {
-                                ProcessPost(request);
-                            }
-
-                            // PUT
-                            if (request.HttpMethod == "PUT")
-                            {
-                                await ProcessPut(request);
-                            }
-
-                            // POST
-                            if (request.HttpMethod == "DELETE")
-                            {
-                                ProcessDelete(request);
-                            }
-                        }
-                        catch
-                        {
-                            response.StatusCode = (int)HttpStatusCode.BadRequest;
+                            output.Flush();
+                            await Task.Delay(1000);
                         }
                     }
+                    catch
+                    {
+                        // ブラウザのタブを閉じたときの処理（ウィンドウを出す）
+                        onConnectionEnd();
+                        return;
+                    }
                 }
-                catch
+
+                // これ以降は同期的に実行する
+                // 同じタブからのアクセスは何もしなくても同期的になるようだが
+                // 別のタブからのアクセスを同期化するにはセマフォが必要。（lockはawaitがあると使えない）
+                await semaphore.WaitAsync();
+
+                // GET
+                if (request.HttpMethod == "GET")
                 {
+                    response.ContentLength64 = 0;
+                    (byte[] bytes, string mime) = await ProcessGet(request.Url);
+                    response.ContentLength64 = bytes.Length;
+                    response.ContentType = mime;
+                    response.ContentEncoding = Encoding.UTF8;
+                    using Stream output = response.OutputStream;
+                    await output.WriteAsync(bytes);
                 }
-                finally
+
+                // POST
+                if (request.HttpMethod == "POST")
                 {
-                    Stop();
+                    ProcessPost(request);
                 }
+
+                // PUT
+                if (request.HttpMethod == "PUT")
+                {
+                    await ProcessPut(request);
+                }
+
+                // POST
+                if (request.HttpMethod == "DELETE")
+                {
+                    ProcessDelete(request);
+                }
+            }
+            catch
+            {
+                response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+            finally
+            {
+                semaphore.Release();
             }
         }
 
-        void Stop()
+        public void Dispose()
         {
             listener?.Stop();
             listener?.Close();
+            Properties.Settings.Default.PropertyChanged -= BackendSettingsChanged;
         }
 
 
@@ -222,6 +262,12 @@ namespace backend
                 ".svg" => "image/svg+xml",
                 _ => throw new Exception()
             };
+        }
+
+        void BackendSettingsChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(Properties.Settings.Default.RootDirectory)) return;
+            needsReload = true;
         }
     }
 }

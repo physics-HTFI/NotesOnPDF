@@ -229,7 +229,7 @@
                                 Margin="0,0,0,5"
                                 Text="{Binding RootDirectory, UpdateSourceTrigger=PropertyChanged}"
                                 materialDesign:HintAssist.Hint="PDF一覧の基準フォルダ"
-                                ToolTip="アプリ画面左のPDFツリーの起点を指定します。変更後はアプリ画面を開き直してください。"
+                                ToolTip="アプリ画面左のPDFツリーの起点を指定します"
                                 ToolTipService.InitialShowDelay="0"
                                 ToolTipService.Placement="Left"
                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
