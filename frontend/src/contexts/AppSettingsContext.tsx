@@ -28,10 +28,13 @@ export function AppSettingsContextProvider({
   children: ReactNode;
 }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setErrorMessage } = useContext(UiStateContext);
+  const { readOnly, serverFailed, setErrorMessage } =
+    useContext(UiStateContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
+  const initialized = !!appSettings;
 
   useEffect(() => {
+    if (serverFailed || initialized) return;
     model
       .getAppSettings()
       .then((settings) => {
@@ -40,7 +43,7 @@ export function AppSettingsContextProvider({
       .catch(() => {
         setErrorMessage(model.getMessage("設定ファイルの取得"));
       });
-  }, [model, setErrorMessage]);
+  }, [model, serverFailed, initialized, setErrorMessage]);
 
   useEffect(() => {
     if (!appSettings || readOnly) return;

@@ -25,7 +25,7 @@ export default function Header({
   const { model, modelFlags } = useContext(ModelContext);
   const {
     readOnly,
-    initialized,
+    serverFailed,
     setReadOnly,
     setErrorMessage,
     setInfoMessage,
@@ -67,7 +67,7 @@ export default function Header({
       >
         <span style={{ marginRight: "auto" }}>
           <IconButton
-            disabled={!initialized || !modelFlags.canToggleReadOnly}
+            disabled={serverFailed || !modelFlags.canToggleReadOnly}
             sx={readOnly ? { color: "firebrick" } : sxButton}
             onClick={() => {
               setReadOnly(!readOnly);
@@ -83,7 +83,7 @@ export default function Header({
       <Tooltip title="アクセス履歴からPDFファイルを開きます">
         <span>
           <IconButton
-            disabled={!initialized || !modelFlags.canOpenHistory}
+            disabled={serverFailed || !modelFlags.canOpenHistory}
             sx={sxButton}
             onClick={() => {
               setOpenHistory(true);
@@ -95,7 +95,7 @@ export default function Header({
         </span>
       </Tooltip>
       <HistoryDialog
-        open={openHistory}
+        open={!serverFailed && openHistory}
         onClose={(id) => {
           setOpenHistory(false);
           if (!id) return;
@@ -115,7 +115,7 @@ export default function Header({
       >
         <span>
           <IconButton
-            disabled={!initialized || !modelFlags.canOpenFileDialog}
+            disabled={serverFailed || !modelFlags.canOpenFileDialog}
             sx={sxButton}
             size="small"
             onClick={() => {
@@ -157,7 +157,7 @@ export default function Header({
       >
         <span>
           <IconButton
-            disabled={!initialized || !modelFlags.canOpenFileDialog}
+            disabled={serverFailed || !modelFlags.canOpenFileDialog}
             sx={sxButton}
             size="small"
             onClick={() => {
@@ -168,7 +168,7 @@ export default function Header({
           </IconButton>
         </span>
       </Tooltip>
-      {openUrl && modelFlags.canOpenFileDialog && (
+      {!serverFailed && openUrl && modelFlags.canOpenFileDialog && (
         <InputStringDialog
           title="URLからPDFファイルを開く"
           label="URL"

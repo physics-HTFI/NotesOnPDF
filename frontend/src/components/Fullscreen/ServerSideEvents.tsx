@@ -7,7 +7,7 @@ import { useContext, useEffect, useRef } from "react";
  */
 export default function ServerSideEvents() {
   const { model } = useContext(ModelContext);
-  const { initialized, setServerFailed, setRootDirectoryChanged } =
+  const { setServerFailed, setRootDirectoryChanged } =
     useContext(UiStateContext);
   const eventSource = useRef<EventSource>();
 
@@ -18,7 +18,6 @@ export default function ServerSideEvents() {
       setServerFailed(true);
     };
     eventSource.current.onmessage = (e) => {
-      if (!initialized) return; // 初期化に失敗しているときはファイルツリーも表示されてないので更新しない
       setServerFailed(false);
       if (e.data === "reload") {
         setRootDirectoryChanged(true);
@@ -28,7 +27,7 @@ export default function ServerSideEvents() {
       document.oncontextmenu = null;
       eventSource.current?.close();
     };
-  }, [model, initialized, setServerFailed, setRootDirectoryChanged]);
+  }, [model, setServerFailed, setRootDirectoryChanged]);
 
   return undefined;
 }

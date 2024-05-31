@@ -28,24 +28,25 @@ export default FileTreeContext;
  */
 export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setErrorMessage, setInitialized } =
+  const { readOnly, serverFailed, setErrorMessage } =
     useContext(UiStateContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
+  const initialized = !!fileTree && !!coverages;
 
   // `FileTree`と`Coverages`を取得する
   useEffect(() => {
+    if (serverFailed || initialized) return;
     load(model)
       .then(({ fileTree, coverages }) => {
         setFileTree(fileTree);
         setCoverages(coverages);
-        setInitialized(true);
       })
       .catch(() => {
         setErrorMessage(model.getMessage("ファイルツリーの取得"));
       });
-  }, [model, setErrorMessage, setInitialized]);
+  }, [model, setErrorMessage, serverFailed, initialized]);
 
   // `id`または`pdfNotes`が変更されたときに、必要であれば`Coverages`を更新する
   if (id && pdfNotes) {

@@ -10,7 +10,7 @@ export const UiStateContext = createContext<{
   openSettingsDrawer: boolean;
   waiting: boolean;
   readOnly: boolean;
-  initialized: boolean;
+  serverFailed: boolean;
   inert: boolean;
   setOpenFileTreeDrawer: (openFileTreeDrawer: boolean) => void;
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
@@ -18,15 +18,14 @@ export const UiStateContext = createContext<{
   setReadOnly: (readOnly: boolean) => void;
   setErrorMessage: (snackbarMessage?: JSX.Element) => void;
   setInfoMessage: (snackbarMessage?: JSX.Element) => void;
-  setRootDirectoryChanged: (waiting: boolean) => void;
   setServerFailed: (waiting: boolean) => void;
-  setInitialized: (initialized: boolean) => void;
+  setRootDirectoryChanged: (waiting: boolean) => void;
 }>({
   openFileTreeDrawer: true,
   openSettingsDrawer: false,
   waiting: false,
   readOnly: false,
-  initialized: false,
+  serverFailed: false,
   inert: false,
   setOpenFileTreeDrawer: () => undefined,
   setOpenSettingsDrawer: () => undefined,
@@ -34,9 +33,8 @@ export const UiStateContext = createContext<{
   setReadOnly: () => undefined,
   setErrorMessage: () => undefined,
   setInfoMessage: () => undefined,
-  setRootDirectoryChanged: () => undefined,
   setServerFailed: () => undefined,
-  setInitialized: () => undefined,
+  setRootDirectoryChanged: () => undefined,
 });
 
 export default UiStateContext;
@@ -51,9 +49,12 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [readOnly, setReadOnly] = useState(false);
   const [errorMessage, setErrorMessage] = useState<JSX.Element>();
   const [infoMessage, setInfoMessage] = useState<JSX.Element>();
-  const [rootDirectoryChanged, setRootDirectoryChanged] = useState(false);
   const [serverFailed, setServerFailed] = useState(false);
-  const [initialized, setInitialized] = useState(false);
+  const [rootDirectoryChanged, setRootDirectoryChanged] = useState(false);
+  if (serverFailed || rootDirectoryChanged) {
+    if (errorMessage) setErrorMessage(undefined);
+    if (infoMessage) setInfoMessage(undefined);
+  }
 
   return (
     <UiStateContext.Provider
@@ -62,7 +63,7 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
         openSettingsDrawer,
         waiting,
         readOnly,
-        initialized,
+        serverFailed,
         inert: serverFailed || rootDirectoryChanged,
         setOpenFileTreeDrawer,
         setOpenSettingsDrawer,
@@ -72,53 +73,39 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
         setInfoMessage,
         setRootDirectoryChanged,
         setServerFailed,
-        setInitialized,
       }}
     >
       {children}
       <Waiting isWaiting={waiting} />
 
-      {!serverFailed && !rootDirectoryChanged && (
-        <>
-          {/* エラー */}
-          <ErrorOrInfo
-            severity="error"
-            autoHideDuration={3000}
-            onClose={() => {
-              setErrorMessage(undefined);
-            }}
-            message={errorMessage}
-          />
+      {/* エラー */}
+      <ErrorOrInfo
+        severity="error"
+        onClose={() => {
+          setErrorMessage(undefined);
+        }}
+        message={errorMessage}
+      />
 
-          {/* インフォ */}
-          <ErrorOrInfo
-            severity="info"
-            onClose={() => {
-              setInfoMessage(undefined);
-            }}
-            message={infoMessage}
-          />
-        </>
-      )}
+      {/* インフォ */}
+      <ErrorOrInfo
+        severity="info"
+        onClose={() => {
+          setInfoMessage(undefined);
+        }}
+        message={infoMessage}
+      />
 
       {/* 起動待ち */}
       <CriticalError
         open={serverFailed && !rootDirectoryChanged}
-        needsReload={!initialized}
+        needsReload={false}
       >
-        {initialized ? (
-          <>
-            NotesOnPdf を起動してください
-            <br />
-            再起動するのを待っています...
-          </>
-        ) : (
-          <>
-            NotesOnPdf が起動していません
-            <br />
-            起動してからリロードしてください
-          </>
-        )}
+        <>
+          NotesOnPdf を起動してください
+          <br />
+          起動するのを待っています...
+        </>
       </CriticalError>
 
       {/* 基準フォルダ変更によるリロード */}
@@ -184,10 +171,7 @@ function CriticalError({
   children: JSX.Element;
 }) {
   return (
-    <Backdrop
-      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={open}
-    >
+    <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
       <Snackbar open={open}>
         <Alert
           elevation={6}
