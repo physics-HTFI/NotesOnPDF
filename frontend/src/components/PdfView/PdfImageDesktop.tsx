@@ -33,7 +33,7 @@ export default function PdfImageDesktop() {
       height
     );
   } catch {
-    setErrorMessage(model.getMessage("ページ画像の取得"));
+    setErrorMessage("ページ画像の取得に失敗しました");
   }
   // 現在の読み込みが終了してから次の読み込みを行う
   if (!reading && nextSrc.current !== src) {
@@ -53,7 +53,7 @@ export default function PdfImageDesktop() {
         }}
         onError={() => {
           setReading(false);
-          setErrorMessage(model.getMessage("ページ画像の取得"));
+          setErrorMessage("ページ画像の取得に失敗しました");
         }}
       />
       <PageLabelLarge label={pageLabel} shown={reading} />

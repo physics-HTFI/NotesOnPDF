@@ -133,7 +133,7 @@ export default function Header({
                   onSelectPdfById?.(id);
                 })
                 .catch(() => {
-                  setErrorMessage(model.getMessage("PDFファイルの取得"));
+                  setErrorMessage("PDFファイルの取得に失敗しました");
                 })
                 .finally(() => {
                   setInfoMessage(undefined);
@@ -182,7 +182,7 @@ export default function Header({
                 onSelectPdfById?.(id);
               })
               .catch(() => {
-                setErrorMessage(model.getMessage("PDFファイルのダウンロード"));
+                setErrorMessage("PDFファイルのダウンロードに失敗しました");
               })
               .finally(() => {
                 setDownloading(false);

@@ -61,11 +61,11 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
         (
           id: string,
           pdfNotes: PdfNotes,
-          model?: IModel,
-          setErrorMessage?: (snackbarMessage: JSX.Element | undefined) => void
+          model: IModel,
+          setErrorMessage: (message: string) => void
         ) => {
-          model?.putPdfNotes(id, pdfNotes).catch(() => {
-            setErrorMessage?.(model.getMessage("注釈ファイルの保存"));
+          model.putPdfNotes(id, pdfNotes).catch(() => {
+            setErrorMessage("注釈ファイルの保存に失敗しました");
           });
         },
         1000
@@ -74,12 +74,13 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   );
   useEffect(() => {
     if (!pdfNotes || !id) return;
+    // 目次パネル中の選択されたページが隠れないようにスクロールする
     document
       .getElementById(String(pdfNotes.currentPage))
       ?.scrollIntoView({ block: "nearest" });
     if (readOnly) return;
+    // 注釈ファイル保存
     putPdfNotesDebounced(id, pdfNotes, model, setErrorMessage);
-    // 目次パネル中の選択されたページが隠れないようにスクロールする
   }, [id, pdfNotes, model, readOnly, putPdfNotesDebounced, setErrorMessage]);
 
   return (

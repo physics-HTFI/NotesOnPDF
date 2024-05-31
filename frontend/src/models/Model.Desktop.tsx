@@ -17,14 +17,6 @@ export default class ModelDesktop implements IModel {
     isWeb: false,
   });
 
-  getMessage = (reason: string) => (
-    <>
-      {`${reason}に失敗しました`}
-      <br />
-      NotesOnPdf.exeが起動していないか、入力が不正です
-    </>
-  );
-
   getEventSource = () =>
     new EventSource(this.origin + "/api/server-sent-events");
 

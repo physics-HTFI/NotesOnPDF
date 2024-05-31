@@ -39,7 +39,7 @@ export default function OpenFileDrawer() {
         })
         .catch(() => {
           setErrorMessage(
-            model.getMessage("PDFファイル (または注釈ファイル) の読み込み")
+            "PDFファイル (または注釈ファイル) の読み込みに失敗しました"
           );
         })
         .finally(() => {

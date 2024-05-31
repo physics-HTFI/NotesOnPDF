@@ -29,7 +29,6 @@ export default class ModelWeb implements IModel {
     canOpenGithub: true,
     isWeb: true,
   });
-  getMessage = (reason: string) => <>{`${reason}に失敗しました`}</>;
   getEventSource = () => undefined;
 
   getFileTree = async () => {

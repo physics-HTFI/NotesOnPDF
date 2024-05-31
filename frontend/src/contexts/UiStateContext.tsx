@@ -16,8 +16,8 @@ export const UiStateContext = createContext<{
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
   setWaiting: (waiting: boolean) => void;
   setReadOnly: (readOnly: boolean) => void;
-  setErrorMessage: (snackbarMessage?: JSX.Element) => void;
-  setInfoMessage: (snackbarMessage?: JSX.Element) => void;
+  setErrorMessage: (message?: string | JSX.Element) => void;
+  setInfoMessage: (message?: string | JSX.Element) => void;
   setServerFailed: (waiting: boolean) => void;
   setRootDirectoryChanged: (waiting: boolean) => void;
 }>({
@@ -47,8 +47,8 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<JSX.Element>();
-  const [infoMessage, setInfoMessage] = useState<JSX.Element>();
+  const [errorMessage, setErrorMessage] = useState<string | JSX.Element>();
+  const [infoMessage, setInfoMessage] = useState<string | JSX.Element>();
   const [serverFailed, setServerFailed] = useState(false);
   const [rootDirectoryChanged, setRootDirectoryChanged] = useState(false);
   if (serverFailed || rootDirectoryChanged) {
@@ -132,7 +132,7 @@ function ErrorOrInfo({
   severity: "error" | "info";
   autoHideDuration?: number;
   onClose: () => void;
-  message?: JSX.Element;
+  message?: string | JSX.Element;
 }) {
   // メッセージ（`flag && <></>`の形にしているのは非表示時に空白のメッセージが一瞬表示されるのを防ぐため）
   if (!message) return undefined;

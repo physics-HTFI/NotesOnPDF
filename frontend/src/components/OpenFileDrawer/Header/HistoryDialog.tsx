@@ -42,7 +42,7 @@ export default function HistoryDialog({
       })
       .catch(() => {
         setHistory([]);
-        setErrorMessage(model.getMessage("履歴の取得"));
+        setErrorMessage("履歴の取得に失敗しました");
       })
       .finally(() => {
         setWaiting(false);
@@ -86,7 +86,7 @@ export default function HistoryDialog({
                       setHistory([]);
                     })
                     .catch(() => {
-                      setErrorMessage(model.getMessage("履歴の消去"));
+                      setErrorMessage("履歴の消去に失敗しました");
                     });
                 }}
                 size="small"
@@ -168,7 +168,7 @@ export default function HistoryDialog({
                                 );
                               })
                               .catch(() => {
-                                setErrorMessage(model.getMessage("履歴の消去"));
+                                setErrorMessage("履歴の消去に失敗しました");
                               });
                           }}
                           size="small"

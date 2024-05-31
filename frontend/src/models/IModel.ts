@@ -7,7 +7,6 @@ import { PageSize } from "@/contexts/PdfNotesContext";
 
 export default interface IModel {
   getFlags(): ModelFlags;
-  getMessage(reason: string): JSX.Element | undefined;
   getEventSource(): EventSource | undefined;
 
   getFileTree(): Promise<FileTree>;

@@ -44,7 +44,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
         setCoverages(coverages);
       })
       .catch(() => {
-        setErrorMessage(model.getMessage("ファイルツリーの取得"));
+        setErrorMessage("ファイルツリーの取得に失敗しました");
       });
   }, [model, setErrorMessage, serverFailed, initialized]);
 
@@ -63,7 +63,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
       setCoverages(newCoverages);
       if (readOnly) return;
       model.putCoverages(newCoverages).catch(() => {
-        setErrorMessage(model.getMessage("進捗率の保存"));
+        setErrorMessage("進捗率の保存に失敗しました");
       });
     }
   }

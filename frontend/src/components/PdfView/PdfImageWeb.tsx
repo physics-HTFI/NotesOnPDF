@@ -50,7 +50,7 @@ export default function PdfImageWeb() {
         setFile(file);
       })
       .catch(() => {
-        setErrorMessage(model.getMessage("PDFファイルの取得"));
+        setErrorMessage("PDFファイルの取得に失敗しました");
       });
   }, [id, model, setWaiting, setErrorMessage]);
 

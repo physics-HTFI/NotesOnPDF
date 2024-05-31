@@ -41,14 +41,14 @@ export function AppSettingsContextProvider({
         setAppSettings(settings);
       })
       .catch(() => {
-        setErrorMessage(model.getMessage("設定ファイルの取得"));
+        setErrorMessage("設定ファイルの取得に失敗しました");
       });
   }, [model, serverFailed, initialized, setErrorMessage]);
 
   useEffect(() => {
     if (!appSettings || readOnly) return;
     model.putAppSettings(appSettings).catch(() => {
-      setErrorMessage(model.getMessage("設定ファイルの保存"));
+      setErrorMessage("設定ファイルの保存に失敗しました");
     });
   }, [appSettings, model, readOnly, setErrorMessage]);
 

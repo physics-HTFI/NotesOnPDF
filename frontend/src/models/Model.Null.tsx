@@ -10,7 +10,6 @@ export default class ModelNull implements IModel {
     canOpenGithub: true,
     isWeb: true,
   });
-  getMessage = () => undefined;
   getEventSource = () => undefined;
 
   getFileTree = () => Promise.resolve([]);

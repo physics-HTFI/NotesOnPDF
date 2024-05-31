@@ -280,7 +280,6 @@ export default class ModelMock implements IModel {
     canOpenGithub: true,
     isWeb: true,
   });
-  getMessage = (reason: string) => <>{`${reason}に失敗しました`}</>;
   getEventSource = () => undefined;
 
   getFileTree = () => Promise.resolve(fileTree);
