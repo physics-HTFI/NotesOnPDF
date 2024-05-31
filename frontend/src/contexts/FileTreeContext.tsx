@@ -19,7 +19,8 @@ import UiStateContext from "./UiStateContext";
 const FileTreeContext = createContext<{
   fileTree?: FileTree;
   coverages?: Coverages;
-}>({});
+  initialized: boolean;
+}>({ initialized: false });
 
 export default FileTreeContext;
 
@@ -32,6 +33,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
+  const initialized = !!fileTree && !!coverages;
 
   // `FileTree`と`Coverages`を取得する
   useEffect(() => {
@@ -66,7 +68,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <FileTreeContext.Provider value={{ fileTree, coverages }}>
+    <FileTreeContext.Provider value={{ fileTree, coverages, initialized }}>
       {children}
     </FileTreeContext.Provider>
   );

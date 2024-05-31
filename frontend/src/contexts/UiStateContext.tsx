@@ -60,50 +60,59 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
       {children}
       <Waiting isWaiting={waiting} />
 
-      {/* メッセージ（`flag && <></>`の形にしているのは非表示時に空白のメッセージが一瞬表示されるのを防ぐため） */}
-      {!!errorMessage && (
-        <Snackbar
-          autoHideDuration={3000}
-          open={!!errorMessage}
-          onClose={(_, reason) => {
-            if (reason === "clickaway") return;
-            setErrorMessage(undefined);
-          }}
-        >
-          <Alert
-            elevation={6}
-            variant="filled"
-            severity="error"
-            onClose={() => {
-              setErrorMessage(undefined);
-            }}
-            sx={{ width: "100%" }}
-          >
-            {errorMessage}
-          </Alert>
-        </Snackbar>
-      )}
-      {!!infoMessage && (
-        <Snackbar
-          open={!!infoMessage}
-          onClose={(_, reason) => {
-            if (reason === "clickaway") return;
-            setInfoMessage(undefined);
-          }}
-        >
-          <Alert
-            elevation={6}
-            variant="filled"
-            severity="info"
-            onClose={() => {
-              setInfoMessage(undefined);
-            }}
-            sx={{ width: "100%" }}
-          >
-            {infoMessage}
-          </Alert>
-        </Snackbar>
-      )}
+      <ErrorOrInfo
+        severity="error"
+        autoHideDuration={3000}
+        onClose={() => {
+          setErrorMessage(undefined);
+        }}
+        message={errorMessage}
+      />
+      <ErrorOrInfo
+        severity="info"
+        onClose={() => {
+          setInfoMessage(undefined);
+        }}
+        message={infoMessage}
+      />
     </UiStateContext.Provider>
+  );
+}
+
+/**
+ * エラー・情報をスナックバーで表示する
+ */
+function ErrorOrInfo({
+  severity,
+  autoHideDuration,
+  onClose,
+  message,
+}: {
+  severity: "error" | "info";
+  autoHideDuration?: number;
+  onClose: () => void;
+  message?: JSX.Element;
+}) {
+  // メッセージ（`flag && <></>`の形にしているのは非表示時に空白のメッセージが一瞬表示されるのを防ぐため）
+  if (!message) return undefined;
+  return (
+    <Snackbar
+      autoHideDuration={autoHideDuration}
+      open={!!message}
+      onClose={(_, reason) => {
+        if (reason === "clickaway") return;
+        onClose(); // 時間が経ったときに閉じる
+      }}
+    >
+      <Alert
+        elevation={6}
+        variant="filled"
+        severity={severity}
+        onClose={onClose}
+        sx={{ width: "100%" }}
+      >
+        {message}
+      </Alert>
+    </Snackbar>
   );
 }

@@ -13,6 +13,7 @@ import HistoryDialog from "./HistoryDialog";
 import Waiting from "../../Fullscreen/Waiting";
 import UiStateContext from "@/contexts/UiStateContext";
 import ModelContext from "@/contexts/ModelContext";
+import FileTreeContext from "@/contexts/FileTreeContext";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -25,6 +26,7 @@ export default function Header({
   const { model, modelFlags } = useContext(ModelContext);
   const { readOnly, setReadOnly, setErrorMessage, setInfoMessage } =
     useContext(UiStateContext);
+  const { initialized } = useContext(FileTreeContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -62,7 +64,7 @@ export default function Header({
       >
         <span style={{ marginRight: "auto" }}>
           <IconButton
-            disabled={!modelFlags.canToggleReadOnly}
+            disabled={!initialized || !modelFlags.canToggleReadOnly}
             sx={readOnly ? { color: "firebrick" } : sxButton}
             onClick={() => {
               setReadOnly(!readOnly);
@@ -78,7 +80,7 @@ export default function Header({
       <Tooltip title="アクセス履歴からPDFファイルを開きます">
         <span>
           <IconButton
-            disabled={!modelFlags.canOpenHistory}
+            disabled={!initialized || !modelFlags.canOpenHistory}
             sx={sxButton}
             onClick={() => {
               setOpenHistory(true);
@@ -110,7 +112,7 @@ export default function Header({
       >
         <span>
           <IconButton
-            disabled={!modelFlags.canOpenFileDialog}
+            disabled={!initialized || !modelFlags.canOpenFileDialog}
             sx={sxButton}
             size="small"
             onClick={() => {
@@ -152,7 +154,7 @@ export default function Header({
       >
         <span>
           <IconButton
-            disabled={!modelFlags.canOpenFileDialog}
+            disabled={!initialized || !modelFlags.canOpenFileDialog}
             sx={sxButton}
             size="small"
             onClick={() => {
