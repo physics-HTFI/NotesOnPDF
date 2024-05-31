@@ -9,9 +9,9 @@ import { useContext } from "react";
 export default function usePdfNotes() {
   const { pdfNotes, setPdfNotes, previousPageNum, setPreviousPageNum } =
     useContext(PdfNotesContext);
-  const { openFileTreeDrawer, waiting } = useContext(UiStateContext);
+  const { openFileTreeDrawer, waiting, inert } = useContext(UiStateContext);
   const page = pdfNotes?.pages[pdfNotes.currentPage];
-  const invalid = !page || openFileTreeDrawer || waiting;
+  const invalid = !page || openFileTreeDrawer || waiting || inert;
   const pageLabel = `p. ${page?.num ?? "???"}`;
 
   /**

@@ -13,7 +13,6 @@ import HistoryDialog from "./HistoryDialog";
 import Waiting from "../../Fullscreen/Waiting";
 import UiStateContext from "@/contexts/UiStateContext";
 import ModelContext from "@/contexts/ModelContext";
-import FileTreeContext from "@/contexts/FileTreeContext";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -24,9 +23,13 @@ export default function Header({
   onSelectPdfById?: (id: string) => void;
 }) {
   const { model, modelFlags } = useContext(ModelContext);
-  const { readOnly, setReadOnly, setErrorMessage, setInfoMessage } =
-    useContext(UiStateContext);
-  const { initialized } = useContext(FileTreeContext);
+  const {
+    readOnly,
+    initialized,
+    setReadOnly,
+    setErrorMessage,
+    setInfoMessage,
+  } = useContext(UiStateContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);

@@ -1,79 +1,34 @@
 import ModelContext from "@/contexts/ModelContext";
-import { Alert, Backdrop, Button, Snackbar, Stack } from "@mui/material";
-import { useContext, useEffect, useRef, useState } from "react";
+import UiStateContext from "@/contexts/UiStateContext";
+import { useContext, useEffect, useRef } from "react";
 
 /**
  * サーバーからのメッセージを受け取るコンポーネント
  */
 export default function ServerSideEvents() {
   const { model } = useContext(ModelContext);
-  const [connectionError, setConnectionError] = useState(false);
-  const [needsReload, setNeedsReload] = useState(false);
+  const { initialized, setServerFailed, setRootDirectoryChanged } =
+    useContext(UiStateContext);
   const eventSource = useRef<EventSource>();
 
   useEffect(() => {
     eventSource.current = model.getEventSource();
     if (!eventSource.current) return;
     eventSource.current.onerror = () => {
-      setConnectionError(true);
+      setServerFailed(true);
     };
     eventSource.current.onmessage = (e) => {
-      setConnectionError(false);
+      if (!initialized) return; // 初期化に失敗しているときはファイルツリーも表示されてないので更新しない
+      setServerFailed(false);
       if (e.data === "reload") {
-        setNeedsReload(true);
+        setRootDirectoryChanged(true);
       }
     };
     return () => {
       document.oncontextmenu = null;
       eventSource.current?.close();
     };
-  }, [model]);
+  }, [model, initialized, setServerFailed, setRootDirectoryChanged]);
 
-  if (!eventSource.current) return undefined;
-
-  return (
-    <Backdrop
-      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={connectionError || needsReload}
-    >
-      <Snackbar open={connectionError && !needsReload}>
-        <Alert
-          elevation={6}
-          variant="filled"
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          NotesOnPdf が起動していません
-          <br />
-          起動を待っています
-        </Alert>
-      </Snackbar>
-      <Snackbar open={needsReload}>
-        <Alert
-          elevation={6}
-          variant="filled"
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          <Stack direction="row">
-            <span>
-              設定が変更されました
-              <br />
-              リロードしてください
-            </span>
-            <Button
-              variant="contained"
-              color="warning"
-              sx={{ ml: 2 }}
-              onClick={() => {
-                location.reload();
-              }}
-            >
-              リロード
-            </Button>
-          </Stack>
-        </Alert>
-      </Snackbar>
-    </Backdrop>
-  );
+  return undefined;
 }

@@ -19,8 +19,7 @@ import UiStateContext from "./UiStateContext";
 const FileTreeContext = createContext<{
   fileTree?: FileTree;
   coverages?: Coverages;
-  initialized: boolean;
-}>({ initialized: false });
+}>({});
 
 export default FileTreeContext;
 
@@ -29,11 +28,11 @@ export default FileTreeContext;
  */
 export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setErrorMessage } = useContext(UiStateContext);
+  const { readOnly, setErrorMessage, setInitialized } =
+    useContext(UiStateContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
-  const initialized = !!fileTree && !!coverages;
 
   // `FileTree`と`Coverages`を取得する
   useEffect(() => {
@@ -41,11 +40,12 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
       .then(({ fileTree, coverages }) => {
         setFileTree(fileTree);
         setCoverages(coverages);
+        setInitialized(true);
       })
       .catch(() => {
         setErrorMessage(model.getMessage("ファイルツリーの取得"));
       });
-  }, [model, setErrorMessage]);
+  }, [model, setErrorMessage, setInitialized]);
 
   // `id`または`pdfNotes`が変更されたときに、必要であれば`Coverages`を更新する
   if (id && pdfNotes) {
@@ -68,7 +68,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <FileTreeContext.Provider value={{ fileTree, coverages, initialized }}>
+    <FileTreeContext.Provider value={{ fileTree, coverages }}>
       {children}
     </FileTreeContext.Provider>
   );
