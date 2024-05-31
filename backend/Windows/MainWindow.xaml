@@ -48,11 +48,11 @@
                             Width="15"
                             Height="15"
                             Source="../icon.ico" />
-                        <!-- ウィンドウを隠す -->
+                        <!-- 終了 -->
                         <Button
                             DockPanel.Dock="Right"
-                            Command="{Binding ToggleWindowVisibilityCommand}"
-                            ToolTip="このウィンドウを隠してタスクトレイに常駐します"
+                            Command="{Binding ExitCommand}"
+                            ToolTip="アプリを完全に終了します"
                             ToolTipService.InitialShowDelay="0"
                             ToolTipService.Placement="Top"
                             Width="30"
@@ -62,7 +62,7 @@
                             <materialDesign:PackIcon
                                 Width="30"
                                 Height="30"
-                                Kind="ChevronDown" />
+                                Kind="Close" />
                         </Button>
                         <!-- タイトル -->
                         <TextBlock
@@ -73,12 +73,21 @@
                     </DockPanel>
 
                     <!-- メッセージ -->
-                    <TextBlock
+                    <StackPanel
                         DockPanel.Dock="Bottom"
-                        Margin="5 0 0 0"
-                        Style="{StaticResource MaterialDesignCaptionTextBlock}">
-                            ※アプリ画面を開いた後もタスクトレイに常駐します
-                    </TextBlock>
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Margin="5 0 0 0"
+                            Style="{StaticResource MaterialDesignCaptionTextBlock}">
+                            ※
+                        </TextBlock>
+
+                        <TextBlock
+                            Style="{StaticResource MaterialDesignCaptionTextBlock}">
+                            メイン画面を開いた後も終了せず、タスクバーの<LineBreak />
+                            通知領域に常駐します
+                        </TextBlock>
+                    </StackPanel>
 
                     <!-- ボタン群 -->
                     <Grid>
@@ -159,15 +168,15 @@
                             </StackPanel>
                         </Button>
 
-                        <!-- 終了 -->
+                        <!-- ウィンドウを隠す -->
                         <Button
                             Grid.Row="1"
                             Grid.Column="1"
-                            Command="{Binding ExitCommand}"
                             Margin="15 10"
                             Width="Auto"
                             Height="Auto"
-                            ToolTip="アプリを完全に終了します"
+                            Command="{Binding ToggleWindowVisibilityCommand}"
+                            ToolTip="このウィンドウを最小化してタスクトレイに常駐します"
                             ToolTipService.InitialShowDelay="0"
                             ToolTipService.Placement="Bottom"
                             Style="{StaticResource MaterialDesignOutlinedButton}">
@@ -175,11 +184,11 @@
                                 <materialDesign:PackIcon
                                     Width="30"
                                     Height="30"
-                                    Kind="Close"
+                                    Kind="Minimize"
                                     HorizontalAlignment="Center" />
                                 <TextBlock
                                     Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                                    Text="終了"
+                                    Text="最小化"
                                     FontSize="13"
                                     HorizontalAlignment="Center" />
                             </StackPanel>
