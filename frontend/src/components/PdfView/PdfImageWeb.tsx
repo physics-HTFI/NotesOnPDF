@@ -24,13 +24,8 @@ export default function PdfImageWeb() {
   const { id, pdfNotes, pageSizes, setId, setPdfNotes, setPageSizes } =
     useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
-  const {
-    readOnly,
-    waiting,
-    setWaiting,
-    setOpenFileTreeDrawer,
-    setErrorMessage,
-  } = useContext(UiStateContext);
+  const { readOnly, waiting, setWaiting, setOpenFileTreeDrawer, setAlert } =
+    useContext(UiStateContext);
   const { pageLabel } = usePdfNotes();
 
   const [file, setFile] = useState<string | File>();
@@ -50,9 +45,9 @@ export default function PdfImageWeb() {
         setFile(file);
       })
       .catch(() => {
-        setErrorMessage("PDFファイルの取得に失敗しました");
+        setAlert("error", "PDFファイルの取得に失敗しました");
       });
-  }, [id, model, setWaiting, setErrorMessage]);
+  }, [id, model, setWaiting, setAlert]);
 
   useEffect(() => {
     // 読み込み終了時の処理
@@ -70,7 +65,7 @@ export default function PdfImageWeb() {
     setPdfNotes,
     setWaiting,
     waiting,
-    setErrorMessage,
+    setAlert,
   ]);
 
   return (

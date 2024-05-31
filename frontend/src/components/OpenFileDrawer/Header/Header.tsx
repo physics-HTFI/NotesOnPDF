@@ -23,13 +23,8 @@ export default function Header({
   onSelectPdfById?: (id: string) => void;
 }) {
   const { model, modelFlags } = useContext(ModelContext);
-  const {
-    readOnly,
-    serverFailed,
-    setReadOnly,
-    setErrorMessage,
-    setInfoMessage,
-  } = useContext(UiStateContext);
+  const { readOnly, serverFailed, setReadOnly, setAlert } =
+    useContext(UiStateContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -119,7 +114,8 @@ export default function Header({
             sx={sxButton}
             size="small"
             onClick={() => {
-              setInfoMessage(
+              setAlert(
+                "info",
                 <span>
                   ファイルを選択してください
                   <br />
@@ -129,14 +125,12 @@ export default function Header({
               model
                 .getIdFromExternalFile()
                 .then((id) => {
+                  setAlert();
                   if (id === "") return;
                   onSelectPdfById?.(id);
                 })
                 .catch(() => {
-                  setErrorMessage("PDFファイルの取得に失敗しました");
-                })
-                .finally(() => {
-                  setInfoMessage(undefined);
+                  setAlert("error", "PDFファイルの取得に失敗しました");
                 });
             }}
           >
@@ -182,7 +176,7 @@ export default function Header({
                 onSelectPdfById?.(id);
               })
               .catch(() => {
-                setErrorMessage("PDFファイルのダウンロードに失敗しました");
+                setAlert("error", "PDFファイルのダウンロードに失敗しました");
               })
               .finally(() => {
                 setDownloading(false);

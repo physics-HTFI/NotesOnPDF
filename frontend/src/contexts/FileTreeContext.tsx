@@ -28,8 +28,7 @@ export default FileTreeContext;
  */
 export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, serverFailed, setErrorMessage } =
-    useContext(UiStateContext);
+  const { readOnly, serverFailed, setAlert } = useContext(UiStateContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
@@ -44,9 +43,9 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
         setCoverages(coverages);
       })
       .catch(() => {
-        setErrorMessage("ファイルツリーの取得に失敗しました");
+        setAlert("error", "ファイルツリーの取得に失敗しました");
       });
-  }, [model, setErrorMessage, serverFailed, initialized]);
+  }, [model, setAlert, serverFailed, initialized]);
 
   // `id`または`pdfNotes`が変更されたときに、必要であれば`Coverages`を更新する
   if (id && pdfNotes) {
@@ -63,7 +62,7 @@ export function FileTreeContextProvider({ children }: { children: ReactNode }) {
       setCoverages(newCoverages);
       if (readOnly) return;
       model.putCoverages(newCoverages).catch(() => {
-        setErrorMessage("進捗率の保存に失敗しました");
+        setAlert("error", "進捗率の保存に失敗しました");
       });
     }
   }

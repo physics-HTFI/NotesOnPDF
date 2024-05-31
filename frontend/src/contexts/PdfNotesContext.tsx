@@ -43,7 +43,7 @@ export default PdfNotesContext;
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setErrorMessage } = useContext(UiStateContext);
+  const { readOnly, setAlert } = useContext(UiStateContext);
   const [id, setId_] = useState<string>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [pageSizes, setPageSizes] = useState<PageSize[]>();
@@ -62,10 +62,13 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
           id: string,
           pdfNotes: PdfNotes,
           model: IModel,
-          setErrorMessage: (message: string) => void
+          setAlert: (
+            severity?: "error" | "info" | undefined,
+            message?: string | JSX.Element | undefined
+          ) => void
         ) => {
           model.putPdfNotes(id, pdfNotes).catch(() => {
-            setErrorMessage("注釈ファイルの保存に失敗しました");
+            setAlert("error", "注釈ファイルの保存に失敗しました");
           });
         },
         1000
@@ -80,8 +83,8 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       ?.scrollIntoView({ block: "nearest" });
     if (readOnly) return;
     // 注釈ファイル保存
-    putPdfNotesDebounced(id, pdfNotes, model, setErrorMessage);
-  }, [id, pdfNotes, model, readOnly, putPdfNotesDebounced, setErrorMessage]);
+    putPdfNotesDebounced(id, pdfNotes, model, setAlert);
+  }, [id, pdfNotes, model, readOnly, putPdfNotesDebounced, setAlert]);
 
   return (
     <PdfNotesContext.Provider

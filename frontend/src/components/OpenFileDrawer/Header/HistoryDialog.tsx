@@ -29,7 +29,7 @@ export default function HistoryDialog({
   onClose: (id?: string) => void;
 }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setWaiting, setErrorMessage } = useContext(UiStateContext);
+  const { readOnly, setWaiting, setAlert } = useContext(UiStateContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {
@@ -42,12 +42,12 @@ export default function HistoryDialog({
       })
       .catch(() => {
         setHistory([]);
-        setErrorMessage("履歴の取得に失敗しました");
+        setAlert("error", "履歴の取得に失敗しました");
       })
       .finally(() => {
         setWaiting(false);
       });
-  }, [open, model, setWaiting, setErrorMessage]);
+  }, [open, model, setWaiting, setAlert]);
 
   return (
     <Backdrop
@@ -75,7 +75,8 @@ export default function HistoryDialog({
                 sx={{ color: "white", paddingTop: 0 }}
                 onClick={() => {
                   if (readOnly) {
-                    setErrorMessage(
+                    setAlert(
+                      "error",
                       <span>読み取り専用モードのため消去できません</span>
                     );
                     return;
@@ -86,7 +87,7 @@ export default function HistoryDialog({
                       setHistory([]);
                     })
                     .catch(() => {
-                      setErrorMessage("履歴の消去に失敗しました");
+                      setAlert("error", "履歴の消去に失敗しました");
                     });
                 }}
                 size="small"
@@ -153,7 +154,8 @@ export default function HistoryDialog({
                           onClick={(e) => {
                             e.stopPropagation();
                             if (readOnly) {
-                              setErrorMessage(
+                              setAlert(
+                                "error",
                                 <span>
                                   読み取り専用モードのため消去できません
                                 </span>
@@ -168,7 +170,7 @@ export default function HistoryDialog({
                                 );
                               })
                               .catch(() => {
-                                setErrorMessage("履歴の消去に失敗しました");
+                                setAlert("error", "履歴の消去に失敗しました");
                               });
                           }}
                           size="small"

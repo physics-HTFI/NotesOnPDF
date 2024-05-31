@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useCallback, useState } from "react";
 import Waiting from "@/components/Fullscreen/Waiting";
 import { Alert, Backdrop, Button, Snackbar, Stack } from "@mui/material";
 
@@ -16,8 +16,10 @@ export const UiStateContext = createContext<{
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
   setWaiting: (waiting: boolean) => void;
   setReadOnly: (readOnly: boolean) => void;
-  setErrorMessage: (message?: string | JSX.Element) => void;
-  setInfoMessage: (message?: string | JSX.Element) => void;
+  setAlert: (
+    severity?: "error" | "info",
+    message?: string | JSX.Element
+  ) => void;
   setServerFailed: (waiting: boolean) => void;
   setRootDirectoryChanged: (waiting: boolean) => void;
 }>({
@@ -31,8 +33,7 @@ export const UiStateContext = createContext<{
   setOpenSettingsDrawer: () => undefined,
   setWaiting: () => undefined,
   setReadOnly: () => undefined,
-  setErrorMessage: () => undefined,
-  setInfoMessage: () => undefined,
+  setAlert: () => undefined,
   setServerFailed: () => undefined,
   setRootDirectoryChanged: () => undefined,
 });
@@ -47,14 +48,23 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | JSX.Element>();
-  const [infoMessage, setInfoMessage] = useState<string | JSX.Element>();
+  const [alert, setAlert] = useState<string | JSX.Element>();
+  const [severity, setSeverity] = useState<"error" | "info">();
   const [serverFailed, setServerFailed] = useState(false);
   const [rootDirectoryChanged, setRootDirectoryChanged] = useState(false);
   if (serverFailed || rootDirectoryChanged) {
-    if (errorMessage) setErrorMessage(undefined);
-    if (infoMessage) setInfoMessage(undefined);
+    if (alert !== undefined) {
+      setAlert(undefined);
+      setSeverity(undefined);
+    }
   }
+  const setAlertAndSeverity = useCallback(
+    (severity?: "error" | "info", alert?: string | JSX.Element) => {
+      setAlert(alert);
+      setSeverity(alert === undefined ? undefined : severity);
+    },
+    []
+  );
 
   return (
     <UiStateContext.Provider
@@ -69,8 +79,7 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
         setOpenSettingsDrawer,
         setWaiting,
         setReadOnly,
-        setErrorMessage,
-        setInfoMessage,
+        setAlert: setAlertAndSeverity,
         setRootDirectoryChanged,
         setServerFailed,
       }}
@@ -78,22 +87,13 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
       {children}
       <Waiting isWaiting={waiting} />
 
-      {/* エラー */}
+      {/* エラー・インフォ */}
       <ErrorOrInfo
-        severity="error"
+        severity={severity}
         onClose={() => {
-          setErrorMessage(undefined);
+          setAlert(undefined);
         }}
-        message={errorMessage}
-      />
-
-      {/* インフォ */}
-      <ErrorOrInfo
-        severity="info"
-        onClose={() => {
-          setInfoMessage(undefined);
-        }}
-        message={infoMessage}
+        message={alert}
       />
 
       {/* 起動待ち */}
@@ -129,7 +129,7 @@ function ErrorOrInfo({
   onClose,
   message,
 }: {
-  severity: "error" | "info";
+  severity?: "error" | "info";
   autoHideDuration?: number;
   onClose: () => void;
   message?: string | JSX.Element;
