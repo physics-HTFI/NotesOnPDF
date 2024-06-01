@@ -7,7 +7,7 @@ import History from "@/types/History";
 import { PageSize } from "@/contexts/PdfNotesContext";
 
 export default class ModelDesktop implements IModel {
-  private origin = import.meta.env.DEV ? "http://localhost:8080" : "";
+  private origin = import.meta.env.DEV ? "http://localhost:8000" : "";
 
   getFlags = () => ({
     canToggleReadOnly: true,

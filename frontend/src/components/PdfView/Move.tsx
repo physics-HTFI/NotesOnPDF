@@ -97,7 +97,7 @@ export default function Move({
           top: -window.screen.height,
           width: 2 * window.screen.width,
           height: 2 * window.screen.height,
-          cursor: newParams.type === "Marker" ? undefined : "none",
+          cursor: newParams.type === "Marker" ? "default" : "none",
         }}
         onMouseUp={(e) => {
           setDXY(undefined);

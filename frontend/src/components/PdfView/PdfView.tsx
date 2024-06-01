@@ -68,7 +68,11 @@ export default function PdfView() {
         background: getBackground(mode),
         height: "100vh",
         position: "relative",
-        cursor: !mode ? "default" : "not-allowed",
+        cursor:
+          !mode ||
+          (moveNote?.type === "Node" && moveNote.target.type === "Marker")
+            ? "default"
+            : "not-allowed",
       }}
       onMouseDown={(e) => {
         if (e.button !== 0) return;
