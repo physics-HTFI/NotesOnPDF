@@ -10,6 +10,7 @@ namespace backend
     class HttpServer : IDisposable
     {
         HttpListener listener = new();
+        Action onConnectionStart = () => { };
         Action onConnectionEnd = () => { };
         readonly ApiModel model = new();
         readonly SemaphoreSlim semaphore = new(1, 1);
@@ -20,32 +21,11 @@ namespace backend
             Properties.Settings.Default.PropertyChanged += BackendSettingsChanged;
         }
 
-        public bool Start(Action onConnectionEnd)
+        public bool Start(Action onConnectionStart, Action onConnectionEnd)
         {
+            this.onConnectionStart = onConnectionStart;
             this.onConnectionEnd = onConnectionEnd;
-
-            // 空いているポートを探して開く
-            var ports = new List<int> { 80 }.Concat(Enumerable.Range(8000, 10));
-            foreach (var port in ports)
-            {
-                try
-                {
-                    // port == 80 が成功するのは、管理者権限でアプリを起動している場合のみ
-                    SettingsUtils.Port = port;
-                    listener.Prefixes.Clear();
-                    listener.Prefixes.Add(SettingsUtils.Url);
-                    listener.Start();
-                    listener.BeginGetContext(OnContext, null);
-                    return true;
-                }
-                catch
-                {
-                    // 失敗してい場合、listenerはDisposeされるので再生成する
-                    listener = new();
-                    continue;
-                }
-            }
-            return false;
+            return OpenPort();
         }
 
         void OnContext(IAsyncResult ar)
@@ -73,11 +53,12 @@ namespace backend
                 // Server-Sent Events を使ってブラウザ側にメッセージを送る
                 if (request.Url?.AbsolutePath == "/api/server-sent-events")
                 {
-                    response.ContentType = "text/event-stream";
-                    using Stream output = response.OutputStream;
-                    needsReload = false;
                     try
                     {
+                        response.ContentType = "text/event-stream";
+                        using Stream output = response.OutputStream;
+                        needsReload = false;
+                        onConnectionStart(); // ページを開いたときの処理（ウィンドウを消す）
                         while (true)
                         {
                             await output.WriteAsync(Encoding.ASCII.GetBytes($"data: alive\n\n"));
@@ -91,8 +72,7 @@ namespace backend
                     }
                     catch
                     {
-                        // ブラウザのタブを閉じたときの処理（ウィンドウを出す）
-                        onConnectionEnd();
+                        onConnectionEnd(); // ページを閉じたときの処理（ウィンドウを出す）
                         return;
                     }
                 }
@@ -277,6 +257,32 @@ namespace backend
                 _ => throw new Exception()
             };
 
+
+        bool OpenPort()
+        {
+            // 空いているポートを探して開く
+            var ports = new List<int> { 80 }.Concat(Enumerable.Range(8000, 10));
+            foreach (var port in ports)
+            {
+                try
+                {
+                    // port == 80 が成功するのは、管理者権限でアプリを起動している場合のみ
+                    SettingsUtils.Port = port;
+                    listener.Prefixes.Clear();
+                    listener.Prefixes.Add(SettingsUtils.Url);
+                    listener.Start();
+                    listener.BeginGetContext(OnContext, null);
+                    return true;
+                }
+                catch
+                {
+                    // 失敗している場合、listenerはDisposeされるので再生成する
+                    listener = new();
+                    continue;
+                }
+            }
+            return false;
+        }
 
         void BackendSettingsChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

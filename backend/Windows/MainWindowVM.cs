@@ -76,7 +76,7 @@ namespace backend
             try
             {
                 OpenUrl.OpenInBrowser(SettingsUtils.Url);
-                ToggleWindowVisibility();
+                Visibility = Visibility.Collapsed;
             }
             catch { }
         }
@@ -92,7 +92,7 @@ namespace backend
                 var window = new Browser();
                 window.Closed += (_, _) => Visibility = Visibility.Visible;
                 window.Show();
-                ToggleWindowVisibility();
+                Visibility = Visibility.Collapsed;
             }
             catch { }
         }

@@ -27,6 +27,11 @@ namespace backend
                     e.Handled = true;
                 };
             };
+            Closing += (_, _) =>
+            {
+                // ブランクにしないと、server-sent eventが繋がったままになる
+                webView.Source = new Uri("about:blank");
+            };
         }
 
 

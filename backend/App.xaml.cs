@@ -41,8 +41,10 @@ namespace backend
                 );
 
             // サーバー起動
-            bool isOk = httpServer.Start(() => Current.Dispatcher.Invoke(mainWindow.Show));
-            if(!isOk)
+            var onConnectionStart = () => Current.Dispatcher.Invoke(() => { mainWindow.Visibility = Visibility.Collapsed; });
+            var onConnectionEnd = () => Current.Dispatcher.Invoke(mainWindow.Show);
+            bool isOk = httpServer.Start(onConnectionStart, onConnectionEnd);
+            if (!isOk)
             {
                 System.Windows.MessageBox.Show("ポートが開けません。\nアプリを終了します。", "NotesOnPDF");
                 Shutdown();
