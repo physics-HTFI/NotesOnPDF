@@ -12,8 +12,6 @@ namespace backend
             ResetSettings();
         }
 
-        static readonly List<string> Ports = ["8080", "8081", "8082", "8083", "8084", "8085"];
-
         //|
         //| プロパティ
         //|
@@ -37,8 +35,6 @@ namespace backend
         [NotifyCanExecuteChangedFor(nameof(UpdateSettingsCommand))]
         private string _DownloadDirectory = "";
 
-        [ObservableProperty]
-        private int _PortIndex = 0;
 
         //|
         //| コマンド
@@ -110,7 +106,6 @@ namespace backend
             IsSettingsOpen = false;
             Properties.Settings.Default.RootDirectory = RootDirectory;
             Properties.Settings.Default.DownloadDirectory = DownloadDirectory;
-            Properties.Settings.Default.Port = Ports[(int)PortIndex];
             Properties.Settings.Default.Save();
         }
         bool CanUpdateSettings()
@@ -127,11 +122,6 @@ namespace backend
             IsSettingsOpen = false;
             RootDirectory = Properties.Settings.Default.RootDirectory;
             DownloadDirectory = Properties.Settings.Default.DownloadDirectory;
-            PortIndex = Ports.IndexOf(Properties.Settings.Default.Port);
-            if (PortIndex == -1)
-            {
-                PortIndex = 0;
-            }
         }
 
         /// <summary>

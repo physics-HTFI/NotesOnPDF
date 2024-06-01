@@ -5,14 +5,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-// https://rikoubou.hatenablog.com/entry/2023/11/09/130144
-// https://qiita.com/washikawau/items/bfcd8babcffab30e6d26
-// https://stackprobe.hateblo.jp/entry/2021/10/12/004217
-
-// `listener.GetContex`の並列化
-// https://stackoverflow.com/questions/28273345/how-to-process-multiple-connections-simultaneously-with-httplistener
-// https://yryr.me/programming/local-http-server.html
-
 namespace backend
 {
     class HttpServer : IDisposable
@@ -28,12 +20,32 @@ namespace backend
             Properties.Settings.Default.PropertyChanged += BackendSettingsChanged;
         }
 
-        public void Start(Action onConnectionEnd)
+        public bool Start(Action onConnectionEnd)
         {
             this.onConnectionEnd = onConnectionEnd;
-            listener.Prefixes.Add(SettingsUtils.Url);
-            listener.Start();
-            listener.BeginGetContext(OnContext, null);
+
+            // 空いているポートを探して開く
+            var ports = new List<int> { 80 }.Concat(Enumerable.Range(8000, 10));
+            foreach (var port in ports)
+            {
+                try
+                {
+                    // port == 80 が成功するのは、管理者権限でアプリを起動している場合のみ
+                    SettingsUtils.Port = port;
+                    listener.Prefixes.Clear();
+                    listener.Prefixes.Add(SettingsUtils.Url);
+                    listener.Start();
+                    listener.BeginGetContext(OnContext, null);
+                    return true;
+                }
+                catch
+                {
+                    // 失敗してい場合、listenerはDisposeされるので再生成する
+                    listener = new();
+                    continue;
+                }
+            }
+            return false;
         }
 
         void OnContext(IAsyncResult ar)
@@ -132,8 +144,11 @@ namespace backend
 
         public void Dispose()
         {
-            listener?.Stop();
-            listener?.Close();
+            if (listener.IsListening == true)
+            {
+                listener.Stop();
+                listener.Close();
+            }
             Properties.Settings.Default.PropertyChanged -= BackendSettingsChanged;
         }
 
@@ -249,9 +264,8 @@ namespace backend
 
         record Response(byte[] Bytes, string Mime);
 
-        static string MimeType(string path)
-        {
-            return Path.GetExtension(path) switch
+        static string MimeType(string path) =>
+            Path.GetExtension(path) switch
             {
                 ".css" => "text/css",
                 ".html" => "text/html",
@@ -262,7 +276,7 @@ namespace backend
                 ".svg" => "image/svg+xml",
                 _ => throw new Exception()
             };
-        }
+
 
         void BackendSettingsChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {

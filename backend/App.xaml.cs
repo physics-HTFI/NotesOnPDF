@@ -19,7 +19,7 @@ namespace backend
             if (!isNew)
             {
                 mutex?.Dispose();
-                System.Windows.MessageBox.Show("すでに起動しています。\nタスクトレイ内を探してください。", "NotesOnPDF");
+                System.Windows.MessageBox.Show("すでに起動しています。\nタスクバーの通知領域内を探してください。", "NotesOnPDF");
                 Shutdown();
                 return;
             }
@@ -41,7 +41,12 @@ namespace backend
                 );
 
             // サーバー起動
-            httpServer.Start(() => Current.Dispatcher.Invoke(mainWindow.Show));
+            bool isOk = httpServer.Start(() => Current.Dispatcher.Invoke(mainWindow.Show));
+            if(!isOk)
+            {
+                System.Windows.MessageBox.Show("ポートが開けません。\nアプリを終了します。", "NotesOnPDF");
+                Shutdown();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

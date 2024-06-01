@@ -2,11 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="backend.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Port" Type="System.String" Scope="User">
-      <Value Profile="(Default)">8080</Value>
-    </Setting>
     <Setting Name="RootDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">./pdfs</Value>
+      <Value Profile="(Default)">./PDFs</Value>
     </Setting>
     <Setting Name="DownloadDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">./download</Value>

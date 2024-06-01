@@ -223,7 +223,7 @@
                     </StackPanel>
 
                     <StackPanel>
-                        <!-- ルートフォルダ -->
+                        <!-- 基準フォルダ -->
                         <DockPanel
                             Margin="0 0 0 5">
                             <Button
@@ -263,30 +263,6 @@
                                 ToolTipService.Placement="Left"
                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
                         </DockPanel>
-
-                        <!-- ポート番号 -->
-                        <ComboBox
-                            Height="50"
-                            Margin="0 0 35 0"
-                            SelectedIndex="{Binding PortIndex}"
-                            materialDesign:HintAssist.Hint="ポート番号"
-                            materialDesign:HintAssist.IsFloating="True"
-                            ToolTip="基本的に変える必要はありません。変更後はアプリを再起動してください。"
-                            ToolTipService.InitialShowDelay="0"
-                            ToolTipService.Placement="Left">
-                            <ComboBoxItem
-                                Content="8080" />
-                            <ComboBoxItem
-                                Content="8081" />
-                            <ComboBoxItem
-                                Content="8082" />
-                            <ComboBoxItem
-                                Content="8083" />
-                            <ComboBoxItem
-                                Content="8084" />
-                            <ComboBoxItem
-                                Content="8085" />
-                        </ComboBox>
                     </StackPanel>
                 </DockPanel>
             </materialDesign:Flipper.BackContent>
