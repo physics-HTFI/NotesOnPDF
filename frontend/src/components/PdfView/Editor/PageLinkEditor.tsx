@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useState } from "react";
 import { TextField } from "@mui/material";
 import { PageLink, fromDisplayedPage } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
@@ -18,21 +18,21 @@ export default function PageLinkEditor({
     pdfNotes,
     updaters: { updateNote },
   } = useContext(PdfNotesContext);
-  const pageNum =
+  const pageNumInit =
     pdfNotes?.pages[params.page]?.num ??
     pdfNotes?.pages[pdfNotes.currentPage]?.num ??
     1;
-  const num = useRef<number>(pageNum);
+  const [pageNum, setPageNum] = useState(pageNumInit);
   if (!pdfNotes) return <></>;
 
   // 閉じたときに値を更新する
   const handleClose = (cancel?: boolean) => {
     onClose();
     if (cancel) return;
-    if (pageNum === num.current) return;
+    if (pageNumInit === pageNum) return;
     updateNote(params, {
       ...params,
-      page: fromDisplayedPage(pdfNotes, num.current),
+      page: fromDisplayedPage(pdfNotes, pageNum),
     });
   };
 
@@ -41,7 +41,7 @@ export default function PageLinkEditor({
       ページ番号:
       <TextField
         variant="standard"
-        defaultValue={pageNum}
+        value={String(pageNum)}
         type="number"
         sx={{ pl: 1, width: 80 }}
         inputRef={(ref?: HTMLInputElement) => {
@@ -53,7 +53,15 @@ export default function PageLinkEditor({
           e.target.select();
         }}
         onChange={(e) => {
-          num.current = Number(e.target.value);
+          const num = Number(e.target.value);
+          const numMin = pdfNotes.pages.reduce((a, b) =>
+            a.num < b.num ? a : b
+          ).num;
+          const numMax = pdfNotes.pages.reduce((a, b) =>
+            a.num < b.num ? b : a
+          ).num;
+          if (num < numMin || numMax < num) return;
+          setPageNum(num);
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
