@@ -40,7 +40,7 @@ export default function Chip({
       color="primary"
       variant={params.style === "outlined" ? "outlined" : undefined}
       size="small"
-      label={params.text}
+      label={params.text ? params.text : "Chip"}
       onMouseDown={(e) => {
         onMouseDown?.(e, params);
       }}

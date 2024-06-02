@@ -42,7 +42,7 @@ export default function Memo({
           transform: `scale(${scale}%)`,
           filter: `${filter} ${filter} ${filter} ${filter} ${filter}`,
         }}
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: html ? html : "注釈" }}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);
         }}

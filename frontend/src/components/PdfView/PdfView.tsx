@@ -136,7 +136,7 @@ export default function PdfView() {
               newNote?.type === "Polygon" &&
               !page?.notes?.some((n) => n === oldNote) // `!page`の場合も含んでいる
             ) {
-              // Polygonの追加時は点を追加して変形モードを続ける
+              // Polygonの追加時（点を追加して変形モードを続ける）
               const push = newNote.points[newNote.points.length - 1];
               if (push) newNote.points.push([...push]);
               setMoveNote({
@@ -147,12 +147,15 @@ export default function PdfView() {
             } else {
               setMoveNote(undefined);
               if (!oldNote || !newNote) return;
-              updateNote(oldNote, newNote);
+              if (editNote) {
+                setEditNote(newNote);
+              } else {
+                updateNote(oldNote, newNote);
+              }
             }
           }}
         />
       </Container>
-
       <Excluded
         excluded={
           (!mode &&
@@ -168,17 +171,19 @@ export default function PdfView() {
         open={paletteOpen}
         onClose={(note) => {
           setPaletteOpen(false);
-          if (note.type === "Node") setMoveNote(note);
-          else setEditNote(note);
+          setMoveNote(note);
+          setEditNote(note.type === "Node" ? undefined : note);
         }}
       />
-      <Editor
-        open={Boolean(editNote)}
-        params={editNote}
-        onClose={() => {
-          setEditNote(undefined);
-        }}
-      />
+      {!moveNote && (
+        <Editor
+          open={Boolean(editNote)}
+          params={editNote}
+          onClose={() => {
+            setEditNote(undefined);
+          }}
+        />
+      )}
     </Box>
   );
 }
