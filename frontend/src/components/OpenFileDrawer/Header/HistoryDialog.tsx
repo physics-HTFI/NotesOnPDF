@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import History from "@/types/History";
 import UiContext from "@/contexts/UiContext";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 import { Delete } from "@mui/icons-material";
 
 /**

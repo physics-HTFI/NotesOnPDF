@@ -5,7 +5,7 @@ import { createOrGetPdfNotes } from "@/types/PdfNotes";
 import UiContext from "@/contexts/UiContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import FileTreeView from "./FileTreeView/FileTreeView";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
  * ファイル一覧を表示するドロワー

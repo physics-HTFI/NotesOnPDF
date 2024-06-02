@@ -4,7 +4,7 @@ import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "@/components/OpenFileDrawer/FileTreeView/getTreeItems";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
  * ファイル一覧を表示するコンポーネント

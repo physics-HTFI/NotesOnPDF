@@ -1,3 +1,4 @@
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import UiContext from "@/contexts/UiContext";
 import { NoteType, editPageStyle, fromDisplayedPage } from "@/types/PdfNotes";
@@ -7,9 +8,10 @@ import { useContext } from "react";
  * Context内の`pdfNotes, setPdfNotes`および更新用関数`update`を返す
  */
 export default function usePdfNotes() {
+  const { inert } = useContext(ModelContext);
+  const { openFileTreeDrawer, waiting } = useContext(UiContext);
   const { pdfNotes, setPdfNotes, previousPageNum, setPreviousPageNum } =
     useContext(PdfNotesContext);
-  const { openFileTreeDrawer, waiting, inert } = useContext(UiContext);
   const page = pdfNotes?.pages[pdfNotes.currentPage];
   const invalid = !page || openFileTreeDrawer || waiting || inert;
   const pageLabel = `p. ${page?.num ?? "???"}`;

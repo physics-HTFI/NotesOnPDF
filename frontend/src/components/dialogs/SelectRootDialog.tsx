@@ -15,7 +15,7 @@ import { Folder, Lock, LockOpen } from "@mui/icons-material";
 import ModelMock from "@/models/Model.Mock";
 import ModelWeb from "@/models/Model.Web";
 import UiContext from "@/contexts/UiContext";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
  * 文字列を入力するダイアログ

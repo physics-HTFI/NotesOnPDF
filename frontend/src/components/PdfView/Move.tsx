@@ -12,7 +12,7 @@ import { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import MouseContext from "@/contexts/MouseContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
  * 移動中の注釈を表示するコンポーネント

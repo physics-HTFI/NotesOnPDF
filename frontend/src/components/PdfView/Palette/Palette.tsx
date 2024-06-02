@@ -16,7 +16,7 @@ import {
 } from "./Icons";
 import Divider from "./Divider";
 import { PaletteIconType } from "@/types/AppSettings";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
  * PDFビュークリック時に表示されるパレット型コントロール

@@ -1,42 +1,14 @@
-import IModel, { ModelFlags } from "@/models/IModel";
+import IModel from "@/models/IModel";
 import ModelDesktop from "@/models/Model.Desktop";
 import ModelNull from "@/models/Model.Null";
 import AppSettings from "@/types/AppSettings";
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import UiContext from "./UiContext";
+import { ReactNode, useContext, useEffect, useState } from "react";
+import UiContext from "../UiContext";
 import Coverages, { Coverage } from "@/types/Coverages";
 import FileTree from "@/types/FileTree";
-
-/**
- * `IModel`および初期化に必要なデータ（`appSettings`, `fileTree`, `coverages`）の取得・設定
- */
-const ModelContext = createContext<{
-  model: IModel;
-  modelFlags: ModelFlags;
-  appSettings?: AppSettings;
-  fileTree?: FileTree;
-  coverages?: Coverages;
-  /** `appSettings`, `fileTree`, `coverages`の読み込みが終わったら`true` */
-  initialized: boolean;
-  setModel: (model: IModel) => void;
-  setAppSettings: (appSettings: AppSettings) => void;
-  setCoverages: (coverages: Coverages) => void;
-}>({
-  model: new ModelNull(),
-  modelFlags: new ModelNull().getFlags(),
-  initialized: false,
-  setModel: () => undefined,
-  setAppSettings: () => undefined,
-  setCoverages: () => undefined,
-});
-
-export default ModelContext;
+import CriticalError from "./CriticalError";
+import ModelContext from "./ModelContext";
+import useServerSideEvents from "./useServerSideEvents";
 
 /**
  * `ModelContext`のプロバイダー
@@ -47,10 +19,12 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
       ? new ModelNull()
       : new ModelDesktop()
   );
-  const { readOnly, serverFailed, setAlert } = useContext(UiContext);
+  const { readOnly, setAlert } = useContext(UiContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
+  const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
+
   const initialized = !!appSettings && !!fileTree && !!coverages;
 
   // `appSettings, FileTree, Coverages`を取得する
@@ -93,18 +67,40 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
         fileTree,
         coverages,
         initialized,
+        inert: serverFailed || rootDirectoryChanged,
         setModel,
         setAppSettings,
         setCoverages,
       }}
     >
       {children}
+
+      {/* 起動待ち */}
+      <CriticalError
+        open={serverFailed && !rootDirectoryChanged}
+        needsReload={false}
+      >
+        <>
+          NotesOnPdf を起動してください
+          <br />
+          起動するのを待っています...
+        </>
+      </CriticalError>
+
+      {/* 基準フォルダ変更によるリロード */}
+      <CriticalError open={rootDirectoryChanged} needsReload={true}>
+        <>
+          設定が変更されました
+          <br />
+          リロードしてください
+        </>
+      </CriticalError>
     </ModelContext.Provider>
   );
 }
 
 /**
- * `FileTree`と`Coverages`を取得する
+ * `AppSettings, FileTree, Coverages`を取得する
  */
 async function loadAll(model: IModel) {
   const appSettings = await model.getAppSettings().catch(() => {

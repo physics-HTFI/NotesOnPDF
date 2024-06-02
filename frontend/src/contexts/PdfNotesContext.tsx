@@ -9,7 +9,7 @@ import {
 } from "react";
 import { debounce } from "@mui/material";
 import IModel from "@/models/IModel";
-import ModelContext from "./ModelContext";
+import ModelContext from "./ModelContext/ModelContext";
 import UiContext from "./UiContext";
 import Coverages, { GetCoverage } from "@/types/Coverages";
 import FileTree from "@/types/FileTree";
@@ -97,7 +97,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       // `Coverages`が不整合になることがある：
       // ・`readOnly`状態で`pdfNotes`を変更→別のファイルを開いて`readOnly`を解除、としたときに前のファイルの`Coverage`が変化してしまう。
       // だが稀なので気にしない（`!readOnly`状態で`Coverages`が変化しないほうが不自然なので）。
-      setCoverages?.(newCoverages);
+      setCoverages(newCoverages);
     }
   }, [
     coverages,

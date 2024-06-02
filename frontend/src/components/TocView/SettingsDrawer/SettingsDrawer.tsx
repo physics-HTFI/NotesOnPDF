@@ -18,7 +18,7 @@ import usePdfNotes from "@/hooks/usePdfNotes";
 import IconClose from "./IconClose";
 import IconTogglePosition from "./IconTogglePosition";
 import Tabs from "./Tabs";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
  * 設定パネル

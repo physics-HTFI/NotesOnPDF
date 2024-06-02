@@ -13,7 +13,7 @@ import usePdfNotes from "@/hooks/usePdfNotes";
 import { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
  * PDFビュークリック時に表示されるコントロール

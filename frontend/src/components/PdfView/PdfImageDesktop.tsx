@@ -2,7 +2,7 @@ import { useContext, useRef, useState } from "react";
 import PdfNotesContext from "@/contexts/PdfNotesContext";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 import UiContext from "@/contexts/UiContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
 

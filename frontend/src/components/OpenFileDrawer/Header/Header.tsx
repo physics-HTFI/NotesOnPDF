@@ -12,7 +12,7 @@ import InputStringDialog from "./InputStringDialog";
 import HistoryDialog from "./HistoryDialog";
 import Waiting from "../../dialogs/Waiting";
 import UiContext from "@/contexts/UiContext";
-import ModelContext from "@/contexts/ModelContext";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -22,9 +22,8 @@ export default function Header({
 }: {
   onSelectPdfById?: (id: string) => void;
 }) {
-  const { model, modelFlags } = useContext(ModelContext);
-  const { readOnly, serverFailed, setReadOnly, setAlert } =
-    useContext(UiContext);
+  const { model, modelFlags, initialized } = useContext(ModelContext);
+  const { readOnly, setReadOnly, setAlert } = useContext(UiContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -62,7 +61,7 @@ export default function Header({
       >
         <span style={{ marginRight: "auto" }}>
           <IconButton
-            disabled={serverFailed || !modelFlags.canToggleReadOnly}
+            disabled={!initialized || !modelFlags.canToggleReadOnly}
             sx={readOnly ? { color: "firebrick" } : sxButton}
             onClick={() => {
               setReadOnly(!readOnly);
@@ -78,7 +77,7 @@ export default function Header({
       <Tooltip title="アクセス履歴からPDFファイルを開きます">
         <span>
           <IconButton
-            disabled={serverFailed || !modelFlags.canOpenHistory}
+            disabled={!initialized || !modelFlags.canOpenHistory}
             sx={sxButton}
             onClick={() => {
               setOpenHistory(true);
@@ -90,7 +89,7 @@ export default function Header({
         </span>
       </Tooltip>
       <HistoryDialog
-        open={!serverFailed && openHistory}
+        open={!!initialized && openHistory}
         onClose={(id) => {
           setOpenHistory(false);
           if (!id) return;
@@ -110,7 +109,7 @@ export default function Header({
       >
         <span>
           <IconButton
-            disabled={serverFailed || !modelFlags.canOpenFileDialog}
+            disabled={!initialized || !modelFlags.canOpenFileDialog}
             sx={sxButton}
             size="small"
             onClick={() => {
@@ -151,7 +150,7 @@ export default function Header({
       >
         <span>
           <IconButton
-            disabled={serverFailed || !modelFlags.canOpenFileDialog}
+            disabled={!initialized || !modelFlags.canOpenFileDialog}
             sx={sxButton}
             size="small"
             onClick={() => {
@@ -162,7 +161,7 @@ export default function Header({
           </IconButton>
         </span>
       </Tooltip>
-      {!serverFailed && openUrl && modelFlags.canOpenFileDialog && (
+      {initialized && openUrl && modelFlags.canOpenFileDialog && (
         <InputStringDialog
           title="URLからPDFファイルを開く"
           label="URL"

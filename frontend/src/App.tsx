@@ -10,8 +10,7 @@ import { UiContextProvider } from "./contexts/UiContext";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
 import SelectRootDialog from "./components/dialogs/SelectRootDialog";
-import { ModelContextProvider } from "./contexts/ModelContext";
-import ServerSideEvents from "./components/dialogs/ServerSideEvents";
+import { ModelContextProvider } from "./contexts/ModelContext/ModelContextProvider";
 
 /**
  * 数式表示のコンフィグ
@@ -101,7 +100,6 @@ export default function App() {
                 </Panel>
               </PanelGroup>
             </Box>
-            <ServerSideEvents />
           </PdfNotesContextProvider>
         </MathJaxContext>
       </ModelContextProvider>
