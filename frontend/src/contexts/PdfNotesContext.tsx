@@ -10,7 +10,7 @@ import {
 import { debounce } from "@mui/material";
 import IModel from "@/models/IModel";
 import ModelContext from "./ModelContext";
-import UiStateContext from "./UiStateContext";
+import UiContext from "./UiContext";
 
 export interface PageSize {
   width: number;
@@ -43,7 +43,7 @@ export default PdfNotesContext;
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setAlert } = useContext(UiStateContext);
+  const { readOnly, setAlert } = useContext(UiContext);
   const [id, setId_] = useState<string>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [pageSizes, setPageSizes] = useState<PageSize[]>();

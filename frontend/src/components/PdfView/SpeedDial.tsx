@@ -15,7 +15,7 @@ import {
   Settings,
 } from "@mui/icons-material";
 import { blue, green, grey, red } from "@mui/material/colors";
-import { UiStateContext } from "@/contexts/UiStateContext";
+import { UiContext } from "@/contexts/UiContext";
 
 export type Mode = undefined | "edit" | "move" | "delete";
 
@@ -50,7 +50,7 @@ export default function SpeedDial({
   hidden: boolean;
 }) {
   const { openSettingsDrawer, setOpenFileTreeDrawer, setOpenSettingsDrawer } =
-    useContext(UiStateContext);
+    useContext(UiContext);
   const [open, setOpen] = useState(true);
 
   return (

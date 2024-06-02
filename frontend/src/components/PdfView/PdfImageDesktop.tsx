@@ -3,7 +3,7 @@ import PdfNotesContext from "@/contexts/PdfNotesContext";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 import ModelContext from "@/contexts/ModelContext";
-import UiStateContext from "@/contexts/UiStateContext";
+import UiContext from "@/contexts/UiContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
 
 /**
@@ -11,7 +11,7 @@ import usePdfNotes from "@/hooks/usePdfNotes";
  */
 export default function PdfImageDesktop() {
   const { model } = useContext(ModelContext);
-  const { setAlert } = useContext(UiStateContext);
+  const { setAlert } = useContext(UiContext);
   const { pageRect } = useContext(MouseContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const { pageLabel } = usePdfNotes();

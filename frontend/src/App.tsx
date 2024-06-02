@@ -7,13 +7,13 @@ import PdfView from "@/components/PdfView/PdfView";
 import TocView from "@/components/TocView/TocView";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext";
 import { AppSettingsContextProvider } from "./contexts/AppSettingsContext";
-import { UiStateContextProvider } from "./contexts/UiStateContext";
+import { UiContextProvider } from "./contexts/UiContext";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
 import { FileTreeContextProvider } from "./contexts/FileTreeContext";
-import SelectRootDialog from "./components/Fullscreen/SelectRootDialog";
+import SelectRootDialog from "./components/dialogs/SelectRootDialog";
 import { ModelContextProvider } from "./contexts/ModelContext";
-import ServerSideEvents from "./components/Fullscreen/ServerSideEvents";
+import ServerSideEvents from "./components/dialogs/ServerSideEvents";
 
 /**
  * 数式表示のコンフィグ
@@ -69,7 +69,7 @@ export default function App() {
 
   return (
     <ModelContextProvider>
-      <UiStateContextProvider>
+      <UiContextProvider>
         {/* モックモデルを使用していることを示すポップアップ表示 */}
         {import.meta.env.VITE_IS_WEB === "true" && <SelectRootDialog />}
         <AppSettingsContextProvider>
@@ -110,7 +110,7 @@ export default function App() {
             </PdfNotesContextProvider>
           </MathJaxContext>
         </AppSettingsContextProvider>
-      </UiStateContextProvider>
+      </UiContextProvider>
     </ModelContextProvider>
   );
 }

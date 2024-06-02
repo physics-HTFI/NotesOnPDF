@@ -1,5 +1,5 @@
 import PdfNotesContext from "@/contexts/PdfNotesContext";
-import UiStateContext from "@/contexts/UiStateContext";
+import UiContext from "@/contexts/UiContext";
 import { NoteType, editPageStyle, fromDisplayedPage } from "@/types/PdfNotes";
 import { useContext } from "react";
 
@@ -9,7 +9,7 @@ import { useContext } from "react";
 export default function usePdfNotes() {
   const { pdfNotes, setPdfNotes, previousPageNum, setPreviousPageNum } =
     useContext(PdfNotesContext);
-  const { openFileTreeDrawer, waiting, inert } = useContext(UiStateContext);
+  const { openFileTreeDrawer, waiting, inert } = useContext(UiContext);
   const page = pdfNotes?.pages[pdfNotes.currentPage];
   const invalid = !page || openFileTreeDrawer || waiting || inert;
   const pageLabel = `p. ${page?.num ?? "???"}`;

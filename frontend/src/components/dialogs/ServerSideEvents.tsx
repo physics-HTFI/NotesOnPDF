@@ -1,5 +1,5 @@
 import ModelContext from "@/contexts/ModelContext";
-import UiStateContext from "@/contexts/UiStateContext";
+import UiContext from "@/contexts/UiContext";
 import { useContext, useEffect, useRef } from "react";
 
 /**
@@ -7,8 +7,7 @@ import { useContext, useEffect, useRef } from "react";
  */
 export default function ServerSideEvents() {
   const { model } = useContext(ModelContext);
-  const { setServerFailed, setRootDirectoryChanged } =
-    useContext(UiStateContext);
+  const { setServerFailed, setRootDirectoryChanged } = useContext(UiContext);
   const eventSource = useRef<EventSource>();
 
   useEffect(() => {

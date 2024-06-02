@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import ModelContext from "./ModelContext";
-import UiStateContext from "./UiStateContext";
+import UiContext from "./UiContext";
 
 /**
  * アプリ設定のコンテクスト
@@ -28,7 +28,7 @@ export function AppSettingsContextProvider({
   children: ReactNode;
 }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, serverFailed, setAlert } = useContext(UiStateContext);
+  const { readOnly, serverFailed, setAlert } = useContext(UiContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const initialized = !!appSettings;
 

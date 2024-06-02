@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import History from "@/types/History";
-import UiStateContext from "@/contexts/UiStateContext";
+import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext";
 import { Delete } from "@mui/icons-material";
 
@@ -29,7 +29,7 @@ export default function HistoryDialog({
   onClose: (id?: string) => void;
 }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setWaiting, setAlert } = useContext(UiStateContext);
+  const { readOnly, setWaiting, setAlert } = useContext(UiContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {

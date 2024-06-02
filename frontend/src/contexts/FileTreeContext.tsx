@@ -11,7 +11,7 @@ import IModel from "@/models/IModel";
 import PdfNotesContext from "./PdfNotesContext";
 import PdfNotes from "@/types/PdfNotes";
 import ModelContext from "./ModelContext";
-import UiStateContext from "./UiStateContext";
+import UiContext from "./UiContext";
 
 /**
  * ファイルツリーと履歴のコンテクスト
@@ -28,7 +28,7 @@ export default FileTreeContext;
  */
 export function FileTreeContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, serverFailed, setAlert } = useContext(UiStateContext);
+  const { readOnly, serverFailed, setAlert } = useContext(UiContext);
   const { id, pdfNotes } = useContext(PdfNotesContext);
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();

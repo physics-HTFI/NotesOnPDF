@@ -14,7 +14,7 @@ import Checkbox from "./Checkbox";
 import ClickOptionSelect from "./ClickOptionSelect";
 import AppSettingsContext from "@/contexts/AppSettingsContext";
 import AppSettings from "@/types/AppSettings";
-import { UiStateContext } from "@/contexts/UiStateContext";
+import { UiContext } from "@/contexts/UiContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import IconClose from "./IconClose";
 import IconTogglePosition from "./IconTogglePosition";
@@ -26,8 +26,7 @@ import Tabs from "./Tabs";
 export default function SettingsDrawer() {
   const { appSettings, setAppSettings } = useContext(AppSettingsContext);
   const { pdfNotes, setPdfNotes, getPreferredLabels } = usePdfNotes();
-  const { openSettingsDrawer, setOpenSettingsDrawer } =
-    useContext(UiStateContext);
+  const { openSettingsDrawer, setOpenSettingsDrawer } = useContext(UiContext);
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
   const [variant, setVariant] = useState<"persistent" | "temporary">(

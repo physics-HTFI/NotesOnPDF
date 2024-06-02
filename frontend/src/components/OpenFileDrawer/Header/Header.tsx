@@ -10,8 +10,8 @@ import {
 } from "@mui/icons-material";
 import InputStringDialog from "./InputStringDialog";
 import HistoryDialog from "./HistoryDialog";
-import Waiting from "../../Fullscreen/Waiting";
-import UiStateContext from "@/contexts/UiStateContext";
+import Waiting from "../../dialogs/Waiting";
+import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext";
 
 /**
@@ -24,7 +24,7 @@ export default function Header({
 }) {
   const { model, modelFlags } = useContext(ModelContext);
   const { readOnly, serverFailed, setReadOnly, setAlert } =
-    useContext(UiStateContext);
+    useContext(UiContext);
   const [openUrl, setOpenUrl] = useState(false);
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);

@@ -1,16 +1,17 @@
 import { ReactNode, createContext, useCallback, useState } from "react";
-import Waiting from "@/components/Fullscreen/Waiting";
+import Waiting from "@/components/dialogs/Waiting";
 import { Alert, Backdrop, Button, Snackbar, Stack } from "@mui/material";
 
 /**
  * UIの状態コンテクスト（待機中、ドロワーの開閉状態）
  */
-export const UiStateContext = createContext<{
+export const UiContext = createContext<{
   openFileTreeDrawer: boolean;
   openSettingsDrawer: boolean;
   waiting: boolean;
   readOnly: boolean;
   serverFailed: boolean;
+  /** `true`の時は、注釈などの変更ができてはならない */
   inert: boolean;
   setOpenFileTreeDrawer: (openFileTreeDrawer: boolean) => void;
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
@@ -38,12 +39,12 @@ export const UiStateContext = createContext<{
   setRootDirectoryChanged: () => undefined,
 });
 
-export default UiStateContext;
+export default UiContext;
 
 /**
- * `UiStateContext`のプロバイダー
+ * `UiContext`のプロバイダー
  */
-export function UiStateContextProvider({ children }: { children: ReactNode }) {
+export function UiContextProvider({ children }: { children: ReactNode }) {
   const [openFileTreeDrawer, setOpenFileTreeDrawer] = useState(true);
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [waiting, setWaiting] = useState(false);
@@ -67,7 +68,7 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <UiStateContext.Provider
+    <UiContext.Provider
       value={{
         openFileTreeDrawer,
         openSettingsDrawer,
@@ -116,7 +117,7 @@ export function UiStateContextProvider({ children }: { children: ReactNode }) {
           リロードしてください
         </>
       </CriticalError>
-    </UiStateContext.Provider>
+    </UiContext.Provider>
   );
 }
 

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { pdfjs, Document, Page } from "react-pdf";
 import PdfNotesContext, { PageSize } from "@/contexts/PdfNotesContext";
-import UiStateContext from "@/contexts/UiStateContext";
+import UiContext from "@/contexts/UiContext";
 import { createOrGetPdfNotes } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
@@ -25,7 +25,7 @@ export default function PdfImageWeb() {
     useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
   const { readOnly, waiting, setWaiting, setOpenFileTreeDrawer, setAlert } =
-    useContext(UiStateContext);
+    useContext(UiContext);
   const { pageLabel } = usePdfNotes();
 
   const [file, setFile] = useState<string | File>();
