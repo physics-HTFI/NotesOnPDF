@@ -12,19 +12,19 @@ import PageNumberRestart from "./PageNumberRestart";
 import LabelSlider from "./LabelSlider";
 import Checkbox from "./Checkbox";
 import ClickOptionSelect from "./ClickOptionSelect";
-import AppSettingsContext from "@/contexts/AppSettingsContext";
 import AppSettings from "@/types/AppSettings";
 import { UiContext } from "@/contexts/UiContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
 import IconClose from "./IconClose";
 import IconTogglePosition from "./IconTogglePosition";
 import Tabs from "./Tabs";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * 設定パネル
  */
 export default function SettingsDrawer() {
-  const { appSettings, setAppSettings } = useContext(AppSettingsContext);
+  const { appSettings, setAppSettings } = useContext(ModelContext);
   const { pdfNotes, setPdfNotes, getPreferredLabels } = usePdfNotes();
   const { openSettingsDrawer, setOpenSettingsDrawer } = useContext(UiContext);
   const [tab, setTab] = useState(0);
@@ -33,8 +33,7 @@ export default function SettingsDrawer() {
     "temporary"
   );
 
-  if (!appSettings || !setAppSettings) return <></>;
-  if (!pdfNotes) return <></>;
+  if (!appSettings || !pdfNotes) return <></>;
 
   // 部名・章名・ページ番号の候補など
   const page = pdfNotes.pages[pdfNotes.currentPage];

@@ -11,8 +11,8 @@ import Chip from "./Items/Chip";
 import { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import MouseContext from "@/contexts/MouseContext";
-import AppSettingsContext from "@/contexts/AppSettingsContext";
 import usePdfNotes from "@/hooks/usePdfNotes";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * 移動中の注釈を表示するコンポーネント
@@ -31,7 +31,7 @@ export default function Move({
   const [dXY, setDXY] = useState<[number, number]>();
   const ref = useRef<HTMLElement>();
   const { mouse, setMouse, pageRect } = useContext(MouseContext);
-  const { appSettings } = useContext(AppSettingsContext);
+  const { appSettings } = useContext(ModelContext);
   const { page } = usePdfNotes();
   if (!params || !mouse || !pageRect || !appSettings) {
     if (dXY) setDXY(undefined); // 頂点編集中に`Esc`を押してキャンセル後に値が残るのを防ぐ

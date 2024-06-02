@@ -6,8 +6,8 @@ import {
   NoteType,
 } from "@/types/PdfNotes";
 import Node from "./Node";
-import AppSettingsContext from "@/contexts/AppSettingsContext";
 import useCursor from "./useCursor";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * 黄色いマーカー
@@ -27,7 +27,7 @@ export default function Marker({
 }) {
   const [hover, setHover] = useState(false);
   const { isMove } = useCursor(mode);
-  const { appSettings } = useContext(AppSettingsContext);
+  const { appSettings } = useContext(ModelContext);
   const x1 = params.x1 * pageRect.width;
   const y1 = params.y1 * pageRect.height;
   const x2 = params.x2 * pageRect.width;

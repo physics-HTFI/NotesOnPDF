@@ -11,6 +11,8 @@ import { debounce } from "@mui/material";
 import IModel from "@/models/IModel";
 import ModelContext from "./ModelContext";
 import UiContext from "./UiContext";
+import Coverages, { GetCoverage } from "@/types/Coverages";
+import FileTree from "@/types/FileTree";
 
 export interface PageSize {
   width: number;
@@ -42,7 +44,7 @@ export default PdfNotesContext;
  * `AppSettingsContext`のプロバイダー
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
-  const { model } = useContext(ModelContext);
+  const { model, fileTree, coverages, setCoverages } = useContext(ModelContext);
   const { readOnly, setAlert } = useContext(UiContext);
   const [id, setId_] = useState<string>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
@@ -84,7 +86,30 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     if (readOnly) return;
     // 注釈ファイル保存
     putPdfNotesDebounced(id, pdfNotes, model, setAlert);
-  }, [id, pdfNotes, model, readOnly, putPdfNotesDebounced, setAlert]);
+    // 必要であれば`coverages`を更新する
+    const newCoverages = getNewCoveragesOrUndefined(
+      coverages,
+      id,
+      pdfNotes,
+      fileTree
+    );
+    if (newCoverages) {
+      // `Coverages`が不整合になることがある：
+      // ・`readOnly`状態で`pdfNotes`を変更→別のファイルを開いて`readOnly`を解除、としたときに前のファイルの`Coverage`が変化してしまう。
+      // だが稀なので気にしない（`!readOnly`状態で`Coverages`が変化しないほうが不自然なので）。
+      setCoverages?.(newCoverages);
+    }
+  }, [
+    coverages,
+    fileTree,
+    id,
+    model,
+    pdfNotes,
+    putPdfNotesDebounced,
+    readOnly,
+    setAlert,
+    setCoverages,
+  ]);
 
   return (
     <PdfNotesContext.Provider
@@ -102,4 +127,29 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       {children}
     </PdfNotesContext.Provider>
   );
+}
+
+/**
+ * 更新済みの`coverages`を返す。更新不要の場合は`undefined`。
+ */
+function getNewCoveragesOrUndefined(
+  coverages?: Coverages,
+  id?: string,
+  pdfNotes?: PdfNotes,
+  fileTree?: FileTree
+) {
+  if (!id || !pdfNotes || !coverages || !fileTree) return undefined;
+  if (!fileTree.find((f) => f.id === id)) return undefined;
+
+  const oldCov = coverages.pdfs[id];
+  const newCov = GetCoverage(pdfNotes);
+  const unchanged =
+    coverages.recentId === id &&
+    oldCov?.allPages === newCov.allPages &&
+    oldCov.enabledPages === newCov.enabledPages &&
+    oldCov.notedPages === newCov.notedPages;
+  if (unchanged) return undefined;
+  const newCoverages: Coverages = { ...coverages, recentId: id };
+  newCoverages.pdfs[id] = newCov;
+  return newCoverages;
 }

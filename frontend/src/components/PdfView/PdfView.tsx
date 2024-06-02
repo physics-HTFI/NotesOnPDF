@@ -11,7 +11,6 @@ import Editor from "./Editor/Editor";
 import { grey } from "@mui/material/colors";
 import Move from "./Move";
 import usePdfNotes from "@/hooks/usePdfNotes";
-import AppSettingsContext from "@/contexts/AppSettingsContext";
 import PdfImageDesktop from "./PdfImageDesktop";
 import PdfImageWeb from "./PdfImageWeb";
 import ModelContext from "@/contexts/ModelContext";
@@ -21,7 +20,7 @@ import ModelContext from "@/contexts/ModelContext";
  */
 export default function PdfView() {
   const { modelFlags } = useContext(ModelContext);
-  const { appSettings } = useContext(AppSettingsContext);
+  const { appSettings } = useContext(ModelContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
   const { page, updateNote, scrollPage, handleKeyDown } = usePdfNotes();
 

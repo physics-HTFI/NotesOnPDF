@@ -13,7 +13,7 @@ import usePdfNotes from "@/hooks/usePdfNotes";
 import { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
-import AppSettingsContext from "@/contexts/AppSettingsContext";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * PDFビュークリック時に表示されるコントロール
@@ -30,7 +30,7 @@ export default function Items({
   onMove: (note: NoteType | NodeType) => void;
 }) {
   const { pageRect, setMouse } = useContext(MouseContext);
-  const { appSettings } = useContext(AppSettingsContext);
+  const { appSettings } = useContext(ModelContext);
   const { page, popNote } = usePdfNotes();
   if (!page?.notes || !pageRect) return <SvgDefs />;
 

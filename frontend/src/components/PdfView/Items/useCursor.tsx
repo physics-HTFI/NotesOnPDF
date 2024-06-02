@@ -1,9 +1,9 @@
-import AppSettingsContext from "@/contexts/AppSettingsContext";
 import { useContext } from "react";
 import { Mode } from "../SpeedDial";
+import ModelContext from "@/contexts/ModelContext";
 
 export default function useCursor(mode?: Mode) {
-  const { appSettings } = useContext(AppSettingsContext);
+  const { appSettings } = useContext(ModelContext);
 
   const getCursor = () =>
     mode === "move"

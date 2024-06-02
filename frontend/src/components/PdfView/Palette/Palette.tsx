@@ -16,7 +16,7 @@ import {
 } from "./Icons";
 import Divider from "./Divider";
 import { PaletteIconType } from "@/types/AppSettings";
-import AppSettingsContext from "@/contexts/AppSettingsContext";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * PDFビュークリック時に表示されるパレット型コントロール
@@ -29,7 +29,7 @@ export default function Palette({
   onClose: (note: NoteType | Node) => void;
 }) {
   const { mouse, pageRect } = useContext(MouseContext);
-  const { appSettings } = useContext(AppSettingsContext);
+  const { appSettings } = useContext(ModelContext);
   const { pdfNotes } = usePdfNotes();
   if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
 

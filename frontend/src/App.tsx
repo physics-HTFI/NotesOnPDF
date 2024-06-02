@@ -6,11 +6,9 @@ import OpenFileDrawer from "@/components/OpenFileDrawer/OpenFileDrawer";
 import PdfView from "@/components/PdfView/PdfView";
 import TocView from "@/components/TocView/TocView";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext";
-import { AppSettingsContextProvider } from "./contexts/AppSettingsContext";
 import { UiContextProvider } from "./contexts/UiContext";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
-import { FileTreeContextProvider } from "./contexts/FileTreeContext";
 import SelectRootDialog from "./components/dialogs/SelectRootDialog";
 import { ModelContextProvider } from "./contexts/ModelContext";
 import ServerSideEvents from "./components/dialogs/ServerSideEvents";
@@ -68,49 +66,45 @@ export default function App() {
   }, []);
 
   return (
-    <ModelContextProvider>
-      <UiContextProvider>
+    <UiContextProvider>
+      <ModelContextProvider>
         {/* モックモデルを使用していることを示すポップアップ表示 */}
         {import.meta.env.VITE_IS_WEB === "true" && <SelectRootDialog />}
-        <AppSettingsContextProvider>
-          <MathJaxContext version={3} config={mathjaxConfig}>
-            <PdfNotesContextProvider>
-              <FileTreeContextProvider>
-                <Box sx={{ userSelect: "none" }}>
-                  {/* ファイルツリー */}
-                  <OpenFileDrawer />
+        <MathJaxContext version={3} config={mathjaxConfig}>
+          <PdfNotesContextProvider>
+            <Box sx={{ userSelect: "none" }}>
+              {/* ファイルツリー */}
+              <OpenFileDrawer />
 
-                  <PanelGroup direction="horizontal">
-                    {/* 目次 */}
-                    <Panel defaultSizePixels={270} minSizePixels={40}>
-                      <TocView />
-                    </Panel>
+              <PanelGroup direction="horizontal">
+                {/* 目次 */}
+                <Panel defaultSizePixels={270} minSizePixels={40}>
+                  <TocView />
+                </Panel>
 
-                    {/* リサイズハンドル */}
-                    <PanelResizeHandle>
-                      <Box
-                        sx={{
-                          width: 5,
-                          height: "100vh",
-                          background: grey[400],
-                        }}
-                      />
-                    </PanelResizeHandle>
+                {/* リサイズハンドル */}
+                <PanelResizeHandle>
+                  <Box
+                    sx={{
+                      width: 5,
+                      height: "100vh",
+                      background: grey[400],
+                    }}
+                  />
+                </PanelResizeHandle>
 
-                    {/* PDFビュー */}
-                    <Panel minSizePixels={200}>
-                      <MouseContextProvider>
-                        <PdfView />
-                      </MouseContextProvider>
-                    </Panel>
-                  </PanelGroup>
-                </Box>
-                <ServerSideEvents />
-              </FileTreeContextProvider>
-            </PdfNotesContextProvider>
-          </MathJaxContext>
-        </AppSettingsContextProvider>
-      </UiContextProvider>
-    </ModelContextProvider>
+                {/* PDFビュー */}
+                <Panel minSizePixels={200}>
+                  <MouseContextProvider>
+                    <PdfView />
+                  </MouseContextProvider>
+                </Panel>
+              </PanelGroup>
+            </Box>
+            <ServerSideEvents />
+          </PdfNotesContextProvider>
+        </MathJaxContext>
+      </ModelContextProvider>
+    </UiContextProvider>
   );
 }

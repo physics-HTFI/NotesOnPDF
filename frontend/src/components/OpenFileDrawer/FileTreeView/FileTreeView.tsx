@@ -4,7 +4,7 @@ import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import getTreeItems from "@/components/OpenFileDrawer/FileTreeView/getTreeItems";
-import FileTreeContext from "@/contexts/FileTreeContext";
+import ModelContext from "@/contexts/ModelContext";
 
 /**
  * ファイル一覧を表示するコンポーネント
@@ -14,7 +14,7 @@ export default function FileTreeView({
 }: {
   onSelectPdfById: (id: string) => void;
 }) {
-  const { fileTree, coverages } = useContext(FileTreeContext);
+  const { fileTree, coverages } = useContext(ModelContext);
   const [expanded, setExpanded] = useState<string[]>([]);
   const [selectedPath, setSelectedPath] = useState<string>();
 
