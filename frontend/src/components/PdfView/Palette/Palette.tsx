@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { Paper, SxProps } from "@mui/material";
 import MouseContext from "@/contexts/MouseContext";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import { Node, NoteType } from "@/types/PdfNotes";
 import {
   ArrowIcon,
@@ -17,6 +16,7 @@ import {
 import Divider from "./Divider";
 import { PaletteIconType } from "@/types/AppSettings";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * PDFビュークリック時に表示されるパレット型コントロール
@@ -30,7 +30,7 @@ export default function Palette({
 }) {
   const { mouse, pageRect } = useContext(MouseContext);
   const { appSettings } = useContext(ModelContext);
-  const { pdfNotes } = usePdfNotes();
+  const { pdfNotes } = useContext(PdfNotesContext);
   if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
 
   const [L, DIVISIONS] = [50, 8];

@@ -5,7 +5,7 @@ import { Node, NoteType, PageLink as PageLinkType } from "@/types/PdfNotes";
 import { Mode } from "../SpeedDial";
 import MouseContext from "@/contexts/MouseContext";
 import useCursor from "./useCursor";
-import usePdfNotes from "@/hooks/usePdfNotes";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * ページへのリンク
@@ -21,7 +21,10 @@ export default function PageLink({
 }) {
   const [hover, setHover] = useState(false);
   const { getCursor } = useCursor(mode);
-  const { pdfNotes, jumpPage } = usePdfNotes();
+  const {
+    pdfNotes,
+    updaters: { jumpPage },
+  } = useContext(PdfNotesContext);
   const { scale } = useContext(MouseContext);
   const cursor = getCursor() ?? "pointer";
   if (!pdfNotes) return <></>;

@@ -10,19 +10,20 @@ import MouseContext from "@/contexts/MouseContext";
 import Editor from "./Editor/Editor";
 import { grey } from "@mui/material/colors";
 import Move from "./Move";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import PdfImageDesktop from "./PdfImageDesktop";
 import PdfImageWeb from "./PdfImageWeb";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * Pdfを表示するコンポーネント
  */
 export default function PdfView() {
-  const { modelFlags } = useContext(ModelContext);
-  const { appSettings } = useContext(ModelContext);
+  const { modelFlags, appSettings } = useContext(ModelContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
-  const { page, updateNote, scrollPage, handleKeyDown } = usePdfNotes();
+  const {
+    updaters: { page, updateNote, scrollPage, handleKeyDown },
+  } = useContext(PdfNotesContext);
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mode, setMode] = useState<Mode>(undefined);

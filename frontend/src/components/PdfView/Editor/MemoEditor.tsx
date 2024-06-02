@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   TextareaAutosize,
   Tooltip,
@@ -7,10 +7,10 @@ import {
   tooltipClasses,
 } from "@mui/material";
 import { Memo } from "@/types/PdfNotes";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
 import { blue, grey } from "@mui/material/colors";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 // https://mui.com/base-ui/react-textarea-autosize/
 const Textarea = styled(TextareaAutosize)(
@@ -52,7 +52,9 @@ export default function MemoEditor({
   params: Memo;
   onClose: () => void;
 }) {
-  const { updateNote } = usePdfNotes();
+  const {
+    updaters: { updateNote },
+  } = useContext(PdfNotesContext);
   const [text, setText] = useState(params.html);
 
   // 閉じたときに値を更新する

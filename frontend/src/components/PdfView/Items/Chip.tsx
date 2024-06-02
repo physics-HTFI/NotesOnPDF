@@ -3,8 +3,8 @@ import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
 import { Chip as ChipType, Node, NoteType } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import useCursor from "./useCursor";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * チップ
@@ -21,7 +21,7 @@ export default function Chip({
   const [hover, setHover] = useState(false);
   const { getCursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
-  const { pdfNotes } = usePdfNotes();
+  const { pdfNotes } = useContext(PdfNotesContext);
   if (!pdfNotes || !scale) return <></>;
 
   const cursor = getCursor();

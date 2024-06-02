@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import {
   Autocomplete,
   Chip as MuiChip,
@@ -7,9 +7,9 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 import PdfNotes, { Chip } from "@/types/PdfNotes";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import { blue } from "@mui/material/colors";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * `pdfNotes`に含まれているチップ注釈のうち、出現回数が多い順に並べ替えて返す。
@@ -39,7 +39,10 @@ export default function ChipEditor({
   params: Chip;
   onClose: () => void;
 }) {
-  const { pdfNotes, updateNote } = usePdfNotes();
+  const {
+    pdfNotes,
+    updaters: { updateNote },
+  } = useContext(PdfNotesContext);
   const [style, setStyle] = useState(params.style);
   const [rawText, setRawText] = useState(params.text);
   const [open, setOpen] = useState(params.text === "");

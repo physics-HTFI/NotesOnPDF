@@ -1,7 +1,7 @@
 import { ReactNode, useContext } from "react";
 import { Modal, Paper } from "@mui/material";
-import PdfNotesContext from "@/contexts/PdfNotesContext";
 import MouseContext from "@/contexts/MouseContext";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * 画面クリック時にポップアップする編集ダイアログ

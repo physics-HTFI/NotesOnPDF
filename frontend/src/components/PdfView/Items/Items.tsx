@@ -9,11 +9,11 @@ import Polygon from "./Polygon";
 import Chip from "./Chip";
 import Svg from "./Svg";
 import { Mode } from "../SpeedDial";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * PDFビュークリック時に表示されるコントロール
@@ -31,7 +31,9 @@ export default function Items({
 }) {
   const { pageRect, setMouse } = useContext(MouseContext);
   const { appSettings } = useContext(ModelContext);
-  const { page, popNote } = usePdfNotes();
+  const {
+    updaters: { page, popNote },
+  } = useContext(PdfNotesContext);
   if (!page?.notes || !pageRect) return <SvgDefs />;
 
   const props = <T extends NoteType | NodeType>(params: T) => ({

@@ -5,12 +5,12 @@ import { grey } from "@mui/material/colors";
 import OpenFileDrawer from "@/components/OpenFileDrawer/OpenFileDrawer";
 import PdfView from "@/components/PdfView/PdfView";
 import TocView from "@/components/TocView/TocView";
-import { PdfNotesContextProvider } from "./contexts/PdfNotesContext";
 import { UiContextProvider } from "./contexts/UiContext";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
 import SelectRootDialog from "./components/dialogs/SelectRootDialog";
 import { ModelContextProvider } from "./contexts/ModelContext/ModelContextProvider";
+import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesContextProvider";
 
 /**
  * 数式表示のコンフィグ

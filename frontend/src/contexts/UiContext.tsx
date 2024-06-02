@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useCallback, useState } from "react";
 import Waiting from "@/components/dialogs/Waiting";
 import { Alert, Snackbar } from "@mui/material";
 
@@ -14,10 +14,7 @@ export const UiContext = createContext<{
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
   setWaiting: (waiting: boolean) => void;
   setReadOnly: (readOnly: boolean) => void;
-  setAlert: (
-    severity?: "error" | "info",
-    message?: string | JSX.Element
-  ) => void;
+  setAlert: (severity?: "error" | "info", message?: ReactNode) => void;
 }>({
   openFileTreeDrawer: true,
   openSettingsDrawer: false,
@@ -40,15 +37,16 @@ export function UiContextProvider({ children }: { children: ReactNode }) {
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const [readOnly, setReadOnly] = useState(false);
-  const [alert, setAlert] = useState<string | JSX.Element>();
+  const [alert, setAlert] = useState<ReactNode>();
   const [severity, setSeverity] = useState<"error" | "info">();
-  const setAlertAndSeverity = (
-    severity?: "error" | "info",
-    alert?: string | JSX.Element
-  ) => {
-    setAlert(alert);
-    setSeverity(alert === undefined ? undefined : severity);
-  };
+  // この関数はコンテクストに渡すのでuseCallbackしておく
+  const setAlertAndSeverity = useCallback(
+    (severity?: "error" | "info", alert?: ReactNode) => {
+      setAlert(alert);
+      setSeverity(alert === undefined ? undefined : severity);
+    },
+    []
+  );
 
   return (
     <UiContext.Provider
@@ -91,7 +89,7 @@ function ErrorOrInfo({
   severity?: "error" | "info";
   autoHideDuration?: number;
   onClose: () => void;
-  message?: string | JSX.Element;
+  message?: ReactNode;
 }) {
   // メッセージ（`flag && <></>`の形にしているのは非表示時に空白のメッセージが一瞬表示されるのを防ぐため）
   if (!message) return undefined;

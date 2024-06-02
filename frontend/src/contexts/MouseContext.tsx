@@ -1,7 +1,7 @@
 import PdfNotes from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import { ReactNode, createContext, useContext, useState } from "react";
-import PdfNotesContext, { PageSize } from "./PdfNotesContext";
+import PdfNotesContext, { PageSize } from "./PdfNotesContext/PdfNotesContext";
 
 interface Mouse {
   pageX: number;

@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { pdfjs, Document, Page } from "react-pdf";
-import PdfNotesContext, { PageSize } from "@/contexts/PdfNotesContext";
 import UiContext from "@/contexts/UiContext";
 import { createOrGetPdfNotes } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
+import PdfNotesContext, {
+  PageSize,
+} from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 if (import.meta.env.VITE_IS_WEB === "true") {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -21,12 +22,18 @@ const options = {
  */
 export default function PdfImageWeb() {
   const { model } = useContext(ModelContext);
-  const { id, pdfNotes, pageSizes, setId, setPdfNotes, setPageSizes } =
-    useContext(PdfNotesContext);
+  const {
+    id,
+    pdfNotes,
+    pageSizes,
+    setId,
+    setPdfNotes,
+    setPageSizes,
+    updaters: { pageLabel },
+  } = useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
   const { readOnly, waiting, setWaiting, setOpenFileTreeDrawer, setAlert } =
     useContext(UiContext);
-  const { pageLabel } = usePdfNotes();
 
   const [file, setFile] = useState<string | File>();
   const [reading, setReading] = useState(false);

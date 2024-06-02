@@ -1,4 +1,5 @@
 import { Alert, Backdrop, Button, Snackbar, Stack } from "@mui/material";
+import { ReactNode } from "react";
 
 /**
  * バックエンドが起動していない、または、設定を変更してためにリロードが必要であることを示すスナックバー
@@ -10,7 +11,7 @@ export default function CriticalError({
 }: {
   open: boolean;
   needsReload: boolean;
-  children: JSX.Element;
+  children: ReactNode;
 }) {
   return (
     <Backdrop sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>

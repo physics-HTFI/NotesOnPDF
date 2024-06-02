@@ -1,10 +1,9 @@
 import { useContext, useRef, useState } from "react";
-import PdfNotesContext from "@/contexts/PdfNotesContext";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import UiContext from "@/contexts/UiContext";
-import usePdfNotes from "@/hooks/usePdfNotes";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * PDF画像を表示するコンポーネント
@@ -13,8 +12,11 @@ export default function PdfImageDesktop() {
   const { model } = useContext(ModelContext);
   const { setAlert } = useContext(UiContext);
   const { pageRect } = useContext(MouseContext);
-  const { id, pdfNotes } = useContext(PdfNotesContext);
-  const { pageLabel } = usePdfNotes();
+  const {
+    id,
+    pdfNotes,
+    updaters: { pageLabel },
+  } = useContext(PdfNotesContext);
   const [src, setSrc] = useState("");
   const [reading, setReading] = useState(false);
   const nextSrc = useRef("");

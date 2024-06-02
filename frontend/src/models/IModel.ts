@@ -3,7 +3,7 @@ import Coverages from "@/types/Coverages";
 import PdfNotes from "@/types/PdfNotes";
 import AppSettings from "@/types/AppSettings";
 import History from "@/types/History";
-import { PageSize } from "@/contexts/PdfNotesContext";
+import { PageSize } from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 export default interface IModel {
   getFlags(): ModelFlags;

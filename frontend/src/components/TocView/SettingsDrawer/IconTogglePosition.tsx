@@ -4,6 +4,7 @@ import {
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { ReactNode } from "react";
 
 /**
  * 設定パネル位置変更ボタン
@@ -14,7 +15,7 @@ export default function IconTogglePosition({
 }: {
   isBottom: boolean;
   onToggleSettingsPosition: () => void;
-}): JSX.Element {
+}): ReactNode {
   return (
     <IconButton
       sx={{

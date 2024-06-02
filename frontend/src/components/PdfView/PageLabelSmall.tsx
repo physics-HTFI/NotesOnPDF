@@ -1,13 +1,12 @@
 import { useContext, useRef, useState } from "react";
 import { Chip, IconButton, Stack, TextField, Tooltip } from "@mui/material";
 import { Reply } from "@mui/icons-material";
-import usePdfNotes from "@/hooks/usePdfNotes";
-import PdfNotesContext from "@/contexts/PdfNotesContext";
 import EditorBase from "./Editor/EditorBase";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotes from "@/types/PdfNotes";
 import Progress from "../OpenFileDrawer/FileTreeView/Progress";
 import { GetCoverage } from "@/types/Coverages";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 const getPageNums = (pdfNotes: PdfNotes) => {
   const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
@@ -40,8 +39,12 @@ const getPageNums = (pdfNotes: PdfNotes) => {
  * 画面隅のページ数表示コンポーネント
  */
 export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
-  const { previousPageNum, id } = useContext(PdfNotesContext);
-  const { jumpPage, page, pageLabel, pdfNotes } = usePdfNotes();
+  const {
+    id,
+    pdfNotes,
+    previousPageNum,
+    updaters: { jumpPage, page, pageLabel },
+  } = useContext(PdfNotesContext);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
   if (!pdfNotes || !id) return <></>;

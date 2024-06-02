@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Arrow, Bracket } from "@/types/PdfNotes";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import Svg from "../Items/Svg";
 import { red } from "@mui/material/colors";
 import ArrowItem from "../Items/Arrow";
 import BracketItem from "../Items/Bracket";
 import MouseContext from "@/contexts/MouseContext";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * 与えられた直線と同じ向きを持つ`ToggleButton`用ベクトルを返す
@@ -41,7 +41,9 @@ export default function ArrowEditor({
   onClose: () => void;
 }) {
   const isArrow = params.type === "Arrow";
-  const { updateNote } = usePdfNotes();
+  const {
+    updaters: { updateNote },
+  } = useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
   if (!pageRect) return <></>;
 

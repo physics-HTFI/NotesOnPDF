@@ -1,16 +1,19 @@
-import { useState } from "react";
-import usePdfNotes from "@/hooks/usePdfNotes";
+import { ReactNode, useContext, useState } from "react";
 import Volume from "./Volume";
 import Part from "./Part";
 import Chapter from "./Chapter";
 import Separator from "./Separator";
 import Page from "./Page";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
  * @returns 目次の内容
  */
 const ToC = () => {
-  const { pdfNotes, jumpPage } = usePdfNotes();
+  const {
+    pdfNotes,
+    updaters: { jumpPage },
+  } = useContext(PdfNotesContext);
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
   if (!pdfNotes) return [];
   if (pdfNotes.pages.length !== openTooltips.length) {
@@ -18,7 +21,7 @@ const ToC = () => {
     return undefined;
   }
 
-  const toc: JSX.Element[] = [];
+  const toc: ReactNode[] = [];
   let pageNum = 1;
   for (let i = 0; i < pdfNotes.pages.length; i++) {
     const page = pdfNotes.pages[i];

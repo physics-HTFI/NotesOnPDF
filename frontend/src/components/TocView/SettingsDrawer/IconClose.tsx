@@ -1,6 +1,7 @@
 import { Close } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { ReactNode } from "react";
 
 /**
  * 閉じるボタン
@@ -11,7 +12,7 @@ export default function IconClose({
 }: {
   isBottom: boolean;
   onClose: () => void;
-}): JSX.Element {
+}): ReactNode {
   return (
     <IconButton
       sx={{

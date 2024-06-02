@@ -12,6 +12,7 @@ export default function useServerSideEvents(model: IModel) {
   const eventSource = useRef<EventSource>();
 
   useEffect(() => {
+    if (eventSource.current) return;
     eventSource.current = model.getEventSource();
     if (!eventSource.current) return;
     eventSource.current.onerror = () => {

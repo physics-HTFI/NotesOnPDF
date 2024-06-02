@@ -1,17 +1,82 @@
 import ModelContext from "@/contexts/ModelContext/ModelContext";
-import PdfNotesContext from "@/contexts/PdfNotesContext";
 import UiContext from "@/contexts/UiContext";
-import { NoteType, editPageStyle, fromDisplayedPage } from "@/types/PdfNotes";
+import PdfNotes, {
+  NoteType,
+  Page,
+  editPageStyle,
+  fromDisplayedPage,
+} from "@/types/PdfNotes";
 import { useContext } from "react";
 
 /**
- * Context内の`pdfNotes, setPdfNotes`および更新用関数`update`を返す
+ * `pdfNotes`の更新用関数群
  */
-export default function usePdfNotes() {
+export interface Updaters {
+  page?: Page;
+
+  /**
+   * 画面に表示するページ番号
+   */
+  pageLabel: string;
+
+  /**
+   * ページをスクロールする
+   */
+  scrollPage(forward: boolean, type?: "section" | "chapter"): void;
+
+  /**
+   * 特定のページに移動する
+   */
+  jumpPage(num: number, isDisplayed?: boolean): void;
+
+  /**
+   * `PdfNotes`オブジェクトの現在ページから注釈を消去する。
+   */
+  popNote(note: NoteType): void;
+
+  /**
+   * `PdfNotes`オブジェクトの現在ページに注釈を追加する。
+   */
+  pushNote(note: NoteType): void;
+
+  /**
+   * `PdfNotes`オブジェクトの現在ページの注釈を入れ替える。
+   * `pop`がない場合は`push`の追加だけが行われる。
+   */
+  updateNote(pop: NoteType, push: NoteType): void;
+
+  /**
+   * キーボードによる操作
+   */
+  handleKeyDown(e: KeyboardEvent): void;
+
+  /**
+   * 部名・章名・ページ番号の候補を返す
+   */
+  getPreferredLabels(): {
+    volumeLabel: string;
+    partLabel: string;
+    chapterLabel: string;
+    pageNum: number;
+  };
+}
+
+/**
+ * `pdfNotes`の更新用関数群を返す
+ */
+export default function useUpdaters({
+  pdfNotes,
+  setPdfNotes,
+  previousPageNum,
+  setPreviousPageNum,
+}: {
+  pdfNotes?: PdfNotes;
+  setPdfNotes: (pdfNotes?: PdfNotes) => void;
+  previousPageNum?: number;
+  setPreviousPageNum: (previousPageNum?: number) => void;
+}): Updaters {
   const { inert } = useContext(ModelContext);
   const { openFileTreeDrawer, waiting } = useContext(UiContext);
-  const { pdfNotes, setPdfNotes, previousPageNum, setPreviousPageNum } =
-    useContext(PdfNotesContext);
   const page = pdfNotes?.pages[pdfNotes.currentPage];
   const invalid = !page || openFileTreeDrawer || waiting || inert;
   const pageLabel = `p. ${page?.num ?? "???"}`;
@@ -200,38 +265,14 @@ export default function usePdfNotes() {
   }
 
   return {
-    pdfNotes,
-    setPdfNotes,
-    page: pdfNotes?.pages[pdfNotes.currentPage],
+    page,
     pageLabel,
-    /**
-     * ページをスクロールする
-     */
     scrollPage,
-    /**
-     * 特定のページに移動する
-     */
     jumpPage,
-    /**
-     * `PdfNotes`オブジェクトの現在ページから注釈を消去する。
-     */
     popNote,
-    /**
-     * `PdfNotes`オブジェクトの現在ページに注釈を追加する。
-     */
     pushNote,
-    /**
-     * `PdfNotes`オブジェクトの現在ページの注釈を入れ替える。
-     * `pop`がない場合は`push`の追加だけが行われる。
-     */
     updateNote,
-    /**
-     * 部名・章名・ページ番号の候補を返す
-     */
     getPreferredLabels,
-    /**
-     * キーボードによる操作
-     */
     handleKeyDown,
   };
 }

@@ -14,7 +14,7 @@ import useServerSideEvents from "./useServerSideEvents";
  * `ModelContext`のプロバイダー
  */
 export function ModelContextProvider({ children }: { children: ReactNode }) {
-  const [model, setModel] = useState<IModel>(
+  const [model, setModel] = useState<IModel>(() =>
     import.meta.env.VITE_IS_WEB === "true"
       ? new ModelNull()
       : new ModelDesktop()

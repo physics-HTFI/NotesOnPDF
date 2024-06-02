@@ -1,6 +1,7 @@
 import FileTree from "@/types/FileTree";
 import TreeItemWithInfo from "./TreeItemWithInfo";
 import Coverages from "@/types/Coverages";
+import { ReactNode } from "react";
 
 /**
  * `<TreeView>`の中身を取得する。
@@ -11,7 +12,7 @@ export default function getTreeItems(
   fileTree: FileTree,
   coverages?: Coverages,
   id?: string
-): JSX.Element | JSX.Element[] {
+): ReactNode {
   if (fileTree.length === 0) return <></>;
 
   // ルートディレクトリの場合

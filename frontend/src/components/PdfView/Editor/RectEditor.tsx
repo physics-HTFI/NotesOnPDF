@@ -1,10 +1,11 @@
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Rect, Polygon } from "@/types/PdfNotes";
-import usePdfNotes from "@/hooks/usePdfNotes";
 import EditorBase from "./EditorBase";
 import Svg from "../Items/Svg";
 import RectSvg from "../Items/Rect";
 import { red } from "@mui/material/colors";
+import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { useContext } from "react";
 
 /**
  * 直方体、ポリゴンの編集ダイアログ
@@ -16,7 +17,9 @@ export default function RectEditor({
   params: Polygon | Rect;
   onClose: () => void;
 }) {
-  const { updateNote } = usePdfNotes();
+  const {
+    updaters: { updateNote },
+  } = useContext(PdfNotesContext);
 
   // 閉じたときに値を更新する
   const handleClose = (style?: "outlined" | "filled") => {
