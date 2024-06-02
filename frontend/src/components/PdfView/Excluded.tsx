@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 
 /**
- * PDFビュークリック時に表示されるコントロール
+ * 除外されたページに表示されるコンポーネント
  */
 export default function Excluded({ excluded }: { excluded: boolean }) {
   return (

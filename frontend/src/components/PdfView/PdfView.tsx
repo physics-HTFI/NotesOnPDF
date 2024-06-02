@@ -116,13 +116,18 @@ export default function PdfView() {
         }}
         disableGutters
       >
+        {/* 画像 */}
         {modelFlags.isWeb ? <PdfImageWeb /> : <PdfImageDesktop />}
+
+        {/* 注釈アイテム */}
         <Items
           mode={mode}
           moveNote={moveNote}
           onEdit={setEditNote}
           onMove={setMoveNote}
         />
+
+        {/* 移動中のアイテム */}
         <Move
           params={moveNote}
           onClose={(oldNote, newNote, addPolygon) => {
@@ -150,7 +155,11 @@ export default function PdfView() {
 
       <Excluded
         excluded={
-          (!mode && !moveNote && page?.style?.includes("excluded")) ?? false
+          (!mode &&
+            !moveNote &&
+            !editNote &&
+            page?.style?.includes("excluded")) ??
+          false
         }
       />
       <PageLabelSmall hidden={Boolean(moveNote)} />
