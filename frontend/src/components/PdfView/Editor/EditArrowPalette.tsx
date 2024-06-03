@@ -1,31 +1,36 @@
 import { useContext } from "react";
-import { Box, SxProps } from "@mui/material";
+import { Box } from "@mui/material";
 import { Arrow, Bracket } from "@/types/PdfNotes";
 import Svg from "../../common/Svg";
 import ArrowItem from "../Items/Arrow";
 import BracketItem from "../Items/Bracket";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import { red } from "@mui/material/colors";
+import Palette from "@/components/common/Palette";
 
 /**
- * Arrow, Bracketの編集ダイアログのアイコン
+ * Arrow, Bracketの編集パレット
  */
-export default function ArrowEditorIcons(
-  L: number,
-  params: Arrow | Bracket,
-  onClose: () => void
-) {
+export default function EditArrowPalette({
+  params,
+  open,
+  onClose,
+}: {
+  params: Arrow | Bracket;
+  open: boolean;
+  onClose: () => void;
+}) {
   const {
     updaters: { updateNote },
   } = useContext(PdfNotesContext);
-  const { pageRect } = useContext(MouseContext);
-  if (!pageRect) return [];
+  const { pageRect, mouse } = useContext(MouseContext);
+  if (!pageRect || !mouse) return undefined;
 
   const start = params.heads.includes("start");
   const end = params.heads.includes("end");
   const currentHeads =
     start && end ? "both" : start ? "start" : end ? "end" : "none";
+  const L = 40;
   const pageRectButton = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
 
   // 閉じたときに値を更新する
@@ -37,7 +42,14 @@ export default function ArrowEditorIcons(
   };
 
   /** 1つのアイコンを返す */
-  const getIcon = (heads: "start" | "end" | "both" | "none", sx: SxProps) => {
+  const headsList =
+    params.type === "Arrow"
+      ? (["end", "both", "start", "none"] as const)
+      : (["both", "start", "none", "end"] as const);
+  const selected = headsList.indexOf(currentHeads);
+  const renderIcon = (i: number) => {
+    const heads = headsList[i];
+    if (!heads) return undefined;
     const line: Arrow | Bracket = {
       type: params.type,
       heads: getHeads(heads),
@@ -45,10 +57,6 @@ export default function ArrowEditorIcons(
     };
     return (
       <Box
-        sx={{
-          ...sx,
-          background: heads === currentHeads ? red[50] : undefined,
-        }}
         onMouseEnter={() => {
           handleClose(heads);
         }}
@@ -65,13 +73,15 @@ export default function ArrowEditorIcons(
   };
 
   return (
-    params.type === "Arrow"
-      ? (["end", "both", "start", "none"] as const)
-      : (["both", "start", "none", "end"] as const)
-  ).map(
-    (h) =>
-      ({ sx }: { sx: SxProps }) =>
-        getIcon(h, sx)
+    <Palette
+      numIcons={4}
+      renderIcon={renderIcon}
+      selected={selected}
+      L={L}
+      xy={mouse}
+      open={open}
+      onCancel={onClose}
+    />
   );
 }
 

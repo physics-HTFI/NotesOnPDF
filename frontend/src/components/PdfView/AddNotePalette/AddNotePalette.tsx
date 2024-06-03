@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { SxProps } from "@mui/material";
 import MouseContext from "@/contexts/MouseContext";
 import { Node, NoteType } from "@/types/PdfNotes";
 import {
@@ -33,7 +32,7 @@ export default function AddNotePalette({
   if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
 
   const L = 50;
-  const getIcon = (i: number, sx: SxProps) => {
+  const renderIcon = (i: number) => {
     const iconProps: Omit<IconProps, "sx"> = {
       onClose,
       x: (mouse.pageX - pageRect.x) / pageRect.width,
@@ -43,24 +42,21 @@ export default function AddNotePalette({
     };
 
     const type = appSettings?.paletteIcons[i];
-    if (type === "Arrow") return <ArrowIcon sx={sx} {...iconProps} />;
-    if (type === "Bracket") return <BracketIcon sx={sx} {...iconProps} />;
-    if (type === "Chip") return <ChipIcon sx={sx} {...iconProps} />;
-    if (type === "Marker") return <MarkerIcon sx={sx} {...iconProps} />;
-    if (type === "Memo") return <MemoIcon sx={sx} {...iconProps} />;
-    if (type === "PageLink") return <PageLinkIcon sx={sx} {...iconProps} />;
-    if (type === "Polygon") return <PolygonIcon sx={sx} {...iconProps} />;
-    if (type === "Rect") return <RectIcon sx={sx} {...iconProps} />;
+    if (type === "Arrow") return <ArrowIcon {...iconProps} />;
+    if (type === "Bracket") return <BracketIcon {...iconProps} />;
+    if (type === "Chip") return <ChipIcon {...iconProps} />;
+    if (type === "Marker") return <MarkerIcon {...iconProps} />;
+    if (type === "Memo") return <MemoIcon {...iconProps} />;
+    if (type === "PageLink") return <PageLinkIcon {...iconProps} />;
+    if (type === "Polygon") return <PolygonIcon {...iconProps} />;
+    if (type === "Rect") return <RectIcon {...iconProps} />;
     return <></>;
   };
 
   return (
     <Palette
-      icons={new Array(8).fill(0).map(
-        (_, i) =>
-          ({ sx }: { sx: SxProps }) =>
-            getIcon(i, sx)
-      )}
+      numIcons={8}
+      renderIcon={renderIcon}
       L={L}
       xy={mouse}
       open={open}

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, Chip, SxProps } from "@mui/material";
+import { Box, Chip } from "@mui/material";
 import Arrow from "../Items/Arrow";
 import Svg from "../../common/Svg";
 import Bracket from "../Items/Bracket";
@@ -13,7 +13,6 @@ import { Node, NoteType } from "@/types/PdfNotes";
  * パレットの各アイコンの`Props`
  */
 export interface IconProps {
-  sx: SxProps;
   onClose: (note: NoteType | Node) => void;
   x: number;
   y: number;
@@ -24,9 +23,8 @@ export interface IconProps {
 /**
  * パレットのMarkerアイコン
  */
-export const MarkerIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
+export const MarkerIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
   <Box
-    sx={sx}
     onMouseEnter={() => {
       onClose({
         type: "Node",
@@ -59,9 +57,8 @@ export const MarkerIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
 /**
  * パレットのArrowアイコン
  */
-export const ArrowIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
+export const ArrowIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
   <Box
-    sx={sx}
     onMouseEnter={() => {
       onClose({
         type: "Node",
@@ -96,9 +93,8 @@ export const ArrowIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
 /**
  * パレットのBracketアイコン
  */
-export const BracketIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
+export const BracketIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
   <Box
-    sx={sx}
     onMouseEnter={() => {
       onClose({
         type: "Node",
@@ -133,9 +129,8 @@ export const BracketIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
 /**
  * パレットのMemoアイコン
  */
-export const MemoIcon: FC<IconProps> = ({ sx, onClose, x, y }) => (
+export const MemoIcon: FC<IconProps> = ({ onClose, x, y }) => (
   <Box
-    sx={sx}
     onMouseEnter={() => {
       onClose({
         type: "Memo",
@@ -160,9 +155,8 @@ export const MemoIcon: FC<IconProps> = ({ sx, onClose, x, y }) => (
 /**
  * パレットのChipアイコン
  */
-export const ChipIcon: FC<IconProps> = ({ sx, onClose, x, y }) => (
+export const ChipIcon: FC<IconProps> = ({ onClose, x, y }) => (
   <Box
-    sx={sx}
     onMouseEnter={() => {
       onClose({
         type: "Chip",
@@ -188,9 +182,8 @@ export const ChipIcon: FC<IconProps> = ({ sx, onClose, x, y }) => (
 /**
  * パレットのPageLinkアイコン
  */
-export const PageLinkIcon: FC<IconProps> = ({ sx, onClose, x, y, page }) => (
+export const PageLinkIcon: FC<IconProps> = ({ onClose, x, y, page }) => (
   <Box
-    sx={sx}
     onMouseEnter={() => {
       onClose({
         type: "PageLink",
@@ -216,9 +209,8 @@ export const PageLinkIcon: FC<IconProps> = ({ sx, onClose, x, y, page }) => (
 /**
  * パレットのPolygonアイコン
  */
-export const PolygonIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
+export const PolygonIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
   <Box
-    sx={sx}
     onMouseEnter={() => {
       onClose({
         type: "Node",
@@ -255,9 +247,8 @@ export const PolygonIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
 /**
  * パレットのRectアイコン
  */
-export const RectIcon: FC<IconProps> = ({ sx, onClose, x, y, svgRect }) => (
+export const RectIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
   <Box
-    sx={sx}
     onMouseEnter={() => {
       onClose({
         type: "Node",

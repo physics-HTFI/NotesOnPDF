@@ -1,22 +1,29 @@
-import { Box, SxProps } from "@mui/material";
+import { Box } from "@mui/material";
 import { Rect, Polygon } from "@/types/PdfNotes";
 import Svg from "../../common/Svg";
 import RectSvg from "../Items/Rect";
-import { red } from "@mui/material/colors";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useContext } from "react";
+import Palette from "@/components/common/Palette";
+import MouseContext from "@/contexts/MouseContext";
 
 /**
- * 直方体、ポリゴンの編集ダイアログのアイコン
+ * 直方体、ポリゴンの編集パレット
  */
-export default function RectEditorIcon(
-  L: number,
-  params: Polygon | Rect,
-  onClose: () => void
-) {
+export default function EditRectPalette({
+  params,
+  open,
+  onClose,
+}: {
+  params: Polygon | Rect;
+  open: boolean;
+  onClose: () => void;
+}) {
   const {
     updaters: { updateNote },
   } = useContext(PdfNotesContext);
+  const { mouse } = useContext(MouseContext);
+  if (!mouse) return undefined;
 
   // 閉じたときに値を更新する
   const handleClose = (style?: "outlined" | "filled") => {
@@ -26,10 +33,15 @@ export default function RectEditorIcon(
     updateNote(params, { ...params, style });
   };
 
+  const L = 40;
   const pageRectButton = new DOMRect(0, 0, L, L);
 
   /** 1つのアイコンを返す */
-  const getIcon = (style: "outlined" | "filled", sx: SxProps) => {
+  const styleList = ["outlined", "filled"] as const;
+  const selected = styleList.indexOf(params.style);
+  const renderIcon = (i: number) => {
+    const style = styleList[i];
+    if (!style) return undefined;
     const rect: Rect = {
       type: "Rect",
       x: 0.2,
@@ -40,10 +52,6 @@ export default function RectEditorIcon(
     };
     return (
       <Box
-        sx={{
-          ...sx,
-          background: style === params.style ? red[50] : undefined,
-        }}
         onMouseEnter={() => {
           handleClose(style);
         }}
@@ -55,9 +63,15 @@ export default function RectEditorIcon(
     );
   };
 
-  return (["outlined", "filled"] as const).map(
-    (h) =>
-      ({ sx }: { sx: SxProps }) =>
-        getIcon(h, sx)
+  return (
+    <Palette
+      numIcons={2}
+      renderIcon={renderIcon}
+      selected={selected}
+      L={L}
+      xy={mouse}
+      open={open}
+      onCancel={onClose}
+    />
   );
 }

@@ -1,20 +1,26 @@
-import React from "react";
-import { Paper, SxProps } from "@mui/material";
+import { Box, Paper, SxProps } from "@mui/material";
 import { Mouse } from "@/contexts/MouseContext";
 import Svg from "./Svg";
+import { ReactNode } from "react";
+import { red } from "@mui/material/colors";
 
 /**
  * パレット型の選択ダイアログ
  */
 export default function Palette({
-  icons,
+  numIcons,
+  renderIcon,
+  selected,
   L,
   xy,
   open,
   onCancel,
 }: {
-  /** アイコンを返す関数コンポーネントの配列 */
-  icons: (({ sx }: { sx: SxProps }) => JSX.Element)[];
+  numIcons: number;
+  /** アイコンを返す関数コンポーネント */
+  renderIcon: (i: number) => ReactNode;
+  /** 選択されているアイコンの番号。ない場合は`-1`または`undefined` */
+  selected?: number;
   /** アイコンの一辺の長さ（＝パレットの直径の1/3） */
   L: number;
   /** パレットの中心位置 */
@@ -24,8 +30,8 @@ export default function Palette({
 }) {
   if (!open) return <></>;
 
-  const sx = (i: number) => {
-    const Θ = (2 * Math.PI) / icons.length;
+  const sx = (i: number): SxProps => {
+    const Θ = (2 * Math.PI) / numIcons;
     return {
       position: "absolute",
       width: L,
@@ -58,13 +64,15 @@ export default function Palette({
       onMouseLeave={onCancel}
       onMouseUp={onCancel}
     >
-      {icons.map((icon, i) =>
-        React.createElement<{ sx: SxProps }>(icon, {
-          sx: sx(i),
-          key: String(i),
-        })
-      )}
-      <Divider L={L} divisions={icons.length} />
+      {new Array(numIcons).fill(0).map((_, i) => (
+        <Box
+          key={String(i)}
+          sx={{ ...sx(i), background: i === selected ? red[50] : undefined }}
+        >
+          {renderIcon(i)}
+        </Box>
+      ))}
+      <Divider L={L} divisions={numIcons} />
     </Paper>
   );
 }
