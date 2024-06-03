@@ -11,6 +11,7 @@ export default function Palette({
   L,
   xy,
   open,
+  onCancel,
 }: {
   /** アイコンを返す関数コンポーネントの配列 */
   icons: (({ sx }: { sx: SxProps }) => JSX.Element)[];
@@ -19,6 +20,7 @@ export default function Palette({
   /** パレットの中心位置 */
   xy: Mouse;
   open: boolean;
+  onCancel?: () => void;
 }) {
   if (!open) return <></>;
 
@@ -53,6 +55,8 @@ export default function Palette({
         transform: `translate(${xy.pageX}px, ${xy.pageY}px)`,
         zIndex: 1051, // SpeedDialより手前にする：https://mui.com/material-ui/customization/z-index/
       }}
+      onMouseLeave={onCancel}
+      onMouseUp={onCancel}
     >
       {icons.map((icon, i) =>
         React.createElement<{ sx: SxProps }>(icon, {

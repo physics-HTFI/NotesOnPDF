@@ -1,9 +1,12 @@
 import { NoteType } from "@/types/PdfNotes";
 import ChipEditor from "./ChipEditor";
-import RectEditor from "./RectEditor";
 import PageLinkEditor from "./PageLinkEditor";
 import MemoEditor from "./MemoEditor";
-import ArrowEditor from "./ArrowEditor";
+import ArrowEditorIcons from "./ArrowEditorIcons";
+import { useContext } from "react";
+import MouseContext from "@/contexts/MouseContext";
+import Palette from "@/components/common/Palette";
+import RectEditorIcons from "./RectEditorIcons";
 
 /**
  * 編集ダイアログ
@@ -17,12 +20,20 @@ export default function Editor({
   params?: NoteType;
   onClose: () => void;
 }) {
-  if (!open || !params) return <></>;
+  const { mouse } = useContext(MouseContext);
+  if (!open || !params || !mouse) return <></>;
   switch (params.type) {
     case "Arrow":
-      return <ArrowEditor params={params} onClose={onClose} />;
     case "Bracket":
-      return <ArrowEditor params={params} onClose={onClose} />;
+      return (
+        <Palette
+          L={40}
+          open={open}
+          xy={mouse}
+          icons={ArrowEditorIcons(40, params, onClose)}
+          onCancel={onClose}
+        />
+      );
     case "Chip":
       return <ChipEditor params={params} onClose={onClose} />;
     case "Marker":
@@ -32,8 +43,15 @@ export default function Editor({
     case "PageLink":
       return <PageLinkEditor params={params} onClose={onClose} />;
     case "Polygon":
-      return <RectEditor params={params} onClose={onClose} />;
     case "Rect":
-      return <RectEditor params={params} onClose={onClose} />;
+      return (
+        <Palette
+          L={40}
+          open={open}
+          xy={mouse}
+          icons={RectEditorIcons(40, params, onClose)}
+          onCancel={onClose}
+        />
+      );
   }
 }

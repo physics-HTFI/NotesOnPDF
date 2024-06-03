@@ -33,7 +33,6 @@ export default function AddNotePalette({
   if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
 
   const L = 50;
-
   const getIcon = (i: number, sx: SxProps) => {
     const iconProps: Omit<IconProps, "sx"> = {
       onClose,
