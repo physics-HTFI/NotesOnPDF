@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Arrow, Bracket } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
-import Svg from "../Items/Svg";
+import Svg from "../../common/Svg";
 import { red } from "@mui/material/colors";
 import ArrowItem from "../Items/Arrow";
 import BracketItem from "../Items/Bracket";

@@ -6,7 +6,7 @@ import Memo from "./Items/Memo";
 import PageLink from "./Items/PageLink";
 import Rect from "./Items/Rect";
 import Polygon from "./Items/Polygon";
-import Svg from "./Items/Svg";
+import Svg from "../common/Svg";
 import Chip from "./Items/Chip";
 import { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";

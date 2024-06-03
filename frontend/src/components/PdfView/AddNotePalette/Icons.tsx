@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Box, Chip, SxProps } from "@mui/material";
 import Arrow from "../Items/Arrow";
-import Svg from "../Items/Svg";
+import Svg from "../../common/Svg";
 import Bracket from "../Items/Bracket";
 import Marker from "../Items/Marker";
 import Rect from "../Items/Rect";

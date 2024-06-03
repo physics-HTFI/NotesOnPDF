@@ -1,7 +1,7 @@
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { Rect, Polygon } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
-import Svg from "../Items/Svg";
+import Svg from "../../common/Svg";
 import RectSvg from "../Items/Rect";
 import { red } from "@mui/material/colors";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";

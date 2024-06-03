@@ -7,7 +7,7 @@ import PageLink from "./PageLink";
 import Rect from "./Rect";
 import Polygon from "./Polygon";
 import Chip from "./Chip";
-import Svg from "./Svg";
+import Svg from "../../common/Svg";
 import { Mode } from "../SpeedDial";
 import { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./SvgDefs";

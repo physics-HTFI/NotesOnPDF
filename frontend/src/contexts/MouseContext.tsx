@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import { ReactNode, createContext, useContext, useState } from "react";
 import PdfNotesContext, { PageSize } from "./PdfNotesContext/PdfNotesContext";
 
-interface Mouse {
+export interface Mouse {
   pageX: number;
   pageY: number;
 }

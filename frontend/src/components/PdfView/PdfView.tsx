@@ -3,7 +3,7 @@ import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
 import SpeedDial, { Mode } from "./SpeedDial";
 import { Node, NoteType } from "@/types/PdfNotes";
-import Palette from "./Palette/Palette";
+import AddNotePalette from "./AddNotePalette/AddNotePalette";
 import Excluded from "./Excluded";
 import Items from "./Items/Items";
 import MouseContext from "@/contexts/MouseContext";
@@ -167,7 +167,7 @@ export default function PdfView() {
       />
       <PageLabelSmall hidden={Boolean(moveNote)} />
       <SpeedDial mode={mode} setMode={setMode} hidden={Boolean(moveNote)} />
-      <Palette
+      <AddNotePalette
         open={paletteOpen}
         onClose={(note) => {
           setPaletteOpen(false);
