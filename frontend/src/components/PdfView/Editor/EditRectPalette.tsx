@@ -25,20 +25,11 @@ export default function EditRectPalette({
   const { mouse } = useContext(MouseContext);
   if (!mouse) return undefined;
 
-  // 閉じたときに値を更新する
-  const handleClose = (style?: "outlined" | "filled") => {
-    onClose();
-    if (!style) return; // キャンセル時
-    if (style === params.style) return;
-    updateNote(params, { ...params, style });
-  };
-
   const L = 40;
   const pageRectButton = new DOMRect(0, 0, L, L);
 
   /** 1つのアイコンを返す */
   const styleList = ["outlined", "filled"] as const;
-  const selected = styleList.indexOf(params.style);
   const renderIcon = (i: number) => {
     const style = styleList[i];
     if (!style) return undefined;
@@ -51,11 +42,7 @@ export default function EditRectPalette({
       style,
     };
     return (
-      <Box
-        onMouseEnter={() => {
-          handleClose(style);
-        }}
-      >
+      <Box>
         <Svg pageRect={pageRectButton}>
           <RectSvg pageRect={pageRectButton} params={rect} disableNodes />
         </Svg>
@@ -63,15 +50,23 @@ export default function EditRectPalette({
     );
   };
 
+  const handleClose = (i?: number) => {
+    onClose();
+    const style = i === undefined ? undefined : styleList[i];
+    if (!style) return; // キャンセル時
+    if (style === params.style) return;
+    updateNote(params, { ...params, style });
+  };
+
   return (
     <Palette
       numIcons={2}
       renderIcon={renderIcon}
-      selected={selected}
+      selected={styleList.indexOf(params.style)}
       L={L}
       xy={mouse}
       open={open}
-      onCancel={onClose}
+      onClose={handleClose}
     />
   );
 }

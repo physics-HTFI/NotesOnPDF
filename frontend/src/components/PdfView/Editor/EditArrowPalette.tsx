@@ -33,20 +33,11 @@ export default function EditArrowPalette({
   const L = 40;
   const pageRectButton = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
 
-  // 閉じたときに値を更新する
-  const handleClose = (newHeads?: "start" | "end" | "both" | "none") => {
-    onClose();
-    if (!newHeads) return; // キャンセル時
-    if (newHeads === currentHeads) return;
-    updateNote(params, { ...params, heads: getHeads(newHeads) });
-  };
-
   /** 1つのアイコンを返す */
   const headsList =
     params.type === "Arrow"
       ? (["end", "both", "start", "none"] as const)
       : (["both", "start", "none", "end"] as const);
-  const selected = headsList.indexOf(currentHeads);
   const renderIcon = (i: number) => {
     const heads = headsList[i];
     if (!heads) return undefined;
@@ -56,11 +47,7 @@ export default function EditArrowPalette({
       ...getVector(params, pageRect, params.type === "Arrow" ? 0.8 : 0.7),
     };
     return (
-      <Box
-        onMouseEnter={() => {
-          handleClose(heads);
-        }}
-      >
+      <Box>
         <Svg pageRect={pageRectButton}>
           {line.type === "Arrow" ? (
             <ArrowItem pageRect={pageRectButton} params={line} disableNodes />
@@ -72,15 +59,23 @@ export default function EditArrowPalette({
     );
   };
 
+  const handleClose = (i?: number) => {
+    onClose();
+    const newHeads = i === undefined ? undefined : headsList[i];
+    if (!newHeads) return; // キャンセル時
+    if (newHeads === currentHeads) return;
+    updateNote(params, { ...params, heads: getHeads(newHeads) });
+  };
+
   return (
     <Palette
       numIcons={4}
       renderIcon={renderIcon}
-      selected={selected}
+      selected={headsList.indexOf(currentHeads)}
       L={L}
       xy={mouse}
       open={open}
-      onCancel={onClose}
+      onClose={handleClose}
     />
   );
 }

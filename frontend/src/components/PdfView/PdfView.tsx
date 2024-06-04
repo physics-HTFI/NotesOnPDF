@@ -82,12 +82,6 @@ export default function PdfView() {
         setMouse({ pageX: e.pageX, pageY: e.pageY });
         setPaletteOpen(true);
       }}
-      onMouseUp={() => {
-        setPaletteOpen(false);
-      }}
-      onMouseLeave={() => {
-        setPaletteOpen(false);
-      }}
       onWheel={(e) => {
         e.getModifierState("Shift");
         scrollPage(
@@ -172,18 +166,16 @@ export default function PdfView() {
         onClose={(note) => {
           setPaletteOpen(false);
           setMoveNote(note);
-          setEditNote(note.type === "Node" ? undefined : note);
+          setEditNote(note?.type === "Node" ? undefined : note);
         }}
       />
-      {!moveNote && (
-        <Editor
-          open={Boolean(editNote)}
-          params={editNote}
-          onClose={() => {
-            setEditNote(undefined);
-          }}
-        />
-      )}
+      <Editor
+        open={Boolean(!moveNote && editNote)}
+        params={editNote}
+        onClose={() => {
+          setEditNote(undefined);
+        }}
+      />
     </Box>
   );
 }

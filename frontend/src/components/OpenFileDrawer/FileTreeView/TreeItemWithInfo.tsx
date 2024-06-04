@@ -16,17 +16,16 @@ const StyledTreeItem = styled(TreeItem)(({ theme }) => ({
 }));
 
 /**
- * `TreeItemWithInfo`の引数
- */
-interface Props extends TreeItemProps {
-  label: string;
-  coverage?: Coverage;
-}
-
-/**
  * `TreeItem`の右端に進捗バーとツールチップを表示できるようにしたもの
  */
-export default function TreeItemWithInfo({ label, coverage, ...other }: Props) {
+export default function TreeItemWithInfo({
+  label,
+  coverage,
+  ...other
+}: {
+  label: string;
+  coverage?: Coverage;
+} & TreeItemProps) {
   return (
     <StyledTreeItem
       label={

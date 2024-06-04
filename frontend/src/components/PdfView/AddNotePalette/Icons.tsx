@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { Box, Chip } from "@mui/material";
 import Arrow from "../Items/Arrow";
 import Svg from "../../common/Svg";
@@ -7,73 +6,12 @@ import Marker from "../Items/Marker";
 import Rect from "../Items/Rect";
 import Polygon from "../Items/Polygon";
 import { Shortcut } from "@mui/icons-material";
-import { Node, NoteType } from "@/types/PdfNotes";
-
-/**
- * パレットの各アイコンの`Props`
- */
-export interface IconProps {
-  onClose: (note: NoteType | Node) => void;
-  x: number;
-  y: number;
-  page: number;
-  svgRect: DOMRect;
-}
-
-/**
- * パレットのMarkerアイコン
- */
-export const MarkerIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
-  <Box
-    onMouseEnter={() => {
-      onClose({
-        type: "Node",
-        index: 1,
-        target: {
-          type: "Marker",
-          x1: x,
-          y1: y,
-          x2: x,
-          y2: y,
-        },
-      });
-    }}
-  >
-    <Svg pageRect={svgRect}>
-      <Marker
-        pageRect={svgRect}
-        params={{
-          type: "Marker",
-          x1: 0.2,
-          y1: 0.5,
-          x2: 0.8,
-          y2: 0.5,
-        }}
-      />
-    </Svg>
-  </Box>
-);
 
 /**
  * パレットのArrowアイコン
  */
-export const ArrowIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
-  <Box
-    onMouseEnter={() => {
-      onClose({
-        type: "Node",
-        index: 1,
-        target: {
-          type: "Arrow",
-          x1: x,
-          y1: y,
-          x2: x,
-          y2: y,
-          heads: ["end"],
-        },
-      });
-    }}
-  >
+export const ArrowIcon = ({ svgRect }: { svgRect: DOMRect }) => (
+  <Box>
     <Svg pageRect={svgRect}>
       <Arrow
         pageRect={svgRect}
@@ -93,23 +31,8 @@ export const ArrowIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
 /**
  * パレットのBracketアイコン
  */
-export const BracketIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
-  <Box
-    onMouseEnter={() => {
-      onClose({
-        type: "Node",
-        index: 1,
-        target: {
-          type: "Bracket",
-          x1: x,
-          y1: y,
-          x2: x,
-          y2: y,
-          heads: ["start", "end"],
-        },
-      });
-    }}
-  >
+export const BracketIcon = ({ svgRect }: { svgRect: DOMRect }) => (
+  <Box>
     <Svg pageRect={svgRect}>
       <Bracket
         pageRect={svgRect}
@@ -127,46 +50,10 @@ export const BracketIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
 );
 
 /**
- * パレットのMemoアイコン
- */
-export const MemoIcon: FC<IconProps> = ({ onClose, x, y }) => (
-  <Box
-    onMouseEnter={() => {
-      onClose({
-        type: "Memo",
-        x,
-        y,
-        html: "",
-      });
-    }}
-  >
-    <Box
-      sx={{
-        color: "red",
-        fontSize: "90%",
-        transform: "scale(80%)",
-      }}
-    >
-      注釈
-    </Box>
-  </Box>
-);
-
-/**
  * パレットのChipアイコン
  */
-export const ChipIcon: FC<IconProps> = ({ onClose, x, y }) => (
-  <Box
-    onMouseEnter={() => {
-      onClose({
-        type: "Chip",
-        x,
-        y,
-        text: "",
-        style: "filled",
-      });
-    }}
-  >
+export const ChipIcon = () => (
+  <Box>
     <Chip
       sx={{
         fontSize: "75%",
@@ -180,19 +67,47 @@ export const ChipIcon: FC<IconProps> = ({ onClose, x, y }) => (
 );
 
 /**
+ * パレットのMarkerアイコン
+ */
+export const MarkerIcon = ({ svgRect }: { svgRect: DOMRect }) => (
+  <Box>
+    <Svg pageRect={svgRect}>
+      <Marker
+        pageRect={svgRect}
+        params={{
+          type: "Marker",
+          x1: 0.2,
+          y1: 0.5,
+          x2: 0.8,
+          y2: 0.5,
+        }}
+      />
+    </Svg>
+  </Box>
+);
+
+/**
+ * パレットのMemoアイコン
+ */
+export const MemoIcon = () => (
+  <Box>
+    <Box
+      sx={{
+        color: "red",
+        fontSize: "90%",
+        transform: "scale(80%)",
+      }}
+    >
+      注釈
+    </Box>
+  </Box>
+);
+
+/**
  * パレットのPageLinkアイコン
  */
-export const PageLinkIcon: FC<IconProps> = ({ onClose, x, y, page }) => (
-  <Box
-    onMouseEnter={() => {
-      onClose({
-        type: "PageLink",
-        x: x,
-        y: y,
-        page,
-      });
-    }}
-  >
+export const PageLinkIcon = () => (
+  <Box>
     <Chip
       sx={{
         fontSize: "75%",
@@ -209,23 +124,8 @@ export const PageLinkIcon: FC<IconProps> = ({ onClose, x, y, page }) => (
 /**
  * パレットのPolygonアイコン
  */
-export const PolygonIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
-  <Box
-    onMouseEnter={() => {
-      onClose({
-        type: "Node",
-        index: 1,
-        target: {
-          type: "Polygon",
-          points: [
-            [x, y],
-            [x, y],
-          ],
-          style: "filled",
-        },
-      });
-    }}
-  >
+export const PolygonIcon = ({ svgRect }: { svgRect: DOMRect }) => (
+  <Box>
     <Svg pageRect={svgRect}>
       <Polygon
         pageRect={svgRect}
@@ -247,23 +147,8 @@ export const PolygonIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
 /**
  * パレットのRectアイコン
  */
-export const RectIcon: FC<IconProps> = ({ onClose, x, y, svgRect }) => (
-  <Box
-    onMouseEnter={() => {
-      onClose({
-        type: "Node",
-        index: 2,
-        target: {
-          type: "Rect",
-          x: x,
-          y: y,
-          width: 0,
-          height: 0,
-          style: "filled",
-        },
-      });
-    }}
-  >
+export const RectIcon = ({ svgRect }: { svgRect: DOMRect }) => (
+  <Box>
     <Svg pageRect={svgRect}>
       <Rect
         pageRect={svgRect}
