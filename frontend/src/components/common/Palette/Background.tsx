@@ -1,94 +1,12 @@
-import { Box, Paper, SxProps } from "@mui/material";
-import { Mouse } from "@/contexts/MouseContext";
-import Svg from "./Svg";
-import { ReactNode, useId } from "react";
+import Svg from "../Svg";
+import { useId } from "react";
 
 const INNER_RADIUS = 1 / 3;
 
 /**
- * パレット型の選択ダイアログ
+ * パレットの背景部分
  */
-export default function Palette({
-  numIcons,
-  renderIcon,
-  selected,
-  L,
-  xy,
-  open,
-  onClose,
-}: {
-  numIcons: number;
-  /** アイコンを返す関数コンポーネント */
-  renderIcon: (i: number) => ReactNode;
-  /** 選択されているアイコンの番号。ない場合は`-1`または`undefined` */
-  selected?: number;
-  /** アイコンの一辺の長さ（＝パレットの直径の1/3） */
-  L: number;
-  /** パレットの中心位置 */
-  xy: Mouse;
-  open: boolean;
-  onClose: (i?: number) => void;
-}) {
-  if (!open || numIcons < 2) return <></>;
-
-  const sx = (i: number): SxProps => {
-    const Θ = (2 * Math.PI) / numIcons;
-    return {
-      position: "absolute",
-      width: L,
-      height: L,
-      top: L,
-      left: L,
-      borderRadius: "100%",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      transform: `translate(${Math.cos(i * Θ) * L}px, ${
-        Math.sin(i * Θ) * L
-      }px)`,
-    };
-  };
-
-  return (
-    <Paper
-      elevation={3}
-      sx={{
-        position: "fixed",
-        top: (-3 * L) / 2,
-        left: (-3 * L) / 2,
-        width: 3 * L,
-        height: 3 * L,
-        borderRadius: "100%",
-        transform: `translate(${xy.pageX}px, ${xy.pageY}px)`,
-        cursor: "default",
-        zIndex: 1051, // SpeedDialより手前にする：https://mui.com/material-ui/customization/z-index/
-      }}
-      onMouseLeave={() => {
-        onClose();
-      }}
-      onMouseUp={() => {
-        onClose();
-      }}
-    >
-      {[...Array(numIcons).keys()].map((i) => (
-        <Box key={String(i)} sx={sx(i)}>
-          {renderIcon(i)}
-        </Box>
-      ))}
-      <Divider
-        L={L}
-        divisions={numIcons}
-        selected={selected}
-        onClose={onClose}
-      />
-    </Paper>
-  );
-}
-
-/**
- * パレットの分割線
- */
-function Divider({
+export default function Background({
   L,
   divisions,
   selected,
@@ -106,6 +24,8 @@ function Divider({
         <stop offset={INNER_RADIUS} stopColor="#ffff" />
         <stop offset={1.2 * INNER_RADIUS} stopColor="#fff0" />
       </radialGradient>
+
+      {/* 境界線 */}
       <path
         d={[...Array(divisions).keys()]
           .map((i) => getPathD(i, divisions, L))
@@ -117,6 +37,8 @@ function Divider({
           strokeDasharray: "1,4",
         }}
       />
+
+      {/* 選択の当たり判定 */}
       {[...Array(divisions).keys()].map((i) => (
         <polygon
           key={String(i)}
@@ -127,6 +49,8 @@ function Divider({
           }}
         />
       ))}
+
+      {/* 中央のグラデーション */}
       <circle
         cx={1.5 * L}
         cy={1.5 * L}
@@ -167,7 +91,7 @@ function getPolygonPoints(i: number, divisions: number, L: number) {
 }
 
 /**
- * 中心`(O, O)`半径`R`の円周上の点を返す
+ * 中心`(O, O)`, 半径`R`の円周上の点を返す
  */
 function getPoint(
   i: number,

@@ -1,11 +1,10 @@
-import { Box } from "@mui/material";
 import { Rect, Polygon } from "@/types/PdfNotes";
 import Svg from "../../common/Svg";
 import RectSvg from "../Items/Rect";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useContext } from "react";
-import Palette from "@/components/common/Palette";
 import MouseContext from "@/contexts/MouseContext";
+import Palette from "@/components/common/Palette/Palette";
 
 /**
  * 直方体、ポリゴンの編集パレット
@@ -26,10 +25,10 @@ export default function EditRectPalette({
   if (!mouse) return undefined;
 
   const L = 40;
-  const pageRectButton = new DOMRect(0, 0, L, L);
+  const pageRect = new DOMRect(0, 0, L, L);
+  const styleList = ["outlined", "filled"] as const;
 
   /** 1つのアイコンを返す */
-  const styleList = ["outlined", "filled"] as const;
   const renderIcon = (i: number) => {
     const style = styleList[i];
     if (!style) return undefined;
@@ -42,11 +41,9 @@ export default function EditRectPalette({
       style,
     };
     return (
-      <Box>
-        <Svg pageRect={pageRectButton}>
-          <RectSvg pageRect={pageRectButton} params={rect} disableNodes />
-        </Svg>
-      </Box>
+      <Svg pageRect={pageRect}>
+        <RectSvg pageRect={pageRect} params={rect} disableNodes />
+      </Svg>
     );
   };
 
