@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Box, Divider, IconButton, Tooltip } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import {
   FolderOpen,
   GitHub,
@@ -13,6 +13,7 @@ import HistoryDialog from "./HistoryDialog";
 import Waiting from "../../dialogs/Waiting";
 import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
+import TooltipIconButton from "@/components/common/TooltipIconButton";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -40,8 +41,18 @@ export default function Header({
       }}
     >
       {/* 読み取り専用 */}
-      <Tooltip
-        title={
+      <TooltipIconButton
+        disabled={!initialized || !modelFlags.canToggleReadOnly}
+        icon={readOnly ? <Lock /> : <LockOpen />}
+        onClick={() => {
+          setReadOnly(!readOnly);
+        }}
+        sx={{
+          mr: "auto",
+          ...sxButton,
+          ...(readOnly ? { color: "firebrick" } : {}),
+        }}
+        tooltipTitle={
           readOnly ? (
             <span>
               【読み取り専用モード】
@@ -58,36 +69,18 @@ export default function Header({
             </span>
           )
         }
-      >
-        <span style={{ marginRight: "auto" }}>
-          <IconButton
-            disabled={!initialized || !modelFlags.canToggleReadOnly}
-            sx={readOnly ? { color: "firebrick" } : sxButton}
-            onClick={() => {
-              setReadOnly(!readOnly);
-            }}
-            size="small"
-          >
-            {readOnly ? <Lock /> : <LockOpen />}
-          </IconButton>
-        </span>
-      </Tooltip>
+      />
 
       {/* アクセス履歴からPDFファイルを開く */}
-      <Tooltip title="アクセス履歴からPDFファイルを開きます">
-        <span>
-          <IconButton
-            disabled={!initialized || !modelFlags.canOpenHistory}
-            sx={sxButton}
-            onClick={() => {
-              setOpenHistory(true);
-            }}
-            size="small"
-          >
-            <Restore />
-          </IconButton>
-        </span>
-      </Tooltip>
+      <TooltipIconButton
+        disabled={!initialized || !modelFlags.canOpenHistory}
+        icon={<Restore />}
+        onClick={() => {
+          setOpenHistory(true);
+        }}
+        sx={sxButton}
+        tooltipTitle="アクセス履歴からPDFファイルを開きます"
+      />
       <HistoryDialog
         open={!!initialized && openHistory}
         onClose={(id) => {
@@ -98,69 +91,55 @@ export default function Header({
       />
 
       {/* PC内のPDFファイルを開く */}
-      <Tooltip
-        title={
+      <TooltipIconButton
+        disabled={!initialized || !modelFlags.canOpenFileDialog}
+        icon={<FolderOpen />}
+        onClick={() => {
+          setAlert(
+            "info",
+            <span>
+              ファイルを選択してください
+              <br />
+              選択ダイアログは、ブラウザの後ろに隠れていることがあります
+            </span>
+          );
+          model
+            .getIdFromExternalFile()
+            .then((id) => {
+              setAlert();
+              if (id === "") return;
+              onSelectPdfById?.(id);
+            })
+            .catch(() => {
+              setAlert("error", "PDFファイルの取得に失敗しました");
+            });
+        }}
+        sx={sxButton}
+        tooltipTitle={
           <span>
             ファイルツリー外のPDFファイルを開きます
             {modelFlags.isWeb && <br />}
             {modelFlags.isWeb && "(ウェブ版では使用できません)"}
           </span>
         }
-      >
-        <span>
-          <IconButton
-            disabled={!initialized || !modelFlags.canOpenFileDialog}
-            sx={sxButton}
-            size="small"
-            onClick={() => {
-              setAlert(
-                "info",
-                <span>
-                  ファイルを選択してください
-                  <br />
-                  選択ダイアログは、ブラウザの後ろに隠れていることがあります
-                </span>
-              );
-              model
-                .getIdFromExternalFile()
-                .then((id) => {
-                  setAlert();
-                  if (id === "") return;
-                  onSelectPdfById?.(id);
-                })
-                .catch(() => {
-                  setAlert("error", "PDFファイルの取得に失敗しました");
-                });
-            }}
-          >
-            <FolderOpen />
-          </IconButton>
-        </span>
-      </Tooltip>
+      />
 
       {/* URLから開く */}
-      <Tooltip
-        title={
+      <TooltipIconButton
+        disabled={!initialized || !modelFlags.canOpenFileDialog}
+        icon={<Language />}
+        onClick={() => {
+          setOpenUrl(true);
+        }}
+        sx={sxButton}
+        tooltipTitle={
           <span>
             URLからPDFファイルを開きます
             {modelFlags.isWeb && <br />}
             {modelFlags.isWeb && "(ウェブ版では使用できません)"}
           </span>
         }
-      >
-        <span>
-          <IconButton
-            disabled={!initialized || !modelFlags.canOpenFileDialog}
-            sx={sxButton}
-            size="small"
-            onClick={() => {
-              setOpenUrl(true);
-            }}
-          >
-            <Language />
-          </IconButton>
-        </span>
-      </Tooltip>
+      />
       {initialized && openUrl && modelFlags.canOpenFileDialog && (
         <InputStringDialog
           title="URLからPDFファイルを開く"
@@ -188,18 +167,14 @@ export default function Header({
       {modelFlags.canOpenGithub && (
         <>
           <Divider orientation="vertical" variant="middle" flexItem />
-          <Tooltip title="NotesOnPdf 開発ページへのリンクを開きます">
-            <IconButton
-              size="small"
-              sx={sxButton}
-              onClick={() => {
-                open("https://github.com/physics-HTFI/NotesOnPDF");
-              }}
-            >
-              <GitHub />
-              {/* <MenuBook /> */}
-            </IconButton>
-          </Tooltip>
+          <TooltipIconButton
+            icon={<GitHub />}
+            onClick={() => {
+              open("https://github.com/physics-HTFI/NotesOnPDF");
+            }}
+            sx={sxButton}
+            tooltipTitle="NotesOnPdf 開発ページへのリンクを開きます"
+          />
         </>
       )}
 

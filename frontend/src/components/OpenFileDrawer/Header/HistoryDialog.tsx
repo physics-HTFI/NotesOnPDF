@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import {
   Backdrop,
   Box,
-  IconButton,
   Stack,
   Table,
   TableBody,
@@ -10,13 +9,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import History from "@/types/History";
 import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import { Delete } from "@mui/icons-material";
+import TooltipIconButton from "@/components/common/TooltipIconButton";
 
 /**
  * PDFを開いた履歴
@@ -65,37 +64,29 @@ export default function HistoryDialog({
       >
         <Stack direction="row">
           <Typography variant="body1">履歴からPDFファイルを開く</Typography>
-          <Tooltip
-            title="履歴を全て消去します"
-            placement="top"
-            disableInteractive
-          >
-            <span style={{ marginLeft: "auto" }}>
-              <IconButton
-                sx={{ color: "white", paddingTop: 0 }}
-                onClick={() => {
-                  if (readOnly) {
-                    setAlert(
-                      "error",
-                      <span>読み取り専用モードのため消去できません</span>
-                    );
-                    return;
-                  }
-                  model
-                    .deleteHistoryAll()
-                    .then(() => {
-                      setHistory([]);
-                    })
-                    .catch(() => {
-                      setAlert("error", "履歴の消去に失敗しました");
-                    });
-                }}
-                size="small"
-              >
-                <Delete />
-              </IconButton>
-            </span>
-          </Tooltip>
+          <TooltipIconButton
+            icon={<Delete />}
+            onClick={() => {
+              if (readOnly) {
+                setAlert(
+                  "error",
+                  <span>読み取り専用モードのため消去できません</span>
+                );
+                return;
+              }
+              model
+                .deleteHistoryAll()
+                .then(() => {
+                  setHistory([]);
+                })
+                .catch(() => {
+                  setAlert("error", "履歴の消去に失敗しました");
+                });
+            }}
+            sx={{ pt: 0, ml: "auto" }}
+            tooltipTitle="履歴を全て消去します"
+            tooltipPlacement="top"
+          />
         </Stack>
 
         <TableContainer
@@ -143,42 +134,30 @@ export default function HistoryDialog({
                   <TableCell align="center">{row.pages}</TableCell>
                   <TableCell align="center">{row.accessDate}</TableCell>
                   <TableCell align="center">
-                    <Tooltip
-                      title="この履歴を消去します"
-                      placement="right"
-                      disableInteractive
-                    >
-                      <span>
-                        <IconButton
-                          sx={{ color: "#72a0db" }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (readOnly) {
-                              setAlert(
-                                "error",
-                                <span>
-                                  読み取り専用モードのため消去できません
-                                </span>
-                              );
-                              return;
-                            }
-                            model
-                              .deleteHistory(row.id)
-                              .then(() => {
-                                setHistory(
-                                  history.filter((h) => h.id !== row.id)
-                                );
-                              })
-                              .catch(() => {
-                                setAlert("error", "履歴の消去に失敗しました");
-                              });
-                          }}
-                          size="small"
-                        >
-                          <Delete />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
+                    <TooltipIconButton
+                      icon={<Delete />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (readOnly) {
+                          setAlert(
+                            "error",
+                            <span>読み取り専用モードのため消去できません</span>
+                          );
+                          return;
+                        }
+                        model
+                          .deleteHistory(row.id)
+                          .then(() => {
+                            setHistory(history.filter((h) => h.id !== row.id));
+                          })
+                          .catch(() => {
+                            setAlert("error", "履歴の消去に失敗しました");
+                          });
+                      }}
+                      sx={{ color: "#72a0db" }}
+                      tooltipTitle="この履歴を消去します"
+                      tooltipPlacement="right"
+                    />
                   </TableCell>
                 </TableRow>
               ))}

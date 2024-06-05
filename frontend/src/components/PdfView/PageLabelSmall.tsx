@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from "react";
-import { Chip, IconButton, Stack, TextField, Tooltip } from "@mui/material";
+import { Chip, Stack, TextField, Tooltip } from "@mui/material";
 import { Reply } from "@mui/icons-material";
 import EditorBase from "./Editor/EditorBase";
 import MouseContext from "@/contexts/MouseContext";
@@ -7,33 +7,7 @@ import PdfNotes from "@/types/PdfNotes";
 import Progress from "../OpenFileDrawer/FileTreeView/Progress";
 import { GetCoverage } from "@/types/Coverages";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-
-const getPageNums = (pdfNotes: PdfNotes) => {
-  const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
-  let found = false;
-  for (let i = 0; i < pdfNotes.pages.length; i++) {
-    const p = pdfNotes.pages[i];
-    if (!p) continue;
-    const before = i <= pdfNotes.currentPage;
-    const isChapterStart =
-      p.volume !== undefined || p.part !== undefined || p.chapter !== undefined;
-    if (isChapterStart) {
-      found = !before;
-      if (!found) {
-        pageNums.curChapter = 0;
-        pageNums.chapter = 0;
-      }
-    }
-    if (p.style && p.style.includes("excluded")) continue;
-    ++pageNums.total;
-    if (before) ++pageNums.curTotal;
-    if (!found) {
-      ++pageNums.chapter;
-      if (before) ++pageNums.curChapter;
-    }
-  }
-  return pageNums;
-};
+import TooltipIconButton from "../common/TooltipIconButton";
 
 /**
  * 画面隅のページ数表示コンポーネント
@@ -49,6 +23,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const { setMouse } = useContext(MouseContext);
   if (!pdfNotes || !id) return <></>;
   const coverage = GetCoverage(pdfNotes);
+  const color = "#2e7d32";
 
   const { curTotal, total, curChapter, chapter } = getPageNums(pdfNotes);
 
@@ -77,7 +52,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
               width: "calc(100% - 4px)",
               margin: "0 2px 5px",
               height: "14px",
-              accentColor: "#2e7d32",
+              accentColor: color,
             }}
           />
         </Tooltip>
@@ -120,8 +95,16 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
       )}
 
       {/* 直前に表示していたページに移動 */}
-      <Tooltip
-        title={
+      <TooltipIconButton
+        disabled={previousPageNum === undefined}
+        icon={<Reply />}
+        onMouseDown={() => {
+          if (previousPageNum === undefined) return;
+          jumpPage(previousPageNum);
+        }}
+        sx={{ ml: 0.5, alignContent: "end", color }}
+        tooltipPlacement="right"
+        tooltipTitle={
           <span>
             直前に表示していたページに移動します [Space] <br />
             <br />
@@ -132,25 +115,39 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
             ・章移動： ↑↓ or Ctrl + マウスホイール
           </span>
         }
-        placement="right"
-        disableInteractive
-      >
-        <span style={{ marginLeft: 2, alignContent: "end" }}>
-          <IconButton
-            disabled={previousPageNum === undefined}
-            color="success"
-            size="small"
-            onMouseDown={() => {
-              if (previousPageNum === undefined) return;
-              jumpPage(previousPageNum);
-            }}
-          >
-            <Reply />
-          </IconButton>
-        </span>
-      </Tooltip>
+      />
     </Stack>
   );
+}
+
+/**
+ * 現在ページのページ番号を取得
+ */
+function getPageNums(pdfNotes: PdfNotes) {
+  const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
+  let found = false;
+  for (let i = 0; i < pdfNotes.pages.length; i++) {
+    const p = pdfNotes.pages[i];
+    if (!p) continue;
+    const before = i <= pdfNotes.currentPage;
+    const isChapterStart =
+      p.volume !== undefined || p.part !== undefined || p.chapter !== undefined;
+    if (isChapterStart) {
+      found = !before;
+      if (!found) {
+        pageNums.curChapter = 0;
+        pageNums.chapter = 0;
+      }
+    }
+    if (p.style && p.style.includes("excluded")) continue;
+    ++pageNums.total;
+    if (before) ++pageNums.curTotal;
+    if (!found) {
+      ++pageNums.chapter;
+      if (before) ++pageNums.curChapter;
+    }
+  }
+  return pageNums;
 }
 
 /**

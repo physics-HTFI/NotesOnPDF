@@ -5,7 +5,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   InputAdornment,
   Stack,
   TextField,
@@ -16,6 +15,7 @@ import ModelMock from "@/models/Model.Mock";
 import ModelWeb from "@/models/Model.Web";
 import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
+import TooltipIconButton from "../common/TooltipIconButton";
 
 /**
  * 文字列を入力するダイアログ
@@ -96,8 +96,8 @@ export default function SelectRootDialog() {
               readOnly: true,
               startAdornment: (
                 <InputAdornment position="start">
-                  <IconButton
-                    sx={{ color: "steelblue" }}
+                  <TooltipIconButton
+                    icon={<Folder />}
                     onClick={() => {
                       window
                         .showDirectoryPicker()
@@ -106,10 +106,9 @@ export default function SelectRootDialog() {
                         })
                         .catch(() => undefined);
                     }}
-                    size="small"
-                  >
-                    <Folder />
-                  </IconButton>
+                    sx={{ color: "steelblue" }}
+                    tooltipTitle="基準フォルダを選択します"
+                  />
                 </InputAdornment>
               ),
             }}
@@ -117,15 +116,14 @@ export default function SelectRootDialog() {
 
           <Stack direction="row" sx={{ mt: 3, height: 120 }}>
             {/* 読み取り専用 */}
-            <IconButton
-              sx={{ alignItems: "start", mb: "auto", color: readOnlyColor }}
+            <TooltipIconButton
+              icon={readOnly ? <Lock /> : <LockOpen />}
               onClick={() => {
                 setReadOnly(!readOnly);
               }}
-              size="small"
-            >
-              {readOnly ? <Lock /> : <LockOpen />}
-            </IconButton>
+              sx={{ alignItems: "start", mb: "auto", color: readOnlyColor }}
+              tooltipTitle="読み取り専用モード／自動保存モードを切り替えます"
+            />
             <div>
               <Typography
                 component={
