@@ -17,7 +17,7 @@ export default function useServerSideEvents(model: IModel) {
     if (!eventSource.current) return;
     eventSource.current.onerror = () => {
       setServerFailed(true);
-      setAlert(); // 読み込み失敗エラーを消す
+      setTimeout(setAlert, 500); // 読み込み失敗エラーを消す
     };
     eventSource.current.onmessage = (e) => {
       setServerFailed(false);
