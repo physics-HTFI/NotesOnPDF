@@ -12,7 +12,7 @@ export default function useServerSideEvents(model: IModel) {
   const eventSource = useRef<EventSource>();
 
   useEffect(() => {
-    if (eventSource.current) return;
+    if (eventSource.current && eventSource.current.readyState !== 2) return; // devモードだと1度目のアンマウントでcloseされているので、returnせずに開きなおす
     eventSource.current = model.getEventSource();
     if (!eventSource.current) return;
     eventSource.current.onerror = () => {
