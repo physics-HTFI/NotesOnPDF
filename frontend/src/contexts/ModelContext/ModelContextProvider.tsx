@@ -29,7 +29,7 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
 
   // `appSettings, FileTree, Coverages`を取得する
   useEffect(() => {
-    if (serverFailed || initialized) return;
+    if (serverFailed) return;
     loadAll(model)
       .then(({ appSettings, fileTree, coverages }) => {
         setAppSettings(appSettings);
@@ -40,7 +40,7 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
         if (!e?.message) return;
         setAlert("error", e.message);
       });
-  }, [model, setAlert, serverFailed, initialized]);
+  }, [model, setAlert, serverFailed]);
 
   // `appSettings`を保存する
   useEffect(() => {

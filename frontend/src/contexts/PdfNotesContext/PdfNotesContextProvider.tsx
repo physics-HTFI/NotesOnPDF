@@ -61,14 +61,11 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     if (!readOnly) {
       // 注釈ファイル保存
       putPdfNotesDebounced(id, pdfNotes, model, setAlert);
-    }
-    // 必要であれば`coverages`を更新する
-    const newCoverages = getNewCoveragesOrUndefined(id, pdfNotes);
-    if (newCoverages) {
-      // `Coverages`が不整合になることがある：
-      // ・`readOnly`状態で`pdfNotes`を変更→別のファイルを開いて`readOnly`を解除、としたときに前のファイルの`Coverage`が変化してしまう。
-      // だが稀なので気にしない（`!readOnly`状態で`Coverages`が変化しないほうが不自然なので）。
-      setCoverages(newCoverages);
+      // 必要であれば`coverages`を更新する
+      const newCoverages = getNewCoveragesOrUndefined(id, pdfNotes);
+      if (newCoverages) {
+        setCoverages(newCoverages);
+      }
     }
   }, [
     getNewCoveragesOrUndefined,

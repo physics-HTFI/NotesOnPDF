@@ -306,16 +306,16 @@ export default class ModelMock implements IModel {
   };
 
   getCoverages = () => Promise.resolve(coverages);
-  putCoverages = () => Promise.reject();
+  putCoverages = () => Promise.resolve();
 
   getPdfNotes = (id: string): Promise<ResultGetPdfNotes> => {
     if (id !== pdfPaths[0]) return Promise.reject();
     return Promise.resolve(resultGetPdfNotes);
   };
-  putPdfNotes = () => Promise.reject();
+  putPdfNotes = () => Promise.resolve();
 
   getPageImageUrl = () => "";
 
   getAppSettings = () => Promise.resolve(GetAppSettings_default());
-  putAppSettings = () => Promise.reject();
+  putAppSettings = () => Promise.resolve();
 }

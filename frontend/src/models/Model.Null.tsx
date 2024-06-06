@@ -14,7 +14,7 @@ export default class ModelNull implements IModel {
 
   getFileTree = () => Promise.resolve([]);
   getHistory = () => Promise.resolve([]);
-  updateHistory = () => Promise.reject();
+  updateHistory = () => Promise.resolve();
   deleteHistoryAll = () => Promise.resolve();
   deleteHistory = () => Promise.resolve();
   getIdFromExternalFile = () => Promise.reject();
@@ -25,10 +25,10 @@ export default class ModelNull implements IModel {
   putCoverages = () => Promise.resolve();
 
   getPdfNotes = () => Promise.reject();
-  putPdfNotes = () => Promise.reject();
+  putPdfNotes = () => Promise.resolve();
 
   getPageImageUrl = () => "";
 
   getAppSettings = () => Promise.resolve(GetAppSettings_default());
-  putAppSettings = () => Promise.reject();
+  putAppSettings = () => Promise.resolve();
 }
