@@ -15,6 +15,7 @@ namespace backend
         readonly ApiModel model = new();
         readonly SemaphoreSlim semaphore = new(1, 1);
         bool needsReload = false;
+        int connections = 0;
 
         public HttpServer()
         {
@@ -55,6 +56,7 @@ namespace backend
                 {
                     try
                     {
+                        ++connections;
                         response.ContentType = "text/event-stream";
                         using Stream output = response.OutputStream;
                         needsReload = false;
@@ -72,13 +74,17 @@ namespace backend
                     }
                     catch
                     {
+                        --connections;
+                        if(connections == 0)
+                        {
                         onConnectionEnd(); // ページを閉じたときの処理（ウィンドウを出す）
+                        }
                         return;
                     }
                 }
 
                 // これ以降は同期的に実行する
-                // 同じタブからのアクセスは何もしなくても同期的になるようだが
+                // 同じブラウザタブからのアクセスは何もしなくても同期的になるようだが
                 // 別のタブからのアクセスを同期化するにはセマフォが必要。（lockはawaitがあると使えない）
                 await semaphore.WaitAsync();
 

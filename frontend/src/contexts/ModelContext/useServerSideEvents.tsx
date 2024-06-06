@@ -12,7 +12,7 @@ export default function useServerSideEvents(model: IModel) {
   const eventSource = useRef<EventSource>();
 
   useEffect(() => {
-    if (eventSource.current && eventSource.current.readyState !== 2) return; // devモードだと1度目のアンマウントでcloseされているので、returnせずに開きなおす
+    if (eventSource.current) return;
     eventSource.current = model.getEventSource();
     if (!eventSource.current) return;
     eventSource.current.onerror = () => {
@@ -28,6 +28,7 @@ export default function useServerSideEvents(model: IModel) {
     };
     return () => {
       eventSource.current?.close();
+      eventSource.current = undefined; // devモードだとuseEffectが2回実行されることへの対応：https://react.dev/reference/react/StrictMode#fixing-bugs-found-by-re-running-effects-in-development
     };
   }, [model, setAlert]);
 

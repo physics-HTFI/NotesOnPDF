@@ -90,7 +90,6 @@ namespace backend
             try
             {
                 var window = new Browser();
-                window.Closed += (_, _) => Visibility = Visibility.Visible;
                 window.Show();
                 Visibility = Visibility.Collapsed;
             }
