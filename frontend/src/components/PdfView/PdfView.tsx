@@ -34,7 +34,18 @@ export default function PdfView() {
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       // Ctrl+ホイールでのズームを抑制する
-      e.ctrlKey && e.preventDefault();
+      if (e.ctrlKey) {
+        e.preventDefault();
+      }
+      e.getModifierState("Shift");
+      scrollPage(
+        0 < e.deltaY,
+        e.getModifierState("Shift")
+          ? "section"
+          : e.getModifierState("Control")
+          ? "chapter"
+          : undefined
+      );
     };
     const handleKeyDownAll = (e: KeyboardEvent) => {
       if (mode ?? editNote ?? moveNote) {
@@ -60,7 +71,7 @@ export default function PdfView() {
       document.removeEventListener("wheel", handleWheel);
       document.onkeydown = null;
     };
-  }, [editNote, handleKeyDown, mode, moveNote]);
+  }, [editNote, handleKeyDown, mode, moveNote, scrollPage]);
 
   return (
     <Box
@@ -81,17 +92,6 @@ export default function PdfView() {
         if (mode ?? moveNote) return;
         setMouse({ pageX: e.pageX, pageY: e.pageY });
         setPaletteOpen(true);
-      }}
-      onWheel={(e) => {
-        e.getModifierState("Shift");
-        scrollPage(
-          0 < e.deltaY,
-          e.getModifierState("Shift")
-            ? "section"
-            : e.getModifierState("Control")
-            ? "chapter"
-            : undefined
-        );
       }}
     >
       {/* PDF画像がある要素 */}
