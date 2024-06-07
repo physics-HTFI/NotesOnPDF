@@ -11,11 +11,9 @@ import Palette from "@/components/common/Palette/Palette";
  */
 export default function EditRectPalette({
   params,
-  open,
   onClose,
 }: {
   params: Polygon | Rect;
-  open: boolean;
   onClose: () => void;
 }) {
   const {
@@ -57,12 +55,12 @@ export default function EditRectPalette({
 
   return (
     <Palette
+      open
       numIcons={2}
       renderIcon={renderIcon}
       selected={styleList.indexOf(params.style)}
       L={L}
       xy={mouse}
-      open={open}
       onClose={handleClose}
     />
   );

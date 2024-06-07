@@ -12,11 +12,9 @@ import Palette from "@/components/common/Palette/Palette";
  */
 export default function EditArrowPalette({
   params,
-  open,
   onClose,
 }: {
   params: Arrow | Bracket;
-  open: boolean;
   onClose: () => void;
 }) {
   const {
@@ -66,12 +64,12 @@ export default function EditArrowPalette({
 
   return (
     <Palette
+      open
       numIcons={4}
       renderIcon={renderIcon}
       selected={headsList.indexOf(currentHeads)}
       L={L}
       xy={mouse}
-      open={open}
       onClose={handleClose}
     />
   );

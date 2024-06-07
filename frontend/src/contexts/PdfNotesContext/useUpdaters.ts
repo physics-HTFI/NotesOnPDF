@@ -1,11 +1,6 @@
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import UiContext from "@/contexts/UiContext";
-import PdfNotes, {
-  NoteType,
-  Page,
-  editPageStyle,
-  fromDisplayedPage,
-} from "@/types/PdfNotes";
+import PdfNotes, { NoteType, Page, editPageStyle } from "@/types/PdfNotes";
 import { useCallback, useContext } from "react";
 
 /**
@@ -115,11 +110,8 @@ export default function useUpdaters({
    * 特定のページに移動する
    */
   const jumpPage = useCallback(
-    (num: number, isDisplayed?: boolean) => {
+    (num: number) => {
       if (invalid) return;
-      if (isDisplayed) {
-        num = fromDisplayedPage(pdfNotes, num);
-      }
       if (pdfNotes.currentPage === num) return;
       if (num < 0 || pdfNotes.pages.length <= num) return;
       setPdfNotes({ ...pdfNotes, currentPage: num });

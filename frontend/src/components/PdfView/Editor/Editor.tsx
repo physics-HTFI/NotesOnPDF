@@ -21,7 +21,7 @@ export default function Editor({
   switch (params.type) {
     case "Arrow":
     case "Bracket":
-      return <EditArrowPalette params={params} open={open} onClose={onClose} />;
+      return <EditArrowPalette params={params} onClose={onClose} />;
     case "Chip":
       return <ChipEditor params={params} onClose={onClose} />;
     case "Marker":
@@ -32,6 +32,6 @@ export default function Editor({
       return <PageLinkEditor params={params} onClose={onClose} />;
     case "Polygon":
     case "Rect":
-      return <EditRectPalette params={params} open={open} onClose={onClose} />;
+      return <EditRectPalette params={params} onClose={onClose} />;
   }
 }

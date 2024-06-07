@@ -1,13 +1,13 @@
-import { useContext, useRef, useState } from "react";
-import { Chip, Stack, TextField, Tooltip } from "@mui/material";
+import { useContext, useState } from "react";
+import { Chip, Stack, Tooltip } from "@mui/material";
 import { Reply } from "@mui/icons-material";
-import EditorBase from "./Editor/EditorBase";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotes from "@/types/PdfNotes";
 import Progress from "../OpenFileDrawer/FileTreeView/Progress";
 import { GetCoverage } from "@/types/Coverages";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import TooltipIconButton from "../common/TooltipIconButton";
+import PageInput from "./Editor/PageInput";
 
 /**
  * 画面隅のページ数表示コンポーネント
@@ -17,7 +17,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
     id,
     pdfNotes,
     previousPageNum,
-    updaters: { jumpPage, page, pageLabel },
+    updaters: { jumpPage, pageLabel },
   } = useContext(PdfNotesContext);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
@@ -83,13 +83,14 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
           />
         </Tooltip>
       </Stack>
-      {page && openJumpDialog && (
-        <JumpDialog
-          page={page.num}
+      {openJumpDialog && (
+        <PageInput
+          open
+          pageNumInit={pdfNotes.currentPage}
           onClose={(page) => {
             setOpenJumpDialog(false);
             if (page === undefined) return;
-            jumpPage(page, true);
+            jumpPage(page);
           }}
         />
       )}
@@ -148,53 +149,4 @@ function getPageNums(pdfNotes: PdfNotes) {
     }
   }
   return pageNums;
-}
-
-/**
- * ページリンクの編集ダイアログ
- */
-function JumpDialog({
-  page,
-  onClose,
-}: {
-  page: number;
-  onClose: (page?: number) => void;
-}) {
-  const num = useRef<number>(page);
-  return (
-    <EditorBase
-      onClose={() => {
-        onClose(num.current);
-      }}
-    >
-      ページ番号:
-      <TextField
-        variant="standard"
-        defaultValue={page}
-        type="number"
-        sx={{ pl: 1, width: 80 }}
-        inputRef={(ref?: HTMLInputElement) => {
-          setTimeout(() => {
-            ref?.focus();
-          }, 10);
-        }}
-        onFocus={(e) => {
-          e.target.select();
-        }}
-        onChange={(e) => {
-          num.current = Number(e.target.value);
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            onClose(num.current);
-            e.stopPropagation();
-          }
-          if (e.key === "Escape") {
-            onClose(undefined);
-            e.stopPropagation();
-          }
-        }}
-      />
-    </EditorBase>
-  );
 }
