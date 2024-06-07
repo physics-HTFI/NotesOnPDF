@@ -68,7 +68,7 @@ export default function App() {
     <UiContextProvider>
       <ModelContextProvider>
         {/* モックモデルを使用していることを示すポップアップ表示 */}
-        {import.meta.env.VITE_IS_WEB === "true" && <SelectRootDialog />}
+        {import.meta.env.MODE === "web" && <SelectRootDialog />}
         <MathJaxContext version={3} config={mathjaxConfig}>
           <PdfNotesContextProvider>
             <Box sx={{ userSelect: "none" }}>

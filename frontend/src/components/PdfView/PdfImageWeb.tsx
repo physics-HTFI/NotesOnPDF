@@ -9,7 +9,7 @@ import PdfNotesContext, {
   PageSize,
 } from "@/contexts/PdfNotesContext/PdfNotesContext";
 
-if (import.meta.env.VITE_IS_WEB === "true") {
+if (import.meta.env.MODE === "web") {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 }
 const options = {

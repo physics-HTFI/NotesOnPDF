@@ -15,9 +15,7 @@ import useServerSideEvents from "./useServerSideEvents";
  */
 export function ModelContextProvider({ children }: { children: ReactNode }) {
   const [model, setModel] = useState<IModel>(() =>
-    import.meta.env.VITE_IS_WEB === "true"
-      ? new ModelNull()
-      : new ModelDesktop()
+    import.meta.env.MODE === "web" ? new ModelNull() : new ModelDesktop()
   );
   const { readOnly, setAlert } = useContext(UiContext);
   const [appSettings, setAppSettings] = useState<AppSettings>();
