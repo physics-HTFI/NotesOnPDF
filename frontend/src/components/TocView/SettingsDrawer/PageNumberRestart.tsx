@@ -5,16 +5,16 @@ import Checkbox from "./Checkbox";
  * ページ番号を設定するコンポーネント
  */
 export default function PageNumberRestart({
-  numberRestart,
+  numRestart,
   preferredPageNumber,
   onChange,
 }: {
-  numberRestart?: number;
+  numRestart?: number;
   preferredPageNumber?: number;
-  onChange: (numberRestart?: number) => void;
+  onChange: (numRestart?: number) => void;
 }) {
-  const isManual = numberRestart !== undefined;
-  const restart = numberRestart ?? preferredPageNumber ?? 1;
+  const isManual = numRestart !== undefined;
+  const restart = numRestart ?? preferredPageNumber ?? 1;
 
   return (
     <Box sx={{ whiteSpace: "nowrap" }}>

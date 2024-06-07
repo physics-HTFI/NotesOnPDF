@@ -47,7 +47,7 @@ export default function SettingsDrawer() {
   const handleChangePage = (pageSettings: Partial<Page>) => {
     if (!page) return;
     pdfNotes.pages[pdfNotes.currentPage] = { ...page, ...pageSettings };
-    if (Object.keys(pageSettings).includes("numberRestart"))
+    if (Object.keys(pageSettings).includes("numRestart"))
       updatePageNum(pdfNotes);
     setPdfNotes({ ...pdfNotes });
   };
@@ -164,10 +164,10 @@ export default function SettingsDrawer() {
             />
             {/* ページ番号 */}
             <PageNumberRestart
-              numberRestart={page?.numberRestart}
+              numRestart={page?.numRestart}
               preferredPageNumber={pageNum}
-              onChange={(numberRestart) => {
-                handleChangePage({ numberRestart });
+              onChange={(numRestart) => {
+                handleChangePage({ numRestart });
               }}
             />
             {/* ページ除外 */}

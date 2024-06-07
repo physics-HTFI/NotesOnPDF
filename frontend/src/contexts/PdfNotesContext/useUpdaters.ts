@@ -200,8 +200,8 @@ export default function useUpdaters({
       if (page.volume !== undefined) ++volumeNum;
       if (page.part !== undefined) ++partNum;
       if (page.chapter !== undefined) ++chapterNum;
-      if (page.numberRestart) {
-        pageNum = 1 + page.numberRestart;
+      if (page.numRestart) {
+        pageNum = 1 + page.numRestart;
       }
     }
     return {

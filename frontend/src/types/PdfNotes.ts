@@ -98,7 +98,7 @@ export interface Page {
   /** 章のタイトル */
   chapter?: string;
   /** 新たにページ番号を振りなおす */
-  numberRestart?: number;
+  numRestart?: number;
   /** `break-before`:ページ前節区切り、"break-middle":ページ途中節区切り、"excluded":ページ除外 */
   style?: PageStyle[];
   /** PDFビューに表示される注釈 */
@@ -169,7 +169,7 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
 export function updatePageNum(pdfNotes: PdfNotes) {
   let num = 0;
   for (const p of pdfNotes.pages) {
-    num = p.numberRestart ?? num + 1;
+    num = p.numRestart ?? num + 1;
     p.num = num;
   }
 }

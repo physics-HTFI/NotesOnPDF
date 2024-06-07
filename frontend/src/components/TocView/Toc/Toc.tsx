@@ -52,7 +52,7 @@ const ToC = () => {
       );
     }
     // 節区切りを追加
-    pageNum = page?.numberRestart ?? pageNum;
+    pageNum = page?.numRestart ?? pageNum;
     if (page?.style?.includes("break-before")) {
       toc.push(
         <Separator
