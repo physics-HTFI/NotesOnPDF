@@ -21,14 +21,17 @@ export default function PageInput({
     pdfNotes?.pages[pageNumInit ?? pdfNotes.currentPage]?.num ??
     pdfNotes?.pages[pdfNotes.currentPage]?.num ??
     1;
-  const [displayedPageNum, setDisplayedPageNum] =
-    useState(displayedPageNumInit);
+  const [displayedPageNum, setDisplayedPageNum] = useState<number | "">(
+    displayedPageNumInit
+  );
   if (!pdfNotes || !open) return <></>;
 
   // 閉じたときに値を更新する
   const handleClose = (cancel?: boolean) => {
     const newPage =
-      cancel === true || displayedPageNumInit === displayedPageNum
+      cancel === true ||
+      displayedPageNumInit === displayedPageNum ||
+      displayedPageNum === ""
         ? undefined
         : fromDisplayedPage(pdfNotes, displayedPageNum);
     onClose(newPage);
@@ -51,6 +54,10 @@ export default function PageInput({
           e.target.select();
         }}
         onChange={(e) => {
+          if (e.target.value === "") {
+            setDisplayedPageNum("");
+            return;
+          }
           const num = Number(e.target.value);
           const numMin = pdfNotes.pages.reduce((a, b) =>
             a.num < b.num ? a : b
