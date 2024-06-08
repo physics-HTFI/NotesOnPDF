@@ -47,8 +47,9 @@ export default function SettingsDrawer() {
   const handleChangePage = (pageSettings: Partial<Page>) => {
     if (!page) return;
     pdfNotes.pages[pdfNotes.currentPage] = { ...page, ...pageSettings };
-    if (Object.keys(pageSettings).includes("numRestart"))
+    if (Object.keys(pageSettings).includes("numRestart")) {
       updatePageNum(pdfNotes);
+    }
     setPdfNotes({ ...pdfNotes });
   };
 

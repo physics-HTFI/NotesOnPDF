@@ -9,12 +9,13 @@ export default function PageNumberRestart({
   preferredPageNumber,
   onChange,
 }: {
-  numRestart?: number;
+  numRestart?: number | null;
   preferredPageNumber?: number;
-  onChange: (numRestart?: number) => void;
+  onChange: (numRestart?: number | null) => void;
 }) {
   const isManual = numRestart !== undefined;
-  const restart = numRestart ?? preferredPageNumber ?? 1;
+  const restart =
+    numRestart === null ? null : numRestart ?? preferredPageNumber;
 
   return (
     <Box sx={{ whiteSpace: "nowrap" }}>
@@ -30,10 +31,11 @@ export default function PageNumberRestart({
 
       <TextField
         variant="standard"
-        value={restart}
+        value={restart ?? ""}
         onChange={(e) => {
-          const num = Number(e.target.value);
-          const numValidated = Math.min(999999, Math.max(1, num));
+          const num = e.target.value === "" ? null : Number(e.target.value);
+          const numValidated =
+            num === null ? null : Math.min(99999, Math.max(1, num));
           onChange(isManual ? numValidated : undefined);
         }}
         InputProps={{ sx: { fontSize: "140%", pl: 1 } }}

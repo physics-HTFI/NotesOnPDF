@@ -97,8 +97,8 @@ export interface Page {
   part?: string;
   /** 章のタイトル */
   chapter?: string;
-  /** 新たにページ番号を振りなおす */
-  numRestart?: number;
+  /** 新たにページ番号を振りなおす。`null`は未記入の状態。 */
+  numRestart?: number | null;
   /** `break-before`:ページ前節区切り、"break-middle":ページ途中節区切り、"excluded":ページ除外 */
   style?: PageStyle[];
   /** PDFビューに表示される注釈 */
