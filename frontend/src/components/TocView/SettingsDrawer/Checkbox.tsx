@@ -28,6 +28,7 @@ export default function Checkbox({
             checked={checked ?? false}
             onChange={(e) => {
               onChange(e.target.checked);
+              e.currentTarget.blur(); // キー操作が効くようにフォーカスを外す
             }}
           />
         }

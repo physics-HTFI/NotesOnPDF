@@ -1,4 +1,4 @@
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, Tooltip } from "@mui/material";
 import Checkbox from "./Checkbox";
 
 /**
@@ -22,33 +22,34 @@ export default function CheckboxText({
   const textLocal = text ?? preferredText;
 
   return (
-    <Box sx={{ whiteSpace: "nowrap", width: "100%", display: "flex" }}>
-      <Checkbox
-        label={label}
-        checked={checked}
-        tooltip={tooltip}
-        onChange={(checked) => {
-          onChange(checked ? textLocal : undefined);
-        }}
-      />
-      <TextField
-        hidden={!checked}
-        value={textLocal}
-        variant="standard"
-        InputProps={{
-          sx: {
-            fontSize: "140%",
-            visibility: checked ? undefined : "hidden",
-            height: 30,
-            width: "auto",
-            flexGrow: 1,
-          },
-        }}
-        onChange={(e) => {
-          onChange(checked ? e.target.value : undefined);
-        }}
-        sx={{ flexGrow: 1, pb: 0.5, pt: 1 }}
-      />
-    </Box>
+    <Tooltip title={tooltip} disableInteractive placement="right">
+      <Box sx={{ whiteSpace: "nowrap", width: "100%", display: "flex" }}>
+        <Checkbox
+          label={label}
+          checked={checked}
+          onChange={(checked) => {
+            onChange(checked ? textLocal : undefined);
+          }}
+        />
+        <TextField
+          hidden={!checked}
+          value={textLocal}
+          variant="standard"
+          InputProps={{
+            sx: {
+              fontSize: "140%",
+              visibility: checked ? undefined : "hidden",
+              height: 30,
+              width: "auto",
+              flexGrow: 1,
+            },
+          }}
+          onChange={(e) => {
+            onChange(checked ? e.target.value : undefined);
+          }}
+          sx={{ flexGrow: 1, pb: 0.5, pt: 1 }}
+        />
+      </Box>
+    </Tooltip>
   );
 }
