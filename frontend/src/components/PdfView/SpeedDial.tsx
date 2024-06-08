@@ -131,6 +131,7 @@ export default function SpeedDial({
             tooltipTitle={
               <span>
                 注釈の移動・変形モード <br />
+                <br />
                 [Escape] 操作のキャンセル、モード解除
               </span>
             }
@@ -148,6 +149,7 @@ export default function SpeedDial({
             tooltipTitle={
               <span>
                 注釈の文字列・線種の変更モード <br />
+                <br />
                 [Escape] 操作のキャンセル、モード解除
               </span>
             }
@@ -165,6 +167,7 @@ export default function SpeedDial({
             tooltipTitle={
               <span>
                 注釈の削除モード <br />
+                <br />
                 [Escape] 削除モード解除 <br />
                 [Ctrl+Delete] ページ内の全注釈を削除
               </span>
