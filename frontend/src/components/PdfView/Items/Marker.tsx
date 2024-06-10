@@ -88,8 +88,7 @@ export default function Marker({
           x2={x2}
           y2={y2}
           style={{
-            stroke: hover ? "orange" : "yellow",
-            opacity: hover ? 0.2 : 0.4,
+            stroke: hover ? "#fe7" : "#ff7",
             strokeWidth: "8",
           }}
         />

@@ -42,9 +42,9 @@ export default function Rect({
         width={params.width * pageRect.width}
         height={params.height * pageRect.height}
         style={{
-          fill: "red",
-          stroke: params.style === "outlined" ? "red" : "none",
-          fillOpacity: params.style === "outlined" ? 0 : hover ? 0.2 : 0.3,
+          fill: "#fbb",
+          stroke: params.style === "outlined" ? "#f99" : "none",
+          fillOpacity: params.style === "outlined" ? 0 : hover ? 0.7 : 1.0,
           strokeOpacity: hover ? 0.5 : 1,
           cursor,
           mixBlendMode: "multiply",
