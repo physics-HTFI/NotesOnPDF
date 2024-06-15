@@ -81,15 +81,6 @@ export default function SelectRootDialog() {
         >
           <img src="favicon.svg" style={{ height: 24 }} />
           NotesOnPDF ウェブ版
-          <span
-            style={{
-              fontSize: "60%",
-              marginTop: 10,
-              color: "darkgray",
-            }}
-          >
-            (Google Chrome, Microsoft Edge)
-          </span>
         </DialogTitle>
         <DialogContent>
           <TextField
