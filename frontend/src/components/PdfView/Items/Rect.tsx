@@ -10,12 +10,14 @@ import useCursor from "./useCursor";
 export default function Rect({
   params,
   mode,
+  moving,
   pageRect,
   onMouseDown,
   disableNodes,
 }: {
   params: RectType;
   mode?: Mode;
+  moving?: boolean;
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
   disableNodes?: boolean;
@@ -33,6 +35,7 @@ export default function Rect({
           isGrab: mode === "move",
         }
       : undefined;
+  const isColorize = params.style === "colorize" && !hover && !moving;
 
   return (
     <>
@@ -42,12 +45,12 @@ export default function Rect({
         width={params.width * pageRect.width}
         height={params.height * pageRect.height}
         style={{
-          fill: "#fbb",
-          stroke: params.style === "outlined" ? "#f99" : "none",
+          fill: isColorize ? "red" : "#fbb",
+          stroke: params.style === "outlined" ? "red" : "none",
           fillOpacity: params.style === "outlined" ? 0 : hover ? 0.7 : 1.0,
           strokeOpacity: hover ? 0.5 : 1,
           cursor,
-          mixBlendMode: "multiply",
+          mixBlendMode: isColorize ? "lighten" : "multiply",
         }}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);

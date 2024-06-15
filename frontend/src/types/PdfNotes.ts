@@ -20,14 +20,13 @@ export type NoteType =
   | Memo
   | PageLink
   | Chip;
-export type Heads = "end" | "start" | "both" | "none";
 export interface Arrow {
   type: "Arrow";
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-  heads: ("start" | "end")[];
+  style: "normal" | "inverted" | "both" | "single" | "double";
 }
 export interface Bracket {
   type: "Bracket";
@@ -35,7 +34,7 @@ export interface Bracket {
   y1: number;
   x2: number;
   y2: number;
-  heads: ("start" | "end")[];
+  style: "normal" | "start" | "middle" | "end";
 }
 export interface Chip {
   type: "Chip";
@@ -66,7 +65,7 @@ export interface PageLink {
 export interface Polygon {
   type: "Polygon";
   points: [number, number][];
-  style: "filled" | "outlined";
+  style: "filled" | "outlined" | "colorize";
 }
 export interface Rect {
   type: "Rect";
@@ -74,7 +73,7 @@ export interface Rect {
   y: number;
   width: number;
   height: number;
-  style: "filled" | "outlined";
+  style: "filled" | "outlined" | "colorize";
 }
 /** ノード位置編集時のマーカー */
 export interface Node {

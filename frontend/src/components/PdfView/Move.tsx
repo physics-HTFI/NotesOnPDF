@@ -80,10 +80,10 @@ export default function Move({
             <Marker pageRect={pageRect} params={newParams} />
           )}
           {newParams.type === "Polygon" && (
-            <Polygon pageRect={pageRect} params={newParams} />
+            <Polygon pageRect={pageRect} params={newParams} moving />
           )}
           {newParams.type === "Rect" && (
-            <Rect pageRect={pageRect} params={newParams} />
+            <Rect pageRect={pageRect} params={newParams} moving />
           )}
         </Svg>
         {newParams.type === "Chip" && <Chip params={newParams} />}

@@ -89,12 +89,14 @@ export default function Bracket({
             stroke: "red",
             strokeWidth: "1",
             opacity: hover ? 0.5 : 1,
-            markerStart: params.heads.includes("start")
-              ? "url(#bracket)"
-              : undefined,
-            markerEnd: params.heads.includes("end")
-              ? "url(#bracket)"
-              : undefined,
+            markerStart:
+              params.style === "normal" || params.style === "start"
+                ? "url(#bracket)"
+                : undefined,
+            markerEnd:
+              params.style === "normal" || params.style === "end"
+                ? "url(#bracket)"
+                : undefined,
           }}
         />
       </g>

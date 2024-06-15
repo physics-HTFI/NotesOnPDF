@@ -1,20 +1,20 @@
 import { useContext } from "react";
-import { Arrow } from "@/types/PdfNotes";
+import { Bracket } from "@/types/PdfNotes";
 import Svg from "../../common/Svg";
-import ArrowItem from "../Items/Arrow";
+import BracketItem from "../Items/Bracket";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Palette from "@/components/common/Palette/Palette";
 import getVector from "./getVector";
 
 /**
- * Arrowの編集パレット
+ * Bracketの編集パレット
  */
-export default function EditArrowPalette({
+export default function EditBracketPalette({
   params,
   onClose,
 }: {
-  params: Arrow;
+  params: Bracket;
   onClose: () => void;
 }) {
   const {
@@ -27,24 +27,23 @@ export default function EditArrowPalette({
   const pageRectIcon = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
   const styles = [
     "normal",
-    "both",
-    "inverted",
-    "single",
-    "double",
+    "end",
+    "middle",
+    "start",
   ] satisfies (typeof params.style)[];
 
   /** 1つのアイコンを返す */
   const renderIcon = (i: number) => {
     const style = styles[i];
     if (!style) return undefined;
-    const line: Arrow = {
-      type: "Arrow",
+    const line: Bracket = {
+      type: "Bracket",
       style,
       ...getVector(params, pageRect, 0.8),
     };
     return (
       <Svg pageRect={pageRectIcon}>
-        <ArrowItem pageRect={pageRectIcon} params={line} disableNodes />
+        <BracketItem pageRect={pageRectIcon} params={line} disableNodes />
       </Svg>
     );
   };
@@ -52,7 +51,7 @@ export default function EditArrowPalette({
   return (
     <Palette
       open
-      numIcons={5}
+      numIcons={4}
       renderIcon={renderIcon}
       selected={styles.indexOf(params.style)}
       L={L}

@@ -14,12 +14,14 @@ import useCursor from "./useCursor";
 export default function Polygon({
   params,
   mode,
+  moving,
   pageRect,
   onMouseDown,
   disableNodes,
 }: {
   params: PolygonType;
   mode?: Mode;
+  moving?: boolean;
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
   disableNodes?: boolean;
@@ -37,6 +39,7 @@ export default function Polygon({
           isGrab: mode === "move",
         }
       : undefined;
+  const isColorize = params.style === "colorize" && !hover && !moving;
 
   return (
     <>
@@ -46,12 +49,12 @@ export default function Polygon({
           .map((p) => `${p[0]},${p[1]}`)
           .join(" ")}
         style={{
-          fill: "#fbb",
-          stroke: params.style === "outlined" ? "#f99" : "none",
+          fill: isColorize ? "red" : "#fbb",
+          stroke: params.style === "outlined" ? "red" : "none",
           fillOpacity: params.style === "outlined" ? 0 : hover ? 0.7 : 1.0,
           strokeOpacity: hover ? 0.5 : 1,
           cursor,
-          mixBlendMode: "multiply",
+          mixBlendMode: isColorize ? "lighten" : "multiply",
         }}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);

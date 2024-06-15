@@ -24,7 +24,7 @@ export default function EditRectPalette({
 
   const L = 40;
   const pageRect = new DOMRect(0, 0, L, L);
-  const styleList = ["outlined", "filled"] as const;
+  const styleList = ["outlined", "filled", "colorize"] as const;
 
   /** 1つのアイコンを返す */
   const renderIcon = (i: number) => {
@@ -39,7 +39,12 @@ export default function EditRectPalette({
       style,
     };
     return (
-      <Svg pageRect={pageRect}>
+      <Svg pageRect={pageRect} style={{ background: "white" }}>
+        {style === "colorize" && (
+          <text x={0.2 * pageRect.width} y={0.5 * pageRect.height}>
+            着色
+          </text>
+        )}
         <RectSvg pageRect={pageRect} params={rect} disableNodes />
       </Svg>
     );
@@ -56,7 +61,7 @@ export default function EditRectPalette({
   return (
     <Palette
       open
-      numIcons={2}
+      numIcons={3}
       renderIcon={renderIcon}
       selected={styleList.indexOf(params.style)}
       L={L}

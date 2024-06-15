@@ -42,18 +42,18 @@ export default function Items({
     pageRect,
     params,
     onMouseDown: (e: MouseEvent, note: NoteType | NodeType) => {
-      let tmpMode: typeof mode | undefined = undefined;
-      if (mode && e.button === 0) tmpMode = mode;
+      let md: typeof mode | undefined = undefined;
+      if (mode && e.button === 0) md = mode;
       if (appSettings?.middleClick && e.button === 1)
-        tmpMode = appSettings.middleClick;
+        md = appSettings.middleClick;
       if (appSettings?.rightClick && e.button === 2)
-        tmpMode = appSettings.rightClick;
-      if (!tmpMode) return;
+        md = appSettings.rightClick;
+      if (!md) return;
       e.stopPropagation();
-      if (tmpMode === "move") onMove(note);
+      if (md === "move") onMove(note);
       if (note.type !== "Node") {
-        if (tmpMode === "edit") onEdit(note);
-        if (tmpMode === "delete") popNote(note);
+        if (md === "edit") onEdit(note);
+        if (md === "delete") popNote(note);
       }
       setMouse({ pageX: e.pageX, pageY: e.pageY });
     },

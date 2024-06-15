@@ -94,11 +94,11 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
         notes: [
           {
             type: "Arrow",
-            heads: ["end"],
             x1: 0.1,
             y1: 0.1,
             x2: 0.2,
             y2: 0.2,
+            style: "normal",
           },
           {
             type: "Arrow",
@@ -106,7 +106,7 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             y1: 0.1,
             x2: 0.3,
             y2: 0.2,
-            heads: ["start", "end"],
+            style: "both",
           },
           {
             type: "Arrow",
@@ -114,7 +114,7 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             y1: 0.1,
             x2: 0.4,
             y2: 0.2,
-            heads: ["start"],
+            style: "inverted",
           },
           {
             type: "Arrow",
@@ -122,7 +122,15 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             y1: 0.1,
             x2: 0.5,
             y2: 0.2,
-            heads: [],
+            style: "single",
+          },
+          {
+            type: "Arrow",
+            x1: 0.5,
+            y1: 0.1,
+            x2: 0.6,
+            y2: 0.2,
+            style: "double",
           },
           {
             type: "Bracket",
@@ -130,7 +138,7 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             y1: 0.1,
             x2: 0.6,
             y2: 0.2,
-            heads: ["start", "end"],
+            style: "normal",
           },
           {
             type: "Bracket",
@@ -138,7 +146,7 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             y1: 0.1,
             x2: 0.65,
             y2: 0.2,
-            heads: ["start"],
+            style: "start",
           },
           {
             type: "Bracket",
@@ -146,7 +154,7 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             y1: 0.1,
             x2: 0.7,
             y2: 0.2,
-            heads: ["end"],
+            style: "end",
           },
           {
             type: "Bracket",
@@ -154,15 +162,15 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             y1: 0.1,
             x2: 0.75,
             y2: 0.2,
-            heads: [],
+            style: "middle",
           },
           {
             type: "Bracket",
-            heads: ["end"],
             x1: 0.8,
             y1: 0.2,
             x2: 0.95,
             y2: 0.2,
+            style: "end",
           },
           {
             type: "Chip",
