@@ -1,8 +1,9 @@
 import { MouseEvent } from "react";
 import { Mode } from "../SpeedDial";
 import { Rect as RectType, Node as NodeType, NoteType } from "@/types/PdfNotes";
-import Node from "./Node";
-import usePolygon from "./utils/usePolygon";
+import getPolygonStyle from "./utils/getPolygonStyle";
+import Nodes from "./Node";
+import useCursor from "./utils/useCursor";
 
 /**
  * 長方形
@@ -20,13 +21,7 @@ export default function Rect({
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
 }) {
-  const { node, style, onMouseEnter, onMouseLeave } = usePolygon(
-    params,
-    pageRect,
-    mode,
-    moving,
-    onMouseDown
-  );
+  const { cursor, hover, onMouseEnter, onMouseLeave } = useCursor(mode);
 
   return (
     <>
@@ -35,17 +30,21 @@ export default function Rect({
         y={params.y * pageRect.height}
         width={params.width * pageRect.width}
         height={params.height * pageRect.height}
-        style={style}
+        style={getPolygonStyle(params, hover, cursor, moving)}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       />
-      {node && <Node index={0} {...node} />}
-      {node && <Node index={1} {...node} />}
-      {node && <Node index={2} {...node} />}
-      {node && <Node index={3} {...node} />}
+
+      <Nodes
+        target={params}
+        mode={mode}
+        visible={hover}
+        pageRect={pageRect}
+        onMouseDown={onMouseDown}
+      />
     </>
   );
 }

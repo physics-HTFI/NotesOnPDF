@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useContext, useState } from "react";
 import {
   Arrow,
   Bracket,
@@ -9,66 +9,78 @@ import {
   Rect,
 } from "@/types/PdfNotes";
 import { green } from "@mui/material/colors";
-
-export interface NodeProps {
-  target: Arrow | Bracket | Marker | Polygon | Rect;
-  index: number;
-  visible: boolean;
-  pageRect: DOMRect;
-  isGrab: boolean;
-  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-}
+import { Mode } from "../SpeedDial";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
- * ノード編集用マーカー
+ * 注釈形状編集用ノード
  */
-export default function Node({
+export default function Nodes({
   target,
-  index,
+  mode,
   visible,
   pageRect,
-  isGrab,
   onMouseDown,
-}: NodeProps) {
-  const [hover, setHover] = useState(false);
-  const [x, y] = (() => {
-    switch (target.type) {
-      case "Arrow":
-      case "Bracket":
-      case "Marker":
-        return index === 0 ? [target.x1, target.y1] : [target.x2, target.y2];
-      case "Polygon":
-        return target.points[index] ?? [0, 0];
-      case "Rect":
-        return [
-          target.x + (index % 2 === 0 ? 0 : target.width),
-          target.y + (index / 2 < 1 ? 0 : target.height),
+}: {
+  target: Arrow | Bracket | Marker | Polygon | Rect;
+  mode: Mode;
+  visible: boolean;
+  pageRect: DOMRect;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+}) {
+  const { appSettings } = useContext(ModelContext);
+
+  // 編集ノードの位置
+  const points: [number, number][] =
+    target.type === "Rect"
+      ? new Array(4)
+          .fill(0)
+          .map((_, i) => [
+            target.x + (i % 2 === 0 ? 0 : target.width),
+            target.y + (i / 2 < 1 ? 0 : target.height),
+          ])
+      : target.type === "Polygon"
+      ? target.points
+      : [
+          [target.x1, target.y1],
+          [target.x2, target.y2],
         ];
-    }
-  })();
-  return (
+
+  const [hover, setHover] = useState(points.map(() => false));
+
+  const isMoveMode = [
+    mode,
+    appSettings?.rightClick,
+    appSettings?.middleClick,
+  ].includes("move");
+  if (!isMoveMode) return undefined;
+
+  return points.map((p, i) => (
     <g
+      key={i}
       style={{
-        fill: visible || hover ? green.A700 : "transparent",
-        cursor: isGrab ? "grab" : "alias",
+        fill: visible || hover[i] ? green.A700 : "transparent",
+        cursor: mode === "move" ? "grab" : "alias",
       }}
       onMouseDown={(e) => {
-        onMouseDown?.(e, { type: "Node", target, index });
+        onMouseDown?.(e, { type: "Node", target, index: i });
       }}
       onMouseEnter={() => {
-        setHover(true);
+        hover[i] = true;
+        setHover([...hover]);
       }}
       onMouseLeave={() => {
-        setHover(false);
+        hover[i] = false;
+        setHover([...hover]);
       }}
     >
-      <circle cx={x * pageRect.width} cy={y * pageRect.height} r="3" />
+      <circle cx={p[0] * pageRect.width} cy={p[1] * pageRect.height} r="3" />
       <circle
-        cx={x * pageRect.width}
-        cy={y * pageRect.height}
+        cx={p[0] * pageRect.width}
+        cy={p[1] * pageRect.height}
         r="10"
-        style={{ fill: hover ? undefined : "transparent" }}
+        style={{ fill: hover[i] ? undefined : "transparent" }}
       />
     </g>
-  );
+  ));
 }

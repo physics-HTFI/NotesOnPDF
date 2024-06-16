@@ -1,12 +1,12 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent } from "react";
 import {
   Bracket as BracketParams,
   Node as NodeType,
   NoteType,
 } from "@/types/PdfNotes";
 import { Mode } from "../SpeedDial";
-import Node from "./Node";
 import useCursor from "./utils/useCursor";
+import Nodes from "./Node";
 
 /**
  * 括弧
@@ -22,23 +22,13 @@ export default function Bracket({
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
 }) {
-  const [hover, setHover] = useState(false);
-  const { cursor, isMove } = useCursor(mode);
+  const { cursor, hover, onMouseEnter, onMouseLeave } = useCursor(mode);
   const xy = {
     x1: params.x1 * pageRect.width,
     y1: params.y1 * pageRect.height,
     x2: params.x2 * pageRect.width,
     y2: params.y2 * pageRect.height,
   };
-  const node = isMove
-    ? {
-        target: params,
-        visible: hover,
-        pageRect,
-        onMouseDown,
-        isGrab: mode === "move",
-      }
-    : undefined;
 
   return (
     <>
@@ -47,12 +37,8 @@ export default function Bracket({
         onMouseDown={(e) => {
           onMouseDown?.(e, params);
         }}
-        onMouseEnter={() => {
-          setHover(!!cursor);
-        }}
-        onMouseLeave={() => {
-          setHover(false);
-        }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
         {/* 編集時につかみやすくする */}
         <line
@@ -89,8 +75,14 @@ export default function Bracket({
           }}
         />
       </g>
-      {node && <Node index={0} {...node} />}
-      {node && <Node index={1} {...node} />}
+
+      <Nodes
+        target={params}
+        mode={mode}
+        visible={hover}
+        pageRect={pageRect}
+        onMouseDown={onMouseDown}
+      />
     </>
   );
 }

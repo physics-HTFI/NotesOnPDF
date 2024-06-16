@@ -5,8 +5,9 @@ import {
   Node as NodeType,
   NoteType,
 } from "@/types/PdfNotes";
-import Node from "./Node";
-import usePolygon from "./utils/usePolygon";
+import getPolygonStyle from "./utils/getPolygonStyle";
+import useCursor from "./utils/useCursor";
+import Nodes from "./Node";
 
 /**
  * ポリゴン
@@ -24,13 +25,7 @@ export default function Polygon({
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
 }) {
-  const { node, style, onMouseEnter, onMouseLeave } = usePolygon(
-    params,
-    pageRect,
-    mode,
-    moving,
-    onMouseDown
-  );
+  const { cursor, hover, onMouseEnter, onMouseLeave } = useCursor(mode);
 
   return (
     <>
@@ -39,15 +34,21 @@ export default function Polygon({
           .map((p) => [p[0] * pageRect.width, p[1] * pageRect.height])
           .map((p) => `${p[0]},${p[1]}`)
           .join(" ")}
-        style={style}
+        style={getPolygonStyle(params, hover, cursor, moving)}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       />
-      {node &&
-        params.points.map((_, i) => <Node key={i} index={i} {...node} />)}
+
+      <Nodes
+        target={params}
+        mode={mode}
+        visible={hover}
+        pageRect={pageRect}
+        onMouseDown={onMouseDown}
+      />
     </>
   );
 }

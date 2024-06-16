@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import { Mode } from "../../SpeedDial";
 
 export default function useCursor(mode?: Mode, disableEditable?: boolean) {
   const { appSettings } = useContext(ModelContext);
+  const [hover, setHover] = useState(false);
 
   const isAlias = disableEditable
     ? appSettings?.rightClick === "move" ||
@@ -21,10 +22,13 @@ export default function useCursor(mode?: Mode, disableEditable?: boolean) {
       ? "alias"
       : undefined;
 
-  const isMove =
-    mode === "move" ||
-    appSettings?.rightClick === "move" ||
-    appSettings?.middleClick === "move";
+  const onMouseEnter = useCallback(() => {
+    setHover(!!cursor);
+  }, [cursor]);
 
-  return { cursor, isMove };
+  const onMouseLeave = useCallback(() => {
+    setHover(false);
+  }, []);
+
+  return { cursor, hover, onMouseEnter, onMouseLeave };
 }
