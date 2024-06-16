@@ -52,8 +52,9 @@ export default function Marker({
         <line
           {...xy}
           style={{
-            stroke: hover ? "#fe7" : "#ff7",
+            stroke: "#ff7",
             strokeWidth: "8",
+            filter: hover ? "invert(0.1)" : undefined,
           }}
         />
       </g>

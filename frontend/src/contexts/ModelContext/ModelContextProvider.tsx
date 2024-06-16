@@ -1,7 +1,7 @@
 import IModel from "@/models/IModel";
 import ModelDesktop from "@/models/Model.Desktop";
 import ModelNull from "@/models/Model.Null";
-import AppSettings from "@/types/AppSettings";
+import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import UiContext from "../UiContext";
 import Coverages, { Coverage } from "@/types/Coverages";
@@ -101,9 +101,12 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
  * `AppSettings, FileTree, Coverages`を取得する
  */
 async function loadAll(model: IModel) {
-  const appSettings = await model.getAppSettings().catch(() => {
-    throw new Error("設定ファイルの取得に失敗しました");
-  });
+  const appSettings: AppSettings = {
+    ...GetAppSettings_default(),
+    ...(await model.getAppSettings().catch(() => {
+      throw new Error("設定ファイルの取得に失敗しました");
+    })),
+  };
   const fileTree = await model.getFileTree().catch(() => {
     throw new Error("ファイルツリーの取得に失敗しました");
   });
