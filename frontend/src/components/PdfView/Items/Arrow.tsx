@@ -6,7 +6,7 @@ import {
 import { MouseEvent, useState } from "react";
 import { Mode } from "../SpeedDial";
 import Node from "./Node";
-import useCursor from "./useCursor";
+import useCursor from "./utils/useCursor";
 
 interface XY {
   x1: number;
@@ -23,16 +23,14 @@ export default function Arrow({
   mode,
   pageRect,
   onMouseDown,
-  disableNodes,
 }: {
   params: ArrowType;
   mode?: Mode;
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-  disableNodes?: boolean;
 }) {
   const [hover, setHover] = useState(false);
-  const { getCursor, isMove } = useCursor(mode);
+  const { cursor, isMove } = useCursor(mode);
   const xy: XY = {
     x1: params.x1 * pageRect.width,
     y1: params.y1 * pageRect.height,
@@ -44,17 +42,15 @@ export default function Arrow({
     stroke: "red",
     strokeWidth: "1",
   };
-  const cursor = disableNodes ? undefined : getCursor();
-  const node =
-    !disableNodes && isMove
-      ? {
-          target: params,
-          visible: hover,
-          pageRect,
-          onMouseDown,
-          isGrab: mode === "move",
-        }
-      : undefined;
+  const node = isMove
+    ? {
+        target: params,
+        visible: hover,
+        pageRect,
+        onMouseDown,
+        isGrab: mode === "move",
+      }
+    : undefined;
 
   return (
     <>

@@ -1,8 +1,8 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent } from "react";
 import { Mode } from "../SpeedDial";
 import { Rect as RectType, Node as NodeType, NoteType } from "@/types/PdfNotes";
 import Node from "./Node";
-import useCursor from "./useCursor";
+import usePolygon from "./utils/usePolygon";
 
 /**
  * 長方形
@@ -13,29 +13,20 @@ export default function Rect({
   moving,
   pageRect,
   onMouseDown,
-  disableNodes,
 }: {
   params: RectType;
   mode?: Mode;
   moving?: boolean;
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-  disableNodes?: boolean;
 }) {
-  const [hover, setHover] = useState(false);
-  const { getCursor, isMove } = useCursor(mode);
-  const cursor = disableNodes ? undefined : getCursor();
-  const node =
-    !disableNodes && isMove
-      ? {
-          target: params,
-          visible: hover,
-          pageRect,
-          onMouseDown,
-          isGrab: mode === "move",
-        }
-      : undefined;
-  const isColorize = params.style === "colorize" && !hover && !moving;
+  const { node, style, onMouseEnter, onMouseLeave } = usePolygon(
+    params,
+    pageRect,
+    mode,
+    moving,
+    onMouseDown
+  );
 
   return (
     <>
@@ -44,23 +35,12 @@ export default function Rect({
         y={params.y * pageRect.height}
         width={params.width * pageRect.width}
         height={params.height * pageRect.height}
-        style={{
-          fill: isColorize ? "red" : "#fbb",
-          stroke: params.style === "outlined" ? "red" : "none",
-          fillOpacity: params.style === "outlined" ? 0 : hover ? 0.7 : 1.0,
-          strokeOpacity: hover ? 0.5 : 1,
-          cursor,
-          mixBlendMode: isColorize ? "lighten" : "multiply",
-        }}
+        style={style}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);
         }}
-        onMouseEnter={() => {
-          setHover(!!cursor);
-        }}
-        onMouseLeave={() => {
-          setHover(false);
-        }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       />
       {node && <Node index={0} {...node} />}
       {node && <Node index={1} {...node} />}

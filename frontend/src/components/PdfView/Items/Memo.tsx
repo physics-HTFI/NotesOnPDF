@@ -4,7 +4,7 @@ import { MathJax } from "better-react-mathjax";
 import { Mode } from "../SpeedDial";
 import MouseContext from "@/contexts/MouseContext";
 import { Node, Memo as NoteParams, NoteType } from "@/types/PdfNotes";
-import useCursor from "./useCursor";
+import useCursor from "./utils/useCursor";
 
 /**
  * テキストや数式
@@ -19,9 +19,8 @@ export default function Memo({
   onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
 }) {
   const [hover, setHover] = useState(false);
-  const { getCursor } = useCursor(mode);
+  const { cursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
-  const cursor = getCursor();
   const html = params.html
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
     .replace(/\n/g, "<br/>");

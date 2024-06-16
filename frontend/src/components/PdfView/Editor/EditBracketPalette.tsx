@@ -43,7 +43,7 @@ export default function EditBracketPalette({
     };
     return (
       <Svg pageRect={pageRectIcon}>
-        <BracketItem pageRect={pageRectIcon} params={line} disableNodes />
+        <BracketItem pageRect={pageRectIcon} params={line} />
       </Svg>
     );
   };

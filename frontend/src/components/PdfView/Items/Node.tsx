@@ -10,6 +10,15 @@ import {
 } from "@/types/PdfNotes";
 import { green } from "@mui/material/colors";
 
+export interface NodeProps {
+  target: Arrow | Bracket | Marker | Polygon | Rect;
+  index: number;
+  visible: boolean;
+  pageRect: DOMRect;
+  isGrab: boolean;
+  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
+}
+
 /**
  * ノード編集用マーカー
  */
@@ -20,14 +29,7 @@ export default function Node({
   pageRect,
   isGrab,
   onMouseDown,
-}: {
-  target: Arrow | Bracket | Marker | Polygon | Rect;
-  index: number;
-  visible: boolean;
-  pageRect: DOMRect;
-  isGrab: boolean;
-  onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-}) {
+}: NodeProps) {
   const [hover, setHover] = useState(false);
   const [x, y] = (() => {
     switch (target.type) {

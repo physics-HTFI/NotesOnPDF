@@ -3,7 +3,7 @@ import { Chip as MuiChip } from "@mui/material";
 import { Mode } from "../SpeedDial";
 import { Chip as ChipType, Node, NoteType } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
-import useCursor from "./useCursor";
+import useCursor from "./utils/useCursor";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
@@ -19,12 +19,11 @@ export default function Chip({
   onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
 }) {
   const [hover, setHover] = useState(false);
-  const { getCursor } = useCursor(mode);
+  const { cursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
   const { pdfNotes } = useContext(PdfNotesContext);
   if (!pdfNotes || !scale) return <></>;
 
-  const cursor = getCursor();
   return (
     <MuiChip
       sx={{

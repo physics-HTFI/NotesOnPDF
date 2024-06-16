@@ -4,9 +4,9 @@ import { useId } from "react";
 const INNER_RADIUS = 1 / 3;
 
 /**
- * パレットの背景部分
+ * パレットの当たり判定など
  */
-export default function Background({
+export default function Foreground({
   L,
   divisions,
   selected,

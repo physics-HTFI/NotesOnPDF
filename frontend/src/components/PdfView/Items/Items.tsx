@@ -10,7 +10,7 @@ import Chip from "./Chip";
 import Svg from "../../common/Svg";
 import { Mode } from "../SpeedDial";
 import { Node as NodeType, NoteType } from "@/types/PdfNotes";
-import SvgDefs from "./SvgDefs";
+import SvgDefs from "./utils/SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";

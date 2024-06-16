@@ -44,7 +44,7 @@ export default function EditArrowPalette({
     };
     return (
       <Svg pageRect={pageRectIcon}>
-        <ArrowItem pageRect={pageRectIcon} params={line} disableNodes />
+        <ArrowItem pageRect={pageRectIcon} params={line} />
       </Svg>
     );
   };

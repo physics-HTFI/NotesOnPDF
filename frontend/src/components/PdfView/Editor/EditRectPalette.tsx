@@ -45,7 +45,7 @@ export default function EditRectPalette({
             着色
           </text>
         )}
-        <RectSvg pageRect={pageRect} params={rect} disableNodes />
+        <RectSvg pageRect={pageRect} params={rect} />
       </Svg>
     );
   };
