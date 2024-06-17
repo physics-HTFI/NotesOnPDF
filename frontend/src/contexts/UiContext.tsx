@@ -82,12 +82,10 @@ export function UiContextProvider({ children }: { children: ReactNode }) {
  */
 function ErrorOrInfo({
   severity,
-  autoHideDuration,
   onClose,
   message,
 }: {
   severity?: "error" | "info";
-  autoHideDuration?: number;
   onClose: () => void;
   message?: ReactNode;
 }) {
@@ -95,11 +93,9 @@ function ErrorOrInfo({
   if (!message) return undefined;
   return (
     <Snackbar
-      autoHideDuration={autoHideDuration}
       open={!!message}
-      onClose={(_, reason) => {
-        if (reason === "clickaway") return;
-        onClose(); // 時間が経ったときに閉じる
+      onClose={() => {
+        onClose();
       }}
     >
       <Alert

@@ -54,7 +54,7 @@ export default function PageLink({
           onMouseDown?.(e, params);
         }}
         onMouseEnter={() => {
-          setHover(!!cursor);
+          setHover(true);
         }}
         onMouseLeave={() => {
           setHover(false);
