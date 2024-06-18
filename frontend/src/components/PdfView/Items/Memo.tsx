@@ -21,10 +21,15 @@ export default function Memo({
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
-  const html = params.html
+  const folded = params.html.match(
+    params.style === "fold" && !hover ? /^.*/ : /[\s\S]*/
+  )?.[0];
+  const html = (!folded ? "" : folded === params.html ? folded : `${folded}...`)
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
     .replace(/\n/g, "<br/>");
-  const filter = `drop-shadow(0px 0px 2px ${hover ? "mistyrose" : "white"})`;
+  const filter = `drop-shadow(0px 0px 2px ${
+    hover && cursor ? "mistyrose" : "white"
+  })`;
   return (
     <MathJax hideUntilTypeset={"first"}>
       <Box
@@ -46,7 +51,7 @@ export default function Memo({
           onMouseDown?.(e, params);
         }}
         onMouseEnter={() => {
-          setHover(!!cursor);
+          setHover(true);
         }}
         onMouseLeave={() => {
           setHover(false);

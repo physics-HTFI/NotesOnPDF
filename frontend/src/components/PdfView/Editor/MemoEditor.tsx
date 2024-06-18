@@ -1,8 +1,11 @@
 import { useContext, useState } from "react";
 import {
+  FormControlLabel,
+  Switch,
   TextareaAutosize,
   Tooltip,
   TooltipProps,
+  Typography,
   styled,
   tooltipClasses,
 } from "@mui/material";
@@ -56,18 +59,54 @@ export default function MemoEditor({
     updaters: { updateNote },
   } = useContext(PdfNotesContext);
   const [text, setText] = useState(params.html);
+  const [fold, setFold] = useState(params.style === "fold");
+  const [init, setInit] = useState(false);
 
   // 閉じたときに値を更新する
   const handleClose = (cancel?: boolean) => {
     onClose();
     if (cancel) return;
     const html = text.trim();
-    if (text === "" || text === params.html) return;
-    updateNote(params, { ...params, html });
+    const style = fold ? "fold" : "normal";
+    if (text === "" || (text === params.html && style === params.style)) return;
+    updateNote(params, { ...params, html, style });
   };
 
   return (
     <EditorBase onClose={handleClose}>
+      <Tooltip
+        title={
+          <span>
+            2行目以降を折り畳みます
+            <br />
+            マウスポインターを重ねた時に全体が表示されます
+          </span>
+        }
+        disableInteractive
+        placement="top"
+      >
+        <FormControlLabel
+          sx={{
+            position: "absolute",
+            right: 11,
+            top: -30,
+            color: "white",
+            fontSize: "1em",
+          }}
+          control={
+            <Switch
+              size="small"
+              checked={fold}
+              onChange={(e) => {
+                setFold(e.target.checked);
+              }}
+              sx={{ background: "#fffd", borderRadius: "20%", ml: 0.5 }}
+            />
+          }
+          label={<Typography variant="body2">折り畳む</Typography>}
+          labelPlacement="start"
+        />
+      </Tooltip>
       <Textarea
         value={text}
         spellCheck={false}
@@ -80,7 +119,9 @@ export default function MemoEditor({
           }, 10);
         }}
         onFocus={(e) => {
+          if (init) return; // スイッチをトグルするたびに全選択されるのを防ぐ
           e.target.select();
+          setInit(true);
         }}
         onKeyDown={(e) => {
           if (e.ctrlKey && e.key === "Enter") {

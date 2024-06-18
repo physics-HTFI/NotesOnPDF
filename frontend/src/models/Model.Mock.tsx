@@ -92,6 +92,7 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             x: 0.02,
             y: 0.02,
             html: '<span style="color: midnightblue; text-decoration: underline; font-size: 200%">注釈一覧</span>',
+            style: "normal",
           },
           {
             type: "Chip",
@@ -264,6 +265,14 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             x: 0.14,
             y: 0.81,
             html: "インライン数式：$\\boldsymbol{F}=m\\ddot{\\boldsymbol{x}}$\n\n別行立て数式👇\n$$f(a)=\\frac{1}{2\\pi i}\\oint_\\gamma\\dfrac{f(z)}{z-a}dz$$",
+            style: "normal",
+          },
+          {
+            type: "Memo",
+            x: 0.51,
+            y: 0.81,
+            html: "折り畳み (マウスホバーで中身を表示)\n\nガウス積分\n$$\\int_{-\\infty}^\\infty e^{-x^2}dx=\\sqrt{\\pi}$$",
+            style: "fold",
           },
           {
             type: "Chip",
@@ -394,6 +403,7 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
             x: 0.36738892374257126,
             y: 0.03104930332261525,
             html: "Wikipediaより引用\nhttps://ja.wikipedia.org/wiki/1",
+            style: "normal",
           },
           {
             type: "Marker",

@@ -55,6 +55,7 @@ export interface Memo {
   x: number;
   y: number;
   html: string;
+  style: "normal" | "fold";
 }
 export interface PageLink {
   type: "PageLink";
