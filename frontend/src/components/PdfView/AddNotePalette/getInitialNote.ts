@@ -66,6 +66,7 @@ export default function getInitialNote(
       x,
       y,
       html: "",
+      style: "normal",
     };
 
   if (type === "PageLink")

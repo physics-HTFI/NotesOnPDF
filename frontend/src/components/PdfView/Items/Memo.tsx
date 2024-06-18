@@ -21,14 +21,19 @@ export default function Memo({
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
-  const folded = params.html.match(
-    params.style === "fold" && !hover ? /^.*/ : /[\s\S]*/
-  )?.[0];
-  const html = (!folded ? "" : folded === params.html ? folded : `${folded}...`)
+  const folded = params.style === "fold" && !hover;
+  const htmlFolded = params.html.match(folded ? /^.*/ : /[\s\S]*/)?.[0];
+  const html = (
+    !htmlFolded
+      ? ""
+      : htmlFolded === params.html
+      ? htmlFolded
+      : `${htmlFolded}...`
+  )
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
     .replace(/\n/g, "<br/>");
   const filter = `drop-shadow(0px 0px 2px ${
-    hover && cursor ? "mistyrose" : "white"
+    hover && cursor ? "snow" : "white"
   })`;
   return (
     <MathJax hideUntilTypeset={"first"}>
@@ -45,6 +50,7 @@ export default function Memo({
           transformOrigin: "top left",
           transform: `scale(${scale}%)`,
           filter: `${filter} ${filter} ${filter} ${filter} ${filter}`,
+          textDecoration: folded ? "underline" : undefined,
         }}
         dangerouslySetInnerHTML={{ __html: html ? html : "注釈" }}
         onMouseDown={(e) => {
