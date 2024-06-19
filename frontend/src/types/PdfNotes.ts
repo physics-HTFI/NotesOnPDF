@@ -5,11 +5,13 @@ import { ResultGetPdfNotes } from "@/models/IModel";
  */
 export default interface PdfNotes {
   title: string;
-  version: string;
+  version: number;
   currentPage: number;
   pages: Page[];
   settings: Settings;
 }
+
+export const VERSION = 1;
 
 export type NoteType =
   | Rect
@@ -146,7 +148,7 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
   }
   const notes: PdfNotes = result.pdfNotes ?? {
     title: result.name,
-    version: "1.0",
+    version: VERSION,
     currentPage: 0,
     settings: { fontSize: 100, offsetTop: 0, offsetBottom: 0 },
     pages: [],

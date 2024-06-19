@@ -3,6 +3,7 @@ import Coverages from "@/types/Coverages";
 import IModel, { ResultGetPdfNotes } from "./IModel";
 import { GetAppSettings_default } from "@/types/AppSettings";
 import History, { updateHistory } from "@/types/History";
+import { VERSION } from "@/types/PdfNotes";
 
 const pdfPaths = [
   "/NotesOnPDF/PDFs/Wikipedia.pdf",
@@ -79,7 +80,7 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
   name: "Wikipedia.pdf",
   pdfNotes: {
     title: "Wikipedia",
-    version: "1.0",
+    version: VERSION,
     currentPage: 0,
     settings: { fontSize: 100, offsetTop: 0, offsetBottom: 0 },
     pages: [

@@ -1,7 +1,7 @@
 import { useCallback, useContext } from "react";
 import { Drawer } from "@mui/material";
 import Header from "@/components/OpenFileDrawer/Header/Header";
-import { createOrGetPdfNotes } from "@/types/PdfNotes";
+import { VERSION, createOrGetPdfNotes } from "@/types/PdfNotes";
 import UiContext from "@/contexts/UiContext";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
@@ -36,6 +36,17 @@ export default function OpenFileDrawer() {
       model
         .getPdfNotes(_id)
         .then((result) => {
+          if (result.pdfNotes && result.pdfNotes.version > VERSION) {
+            setAlert(
+              "error",
+              <span>
+                NotesOnPDFのバージョンが古すぎます。
+                <br />
+                新しいNotesOnPDFを使用してください。
+              </span>
+            );
+            return;
+          }
           setPdfNotes(createOrGetPdfNotes(result));
           setPageSizes(result.pageSizes);
           setId(_id);

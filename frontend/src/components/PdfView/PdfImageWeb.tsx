@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { pdfjs, Document, Page } from "react-pdf";
 import UiContext from "@/contexts/UiContext";
-import { createOrGetPdfNotes } from "@/types/PdfNotes";
+import { VERSION, createOrGetPdfNotes } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
@@ -59,6 +59,20 @@ export default function PdfImageWeb() {
   useEffect(() => {
     // 読み込み終了時の処理
     if (file && waiting && pageSizes && pdfNotes) {
+      if (pdfNotes.version > VERSION) {
+        setAlert(
+          "error",
+          <span>
+            NotesOnPDFのバージョンが古すぎます。
+            <br />
+            新しいNotesOnPDFを使用してください。
+          </span>
+        );
+        setId(undefined);
+        setFile(undefined);
+        setWaiting(false);
+        return;
+      }
       const name = file instanceof File ? file.name : file;
       setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
       setWaiting(false);
@@ -73,6 +87,7 @@ export default function PdfImageWeb() {
     setWaiting,
     waiting,
     setAlert,
+    setId,
   ]);
 
   return (
