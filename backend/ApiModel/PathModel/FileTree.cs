@@ -23,7 +23,10 @@ namespace backend
         /// <summary>
         /// ルートフォルダ内のPDFファイル一覧（フロントエンドに渡す）。<c>throw</c>しない。
         /// </summary>
-        public Item[] GetFileTree() => [.. items];
+        public Item[] GetFileTree() {
+            ReadTree();
+            return [..items] ;
+        }
 
         /// <summary>
         /// <c>id</c>をPDFファイルパスに変換する。失敗したら<c>null</c>。
@@ -45,7 +48,7 @@ namespace backend
         /// </summary>
         public FileTree()
         {
-            ReadItems();
+            ReadTree();
             Properties.Settings.Default.PropertyChanged += BackendSettingsChanged;
         }
 
@@ -63,7 +66,7 @@ namespace backend
         void BackendSettingsChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(Properties.Settings.Default.RootDirectory)) return;
-            ReadItems();
+            ReadTree();
         }
 
 
@@ -80,7 +83,7 @@ namespace backend
         /// <summary>
         /// 初期化処理、またはルートディレクトリの変更時に呼ぶ。<c>throw</c>しない。
         /// </summary>
-        void ReadItems()
+        void ReadTree()
         {
             try
             {
