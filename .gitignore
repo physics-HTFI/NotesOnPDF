@@ -1,6 +1,4 @@
-/backend/bin
-/backend/obj
-/backend/backend.csproj.user
-/backend/.vs
-/backend/backend.test/obj
-/backend/backend.test/bin
+bin
+obj
+.vs
+*.user
