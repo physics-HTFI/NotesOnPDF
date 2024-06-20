@@ -48,5 +48,4 @@ export interface ModelFlags {
   canOpenHistory: boolean;
   canOpenFileDialog: boolean;
   canOpenGithub: boolean;
-  isWeb: boolean;
 }

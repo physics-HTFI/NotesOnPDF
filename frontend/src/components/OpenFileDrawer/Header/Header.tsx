@@ -15,6 +15,8 @@ import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 
+const IS_WEB = import.meta.env.MODE === "web";
+
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
@@ -118,8 +120,8 @@ export default function Header({
         tooltipTitle={
           <span>
             ファイルツリー外のPDFファイルを開きます
-            {modelFlags.isWeb && <br />}
-            {modelFlags.isWeb && "(ウェブ版では使用できません)"}
+            {IS_WEB && <br />}
+            {IS_WEB && "(ウェブ版では使用できません)"}
           </span>
         }
       />
@@ -135,8 +137,8 @@ export default function Header({
         tooltipTitle={
           <span>
             URLからPDFファイルを開きます
-            {modelFlags.isWeb && <br />}
-            {modelFlags.isWeb && "(ウェブ版では使用できません)"}
+            {IS_WEB && <br />}
+            {IS_WEB && "(ウェブ版では使用できません)"}
           </span>
         }
       />

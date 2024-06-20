@@ -541,7 +541,6 @@ export default class ModelMock implements IModel {
     canOpenHistory: false,
     canOpenFileDialog: false,
     canOpenGithub: true,
-    isWeb: true,
   });
   getEventSource = () => undefined;
 

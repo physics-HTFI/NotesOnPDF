@@ -8,7 +8,6 @@ export default class ModelNull implements IModel {
     canOpenHistory: true,
     canOpenFileDialog: true,
     canOpenGithub: true,
-    isWeb: true,
   });
   getEventSource = () => undefined;
 

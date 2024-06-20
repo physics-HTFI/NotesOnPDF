@@ -27,7 +27,6 @@ export default class ModelWeb implements IModel {
     canOpenHistory: true,
     canOpenFileDialog: false,
     canOpenGithub: true,
-    isWeb: true,
   });
   getEventSource = () => undefined;
 

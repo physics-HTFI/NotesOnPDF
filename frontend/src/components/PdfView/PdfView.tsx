@@ -14,13 +14,16 @@ import PdfImageDesktop from "./PdfImageDesktop";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
-const PdfImageWeb = lazy(() => import("./PdfImageWeb"));
+const PdfImageWeb =
+  import.meta.env.MODE === "web"
+    ? lazy(() => import("./PdfImageWeb"))
+    : undefined;
 
 /**
  * Pdfを表示するコンポーネント
  */
 export default function PdfView() {
-  const { modelFlags, appSettings } = useContext(ModelContext);
+  const { appSettings } = useContext(ModelContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
   const {
     updaters: { page, updateNote, scrollPage, handleKeyDown },
@@ -112,7 +115,7 @@ export default function PdfView() {
         disableGutters
       >
         {/* 画像 */}
-        {modelFlags.isWeb ? <PdfImageWeb /> : <PdfImageDesktop />}
+        {PdfImageWeb ? <PdfImageWeb /> : <PdfImageDesktop />}
 
         {/* 注釈アイテム */}
         <Items

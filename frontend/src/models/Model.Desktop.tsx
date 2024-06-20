@@ -14,7 +14,6 @@ export default class ModelDesktop implements IModel {
     canOpenHistory: true,
     canOpenFileDialog: true,
     canOpenGithub: false,
-    isWeb: false,
   });
 
   getEventSource = () =>
