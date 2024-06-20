@@ -16,6 +16,9 @@ npm run build-web              # ビルド実行
 まずフロントエンドをビルドする。
 以下のコマンドにより、`frontend/dist/desuktop/` にビルド成果物が出力される。
 
+> なお、注釈ファイルのフォーマットが変更されている場合、
+> `frontend/public/Wikipedia.pdf.json`も併せて更新しておくこと。
+
 ```powershell
 winget install "Node.js"       # Node.jsのインストール
 cd path/to/NotesOnPdf/frontend # NotesOnPdf/frontend/ フォルダに移動
@@ -33,6 +36,7 @@ npm run build-web              # ビルド実行
 - `FolderProfile.pubxml`の`発行`ボタンをクリック。
 
 あとは、以下をまとめればよい：
+
 - フロントエンドのビルド結果を、以下のバックエンドのビルド成果物フォルダ内にコピーする。
-（`index.html`と`NotesOnPdf.exe`が同じフォルダに配置される。）
+  （`index.html`と`NotesOnPdf.exe`が同じフォルダに配置される。）
 - `download`という名の空のファイルを作っておく。（デフォルトのダウンロードフォルダとして使用される。）
