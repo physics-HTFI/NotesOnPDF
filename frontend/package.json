@@ -22,6 +22,7 @@
     "@mui/material": "^5.14.18",
     "@mui/x-tree-view": "^6.17.0",
     "better-react-mathjax": "^2.0.3",
+    "dompurify": "^3.1.5",
     "js-md5": "^0.8.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -29,6 +30,7 @@
     "react-resizable-panels": "^0.0.63"
   },
   "devDependencies": {
+    "@types/dompurify": "^3.0.5",
     "@types/node": "^20.9.2",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",

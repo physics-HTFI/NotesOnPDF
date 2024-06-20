@@ -5,6 +5,7 @@ import { Mode } from "../SpeedDial";
 import MouseContext from "@/contexts/MouseContext";
 import { Node, Memo as NoteParams, NoteType } from "@/types/PdfNotes";
 import useCursor from "./utils/useCursor";
+import DOMPurify from "dompurify";
 
 /**
  * テキストや数式
@@ -48,7 +49,9 @@ export default function Memo({
           filter: `${filter} ${filter} ${filter} ${filter} ${filter}`,
           textDecoration: folded ? "underline" : undefined,
         }}
-        dangerouslySetInnerHTML={{ __html: html ? html : "注釈" }}
+        dangerouslySetInnerHTML={{
+          __html: html ? DOMPurify.sanitize(html) : "注釈",
+        }}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);
         }}
