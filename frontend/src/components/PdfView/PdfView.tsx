@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { lazy, useContext, useEffect, useState } from "react";
 import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
 import SpeedDial, { Mode } from "./SpeedDial";
@@ -11,9 +11,10 @@ import Editor from "./Editor/Editor";
 import { grey } from "@mui/material/colors";
 import Move from "./Move";
 import PdfImageDesktop from "./PdfImageDesktop";
-import PdfImageWeb from "./PdfImageWeb";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+
+const PdfImageWeb = lazy(() => import("./PdfImageWeb"));
 
 /**
  * Pdfを表示するコンポーネント
