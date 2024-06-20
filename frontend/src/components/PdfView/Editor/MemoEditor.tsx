@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import {
   FormControlLabel,
   Switch,
@@ -60,7 +60,11 @@ export default function MemoEditor({
   } = useContext(PdfNotesContext);
   const [text, setText] = useState(params.html);
   const [fold, setFold] = useState(params.style === "fold");
-  const [init, setInit] = useState(false);
+  const handleRef = useCallback((ref: HTMLTextAreaElement | null) => {
+    setTimeout(() => {
+      ref?.select();
+    }, 10);
+  }, []);
 
   // 閉じたときに値を更新する
   const handleClose = (cancel?: boolean) => {
@@ -100,7 +104,7 @@ export default function MemoEditor({
               onChange={(e) => {
                 setFold(e.target.checked);
               }}
-              sx={{ background: "#fffd", borderRadius: "20%", ml: 0.5 }}
+              sx={{ background: "#fffe", borderRadius: 2, ml: 0.5 }}
             />
           }
           label={<Typography variant="body2">折り畳む</Typography>}
@@ -113,16 +117,7 @@ export default function MemoEditor({
         onChange={(e) => {
           setText(e.target.value);
         }}
-        ref={(ref: HTMLElement | null) => {
-          setTimeout(() => {
-            ref?.focus();
-          }, 10);
-        }}
-        onFocus={(e) => {
-          if (init) return; // スイッチをトグルするたびに全選択されるのを防ぐ
-          e.target.select();
-          setInit(true);
-        }}
+        ref={handleRef}
         onKeyDown={(e) => {
           if (e.ctrlKey && e.key === "Enter") {
             handleClose();
@@ -141,6 +136,7 @@ export default function MemoEditor({
             ・[Ctrl+Enter] 編集完了
             <br />
             ・[Escape] キャンセル
+            <br />
             <br />
             ・インライン数式:
             <code style={{ fontSize: "120%", paddingLeft: 4 }}>$e=mc^2$</code>

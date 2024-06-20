@@ -21,15 +21,11 @@ export default function Memo({
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
-  const folded = params.style === "fold" && !hover;
-  const htmlFolded = params.html.match(folded ? /^.*/ : /[\s\S]*/)?.[0];
-  const html = (
-    !htmlFolded
-      ? ""
-      : htmlFolded === params.html
-      ? htmlFolded
-      : `${htmlFolded}...`
-  )
+  const htmlFolded = params.html.match(
+    params.style === "fold" && !hover ? /^.*/ : /[\s\S]*/
+  )?.[0];
+  const folded = htmlFolded !== params.html;
+  const html = (!htmlFolded ? "" : folded ? `${htmlFolded}...` : htmlFolded)
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
     .replace(/\n/g, "<br/>");
   const filter = `drop-shadow(0px 0px 2px ${
