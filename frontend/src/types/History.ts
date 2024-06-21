@@ -13,11 +13,12 @@ export default History;
 export function updateHistory(
   history: History,
   id: string,
+  path: string,
   pages: number
 ): History {
   const entry: HistoryEntry = {
     id,
-    name: id.split("/").pop() ?? "",
+    name: path.split("/").pop() ?? "",
     pages: String(pages),
     origin: "ツリー内",
     accessDate: nowToString(),

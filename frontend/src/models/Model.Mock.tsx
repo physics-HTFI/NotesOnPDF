@@ -548,7 +548,7 @@ export default class ModelMock implements IModel {
 
   getHistory = () => Promise.resolve(this.history);
   updateHistory = (id: string, pages: number) => {
-    this.history = updateHistory(this.history, id, pages);
+    this.history = updateHistory(this.history, id, id, pages);
     return Promise.resolve();
   };
   deleteHistoryAll = () => {

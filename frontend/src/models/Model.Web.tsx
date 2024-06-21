@@ -84,7 +84,7 @@ export default class ModelWeb implements IModel {
 
   getHistory = async () => Promise.resolve(this.history);
   updateHistory = async (id: string, pages: number) => {
-    this.history = updateHistory(this.history, this.idToPath(id), pages);
+    this.history = updateHistory(this.history, id, this.idToPath(id), pages);
     await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
   };
   deleteHistoryAll = async () => {
