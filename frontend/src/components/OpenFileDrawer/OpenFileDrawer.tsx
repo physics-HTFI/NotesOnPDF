@@ -71,7 +71,10 @@ export default function OpenFileDrawer() {
           setPdfNotes(createOrGetPdfNotes(result));
           setPageSizes(result.pageSizes);
           setId(_id);
-          setOpenFileTreeDrawer(false);
+          if (import.meta.env.MODE !== "web") {
+            setOpenFileTreeDrawer(false);
+            // ウェブ版では、ここではなく<PdfImageWeb>で行う
+          }
         })
         .catch(() => {
           setAlert(
@@ -80,7 +83,12 @@ export default function OpenFileDrawer() {
           );
         })
         .finally(() => {
-          setWaiting(false);
+          if (import.meta.env.MODE !== "web") {
+            setWaiting(false);
+            // ウェブ版の場合はPDFの初期表示でもプログレスインジケータが出るので、
+            // ここで消すとちらついてしまう。
+            // そのため、ここではなく<PdfImageWeb>の読み込みが終わった時にsetWaiting(false)する
+          }
         });
     },
     [

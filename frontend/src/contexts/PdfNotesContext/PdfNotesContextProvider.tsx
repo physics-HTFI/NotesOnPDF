@@ -1,5 +1,5 @@
 import PdfNotes from "@/types/PdfNotes";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { debounce } from "@mui/material";
 import IModel from "@/models/IModel";
 import ModelContext from "../ModelContext/ModelContext";
@@ -46,10 +46,10 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     setPreviousPageNum,
   });
 
-  const setId = (id?: string) => {
+  const setId = useCallback((id?: string) => {
     setId_(id);
     setPreviousPageNum(undefined);
-  };
+  }, []);
 
   // `pdfNotes`が変更されたときの処理
   useEffect(() => {

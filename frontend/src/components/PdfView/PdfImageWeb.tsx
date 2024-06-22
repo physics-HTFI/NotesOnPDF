@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { pdfjs, Document, Page } from "react-pdf";
 import UiContext from "@/contexts/UiContext";
-import { VERSION, createOrGetPdfNotes } from "@/types/PdfNotes";
+import { createOrGetPdfNotes } from "@/types/PdfNotes";
 import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
@@ -24,14 +24,13 @@ export default function PdfImageWeb() {
   const {
     id,
     pdfNotes,
-    pageSizes,
     setId,
     setPdfNotes,
     setPageSizes,
     updaters: { pageLabel },
   } = useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
-  const { readOnly, waiting, setWaiting, setOpenFileTreeDrawer, setAlert } =
+  const { readOnly, setWaiting, setOpenFileTreeDrawer, setAlert } =
     useContext(UiContext);
 
   const [file, setFile] = useState<string | File>();
@@ -44,7 +43,7 @@ export default function PdfImageWeb() {
   useEffect(() => {
     setFile(undefined);
     if (!id) return;
-    setWaiting(true);
+    // ここに来た時点でpdfNotesの取得は終わっている @OpenFileDrawer
     model
       .getFileFromId(id)
       .then((file) => {
@@ -52,48 +51,21 @@ export default function PdfImageWeb() {
       })
       .catch(() => {
         setAlert("error", "PDFファイルの取得に失敗しました");
-      });
-  }, [id, model, setWaiting, setAlert]);
-
-  useEffect(() => {
-    // 読み込み終了時の処理
-    if (file && waiting && pageSizes && pdfNotes) {
-      if (pdfNotes.version > VERSION) {
-        setAlert(
-          "error",
-          <span>
-            NotesOnPDFのバージョンが古すぎます。
-            <br />
-            新しいNotesOnPDFを使用してください。
-          </span>
-        );
         setId(undefined);
-        setFile(undefined);
         setWaiting(false);
-        return;
-      }
-      const name = file instanceof File ? file.name : file;
-      setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
-      setWaiting(false);
-      setOpenFileTreeDrawer(false);
-    }
-  }, [
-    file,
-    pageSizes,
-    pdfNotes,
-    setOpenFileTreeDrawer,
-    setPdfNotes,
-    setWaiting,
-    waiting,
-    setAlert,
-    setId,
-  ]);
+        setOpenFileTreeDrawer(true);
+      });
+  }, [id, model, setWaiting, setAlert, setId, setOpenFileTreeDrawer]);
 
   return (
     <Document
       file={file}
       onLoadSuccess={(doc) => {
         setSizes().catch(() => undefined); // 読み込みは成功しているのでエラーにはならないはず
+        // ウェブ版では↓の処理はPdfNotesの取得時には行っていない
+        setWaiting(false);
+        setOpenFileTreeDrawer(false);
+        return;
 
         async function setSizes() {
           const pageSizes: PageSize[] = [];
@@ -108,6 +80,11 @@ export default function PdfImageWeb() {
           if (id && !readOnly) {
             await model.updateHistory(id, pageSizes.length);
           }
+
+          // ページ数を調節する
+          if (!file) return;
+          const name = file instanceof File ? file.name : file;
+          setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
         }
       }}
       onLoadError={() => {
