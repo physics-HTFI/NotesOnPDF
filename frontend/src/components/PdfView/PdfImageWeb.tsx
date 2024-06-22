@@ -20,7 +20,7 @@ const options = {
  * PDF画像を表示するコンポーネント
  */
 export default function PdfImageWeb() {
-  const { model } = useContext(ModelContext);
+  const { model, modelFlags } = useContext(ModelContext);
   const {
     id,
     pdfNotes,
@@ -46,8 +46,13 @@ export default function PdfImageWeb() {
     // ここに来た時点でpdfNotesの取得は終わっている @OpenFileDrawer
     model
       .getFileFromId(id)
-      .then((file) => {
-        setFile(file);
+      .then((newFile) => {
+        setFile(newFile);
+        if (modelFlags.isMock) {
+          // モックの場合は空白PDFを連続で開く可能性があるが、その時はonLoadSuccessが呼ばれないので、ここでUIを更新しておく
+          setWaiting(false);
+          setOpenFileTreeDrawer(false);
+        }
       })
       .catch(() => {
         setAlert("error", "PDFファイルの取得に失敗しました");
@@ -55,14 +60,21 @@ export default function PdfImageWeb() {
         setWaiting(false);
         setOpenFileTreeDrawer(true);
       });
-  }, [id, model, setWaiting, setAlert, setId, setOpenFileTreeDrawer]);
-
+  }, [
+    id,
+    model,
+    modelFlags,
+    setWaiting,
+    setAlert,
+    setId,
+    setOpenFileTreeDrawer,
+  ]);
   return (
     <Document
       file={file}
       onLoadSuccess={(doc) => {
         setSizes().catch(() => undefined); // 読み込みは成功しているのでエラーにはならないはず
-        // ウェブ版では↓の処理はPdfNotesの取得時には行っていない
+        // ウェブ版では↓の処理はPdfNotesの取得時には行わずここで行う
         setWaiting(false);
         setOpenFileTreeDrawer(false);
         return;

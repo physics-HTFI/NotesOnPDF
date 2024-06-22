@@ -31,7 +31,7 @@ export default function Header({
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-  const readOnlyIcon = readOnly || !modelFlags.canToggleReadOnly;
+  const readOnlyIcon = readOnly || modelFlags.isMock;
   const sxButton = { color: "slategray" };
 
   return (
@@ -45,7 +45,7 @@ export default function Header({
     >
       {/* 読み取り専用 */}
       <TooltipIconButton
-        disabled={!initialized || !modelFlags.canToggleReadOnly}
+        disabled={!initialized || modelFlags.isMock}
         icon={readOnlyIcon ? <Lock /> : <LockOpen />}
         onClick={() => {
           setReadOnly(!readOnly);

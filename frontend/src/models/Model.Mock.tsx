@@ -3,7 +3,7 @@ import Coverages from "@/types/Coverages";
 import IModel, { ResultGetPdfNotes } from "./IModel";
 import { GetAppSettings_default } from "@/types/AppSettings";
 import History, { updateHistory } from "@/types/History";
-import { VERSION } from "@/types/PdfNotes";
+import PdfNotes, { VERSION } from "@/types/PdfNotes";
 
 const PATH_PDF_WIKIPEDIA = "/NotesOnPDF/PDFs/Wikipedia.pdf";
 const PATH_PDF_EMPTY = "/NotesOnPDF/PDFs/blank-pages-10.pdf";
@@ -536,10 +536,11 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
   },
 };
 
-const getResultGetPdfNotesEmpty = (id: string): ResultGetPdfNotes => {
+const getResultBlankPages10 = (id: string): ResultGetPdfNotes => {
   const name = id.split("/").pop() ?? "";
   const result: ResultGetPdfNotes = {
     name,
+    pageSizes: Array(10).fill({ width: 595.32, height: 841.92 }), // 指定しておかないと、ダミーファイルを2回連続で開いたときに<PdfImageWeb>のonLoadSuccessが呼ばれない仕様によって、pageSizesがundefinedになって画像が表示されなくなる
     pdfNotes: {
       title: name.split(".")[0] ?? "",
       version: VERSION,
@@ -588,7 +589,7 @@ export default class ModelMock implements IModel {
   private results: Record<string, ResultGetPdfNotes> = {};
 
   getFlags = () => ({
-    canToggleReadOnly: false,
+    isMock: true,
     canOpenFileDialog: false,
     canOpenGithub: true,
   });
@@ -625,12 +626,17 @@ export default class ModelMock implements IModel {
     let result = this.results[id];
     if (!result) {
       result =
-        id === pdfPaths[0] ? resultGetPdfNotes : getResultGetPdfNotesEmpty(id);
+        id === pdfPaths[0] ? resultGetPdfNotes : getResultBlankPages10(id);
       this.results[id] = result;
     }
     return Promise.resolve(result);
   };
-  putPdfNotes = () => Promise.resolve();
+  putPdfNotes = (id: string, pdfNotes: PdfNotes) => {
+    const result = this.results[id];
+    if (!result) return Promise.reject();
+    result.pdfNotes = pdfNotes;
+    return Promise.resolve();
+  };
 
   getPageImageUrl = () => "";
 

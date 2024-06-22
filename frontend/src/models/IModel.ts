@@ -44,7 +44,7 @@ export interface ResultGetPdfNotes {
 }
 
 export interface ModelFlags {
-  canToggleReadOnly: boolean;
+  isMock: boolean;
   canOpenFileDialog: boolean;
   canOpenGithub: boolean;
 }

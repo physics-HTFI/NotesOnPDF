@@ -23,7 +23,7 @@ export default class ModelWeb implements IModel {
   }
 
   getFlags = () => ({
-    canToggleReadOnly: true,
+    isMock: false,
     canOpenFileDialog: false,
     canOpenGithub: true,
   });

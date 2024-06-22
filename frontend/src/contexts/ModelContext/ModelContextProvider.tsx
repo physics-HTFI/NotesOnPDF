@@ -1,4 +1,4 @@
-import IModel from "@/models/IModel";
+import IModel, { ModelFlags } from "@/models/IModel";
 import ModelDesktop from "@/models/Model.Desktop";
 import ModelNull from "@/models/Model.Null";
 import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
@@ -23,6 +23,11 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
   const [initialized, setInitialized] = useState(false);
+  const [modelFlags, setModelFlags] = useState<ModelFlags>(model.getFlags());
+
+  useEffect(() => {
+    setModelFlags(model.getFlags());
+  }, [model]);
 
   // `appSettings, FileTree, Coverages`を取得する
   useEffect(() => {
@@ -76,7 +81,7 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
     <ModelContext.Provider
       value={{
         model,
-        modelFlags: model.getFlags(),
+        modelFlags,
         appSettings,
         fileTree,
         coverages,
