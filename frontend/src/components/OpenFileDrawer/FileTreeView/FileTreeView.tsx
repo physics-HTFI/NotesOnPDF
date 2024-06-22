@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { TreeView } from "@mui/x-tree-view";
 import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,28 +10,19 @@ import ModelContext from "@/contexts/ModelContext/ModelContext";
  * ファイル一覧を表示するコンポーネント
  */
 export default function FileTreeView({
+  selectedPath,
+  expanded,
+  setSelectedPath,
+  setExpanded,
   onSelectPdfById,
 }: {
+  selectedPath?: string;
+  expanded: string[];
+  setSelectedPath: (path: string) => void;
+  setExpanded: (expanded: string[]) => void;
   onSelectPdfById: (id: string) => void;
 }) {
   const { fileTree, coverages } = useContext(ModelContext);
-  const [expanded, setExpanded] = useState<string[]>([]);
-  const [selectedPath, setSelectedPath] = useState<string>();
-
-  // 前回のファイルを選択した状態にする
-  if (selectedPath === undefined && fileTree && coverages) {
-    const path = fileTree.find((i) => i.id === coverages.recentId)?.path;
-    if (path) {
-      setSelectedPath(path);
-      setExpanded(
-        [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
-          path.substring(0, (m.index ?? 0) - 1)
-        )
-      );
-    } else {
-      setSelectedPath("");
-    }
-  }
 
   // ファイル数が増えてくると重くなる可能性がある。
   // しかし、（モーダルな）ドロワーが閉じているときはその内部は再レンダーされないので、

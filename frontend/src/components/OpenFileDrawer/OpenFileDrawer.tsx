@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { Drawer } from "@mui/material";
 import Header from "@/components/OpenFileDrawer/Header/Header";
 import { VERSION, createOrGetPdfNotes } from "@/types/PdfNotes";
@@ -11,7 +11,7 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
-  const { model } = useContext(ModelContext);
+  const { model, fileTree, coverages } = useContext(ModelContext);
   const {
     readOnly,
     setAlert,
@@ -20,7 +20,28 @@ export default function OpenFileDrawer() {
     setOpenFileTreeDrawer,
   } = useContext(UiContext);
   const { id, setId, setPdfNotes, setPageSizes } = useContext(PdfNotesContext);
+  // FileTreeViewの選択と折り畳み状態（FileTreeViewの内部で保持するとドロワーを閉じたときにアンマウントされて消えてしまう）
+  const [selectedPath, setSelectedPath] = useState<string>();
+  const [expanded, setExpanded] = useState<string[]>([]);
 
+  // 前回のファイルを選択した状態にする
+  if (
+    selectedPath === undefined &&
+    fileTree &&
+    coverages?.recentId !== undefined
+  ) {
+    const path = fileTree.find((i) => i.id === coverages.recentId)?.path;
+    if (path) {
+      setSelectedPath(path);
+      setExpanded(
+        [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
+          path.substring(0, (m.index ?? 0) - 1)
+        )
+      );
+    } else {
+      setSelectedPath("");
+    }
+  }
   // ファイルIDを選択したときの処理。
   // ファイルツリーのアップデートを抑えるためメモ化している。
   const handleSelectPdfById = useCallback(
@@ -103,7 +124,13 @@ export default function OpenFileDrawer() {
       <Header onSelectPdfById={handleSelectPdfById} />
 
       {/* ツリービュー */}
-      <FileTreeView onSelectPdfById={handleSelectPdfById} />
+      <FileTreeView
+        selectedPath={selectedPath}
+        expanded={expanded}
+        setSelectedPath={setSelectedPath}
+        setExpanded={setExpanded}
+        onSelectPdfById={handleSelectPdfById}
+      />
     </Drawer>
   );
 }
