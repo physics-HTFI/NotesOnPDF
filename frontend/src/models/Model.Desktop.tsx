@@ -11,7 +11,6 @@ export default class ModelDesktop implements IModel {
 
   getFlags = () => ({
     canToggleReadOnly: true,
-    canOpenHistory: true,
     canOpenFileDialog: true,
     canOpenGithub: false,
   });

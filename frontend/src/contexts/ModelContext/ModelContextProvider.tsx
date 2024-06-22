@@ -18,12 +18,11 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
     import.meta.env.MODE === "web" ? new ModelNull() : new ModelDesktop()
   );
   const { readOnly, setAlert } = useContext(UiContext);
+  const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
-  const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
-
-  const initialized = !!appSettings && !!fileTree && !!coverages;
+  const [initialized, setInitialized] = useState(false);
 
   // `appSettings, FileTree, Coverages`を取得する
   useEffect(() => {
@@ -33,6 +32,7 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
         setAppSettings(appSettings);
         setFileTree(fileTree);
         setCoverages(coverages);
+        setInitialized(true);
       })
       .catch((e?: Error) => {
         if (!e?.message) return;

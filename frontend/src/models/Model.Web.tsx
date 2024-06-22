@@ -24,7 +24,6 @@ export default class ModelWeb implements IModel {
 
   getFlags = () => ({
     canToggleReadOnly: true,
-    canOpenHistory: true,
     canOpenFileDialog: false,
     canOpenGithub: true,
   });

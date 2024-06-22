@@ -19,12 +19,7 @@ export default function FileTreeView({
   const [selectedPath, setSelectedPath] = useState<string>();
 
   // 前回のファイルを選択した状態にする
-  if (
-    selectedPath === undefined &&
-    fileTree &&
-    fileTree.length !== 0 &&
-    coverages
-  ) {
+  if (selectedPath === undefined && fileTree && coverages) {
     const path = fileTree.find((i) => i.id === coverages.recentId)?.path;
     if (path) {
       setSelectedPath(path);

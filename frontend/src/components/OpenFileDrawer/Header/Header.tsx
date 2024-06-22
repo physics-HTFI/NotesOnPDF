@@ -31,6 +31,7 @@ export default function Header({
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
+  const readOnlyIcon = readOnly || !modelFlags.canToggleReadOnly;
   const sxButton = { color: "slategray" };
 
   return (
@@ -45,17 +46,17 @@ export default function Header({
       {/* 読み取り専用 */}
       <TooltipIconButton
         disabled={!initialized || !modelFlags.canToggleReadOnly}
-        icon={readOnly ? <Lock /> : <LockOpen />}
+        icon={readOnlyIcon ? <Lock /> : <LockOpen />}
         onClick={() => {
           setReadOnly(!readOnly);
         }}
         sx={{
           mr: "auto",
           ...sxButton,
-          ...(readOnly ? { color: "firebrick" } : {}),
+          ...(readOnlyIcon ? { color: "firebrick" } : {}),
         }}
         tooltipTitle={
-          readOnly ? (
+          readOnlyIcon ? (
             <span>
               【読み取り専用モード】
               <br />
@@ -75,7 +76,7 @@ export default function Header({
 
       {/* アクセス履歴からPDFファイルを開く */}
       <TooltipIconButton
-        disabled={!initialized || !modelFlags.canOpenHistory}
+        disabled={!initialized}
         icon={<Restore />}
         onClick={() => {
           setOpenHistory(true);

@@ -5,19 +5,21 @@ import { GetAppSettings_default } from "@/types/AppSettings";
 import History, { updateHistory } from "@/types/History";
 import { VERSION } from "@/types/PdfNotes";
 
+const PATH_PDF_WIKIPEDIA = "/NotesOnPDF/PDFs/Wikipedia.pdf";
+const PATH_PDF_EMPTY = "/NotesOnPDF/PDFs/blank-pages-10.pdf";
 const pdfPaths = [
-  "/NotesOnPDF/PDFs/Wikipedia.pdf",
-  "dummy1/",
-  "dummy1/dummy11/",
-  "dummy1/dummy11/11A.pdf",
-  "dummy1/dummy11/11B.pdf",
-  "dummy1/dummy11/11C.pdf",
-  "dummy1/dummy1A.pdf",
-  "dummy1/dummy1B.pdf",
-  "dummy1/dummy1C.pdf",
-  "dummy2/dummy2/",
-  "dummy2/dummy2A.pdf",
-  "dummy2/dummy2B.pdf",
+  PATH_PDF_WIKIPEDIA,
+  "フォルダ 1",
+  "フォルダ 1/サブフォルダ",
+  "フォルダ 1/サブフォルダ/ファイル 1.pdf",
+  "フォルダ 1/サブフォルダ/ファイル 2.pdf",
+  "フォルダ 1/サブフォルダ/ファイル 3.pdf",
+  "フォルダ 1/ファイル 20%.pdf",
+  "フォルダ 1/ファイル 50%.pdf",
+  "フォルダ 1/ファイル 100%.pdf",
+  "フォルダ 2",
+  "フォルダ 2/ファイル 1.pdf",
+  "フォルダ 2/ファイル 2.pdf",
 ] as const;
 const fileTree: FileTree = [
   { path: "", id: "0", children: [pdfPaths[1], pdfPaths[9], pdfPaths[0]] },
@@ -57,25 +59,26 @@ const coverages: Coverages = {
       percent: 4,
     },
     [pdfPaths[6]]: {
-      allPages: 100,
-      enabledPages: 100,
-      notedPages: 20,
+      allPages: 10,
+      enabledPages: 10,
+      notedPages: 2,
       percent: 20,
     },
     [pdfPaths[7]]: {
-      allPages: 100,
-      enabledPages: 100,
-      notedPages: 50,
+      allPages: 10,
+      enabledPages: 10,
+      notedPages: 5,
       percent: 50,
     },
     [pdfPaths[8]]: {
-      allPages: 100,
-      enabledPages: 100,
-      notedPages: 100,
+      allPages: 10,
+      enabledPages: 10,
+      notedPages: 10,
       percent: 100,
     },
   },
 };
+
 const resultGetPdfNotes: ResultGetPdfNotes = {
   name: "Wikipedia.pdf",
   pdfNotes: {
@@ -533,12 +536,59 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
   },
 };
 
+const getResultGetPdfNotesEmpty = (id: string): ResultGetPdfNotes => {
+  const name = id.split("/").pop() ?? "";
+  const result: ResultGetPdfNotes = {
+    name,
+    pdfNotes: {
+      title: name.split(".")[0] ?? "",
+      version: VERSION,
+      currentPage: 0,
+      settings: { fontSize: 100, offsetTop: 0, offsetBottom: 0 },
+      pages: [
+        { num: 1 },
+        { num: 2 },
+        { num: 3 },
+        { num: 4 },
+        { num: 5 },
+        { num: 6 },
+        { num: 7 },
+        { num: 8 },
+        { num: 9 },
+        { num: 10 },
+      ],
+    },
+  };
+  const num = name.includes("100%")
+    ? 10
+    : name.includes("50%")
+    ? 5
+    : name.includes("20%")
+    ? 2
+    : 0;
+  for (let i = 0; i < num; i++) {
+    const page = result.pdfNotes?.pages[i];
+    if (page)
+      page.notes = [
+        {
+          type: "Rect",
+          x: 0.3,
+          y: 0.3,
+          width: 0.4,
+          height: 0.4,
+          style: "filled",
+        },
+      ];
+  }
+  return result;
+};
+
 export default class ModelMock implements IModel {
   private history: History = [];
+  private results: Record<string, ResultGetPdfNotes> = {};
 
   getFlags = () => ({
     canToggleReadOnly: false,
-    canOpenHistory: false,
     canOpenFileDialog: false,
     canOpenGithub: true,
   });
@@ -563,16 +613,22 @@ export default class ModelMock implements IModel {
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
   getFileFromId = (id: string) => {
-    if (id !== pdfPaths[0]) return Promise.reject();
-    return Promise.resolve(pdfPaths[0]);
+    return Promise.resolve(
+      id === pdfPaths[0] ? PATH_PDF_WIKIPEDIA : PATH_PDF_EMPTY
+    );
   };
 
   getCoverages = () => Promise.resolve(coverages);
   putCoverages = () => Promise.resolve();
 
   getPdfNotes = (id: string): Promise<ResultGetPdfNotes> => {
-    if (id !== pdfPaths[0]) return Promise.reject();
-    return Promise.resolve(resultGetPdfNotes);
+    let result = this.results[id];
+    if (!result) {
+      result =
+        id === pdfPaths[0] ? resultGetPdfNotes : getResultGetPdfNotesEmpty(id);
+      this.results[id] = result;
+    }
+    return Promise.resolve(result);
   };
   putPdfNotes = () => Promise.resolve();
 

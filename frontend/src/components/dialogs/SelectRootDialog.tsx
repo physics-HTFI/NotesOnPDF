@@ -179,7 +179,7 @@ export default function SelectRootDialog() {
             variant={ok ? "outlined" : "contained"}
             onClick={() => {
               setModel(new ModelMock());
-              setReadOnly(true);
+              setReadOnly(false); // 全機能が動くようにreadOnlyにはしない
               setAlert(
                 "info",
                 <>
