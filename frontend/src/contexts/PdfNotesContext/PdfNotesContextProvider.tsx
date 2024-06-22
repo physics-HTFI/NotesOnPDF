@@ -19,10 +19,19 @@ const putPdfNotesDebounced = debounce(
     setAlert: (
       severity?: "error" | "info" | undefined,
       message?: ReactNode
-    ) => void
+    ) => void,
+    setReadOnly: (readOnly: boolean) => void
   ) => {
     model.putPdfNotes(id, pdfNotes).catch(() => {
-      setAlert("error", "注釈ファイルの保存に失敗しました");
+      setAlert(
+        "error",
+        <span>
+          注釈ファイルの保存に失敗しました。
+          <br />
+          読み取り専用モードに切り替えました。
+        </span>
+      );
+      setReadOnly(true);
     });
   },
   1000
@@ -33,7 +42,7 @@ const putPdfNotesDebounced = debounce(
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
-  const { readOnly, setAlert } = useContext(UiContext);
+  const { readOnly, setAlert, setReadOnly } = useContext(UiContext);
   const [id, setId_] = useState<string>();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [pageSizes, setPageSizes] = useState<PageSize[]>();
@@ -60,7 +69,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       ?.scrollIntoView({ block: "nearest" });
     if (!readOnly) {
       // 注釈ファイル保存
-      putPdfNotesDebounced(id, pdfNotes, model, setAlert);
+      putPdfNotesDebounced(id, pdfNotes, model, setAlert, setReadOnly);
       // 必要であれば`coverages`を更新する
       const newCoverages = getNewCoveragesOrUndefined(id, pdfNotes);
       if (newCoverages) {
@@ -75,6 +84,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     readOnly,
     setAlert,
     setCoverages,
+    setReadOnly,
   ]);
 
   return (

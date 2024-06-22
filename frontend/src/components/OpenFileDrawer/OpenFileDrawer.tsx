@@ -81,6 +81,7 @@ export default function OpenFileDrawer() {
             "error",
             "PDFファイル (または注釈ファイル) の読み込みに失敗しました"
           );
+          setWaiting(false);
         })
         .finally(() => {
           if (import.meta.env.MODE !== "web") {
