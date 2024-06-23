@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { Box } from "@mui/material";
 import SettingsDrawer from "./SettingsDrawer/SettingsDrawer";
 import { grey } from "@mui/material/colors";
-import { MathJax } from "better-react-mathjax";
 import ToC from "./Toc/Toc";
 
 /**
@@ -19,26 +18,24 @@ export default function TocView() {
         fontSize: "70%",
       }}
     >
-      <MathJax hideUntilTypeset={"first"}>
-        <Box
-          sx={{
-            p: 0.5,
-            lineHeight: 1,
-            overflowY: "auto",
-            overflowX: "hidden",
-            height: "100vh",
-            boxSizing: "border-box",
-          }}
-        >
-          {/* レンダリングコストが高いのでメモ化する */}
-          {useMemo(
-            () => (
-              <ToC />
-            ),
-            []
-          )}
-        </Box>
-      </MathJax>
+      <Box
+        sx={{
+          p: 0.5,
+          lineHeight: 1,
+          overflowY: "auto",
+          overflowX: "hidden",
+          height: "100vh",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* レンダリングコストが高いのでメモ化する */}
+        {useMemo(
+          () => (
+            <ToC />
+          ),
+          []
+        )}
+      </Box>
 
       <SettingsDrawer />
     </Box>

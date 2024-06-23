@@ -5,6 +5,7 @@ import Chapter from "./Chapter";
 import Separator from "./Separator";
 import Page from "./Page";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { MathJax } from "better-react-mathjax";
 
 /**
  * @returns 目次の内容
@@ -106,7 +107,11 @@ const ToC = () => {
     }
     ++pageNum;
   }
-  return toc;
+  return (
+    <MathJax hideUntilTypeset={"first"} dynamic>
+      {toc}
+    </MathJax>
+  );
 };
 
 export default ToC;

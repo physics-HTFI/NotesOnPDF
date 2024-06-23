@@ -33,7 +33,7 @@ export default function Memo({
     hover && cursor ? "snow" : "white"
   })`;
   return (
-    <MathJax hideUntilTypeset={"first"}>
+    <MathJax hideUntilTypeset={"first"} dynamic>
       <Box
         sx={{
           position: "absolute",
