@@ -30,7 +30,14 @@ export default function SettingsDrawer() {
     setPdfNotes,
     updaters: { page, getPreferredLabels },
   } = useContext(PdfNotesContext);
-  const { openSettingsDrawer, setOpenSettingsDrawer } = useContext(UiContext);
+  const { model } = useContext(ModelContext);
+  const {
+    readOnly,
+    openSettingsDrawer,
+    setOpenSettingsDrawer,
+    setAlert,
+    setReadOnly,
+  } = useContext(UiContext);
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
   const [variant, setVariant] = useState<"persistent" | "temporary">(
@@ -62,10 +69,23 @@ export default function SettingsDrawer() {
   };
 
   // アプリ設定変更
-  const handleChangeAppSettings = (newSettings: Partial<AppSettings>) => {
-    setAppSettings({
+  const handleChangeAppSettings = (changed: Partial<AppSettings>) => {
+    const newSettings = {
       ...appSettings,
-      ...newSettings,
+      ...changed,
+    };
+    setAppSettings(newSettings);
+    if (readOnly) return;
+    model.putAppSettings(newSettings).catch(() => {
+      setAlert(
+        "error",
+        <span>
+          設定ファイルの保存に失敗しました。
+          <br />
+          読み取り専用モードに切り替えました。
+        </span>
+      );
+      setReadOnly(true);
     });
   };
 

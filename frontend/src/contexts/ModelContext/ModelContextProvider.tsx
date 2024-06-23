@@ -17,7 +17,7 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
   const [model, setModel] = useState<IModel>(() =>
     import.meta.env.MODE === "web" ? new ModelNull() : new ModelDesktop()
   );
-  const { readOnly, setReadOnly, setAlert } = useContext(UiContext);
+  const { setAlert } = useContext(UiContext);
   const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const [fileTree, setFileTree] = useState<FileTree>();
@@ -44,38 +44,6 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
         setAlert("error", e.message);
       });
   }, [model, setAlert, serverFailed]);
-
-  // `appSettings`を保存する
-  useEffect(() => {
-    if (!appSettings || readOnly) return;
-    model.putAppSettings(appSettings).catch(() => {
-      setAlert(
-        "error",
-        <span>
-          設定ファイルの保存に失敗しました。
-          <br />
-          読み取り専用モードに切り替えました。
-        </span>
-      );
-      setReadOnly(true);
-    });
-  }, [appSettings, model, readOnly, setAlert, setReadOnly]);
-
-  // `coverages`を保存する
-  useEffect(() => {
-    if (!coverages || readOnly) return;
-    model.putCoverages(coverages).catch(() => {
-      setAlert(
-        "error",
-        <span>
-          進捗率ファイルの保存に失敗しました。
-          <br />
-          読み取り専用モードに切り替えました。
-        </span>
-      );
-      setReadOnly(true);
-    });
-  }, [coverages, model, readOnly, setAlert, setReadOnly]);
 
   return (
     <ModelContext.Provider

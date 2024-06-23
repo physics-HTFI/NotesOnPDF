@@ -74,6 +74,17 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       const newCoverages = getNewCoveragesOrUndefined(id, pdfNotes);
       if (newCoverages) {
         setCoverages(newCoverages);
+        model.putCoverages(newCoverages).catch(() => {
+          setAlert(
+            "error",
+            <span>
+              進捗率ファイルの保存に失敗しました。
+              <br />
+              読み取り専用モードに切り替えました。
+            </span>
+          );
+          setReadOnly(true);
+        });
       }
     }
   }, [

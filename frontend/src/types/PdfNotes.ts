@@ -146,6 +146,7 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
   ) {
     return result.pdfNotes;
   }
+  const addsTitle = !result.pdfNotes || result.pdfNotes.pages.length === 0; // pages===0は、ウェブ版で始めて開くPDFのタイトルを追加するために必要
   const notes: PdfNotes = result.pdfNotes ?? {
     title: result.name,
     version: VERSION,
@@ -159,7 +160,7 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
     notes.pages.push({ num: i + 1 });
   }
   updatePageNum(notes);
-  if (!result.pdfNotes && notes.pages[0]) {
+  if (addsTitle && notes.pages[0]) {
     notes.pages[0].volume = result.name;
   }
   return notes;

@@ -80,6 +80,7 @@ export default function PdfImageWeb() {
         return;
 
         async function setSizes() {
+          if (!file) return;
           const pageSizes: PageSize[] = [];
           for (let i = 0; i < doc.numPages; i++) {
             const page = await doc.getPage(i + 1);
@@ -89,14 +90,15 @@ export default function PdfImageWeb() {
             });
           }
           setPageSizes(pageSizes);
+
+          // ページ数を調節する
+          const name = file instanceof File ? file.name : file;
+          setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
+
+          // 履歴を更新
           if (id && !readOnly) {
             await model.updateHistory(id, pageSizes.length);
           }
-
-          // ページ数を調節する
-          if (!file) return;
-          const name = file instanceof File ? file.name : file;
-          setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
         }
       }}
       onLoadError={() => {
