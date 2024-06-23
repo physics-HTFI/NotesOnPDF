@@ -26,7 +26,7 @@ export default function Memo({
     params.style === "fold" && !hover ? /^.*/ : /[\s\S]*/
   )?.[0];
   const folded = htmlFolded !== params.html;
-  const html = (!htmlFolded ? "" : folded ? `${htmlFolded}...` : htmlFolded)
+  const html = (!htmlFolded ? "" : htmlFolded)
     .replace(/(\n *\$\$|\$\$ *\n)/g, "$$$$") // 別行立て数式前後の改行を除去する
     .replace(/\n/g, "<br/>");
   const filter = `drop-shadow(0px 0px 2px ${
@@ -40,7 +40,6 @@ export default function Memo({
           left: `${100 * params.x}%`,
           top: `${100 * params.y}%`,
           color: "red",
-          cursor,
           lineHeight: 1.2,
           fontSize: "80%",
           whiteSpace: "nowrap", // 画面右端においたときに改行するのを防ぐ
@@ -48,20 +47,27 @@ export default function Memo({
           transform: `scale(${scale}%)`,
           filter: `${filter} ${filter} ${filter} ${filter} ${filter}`,
           textDecoration: folded ? "underline" : undefined,
+          "&::after": folded
+            ? { content: '"..."', pointerEvents: "all" } // 「...」に当たり判定をなくすため、メモとは別の要素にしている
+            : undefined,
         }}
-        dangerouslySetInnerHTML={{
-          __html: html ? DOMPurify.sanitize(html) : "注釈",
-        }}
-        onMouseDown={(e) => {
-          onMouseDown?.(e, params);
-        }}
-        onMouseEnter={() => {
-          setHover(true);
-        }}
-        onMouseLeave={() => {
-          setHover(false);
-        }}
-      />
+      >
+        <span
+          style={{ cursor }}
+          dangerouslySetInnerHTML={{
+            __html: html ? DOMPurify.sanitize(html) : "注釈",
+          }}
+          onMouseDown={(e) => {
+            onMouseDown?.(e, params);
+          }}
+          onMouseEnter={() => {
+            setHover(true);
+          }}
+          onMouseLeave={() => {
+            setHover(false);
+          }}
+        />
+      </Box>
     </MathJax>
   );
 }
