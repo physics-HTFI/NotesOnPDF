@@ -73,7 +73,7 @@ export default function PdfImageWeb() {
     <Document
       file={file}
       onLoadSuccess={(doc) => {
-        setSizes().catch(() => undefined); // 読み込みは成功しているのでエラーにはならないはず
+        setSizes().catch(() => undefined); // model.updateHistoryが失敗する可能性があるが、メッセージを出す必要もないので無視する
         // ウェブ版では↓の処理はPdfNotesの取得時には行わずここで行う
         setWaiting(false);
         setOpenFileTreeDrawer(false);

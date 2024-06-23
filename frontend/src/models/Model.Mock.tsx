@@ -598,10 +598,7 @@ export default class ModelMock implements IModel {
   getFileTree = () => Promise.resolve(fileTree);
 
   getHistory = () => Promise.resolve(this.history);
-  updateHistory = (id: string, pages: number) => {
-    this.history = updateHistory(this.history, id, id, pages);
-    return Promise.resolve();
-  };
+  updateHistory = () => Promise.resolve(); // historyの更新はgetPdfNotesのほうで行う
   deleteHistoryAll = () => {
     this.history = [];
     return Promise.resolve();
@@ -629,6 +626,12 @@ export default class ModelMock implements IModel {
         id === pdfPaths[0] ? resultGetPdfNotes : getResultBlankPages10(id);
       this.results[id] = result;
     }
+    this.history = updateHistory(
+      this.history,
+      id,
+      id,
+      result.pageSizes?.length ?? 0
+    );
     return Promise.resolve(result);
   };
   putPdfNotes = (id: string, pdfNotes: PdfNotes) => {
