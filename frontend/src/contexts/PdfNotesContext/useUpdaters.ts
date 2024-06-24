@@ -1,6 +1,11 @@
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import UiContext from "@/contexts/UiContext";
-import PdfNotes, { NoteType, Page, editPageStyle } from "@/types/PdfNotes";
+import PdfNotes, {
+  NoteType,
+  Page,
+  editPageStyle,
+  updatePageNum,
+} from "@/types/PdfNotes";
 import { useCallback, useContext } from "react";
 
 /**
@@ -39,6 +44,11 @@ export interface Updaters {
    * `pop`がない場合は`push`の追加だけが行われる。
    */
   updateNote(pop: NoteType, push: NoteType): void;
+
+  /**
+   * （注釈以外の）ページの設定を更新する
+   */
+  updatePageSettings(settings: Partial<Page>, pageNum?: number): void;
 
   /**
    * キーボードによる操作
@@ -178,6 +188,24 @@ export default function useUpdaters({
   );
 
   /**
+   * （注釈以外の）ページの設定を更新する
+   */
+  const updatePageSettings = useCallback(
+    (settings: Partial<Page>, pageNum?: number) => {
+      if (!pdfNotes) return;
+      pageNum ??= pdfNotes.currentPage;
+      const page = pdfNotes.pages[pageNum];
+      if (!page) return;
+      pdfNotes.pages[pageNum] = { ...page, ...settings };
+      if (Object.keys(settings).includes("numRestart")) {
+        updatePageNum(pdfNotes);
+      }
+      setPdfNotes({ ...pdfNotes });
+    },
+    [pdfNotes, setPdfNotes]
+  );
+
+  /**
    * 部名・章名・ページ番号の候補を返す
    */
   const getPreferredLabels = useCallback(() => {
@@ -297,6 +325,7 @@ export default function useUpdaters({
     popNote,
     pushNote,
     updateNote,
+    updatePageSettings,
     getPreferredLabels,
     handleKeyDown,
   };

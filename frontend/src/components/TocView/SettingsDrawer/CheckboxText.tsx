@@ -1,5 +1,6 @@
 import { Box, TextField, Tooltip } from "@mui/material";
 import Checkbox from "./Checkbox";
+import { ReactNode } from "react";
 
 /**
  * ☑ラベル ________
@@ -13,7 +14,7 @@ export default function CheckboxText({
   onChange,
 }: {
   label: string;
-  tooltip?: string;
+  tooltip?: ReactNode;
   text?: string;
   preferredText: string;
   onChange: (text?: string) => void;

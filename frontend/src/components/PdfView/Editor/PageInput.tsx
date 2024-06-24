@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { TextField } from "@mui/material";
 import { fromDisplayedPage } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
@@ -24,6 +24,13 @@ export default function PageInput({
   const [displayedPageNum, setDisplayedPageNum] = useState<number | "">(
     displayedPageNumInit
   );
+
+  const handleRef = useCallback((ref?: HTMLInputElement) => {
+    setTimeout(() => {
+      ref?.focus();
+    }, 10);
+  }, []);
+
   if (!pdfNotes || !open) return <></>;
 
   // 閉じたときに値を更新する
@@ -45,11 +52,7 @@ export default function PageInput({
         value={String(displayedPageNum)}
         type="number"
         sx={{ pl: 1, width: 80 }}
-        inputRef={(ref?: HTMLInputElement) => {
-          setTimeout(() => {
-            ref?.focus();
-          }, 10);
-        }}
+        inputRef={handleRef}
         onFocus={(e) => {
           e.target.select();
         }}

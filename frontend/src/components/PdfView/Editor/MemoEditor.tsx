@@ -2,7 +2,6 @@ import { useCallback, useContext, useState } from "react";
 import {
   FormControlLabel,
   Switch,
-  TextareaAutosize,
   Tooltip,
   TooltipProps,
   Typography,
@@ -12,30 +11,8 @@ import {
 import { Memo } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
-import { blue, grey } from "@mui/material/colors";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-
-// https://mui.com/base-ui/react-textarea-autosize/
-const Textarea = styled(TextareaAutosize)(
-  () => `
-  field-sizing: content;
-  min-width: 100px;
-  max-width: 50vw;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.9rem;
-  padding: 8px 12px;
-  color: ${grey[900]};
-  background: ${"#fff"};
-  border: 1px solid ${grey[200]};
-  &:hover {
-    border-color: ${blue[400]};
-  }
-  // firefox
-  &:focus-visible {
-    outline: 0;
-  }
-`
-);
+import TextareaAutosize from "@/components/common/TextAreaAutosize";
 
 const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -111,7 +88,7 @@ export default function MemoEditor({
           labelPlacement="start"
         />
       </Tooltip>
-      <Textarea
+      <TextareaAutosize
         value={text}
         spellCheck={false}
         onChange={(e) => {

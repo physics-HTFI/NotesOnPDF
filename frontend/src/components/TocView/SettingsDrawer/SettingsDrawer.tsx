@@ -1,11 +1,6 @@
 import { useContext, useState } from "react";
 import { Box, Drawer } from "@mui/material";
-import {
-  Page,
-  Settings as PdfSettings,
-  editPageStyle,
-  updatePageNum,
-} from "@/types/PdfNotes";
+import { Settings as PdfSettings, editPageStyle } from "@/types/PdfNotes";
 import CheckboxText from "./CheckboxText";
 import SectionBreak from "./SectionBreak";
 import PageNumberRestart from "./PageNumberRestart";
@@ -28,7 +23,7 @@ export default function SettingsDrawer() {
   const {
     pdfNotes,
     setPdfNotes,
-    updaters: { page, getPreferredLabels },
+    updaters: { page, updatePageSettings, getPreferredLabels },
   } = useContext(PdfNotesContext);
   const { model } = useContext(ModelContext);
   const {
@@ -49,16 +44,6 @@ export default function SettingsDrawer() {
   // 部名・章名・ページ番号の候補など
   const { volumeLabel, partLabel, chapterLabel, pageNum } =
     getPreferredLabels();
-
-  // ページ設定変更
-  const handleChangePage = (pageSettings: Partial<Page>) => {
-    if (!page) return;
-    pdfNotes.pages[pdfNotes.currentPage] = { ...page, ...pageSettings };
-    if (Object.keys(pageSettings).includes("numRestart")) {
-      updatePageNum(pdfNotes);
-    }
-    setPdfNotes({ ...pdfNotes });
-  };
 
   // ファイル設定変更
   const handleChangeFileSettings = (newSettings: Partial<PdfSettings>) => {
@@ -141,36 +126,53 @@ export default function SettingsDrawer() {
             {/* 巻区切り */}
             <CheckboxText
               label="巻区切り"
-              tooltip="[Alt+Enter]"
+              tooltip={
+                <span>
+                  [Alt+Enter] 区切りの切り替え
+                  <br />
+                  [目次のラベルをCtrl+クリック] ラベルを編集
+                </span>
+              }
               text={page?.volume}
               preferredText={volumeLabel}
               onChange={(volume) => {
-                handleChangePage({ volume });
+                updatePageSettings({ volume });
               }}
             />
             {/* 部区切り */}
             <CheckboxText
               label="部区切り"
-              tooltip="[Ctrl+Enter]"
+              tooltip={
+                <span>
+                  [Ctrl+Enter] 区切りの切り替え
+                  <br />
+                  [目次のラベルをCtrl+クリック] ラベルを編集
+                </span>
+              }
               text={page?.part}
               preferredText={partLabel}
               onChange={(part) => {
-                handleChangePage({ part });
+                updatePageSettings({ part });
               }}
             />
             {/* 章区切り */}
             <CheckboxText
               label="章区切り"
-              tooltip="[Shift+Enter]"
+              tooltip={
+                <span>
+                  [Shift+Enter] 区切りの切り替え
+                  <br />
+                  [目次のラベルをCtrl+クリック] ラベルを編集
+                </span>
+              }
               text={page?.chapter}
               preferredText={chapterLabel}
               onChange={(chapter) => {
-                handleChangePage({ chapter });
+                updatePageSettings({ chapter });
               }}
             />
             {/* 節区切り */}
             <SectionBreak
-              tooltip="[Enter]"
               breakBefore={page?.style?.includes("break-before")}
               breakMiddle={page?.style?.includes("break-middle")}
               onChange={(breakBefore, breakMiddle) => {
@@ -180,7 +182,7 @@ export default function SettingsDrawer() {
                   breakBefore
                 );
                 style = editPageStyle(style, "break-middle", breakMiddle);
-                handleChangePage({ style });
+                updatePageSettings({ style });
               }}
             />
             {/* ページ番号 */}
@@ -188,17 +190,17 @@ export default function SettingsDrawer() {
               numRestart={page?.numRestart}
               preferredPageNumber={pageNum}
               onChange={(numRestart) => {
-                handleChangePage({ numRestart });
+                updatePageSettings({ numRestart });
               }}
             />
             {/* ページ除外 */}
             <Checkbox
               label="このページをグレーアウトする"
-              tooltip="[Escape]"
+              tooltip="[Escape] グレーアウトの切り替え"
               checked={page?.style?.includes("excluded")}
               onChange={(excluded) => {
                 const style = editPageStyle(page?.style, "excluded", excluded);
-                handleChangePage({ style });
+                updatePageSettings({ style });
               }}
             />
           </Box>
