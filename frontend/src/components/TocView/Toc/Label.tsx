@@ -11,10 +11,12 @@ export default function Label({
   type,
   page,
   pageNum,
+  highlight,
 }: {
   type: "volume" | "part" | "chapter";
   page: Page;
   pageNum: number;
+  highlight?: boolean;
 }) {
   const {
     updaters: { jumpPage, updatePageSettings },
@@ -34,7 +36,7 @@ export default function Label({
       variant={type === "volume" ? "body1" : "body2"}
       sx={{
         whiteSpace: "nowrap",
-        color: "gray",
+        color: highlight ? "crimson" : "gray",
         ...(type === "volume"
           ? {
               "&:not(:first-of-type)": { pt: 1 },

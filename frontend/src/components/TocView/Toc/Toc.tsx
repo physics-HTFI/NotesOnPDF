@@ -11,7 +11,7 @@ import Label from "./Label";
 const ToC = () => {
   const {
     pdfNotes,
-    updaters: { jumpPage },
+    updaters: { jumpPage, getChpapterStartPageNum },
   } = useContext(PdfNotesContext);
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
   if (!pdfNotes) return [];
@@ -19,6 +19,7 @@ const ToC = () => {
     setOpenTooltips(new Array(pdfNotes.pages.length).fill(false));
     return undefined;
   }
+  const chapterStart = getChpapterStartPageNum();
 
   const toc: ReactNode[] = [];
   let pageNum = 1;
@@ -35,7 +36,13 @@ const ToC = () => {
     );
     toc.push(<Label key={`part-${i}`} type="part" pageNum={i} page={page} />);
     toc.push(
-      <Label key={`chapter-${i}`} type="chapter" pageNum={i} page={page} />
+      <Label
+        key={`chapter-${i}`}
+        type="chapter"
+        pageNum={i}
+        page={page}
+        highlight={i === chapterStart}
+      />
     );
     // 節区切りを追加
     pageNum = page.numRestart ?? pageNum;

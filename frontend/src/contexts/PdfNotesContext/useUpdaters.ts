@@ -56,6 +56,11 @@ export interface Updaters {
   handleKeyDown(e: KeyboardEvent): void;
 
   /**
+   * 今いる章の開始ページの番号を返す
+   */
+  getChpapterStartPageNum(): number;
+
+  /**
    * 部名・章名・ページ番号の候補を返す
    */
   getPreferredLabels(): {
@@ -206,6 +211,19 @@ export default function useUpdaters({
   );
 
   /**
+   * 今いる章の開始ページの番号を返す
+   */
+  const getChpapterStartPageNum = useCallback(() => {
+    if (invalid) return 0;
+    let pageNum = 0;
+    for (let i = 1; i <= pdfNotes.currentPage; i++) {
+      if (pdfNotes.pages[i]?.chapter === undefined) continue;
+      pageNum = i;
+    }
+    return pageNum;
+  }, [invalid, pdfNotes?.currentPage, pdfNotes?.pages]);
+
+  /**
    * 部名・章名・ページ番号の候補を返す
    */
   const getPreferredLabels = useCallback(() => {
@@ -326,6 +344,7 @@ export default function useUpdaters({
     pushNote,
     updateNote,
     updatePageSettings,
+    getChpapterStartPageNum,
     getPreferredLabels,
     handleKeyDown,
   };
