@@ -54,6 +54,7 @@ export default function OpenFileDrawer() {
       setId(undefined);
       setPdfNotes(undefined);
       setPageSizes(undefined);
+      document.title = "NotesOnPDF";
       model
         .getPdfNotes(_id)
         .then((result) => {
@@ -71,6 +72,7 @@ export default function OpenFileDrawer() {
           setPdfNotes(createOrGetPdfNotes(result));
           setPageSizes(result.pageSizes);
           setId(_id);
+          document.title = result.name.replace(/.pdf$/i, "");
           if (import.meta.env.MODE !== "web") {
             setOpenFileTreeDrawer(false);
             // ウェブ版では、ここではなく<PdfImageWeb>で行う
