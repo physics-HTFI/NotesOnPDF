@@ -1,26 +1,10 @@
 import { useCallback, useContext, useState } from "react";
-import {
-  FormControlLabel,
-  Switch,
-  Tooltip,
-  TooltipProps,
-  Typography,
-  styled,
-  tooltipClasses,
-} from "@mui/material";
+import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
 import { Memo } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import TextareaAutosize from "@/components/common/TextAreaAutosize";
-
-const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))({
-  [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: "none",
-  },
-});
 
 /**
  * 注釈メモの編集ダイアログ
@@ -105,7 +89,7 @@ export default function MemoEditor({
           e.stopPropagation();
         }}
       />
-      <NoMaxWidthTooltip
+      <Tooltip
         enterDelay={0}
         disableInteractive={false}
         title={
@@ -142,7 +126,7 @@ export default function MemoEditor({
             color: "white",
           }}
         />
-      </NoMaxWidthTooltip>
+      </Tooltip>
     </EditorBase>
   );
 }

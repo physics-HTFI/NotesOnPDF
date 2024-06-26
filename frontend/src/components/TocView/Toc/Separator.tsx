@@ -9,12 +9,14 @@ export default function Separator({
   tooltip,
   index,
   openTooltips,
+  background,
   setOpenTooltips,
 }: {
   onClick?: () => void;
   tooltip?: string;
   index?: number;
   openTooltips?: boolean[];
+  background?: string;
   setOpenTooltips?: (openTooltips: boolean[]) => void;
 }) {
   const openTooltip = index !== undefined && openTooltips?.[index];
@@ -23,8 +25,8 @@ export default function Separator({
       style={{
         height: 11,
         width: 1,
-        borderLeft: `2px solid ${grey[100]}`,
-        borderRight: `4px solid ${grey[100]}`,
+        borderLeft: `2px solid ${background ?? grey[100]}`,
+        borderRight: `4px solid ${background ?? grey[100]}`,
         background: "darkgray",
         display: "inline-block",
         cursor: "pointer",

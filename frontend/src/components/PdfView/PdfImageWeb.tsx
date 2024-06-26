@@ -25,9 +25,8 @@ export default function PdfImageWeb() {
     id,
     pdfNotes,
     setId,
-    setPdfNotes,
     setPageSizes,
-    updaters: { pageLabel },
+    updaters: { pageLabel, assignPdfNotes },
   } = useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
   const { readOnly, setWaiting, setOpenFileTreeDrawer, setAlert } =
@@ -93,7 +92,7 @@ export default function PdfImageWeb() {
 
           // ページ数を調節する
           const name = file instanceof File ? file.name : file;
-          setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
+          assignPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
 
           // 履歴を更新
           if (id && !readOnly) {

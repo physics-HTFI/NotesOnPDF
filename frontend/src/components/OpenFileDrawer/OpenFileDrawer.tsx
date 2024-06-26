@@ -19,7 +19,12 @@ export default function OpenFileDrawer() {
     openFileTreeDrawer,
     setOpenFileTreeDrawer,
   } = useContext(UiContext);
-  const { id, setId, setPdfNotes, setPageSizes } = useContext(PdfNotesContext);
+  const {
+    id,
+    setId,
+    setPageSizes,
+    updaters: { assignPdfNotes },
+  } = useContext(PdfNotesContext);
   // FileTreeViewの選択と折り畳み状態（FileTreeViewの内部で保持するとドロワーを閉じたときにアンマウントされて消えてしまう）
   const [selectedPath, setSelectedPath] = useState<string>();
   const [expanded, setExpanded] = useState<string[]>([]);
@@ -52,7 +57,7 @@ export default function OpenFileDrawer() {
       }
       setWaiting(true);
       setId(undefined);
-      setPdfNotes(undefined);
+      assignPdfNotes(undefined);
       setPageSizes(undefined);
       document.title = "NotesOnPDF";
       model
@@ -69,7 +74,7 @@ export default function OpenFileDrawer() {
             );
             return;
           }
-          setPdfNotes(createOrGetPdfNotes(result));
+          assignPdfNotes(createOrGetPdfNotes(result));
           setPageSizes(result.pageSizes);
           setId(_id);
           document.title = result.name.replace(/.pdf$/i, "");
@@ -99,7 +104,7 @@ export default function OpenFileDrawer() {
       model,
       setId,
       setOpenFileTreeDrawer,
-      setPdfNotes,
+      assignPdfNotes,
       setPageSizes,
       setWaiting,
       setAlert,

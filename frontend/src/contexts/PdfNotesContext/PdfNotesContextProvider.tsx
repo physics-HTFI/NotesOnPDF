@@ -44,16 +44,15 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
   const { readOnly, setAlert, setReadOnly } = useContext(UiContext);
   const [id, setId_] = useState<string>();
-  const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [pageSizes, setPageSizes] = useState<PageSize[]>();
   const [previousPageNum, setPreviousPageNum] = useState<number>();
   const { getNewCoveragesOrUndefined } = useNewCoverages();
   const updaters = useUpdaters({
-    pdfNotes,
-    setPdfNotes,
     previousPageNum,
     setPreviousPageNum,
   });
+  const pdfNotes = updaters.pdfNotes;
+  const page = updaters.page;
 
   const setId = useCallback((id?: string) => {
     setId_(id);
@@ -103,10 +102,10 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       value={{
         id,
         pdfNotes,
+        page,
         pageSizes,
         previousPageNum,
         setId,
-        setPdfNotes,
         setPageSizes,
         setPreviousPageNum,
         updaters,

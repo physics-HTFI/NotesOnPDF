@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Box, Drawer } from "@mui/material";
-import { Settings as PdfSettings, editPageStyle } from "@/types/PdfNotes";
+import { editPageStyle } from "@/types/PdfNotes";
 import CheckboxText from "./CheckboxText";
 import SectionBreak from "./SectionBreak";
 import PageNumberRestart from "./PageNumberRestart";
@@ -22,8 +22,8 @@ export default function SettingsDrawer() {
   const { appSettings, setAppSettings } = useContext(ModelContext);
   const {
     pdfNotes,
-    setPdfNotes,
-    updaters: { page, updatePageSettings, getPreferredLabels },
+    page,
+    updaters: { updatePageSettings, getPreferredLabels, updateFileSettings },
   } = useContext(PdfNotesContext);
   const { model } = useContext(ModelContext);
   const {
@@ -44,14 +44,6 @@ export default function SettingsDrawer() {
   // 部名・章名・ページ番号の候補など
   const { volumeLabel, partLabel, chapterLabel, pageNum } =
     getPreferredLabels();
-
-  // ファイル設定変更
-  const handleChangeFileSettings = (newSettings: Partial<PdfSettings>) => {
-    setPdfNotes({
-      ...pdfNotes,
-      settings: { ...pdfNotes.settings, ...newSettings },
-    });
-  };
 
   // アプリ設定変更
   const handleChangeAppSettings = (changed: Partial<AppSettings>) => {
@@ -130,7 +122,7 @@ export default function SettingsDrawer() {
                 <span>
                   [Alt+Enter] 区切りの切り替え
                   <br />
-                  [目次のラベルをCtrl+クリック] ラベルを編集
+                  [目次のラベルをShift+クリック] ラベルを編集
                 </span>
               }
               text={page?.volume}
@@ -146,7 +138,7 @@ export default function SettingsDrawer() {
                 <span>
                   [Ctrl+Enter] 区切りの切り替え
                   <br />
-                  [目次のラベルをCtrl+クリック] ラベルを編集
+                  [目次のラベルをShift+クリック] ラベルを編集
                 </span>
               }
               text={page?.part}
@@ -162,7 +154,7 @@ export default function SettingsDrawer() {
                 <span>
                   [Shift+Enter] 区切りの切り替え
                   <br />
-                  [目次のラベルをCtrl+クリック] ラベルを編集
+                  [目次のラベルをShift+クリック] ラベルを編集
                 </span>
               }
               text={page?.chapter}
@@ -217,7 +209,7 @@ export default function SettingsDrawer() {
               step={0.5}
               tooltipTitle="注釈内で使用される文字のサイズを調節します"
               onChange={(fontSize) => {
-                handleChangeFileSettings({ fontSize });
+                updateFileSettings({ fontSize });
               }}
             />
             <LabelSlider
@@ -228,7 +220,7 @@ export default function SettingsDrawer() {
               step={0.001}
               tooltipTitle="ページ上部の余白をカットします"
               onChange={(offsetTop) => {
-                handleChangeFileSettings({ offsetTop });
+                updateFileSettings({ offsetTop });
               }}
             />
             <LabelSlider
@@ -239,7 +231,7 @@ export default function SettingsDrawer() {
               step={0.001}
               tooltipTitle="ページ上部の余白をカットします"
               onChange={(offsetBottom) => {
-                handleChangeFileSettings({ offsetBottom });
+                updateFileSettings({ offsetBottom });
               }}
             />
           </Box>

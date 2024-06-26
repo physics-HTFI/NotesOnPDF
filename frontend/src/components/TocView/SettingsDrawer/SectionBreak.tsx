@@ -78,7 +78,7 @@ export default function SectionBreak({
             disableInteractive
           >
             <span style={{ marginBottom: -3 }}>
-              <Separator />
+              <Separator background="white" />
               <Page />
             </span>
           </Tooltip>
@@ -96,7 +96,7 @@ export default function SectionBreak({
           >
             <span style={{ marginLeft: 2, marginBottom: -3 }}>
               <Page sectionBreakInner={true} />
-              <Separator />
+              <Separator background="white" />
               <Page sectionBreakInner={true} />
             </span>
           </Tooltip>
@@ -113,9 +113,9 @@ export default function SectionBreak({
             disableInteractive
           >
             <span style={{ marginBottom: -3 }}>
-              <Separator />
+              <Separator background="white" />
               <Page sectionBreakInner={true} />
-              <Separator />
+              <Separator background="white" />
               <Page sectionBreakInner={true} />
             </span>
           </Tooltip>

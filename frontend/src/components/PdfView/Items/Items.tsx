@@ -32,7 +32,8 @@ export default function Items({
   const { pageRect, setMouse } = useContext(MouseContext);
   const { appSettings } = useContext(ModelContext);
   const {
-    updaters: { page, popNote },
+    page,
+    updaters: { popNote },
   } = useContext(PdfNotesContext);
   if (!page?.notes || !pageRect) return <SvgDefs />;
 

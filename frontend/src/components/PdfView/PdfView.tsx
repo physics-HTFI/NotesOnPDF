@@ -13,6 +13,7 @@ import Move from "./Move";
 import PdfImageDesktop from "./PdfImageDesktop";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import UiContext from "@/contexts/UiContext";
 
 const PdfImageWeb =
   import.meta.env.MODE === "web"
@@ -23,10 +24,12 @@ const PdfImageWeb =
  * Pdfを表示するコンポーネント
  */
 export default function PdfView() {
+  const { setAlert } = useContext(UiContext);
   const { appSettings } = useContext(ModelContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
   const {
-    updaters: { page, updateNote, scrollPage, handleKeyDown },
+    page,
+    updaters: { updateNote, scrollPage, handleKeyDown },
   } = useContext(PdfNotesContext);
 
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -96,6 +99,7 @@ export default function PdfView() {
         if (mode ?? moveNote) return;
         setMouse({ pageX: e.pageX, pageY: e.pageY });
         setPaletteOpen(true);
+        setAlert();
       }}
     >
       {/* PDF画像がある要素 */}
