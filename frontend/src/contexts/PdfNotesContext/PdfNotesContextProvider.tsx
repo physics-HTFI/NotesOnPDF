@@ -1,5 +1,5 @@
 import PdfNotes from "@/types/PdfNotes";
-import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { debounce } from "@mui/material";
 import IModel from "@/models/IModel";
 import ModelContext from "../ModelContext/ModelContext";
@@ -43,21 +43,11 @@ const putPdfNotesDebounced = debounce(
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
   const { readOnly, setAlert, setReadOnly } = useContext(UiContext);
-  const [id, setId_] = useState<string>();
+  const [id, setId] = useState<string>();
   const [pageSizes, setPageSizes] = useState<PageSize[]>();
-  const [previousPageNum, setPreviousPageNum] = useState<number>();
   const { getNewCoveragesOrUndefined } = useNewCoverages();
-  const updaters = useUpdaters({
-    previousPageNum,
-    setPreviousPageNum,
-  });
+  const updaters = useUpdaters();
   const pdfNotes = updaters.pdfNotes;
-  const page = updaters.page;
-
-  const setId = useCallback((id?: string) => {
-    setId_(id);
-    setPreviousPageNum(undefined);
-  }, []);
 
   // `pdfNotes`が変更されたときの処理
   useEffect(() => {
@@ -102,12 +92,12 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       value={{
         id,
         pdfNotes,
-        page,
+        page: updaters.page,
+        pageLabel: updaters.pageLabel,
+        previousPageNum: updaters.previousPageNum,
         pageSizes,
-        previousPageNum,
         setId,
         setPageSizes,
-        setPreviousPageNum,
         updaters,
       }}
     >

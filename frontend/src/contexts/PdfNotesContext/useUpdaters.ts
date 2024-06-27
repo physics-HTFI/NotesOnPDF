@@ -14,14 +14,9 @@ import { useCallback, useContext, useRef, useState } from "react";
  */
 export interface Updaters {
   /**
-   * `PdfNotes`を設定する
+   * 読み込み時の`PdfNotes`設定処理を行う
    */
   assignPdfNotes: (pdfNotes?: PdfNotes) => void;
-
-  /**
-   * 画面に表示するページ番号
-   */
-  pageLabel: string;
 
   /**
    * ページをスクロールする
@@ -86,18 +81,13 @@ export interface Updaters {
 /**
  * `pdfNotes`の更新用関数群を返す
  */
-export default function useUpdaters({
-  previousPageNum,
-  setPreviousPageNum,
-}: {
-  previousPageNum?: number;
-  setPreviousPageNum: (previousPageNum?: number) => void;
-}) {
+export default function useUpdaters() {
   const { inert } = useContext(ModelContext);
   const { openFileTreeDrawer, waiting, setAlert } = useContext(UiContext);
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const pdfNotesSnapshot = useRef<PdfNotes>();
   const notesSnapshot = useRef<NoteType[]>();
+  const previousPageNum = useRef<number>();
   const page = pdfNotes?.pages[pdfNotes.currentPage];
   const invalid = !page || openFileTreeDrawer || waiting || inert;
   const pageLabel = `p. ${page?.num ?? "???"}`;
@@ -108,12 +98,13 @@ export default function useUpdaters({
   }, [page?.notes]);
 
   /**
-   * `PdfNotes`を設定する。
+   * 読み込み時の`PdfNotes`設定処理を行う
    */
   const assignPdfNotes = useCallback((pdfNotes?: PdfNotes) => {
     setPdfNotes(pdfNotes);
     pdfNotesSnapshot.current = structuredClone(pdfNotes);
     notesSnapshot.current = undefined;
+    previousPageNum.current = undefined;
   }, []);
 
   /**
@@ -126,10 +117,10 @@ export default function useUpdaters({
       if (pdfNotes.currentPage === num) return;
       if (num < 0 || pdfNotes.pages.length <= num) return;
       setPdfNotes({ ...pdfNotes, currentPage: num });
-      setPreviousPageNum(pdfNotes.currentPage);
+      previousPageNum.current = pdfNotes.currentPage;
       notesSnapshot.current = undefined;
     },
-    [invalid, pdfNotes, setAlert, setPreviousPageNum]
+    [invalid, pdfNotes, setAlert]
   );
 
   /**
@@ -349,8 +340,8 @@ export default function useUpdaters({
         setPdfNotes({ ...pdfNotes });
       }
       if (e.key === " ") {
-        if (previousPageNum === undefined) return;
-        jumpPage(previousPageNum);
+        if (previousPageNum.current === undefined) return;
+        jumpPage(previousPageNum.current);
       }
       if (e.key === "Delete") {
         if (e.shiftKey) {
@@ -419,8 +410,9 @@ export default function useUpdaters({
   );
 
   return {
-    pdfNotes, // この2つは関数ではないのでUpdatersの定義に含めていない
+    pdfNotes, // この3つは関数ではないのでUpdatersの定義に含めていない
     page, //
+    previousPageNum: previousPageNum.current,
     assignPdfNotes,
     pageLabel,
     scrollPage,

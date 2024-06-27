@@ -12,11 +12,7 @@ export default function PdfImageDesktop() {
   const { model } = useContext(ModelContext);
   const { setAlert } = useContext(UiContext);
   const { pageRect } = useContext(MouseContext);
-  const {
-    id,
-    pdfNotes,
-    updaters: { pageLabel },
-  } = useContext(PdfNotesContext);
+  const { id, pdfNotes, pageLabel } = useContext(PdfNotesContext);
   const [src, setSrc] = useState("");
   const [reading, setReading] = useState(false);
   const nextSrc = useRef("");

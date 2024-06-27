@@ -17,7 +17,8 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
     id,
     pdfNotes,
     previousPageNum,
-    updaters: { jumpPage, pageLabel },
+    pageLabel,
+    updaters: { jumpPage },
   } = useContext(PdfNotesContext);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
