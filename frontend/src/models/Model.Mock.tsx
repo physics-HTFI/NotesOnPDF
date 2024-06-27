@@ -598,7 +598,12 @@ export default class ModelMock implements IModel {
   getFileTree = () => Promise.resolve(fileTree);
 
   getHistory = () => Promise.resolve(this.history);
-  updateHistory = () => Promise.resolve(); // historyの更新はgetPdfNotesのほうで行う
+  updateHistory = (id: string, pages: number) => {
+    this.history
+      .filter((h) => h.id === id)
+      .forEach((h) => (h.pages = String(pages)));
+    return Promise.resolve(); // ページ数以外のhistoryの更新はgetPdfNotesのほうで行う
+  };
   deleteHistoryAll = () => {
     this.history = [];
     return Promise.resolve();

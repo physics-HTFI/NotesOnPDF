@@ -24,9 +24,10 @@ export default function PdfImageWeb() {
   const {
     id,
     pdfNotes,
+    pageLabel,
     setId,
     setPageSizes,
-    updaters: { pageLabel, assignPdfNotes },
+    updaters: { assignPdfNotes },
   } = useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
   const { readOnly, setWaiting, setOpenFileTreeDrawer, setAlert } =
