@@ -229,7 +229,7 @@ export default function SettingsDrawer() {
               minValue={0}
               maxValue={0.2}
               step={0.001}
-              tooltipTitle="ページ上部の余白をカットします"
+              tooltipTitle="ページ下部の余白をカットします"
               onChange={(offsetBottom) => {
                 updateFileSettings({ offsetBottom });
               }}

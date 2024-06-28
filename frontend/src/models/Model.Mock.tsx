@@ -89,7 +89,7 @@ const resultGetPdfNotes: ResultGetPdfNotes = {
     pages: [
       {
         num: 1,
-        part: "注釈一覧",
+        chapter: "注釈一覧",
         notes: [
           {
             type: "Memo",
