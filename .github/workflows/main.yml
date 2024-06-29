@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           # dist リポジトリのアップロード
-          path: "./frontend/dist"
+          path: "./frontend/dist/web"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
