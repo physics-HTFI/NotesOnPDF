@@ -16,6 +16,7 @@ namespace backend
         //| プロパティ
         //|
 
+        public string Version => Properties.Settings.Default.Version;
 
         [ObservableProperty]
         private Visibility _Visibility = Visibility.Visible;

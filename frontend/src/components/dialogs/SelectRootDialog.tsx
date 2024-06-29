@@ -52,9 +52,7 @@ export default function SelectRootDialog() {
           e.preventDefault();
           setDraggingColor(undefined);
           setDirHandle(undefined);
-          setHandle().catch(() => {
-            console.log(111);
-          });
+          setHandle().catch(() => undefined);
 
           async function setHandle() {
             for (const item of e.dataTransfer.items) {
@@ -81,6 +79,9 @@ export default function SelectRootDialog() {
         >
           <img src="favicon.svg" style={{ height: 24 }} />
           NotesOnPDF ウェブ版
+          <span style={{ color: "darkgray", fontSize: "75%", marginTop: 5 }}>
+            {import.meta.env.VITE_VERSION}
+          </span>
         </DialogTitle>
         <DialogContent>
           <TextField

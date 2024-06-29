@@ -8,5 +8,8 @@
     <Setting Name="DownloadDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">./download</Value>
     </Setting>
+    <Setting Name="Version" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">1.0.0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
