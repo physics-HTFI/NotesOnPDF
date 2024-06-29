@@ -74,10 +74,11 @@ export default function OpenFileDrawer() {
             );
             return;
           }
+          result.name = result.name.replace(/.pdf$/i, "");
           assignPdfNotes(createOrGetPdfNotes(result));
           setPageSizes(result.pageSizes);
           setId(_id);
-          document.title = result.name.replace(/.pdf$/i, "");
+          document.title = result.name;
           if (import.meta.env.MODE !== "web") {
             setOpenFileTreeDrawer(false);
             // ウェブ版では、ここではなく<PdfImageWeb>で行う
