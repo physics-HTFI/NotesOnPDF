@@ -1,11 +1,6 @@
 import { useContext, useState } from "react";
 import { Box, Drawer } from "@mui/material";
-import {
-  Page,
-  Settings as PdfSettings,
-  editPageStyle,
-  updatePageNum,
-} from "@/types/PdfNotes";
+import { editPageStyle } from "@/types/PdfNotes";
 import CheckboxText from "./CheckboxText";
 import SectionBreak from "./SectionBreak";
 import PageNumberRestart from "./PageNumberRestart";
@@ -27,10 +22,17 @@ export default function SettingsDrawer() {
   const { appSettings, setAppSettings } = useContext(ModelContext);
   const {
     pdfNotes,
-    setPdfNotes,
-    updaters: { page, getPreferredLabels },
+    page,
+    updaters: { updatePageSettings, getPreferredLabels, updateFileSettings },
   } = useContext(PdfNotesContext);
-  const { openSettingsDrawer, setOpenSettingsDrawer } = useContext(UiContext);
+  const { model } = useContext(ModelContext);
+  const {
+    readOnly,
+    openSettingsDrawer,
+    setOpenSettingsDrawer,
+    setAlert,
+    setReadOnly,
+  } = useContext(UiContext);
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
   const [variant, setVariant] = useState<"persistent" | "temporary">(
@@ -43,29 +45,24 @@ export default function SettingsDrawer() {
   const { volumeLabel, partLabel, chapterLabel, pageNum } =
     getPreferredLabels();
 
-  // ページ設定変更
-  const handleChangePage = (pageSettings: Partial<Page>) => {
-    if (!page) return;
-    pdfNotes.pages[pdfNotes.currentPage] = { ...page, ...pageSettings };
-    if (Object.keys(pageSettings).includes("numRestart")) {
-      updatePageNum(pdfNotes);
-    }
-    setPdfNotes({ ...pdfNotes });
-  };
-
-  // ファイル設定変更
-  const handleChangeFileSettings = (newSettings: Partial<PdfSettings>) => {
-    setPdfNotes({
-      ...pdfNotes,
-      settings: { ...pdfNotes.settings, ...newSettings },
-    });
-  };
-
   // アプリ設定変更
-  const handleChangeAppSettings = (newSettings: Partial<AppSettings>) => {
-    setAppSettings({
+  const handleChangeAppSettings = (changed: Partial<AppSettings>) => {
+    const newSettings = {
       ...appSettings,
-      ...newSettings,
+      ...changed,
+    };
+    setAppSettings(newSettings);
+    if (readOnly) return;
+    model.putAppSettings(newSettings).catch(() => {
+      setAlert(
+        "error",
+        <span>
+          設定ファイルの保存に失敗しました。
+          <br />
+          読み取り専用モードに切り替えました。
+        </span>
+      );
+      setReadOnly(true);
     });
   };
 
@@ -121,36 +118,53 @@ export default function SettingsDrawer() {
             {/* 巻区切り */}
             <CheckboxText
               label="巻区切り"
-              tooltip="[Alt+Enter]"
+              tooltip={
+                <span>
+                  [Alt+Enter] 区切りの切り替え
+                  <br />
+                  [目次のラベルをShift+クリック] ラベルを編集
+                </span>
+              }
               text={page?.volume}
               preferredText={volumeLabel}
               onChange={(volume) => {
-                handleChangePage({ volume });
+                updatePageSettings({ volume });
               }}
             />
             {/* 部区切り */}
             <CheckboxText
               label="部区切り"
-              tooltip="[Ctrl+Enter]"
+              tooltip={
+                <span>
+                  [Ctrl+Enter] 区切りの切り替え
+                  <br />
+                  [目次のラベルをShift+クリック] ラベルを編集
+                </span>
+              }
               text={page?.part}
               preferredText={partLabel}
               onChange={(part) => {
-                handleChangePage({ part });
+                updatePageSettings({ part });
               }}
             />
             {/* 章区切り */}
             <CheckboxText
               label="章区切り"
-              tooltip="[Shift+Enter]"
+              tooltip={
+                <span>
+                  [Shift+Enter] 区切りの切り替え
+                  <br />
+                  [目次のラベルをShift+クリック] ラベルを編集
+                </span>
+              }
               text={page?.chapter}
               preferredText={chapterLabel}
               onChange={(chapter) => {
-                handleChangePage({ chapter });
+                updatePageSettings({ chapter });
               }}
             />
             {/* 節区切り */}
             <SectionBreak
-              tooltip="[Enter]"
               breakBefore={page?.style?.includes("break-before")}
               breakMiddle={page?.style?.includes("break-middle")}
               onChange={(breakBefore, breakMiddle) => {
@@ -160,7 +174,7 @@ export default function SettingsDrawer() {
                   breakBefore
                 );
                 style = editPageStyle(style, "break-middle", breakMiddle);
-                handleChangePage({ style });
+                updatePageSettings({ style });
               }}
             />
             {/* ページ番号 */}
@@ -168,17 +182,17 @@ export default function SettingsDrawer() {
               numRestart={page?.numRestart}
               preferredPageNumber={pageNum}
               onChange={(numRestart) => {
-                handleChangePage({ numRestart });
+                updatePageSettings({ numRestart });
               }}
             />
             {/* ページ除外 */}
             <Checkbox
               label="このページをグレーアウトする"
-              tooltip="[Escape]"
+              tooltip="[Escape] グレーアウトの切り替え"
               checked={page?.style?.includes("excluded")}
               onChange={(excluded) => {
                 const style = editPageStyle(page?.style, "excluded", excluded);
-                handleChangePage({ style });
+                updatePageSettings({ style });
               }}
             />
           </Box>
@@ -195,7 +209,7 @@ export default function SettingsDrawer() {
               step={0.5}
               tooltipTitle="注釈内で使用される文字のサイズを調節します"
               onChange={(fontSize) => {
-                handleChangeFileSettings({ fontSize });
+                updateFileSettings({ fontSize });
               }}
             />
             <LabelSlider
@@ -206,7 +220,7 @@ export default function SettingsDrawer() {
               step={0.001}
               tooltipTitle="ページ上部の余白をカットします"
               onChange={(offsetTop) => {
-                handleChangeFileSettings({ offsetTop });
+                updateFileSettings({ offsetTop });
               }}
             />
             <LabelSlider
@@ -215,9 +229,9 @@ export default function SettingsDrawer() {
               minValue={0}
               maxValue={0.2}
               step={0.001}
-              tooltipTitle="ページ上部の余白をカットします"
+              tooltipTitle="ページ下部の余白をカットします"
               onChange={(offsetBottom) => {
-                handleChangeFileSettings({ offsetBottom });
+                updateFileSettings({ offsetBottom });
               }}
             />
           </Box>

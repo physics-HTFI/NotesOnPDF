@@ -28,7 +28,7 @@ export default function HistoryDialog({
   onClose: (id?: string) => void;
 }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setWaiting, setAlert } = useContext(UiContext);
+  const { readOnly, setWaiting, setAlert, setReadOnly } = useContext(UiContext);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {
@@ -80,7 +80,15 @@ export default function HistoryDialog({
                   setHistory([]);
                 })
                 .catch(() => {
-                  setAlert("error", "履歴の消去に失敗しました");
+                  setAlert(
+                    "error",
+                    <span>
+                      履歴の消去に失敗しました。
+                      <br />
+                      読み取り専用モードに切り替えました。
+                    </span>
+                  );
+                  setReadOnly(true);
                 });
             }}
             sx={{ pt: 0, ml: "auto" }}
@@ -151,7 +159,15 @@ export default function HistoryDialog({
                             setHistory(history.filter((h) => h.id !== row.id));
                           })
                           .catch(() => {
-                            setAlert("error", "履歴の消去に失敗しました");
+                            setAlert(
+                              "error",
+                              <span>
+                                履歴の消去に失敗しました。
+                                <br />
+                                読み取り専用モードに切り替えました。
+                              </span>
+                            );
+                            setReadOnly(true);
                           });
                       }}
                       sx={{ color: "#72a0db" }}

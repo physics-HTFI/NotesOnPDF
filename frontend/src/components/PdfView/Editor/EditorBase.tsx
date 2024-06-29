@@ -22,7 +22,7 @@ export default function EditorBase({
       open
       slotProps={{
         backdrop: {
-          sx: { background: "#0003" },
+          sx: { background: "#0005" },
           onMouseDown: (e) => {
             e.stopPropagation();
           },

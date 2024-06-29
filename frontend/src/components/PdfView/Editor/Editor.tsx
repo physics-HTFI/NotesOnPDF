@@ -4,6 +4,7 @@ import PageLinkEditor from "./PageLinkEditor";
 import MemoEditor from "./MemoEditor";
 import EditArrowPalette from "./EditArrowPalette";
 import EditRectPalette from "./EditRectPalette";
+import EditBracketPalette from "./EditBracketPalette";
 
 /**
  * 編集ダイアログ
@@ -20,8 +21,9 @@ export default function Editor({
   if (!open || !params) return <></>;
   switch (params.type) {
     case "Arrow":
-    case "Bracket":
       return <EditArrowPalette params={params} onClose={onClose} />;
+    case "Bracket":
+      return <EditBracketPalette params={params} onClose={onClose} />;
     case "Chip":
       return <ChipEditor params={params} onClose={onClose} />;
     case "Marker":

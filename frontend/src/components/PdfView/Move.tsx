@@ -32,9 +32,7 @@ export default function Move({
   const ref = useRef<HTMLElement>();
   const { mouse, setMouse, pageRect } = useContext(MouseContext);
   const { appSettings } = useContext(ModelContext);
-  const {
-    updaters: { page },
-  } = useContext(PdfNotesContext);
+  const { page } = useContext(PdfNotesContext);
   if (!params || !mouse || !pageRect || !appSettings) {
     if (dXY) setDXY(undefined); // 頂点編集中に`Esc`を押してキャンセル後に値が残るのを防ぐ
     return <></>;
@@ -80,10 +78,10 @@ export default function Move({
             <Marker pageRect={pageRect} params={newParams} />
           )}
           {newParams.type === "Polygon" && (
-            <Polygon pageRect={pageRect} params={newParams} />
+            <Polygon pageRect={pageRect} params={newParams} moving />
           )}
           {newParams.type === "Rect" && (
-            <Rect pageRect={pageRect} params={newParams} />
+            <Rect pageRect={pageRect} params={newParams} moving />
           )}
         </Svg>
         {newParams.type === "Chip" && <Chip params={newParams} />}

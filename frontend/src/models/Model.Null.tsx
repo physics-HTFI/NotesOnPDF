@@ -4,11 +4,9 @@ import { GetAppSettings_default } from "@/types/AppSettings";
 
 export default class ModelNull implements IModel {
   getFlags = () => ({
-    canToggleReadOnly: true,
-    canOpenHistory: true,
+    isMock: false,
     canOpenFileDialog: true,
     canOpenGithub: true,
-    isWeb: true,
   });
   getEventSource = () => undefined;
 

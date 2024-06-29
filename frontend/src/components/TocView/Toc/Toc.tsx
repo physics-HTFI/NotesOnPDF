@@ -1,10 +1,9 @@
 import { ReactNode, useContext, useState } from "react";
-import Volume from "./Volume";
-import Part from "./Part";
-import Chapter from "./Chapter";
 import Separator from "./Separator";
 import Page from "./Page";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { MathJax } from "better-react-mathjax";
+import Label from "./Label";
 
 /**
  * @returns 目次の内容
@@ -12,7 +11,7 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 const ToC = () => {
   const {
     pdfNotes,
-    updaters: { jumpPage },
+    updaters: { jumpPage, getChpapterStartPageNum },
   } = useContext(PdfNotesContext);
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
   if (!pdfNotes) return [];
@@ -20,40 +19,34 @@ const ToC = () => {
     setOpenTooltips(new Array(pdfNotes.pages.length).fill(false));
     return undefined;
   }
+  const chapterStart = getChpapterStartPageNum();
 
   const toc: ReactNode[] = [];
   let pageNum = 1;
   for (let i = 0; i < pdfNotes.pages.length; i++) {
     const page = pdfNotes.pages[i];
+    if (!page) continue;
     const handleClick = () => {
       jumpPage(i);
     };
 
-    // 第名を追加
-    if (page?.volume !== undefined) {
-      toc.push(
-        <Volume key={`volume-${i}`} title={page.volume} onClick={handleClick} />
-      );
-    }
-    // 部名を追加
-    if (page?.part !== undefined) {
-      toc.push(
-        <Part key={`part-${i}`} title={page.part} onClick={handleClick} />
-      );
-    }
-    // 章名を追加
-    if (page?.chapter !== undefined) {
-      toc.push(
-        <Chapter
-          key={`Chapter-${i}`}
-          title={page.chapter}
-          onClick={handleClick}
-        />
-      );
-    }
+    // 巻名、部名、章名を追加
+    toc.push(
+      <Label key={`volume-${i}`} type="volume" pageNum={i} page={page} />
+    );
+    toc.push(<Label key={`part-${i}`} type="part" pageNum={i} page={page} />);
+    toc.push(
+      <Label
+        key={`chapter-${i}`}
+        type="chapter"
+        pageNum={i}
+        page={page}
+        highlight={i === chapterStart}
+      />
+    );
     // 節区切りを追加
-    pageNum = page?.numRestart ?? pageNum;
-    if (page?.style?.includes("break-before")) {
+    pageNum = page.numRestart ?? pageNum;
+    if (page.style?.includes("break-before")) {
       toc.push(
         <Separator
           key={`separator-${i}`}
@@ -69,7 +62,7 @@ const ToC = () => {
     toc.push(
       <Page
         key={`page-${i}`}
-        sectionBreakInner={page?.style?.includes("break-middle")}
+        sectionBreakInner={page.style?.includes("break-middle")}
         tooltip={`p. ${pageNum}`}
         isCurrent={i === pdfNotes.currentPage}
         page={page}
@@ -79,7 +72,7 @@ const ToC = () => {
         setOpenTooltips={setOpenTooltips}
       />
     );
-    if (page?.style?.includes("break-middle")) {
+    if (page.style?.includes("break-middle")) {
       toc.push(
         <Separator
           key={`separator-inner-${i}`}
@@ -106,7 +99,11 @@ const ToC = () => {
     }
     ++pageNum;
   }
-  return toc;
+  return (
+    <MathJax hideUntilTypeset={"first"} dynamic>
+      {toc}
+    </MathJax>
+  );
 };
 
 export default ToC;

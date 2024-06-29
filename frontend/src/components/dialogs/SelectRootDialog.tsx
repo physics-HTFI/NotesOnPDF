@@ -30,6 +30,12 @@ export default function SelectRootDialog() {
   const ok = dirHandle !== undefined;
   const readOnlyColor = readOnly ? "firebrick" : "steelblue";
 
+  const alertBrowserCannotOpenDirectory = () => {
+    alert(
+      "このブラウザは、フォルダの読み込みに対応していません。\nGoogle Chrome または Microsoft Edge を使用してください。"
+    );
+  };
+
   return (
     <>
       <Dialog
@@ -50,6 +56,10 @@ export default function SelectRootDialog() {
 
           async function setHandle() {
             for (const item of e.dataTransfer.items) {
+              if (!("getAsFileSystemHandle" in item)) {
+                alertBrowserCannotOpenDirectory();
+                return;
+              }
               const handle = await item.getAsFileSystemHandle();
               if (!handle) continue;
               if (handle.kind === "directory") {
@@ -69,14 +79,8 @@ export default function SelectRootDialog() {
         >
           <img src="favicon.svg" style={{ height: 24 }} />
           NotesOnPDF ウェブ版
-          <span
-            style={{
-              fontSize: "60%",
-              marginTop: 10,
-              color: "darkgray",
-            }}
-          >
-            (Google Chrome, Microsoft Edge)
+          <span style={{ color: "darkgray", fontSize: "75%", marginTop: 5 }}>
+            {import.meta.env.VITE_VERSION}
           </span>
         </DialogTitle>
         <DialogContent>
@@ -99,6 +103,10 @@ export default function SelectRootDialog() {
                   <TooltipIconButton
                     icon={<Folder />}
                     onClick={() => {
+                      if (!("showDirectoryPicker" in window)) {
+                        alertBrowserCannotOpenDirectory();
+                        return;
+                      }
                       window
                         .showDirectoryPicker()
                         .then((dirHandle) => {
@@ -147,18 +155,18 @@ export default function SelectRootDialog() {
               <div>
                 {readOnly ? (
                   <span>
-                    閲覧や編集はできますが、保存は一切されません
+                    閲覧や編集はできますが、保存は一切されません。
                     <br />
-                    ファイルが追加されることもありません
+                    ファイルが追加されることもありません。
                   </span>
                 ) : (
                   <span>
-                    変更が加えられた際に、注釈ファイルを自動保存します
+                    変更が加えられた際に、注釈ファイルを自動保存します。
                     <br />
-                    注釈ファイル名は &quot;(PDFファイルパス).json&quot; です
+                    注釈ファイル名は &quot;(PDFファイルパス).json&quot; です。
                     <br />
                     また、基準フォルダ直下に、設定フォルダ
-                    &quot;.NotesOnPdf&quot; が生成されます
+                    &quot;.NotesOnPdf&quot; が生成されます。
                   </span>
                 )}
               </div>
@@ -172,7 +180,7 @@ export default function SelectRootDialog() {
             variant={ok ? "outlined" : "contained"}
             onClick={() => {
               setModel(new ModelMock());
-              setReadOnly(true);
+              setReadOnly(false); // 全機能が動くようにreadOnlyにはしない
               setAlert(
                 "info",
                 <>

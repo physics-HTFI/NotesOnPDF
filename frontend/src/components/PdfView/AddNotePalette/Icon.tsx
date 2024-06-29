@@ -47,7 +47,7 @@ const ArrowIcon = ({ svgRect }: { svgRect: DOMRect }) => (
         y1: 0.3,
         x2: 0.7,
         y2: 0.7,
-        heads: ["end"],
+        style: "normal",
       }}
     />
   </Svg>
@@ -66,7 +66,7 @@ const BracketIcon = ({ svgRect }: { svgRect: DOMRect }) => (
         y1: 0.2,
         x2: 0.5,
         y2: 0.8,
-        heads: ["start", "end"],
+        style: "normal",
       }}
     />
   </Svg>

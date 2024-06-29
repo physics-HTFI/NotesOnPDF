@@ -15,6 +15,8 @@ import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 
+const IS_WEB = import.meta.env.MODE === "web";
+
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
@@ -29,6 +31,7 @@ export default function Header({
   const [openHistory, setOpenHistory] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
+  const readOnlyIcon = readOnly || modelFlags.isMock;
   const sxButton = { color: "slategray" };
 
   return (
@@ -42,18 +45,18 @@ export default function Header({
     >
       {/* 読み取り専用 */}
       <TooltipIconButton
-        disabled={!initialized || !modelFlags.canToggleReadOnly}
-        icon={readOnly ? <Lock /> : <LockOpen />}
+        disabled={!initialized || modelFlags.isMock}
+        icon={readOnlyIcon ? <Lock /> : <LockOpen />}
         onClick={() => {
           setReadOnly(!readOnly);
         }}
         sx={{
           mr: "auto",
           ...sxButton,
-          ...(readOnly ? { color: "firebrick" } : {}),
+          ...(readOnlyIcon ? { color: "firebrick" } : {}),
         }}
         tooltipTitle={
-          readOnly ? (
+          readOnlyIcon ? (
             <span>
               【読み取り専用モード】
               <br />
@@ -73,7 +76,7 @@ export default function Header({
 
       {/* アクセス履歴からPDFファイルを開く */}
       <TooltipIconButton
-        disabled={!initialized || !modelFlags.canOpenHistory}
+        disabled={!initialized}
         icon={<Restore />}
         onClick={() => {
           setOpenHistory(true);
@@ -118,8 +121,8 @@ export default function Header({
         tooltipTitle={
           <span>
             ファイルツリー外のPDFファイルを開きます
-            {modelFlags.isWeb && <br />}
-            {modelFlags.isWeb && "(ウェブ版では使用できません)"}
+            {IS_WEB && <br />}
+            {IS_WEB && "(ウェブ版では使用できません)"}
           </span>
         }
       />
@@ -135,8 +138,8 @@ export default function Header({
         tooltipTitle={
           <span>
             URLからPDFファイルを開きます
-            {modelFlags.isWeb && <br />}
-            {modelFlags.isWeb && "(ウェブ版では使用できません)"}
+            {IS_WEB && <br />}
+            {IS_WEB && "(ウェブ版では使用できません)"}
           </span>
         }
       />

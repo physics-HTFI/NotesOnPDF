@@ -1,46 +1,10 @@
-import { useContext, useState } from "react";
-import {
-  TextareaAutosize,
-  Tooltip,
-  TooltipProps,
-  styled,
-  tooltipClasses,
-} from "@mui/material";
+import { useCallback, useContext, useState } from "react";
+import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
 import { Memo } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
-import { blue, grey } from "@mui/material/colors";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-
-// https://mui.com/base-ui/react-textarea-autosize/
-const Textarea = styled(TextareaAutosize)(
-  () => `
-  field-sizing: content;
-  min-width: 100px;
-  max-width: 50vw;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.9rem;
-  padding: 8px 12px;
-  color: ${grey[900]};
-  background: ${"#fff"};
-  border: 1px solid ${grey[200]};
-  &:hover {
-    border-color: ${blue[400]};
-  }
-  // firefox
-  &:focus-visible {
-    outline: 0;
-  }
-`
-);
-
-const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))({
-  [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: "none",
-  },
-});
+import TextareaAutosize from "@/components/common/TextAreaAutosize";
 
 /**
  * 注釈メモの編集ダイアログ
@@ -56,32 +20,65 @@ export default function MemoEditor({
     updaters: { updateNote },
   } = useContext(PdfNotesContext);
   const [text, setText] = useState(params.html);
+  const [fold, setFold] = useState(params.style === "fold");
+  const handleRef = useCallback((ref: HTMLTextAreaElement | null) => {
+    setTimeout(() => {
+      ref?.select();
+    }, 10);
+  }, []);
 
   // 閉じたときに値を更新する
   const handleClose = (cancel?: boolean) => {
     onClose();
     if (cancel) return;
     const html = text.trim();
-    if (text === "" || text === params.html) return;
-    updateNote(params, { ...params, html });
+    const style = fold ? "fold" : "normal";
+    if (text === "" || (text === params.html && style === params.style)) return;
+    updateNote(params, { ...params, html, style });
   };
 
   return (
     <EditorBase onClose={handleClose}>
-      <Textarea
+      <Tooltip
+        title={
+          <span>
+            2行目以降を折り畳みます
+            <br />
+            マウスポインターを重ねた時に全体が表示されます
+          </span>
+        }
+        disableInteractive
+        placement="top"
+      >
+        <FormControlLabel
+          sx={{
+            position: "absolute",
+            right: 11,
+            top: -30,
+            color: "white",
+            fontSize: "1em",
+          }}
+          control={
+            <Switch
+              size="small"
+              checked={fold}
+              onChange={(e) => {
+                setFold(e.target.checked);
+              }}
+              sx={{ background: "#fffe", borderRadius: 2, ml: 0.5 }}
+            />
+          }
+          label={<Typography variant="body2">折り畳む</Typography>}
+          labelPlacement="start"
+        />
+      </Tooltip>
+      <TextareaAutosize
         value={text}
         spellCheck={false}
         onChange={(e) => {
           setText(e.target.value);
         }}
-        ref={(ref: HTMLElement | null) => {
-          setTimeout(() => {
-            ref?.focus();
-          }, 10);
-        }}
-        onFocus={(e) => {
-          e.target.select();
-        }}
+        ref={handleRef}
         onKeyDown={(e) => {
           if (e.ctrlKey && e.key === "Enter") {
             handleClose();
@@ -92,7 +89,7 @@ export default function MemoEditor({
           e.stopPropagation();
         }}
       />
-      <NoMaxWidthTooltip
+      <Tooltip
         enterDelay={0}
         disableInteractive={false}
         title={
@@ -100,6 +97,7 @@ export default function MemoEditor({
             ・[Ctrl+Enter] 編集完了
             <br />
             ・[Escape] キャンセル
+            <br />
             <br />
             ・インライン数式:
             <code style={{ fontSize: "120%", paddingLeft: 4 }}>$e=mc^2$</code>
@@ -128,7 +126,7 @@ export default function MemoEditor({
             color: "white",
           }}
         />
-      </NoMaxWidthTooltip>
+      </Tooltip>
     </EditorBase>
   );
 }

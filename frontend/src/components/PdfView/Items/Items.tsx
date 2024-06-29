@@ -10,7 +10,7 @@ import Chip from "./Chip";
 import Svg from "../../common/Svg";
 import { Mode } from "../SpeedDial";
 import { Node as NodeType, NoteType } from "@/types/PdfNotes";
-import SvgDefs from "./SvgDefs";
+import SvgDefs from "./utils/SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
@@ -32,7 +32,8 @@ export default function Items({
   const { pageRect, setMouse } = useContext(MouseContext);
   const { appSettings } = useContext(ModelContext);
   const {
-    updaters: { page, popNote },
+    page,
+    updaters: { popNote },
   } = useContext(PdfNotesContext);
   if (!page?.notes || !pageRect) return <SvgDefs />;
 
@@ -42,18 +43,18 @@ export default function Items({
     pageRect,
     params,
     onMouseDown: (e: MouseEvent, note: NoteType | NodeType) => {
-      let tmpMode: typeof mode | undefined = undefined;
-      if (mode && e.button === 0) tmpMode = mode;
+      let md: typeof mode | undefined = undefined;
+      if (mode && e.button === 0) md = mode;
       if (appSettings?.middleClick && e.button === 1)
-        tmpMode = appSettings.middleClick;
+        md = appSettings.middleClick;
       if (appSettings?.rightClick && e.button === 2)
-        tmpMode = appSettings.rightClick;
-      if (!tmpMode) return;
+        md = appSettings.rightClick;
+      if (!md) return;
       e.stopPropagation();
-      if (tmpMode === "move") onMove(note);
+      if (md === "move") onMove(note);
       if (note.type !== "Node") {
-        if (tmpMode === "edit") onEdit(note);
-        if (tmpMode === "delete") popNote(note);
+        if (md === "edit") onEdit(note);
+        if (md === "delete") popNote(note);
       }
       setMouse({ pageX: e.pageX, pageY: e.pageY });
     },

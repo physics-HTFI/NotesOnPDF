@@ -1,7 +1,7 @@
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { Drawer } from "@mui/material";
 import Header from "@/components/OpenFileDrawer/Header/Header";
-import { createOrGetPdfNotes } from "@/types/PdfNotes";
+import { VERSION, createOrGetPdfNotes } from "@/types/PdfNotes";
 import UiContext from "@/contexts/UiContext";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
@@ -11,7 +11,7 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
-  const { model, modelFlags } = useContext(ModelContext);
+  const { model, fileTree, coverages } = useContext(ModelContext);
   const {
     readOnly,
     setAlert,
@@ -19,8 +19,34 @@ export default function OpenFileDrawer() {
     openFileTreeDrawer,
     setOpenFileTreeDrawer,
   } = useContext(UiContext);
-  const { id, setId, setPdfNotes, setPageSizes } = useContext(PdfNotesContext);
+  const {
+    id,
+    setId,
+    setPageSizes,
+    updaters: { assignPdfNotes },
+  } = useContext(PdfNotesContext);
+  // FileTreeViewの選択と折り畳み状態（FileTreeViewの内部で保持するとドロワーを閉じたときにアンマウントされて消えてしまう）
+  const [selectedPath, setSelectedPath] = useState<string>();
+  const [expanded, setExpanded] = useState<string[]>([]);
 
+  // 前回のファイルを選択した状態にする
+  if (
+    selectedPath === undefined &&
+    fileTree &&
+    coverages?.recentId !== undefined
+  ) {
+    const path = fileTree.find((i) => i.id === coverages.recentId)?.path;
+    if (path) {
+      setSelectedPath(path);
+      setExpanded(
+        [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
+          path.substring(0, (m.index ?? 0) - 1)
+        )
+      );
+    } else {
+      setSelectedPath("");
+    }
+  }
   // ファイルIDを選択したときの処理。
   // ファイルツリーのアップデートを抑えるためメモ化している。
   const handleSelectPdfById = useCallback(
@@ -31,24 +57,47 @@ export default function OpenFileDrawer() {
       }
       setWaiting(true);
       setId(undefined);
-      setPdfNotes(undefined);
+      assignPdfNotes(undefined);
       setPageSizes(undefined);
+      document.title = "NotesOnPDF";
       model
         .getPdfNotes(_id)
         .then((result) => {
-          setPdfNotes(createOrGetPdfNotes(result));
+          if (result.pdfNotes && result.pdfNotes.version > VERSION) {
+            setAlert(
+              "error",
+              <span>
+                NotesOnPDFのバージョンが古すぎます。
+                <br />
+                新しいNotesOnPDFを使用してください。
+              </span>
+            );
+            return;
+          }
+          result.name = result.name.replace(/.pdf$/i, "");
+          assignPdfNotes(createOrGetPdfNotes(result));
           setPageSizes(result.pageSizes);
           setId(_id);
-          setOpenFileTreeDrawer(false);
+          document.title = result.name;
+          if (import.meta.env.MODE !== "web") {
+            setOpenFileTreeDrawer(false);
+            // ウェブ版では、ここではなく<PdfImageWeb>で行う
+          }
         })
         .catch(() => {
           setAlert(
             "error",
             "PDFファイル (または注釈ファイル) の読み込みに失敗しました"
           );
+          setWaiting(false);
         })
         .finally(() => {
-          setWaiting(false);
+          if (import.meta.env.MODE !== "web") {
+            setWaiting(false);
+            // ウェブ版の場合はPDFの初期表示でもプログレスインジケータが出るので、
+            // ここで消すとちらついてしまう。
+            // そのため、ここではなく<PdfImageWeb>の読み込みが終わった時にsetWaiting(false)する
+          }
         });
     },
     [
@@ -56,7 +105,7 @@ export default function OpenFileDrawer() {
       model,
       setId,
       setOpenFileTreeDrawer,
-      setPdfNotes,
+      assignPdfNotes,
       setPageSizes,
       setWaiting,
       setAlert,
@@ -79,10 +128,9 @@ export default function OpenFileDrawer() {
           maxWidth: 500,
           minWidth: 280,
           overflowX: "hidden",
-          background:
-            readOnly && modelFlags.canToggleReadOnly
-              ? `repeating-linear-gradient(-60deg, #fffcfc, #fffcfc 5px, white 5px, white 10px)`
-              : undefined,
+          background: readOnly
+            ? `repeating-linear-gradient(-60deg, #fffcfc, #fffcfc 5px, white 5px, white 10px)`
+            : undefined,
         },
       }}
       onWheel={(e) => {
@@ -93,7 +141,13 @@ export default function OpenFileDrawer() {
       <Header onSelectPdfById={handleSelectPdfById} />
 
       {/* ツリービュー */}
-      <FileTreeView onSelectPdfById={handleSelectPdfById} />
+      <FileTreeView
+        selectedPath={selectedPath}
+        expanded={expanded}
+        setSelectedPath={setSelectedPath}
+        setExpanded={setExpanded}
+        onSelectPdfById={handleSelectPdfById}
+      />
     </Drawer>
   );
 }

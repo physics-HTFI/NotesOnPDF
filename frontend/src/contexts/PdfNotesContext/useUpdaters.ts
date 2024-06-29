@@ -1,18 +1,22 @@
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import UiContext from "@/contexts/UiContext";
-import PdfNotes, { NoteType, Page, editPageStyle } from "@/types/PdfNotes";
-import { useCallback, useContext } from "react";
+import PdfNotes, {
+  NoteType,
+  Page,
+  Settings as PdfSettings,
+  editPageStyle,
+  updatePageNum,
+} from "@/types/PdfNotes";
+import { useCallback, useContext, useRef, useState } from "react";
 
 /**
  * `pdfNotes`の更新用関数群
  */
 export interface Updaters {
-  page?: Page;
-
   /**
-   * 画面に表示するページ番号
+   * 読み込み時の`PdfNotes`設定処理を行う
    */
-  pageLabel: string;
+  assignPdfNotes: (pdfNotes?: PdfNotes) => void;
 
   /**
    * ページをスクロールする
@@ -41,9 +45,27 @@ export interface Updaters {
   updateNote(pop: NoteType, push: NoteType): void;
 
   /**
+   * PDFファイルの設定を更新する
+   */
+  updateFileSettings(settings: Partial<PdfSettings>): void;
+
+  /**
+   * （注釈以外の）ページの設定を更新する
+   */
+  updatePageSettings(
+    settings: Partial<Omit<Page, "notes">>,
+    pageNum?: number
+  ): void;
+
+  /**
    * キーボードによる操作
    */
   handleKeyDown(e: KeyboardEvent): void;
+
+  /**
+   * 今いる章の開始ページの番号を返す
+   */
+  getChpapterStartPageNum(): number;
 
   /**
    * 部名・章名・ページ番号の候補を返す
@@ -59,22 +81,47 @@ export interface Updaters {
 /**
  * `pdfNotes`の更新用関数群を返す
  */
-export default function useUpdaters({
-  pdfNotes,
-  setPdfNotes,
-  previousPageNum,
-  setPreviousPageNum,
-}: {
-  pdfNotes?: PdfNotes;
-  setPdfNotes: (pdfNotes?: PdfNotes) => void;
-  previousPageNum?: number;
-  setPreviousPageNum: (previousPageNum?: number) => void;
-}): Updaters {
+export default function useUpdaters() {
   const { inert } = useContext(ModelContext);
-  const { openFileTreeDrawer, waiting } = useContext(UiContext);
+  const { openFileTreeDrawer, waiting, setAlert } = useContext(UiContext);
+  const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
+  const pdfNotesSnapshot = useRef<PdfNotes>();
+  const notesSnapshot = useRef<NoteType[]>();
+  const previousPageNum = useRef<number>();
   const page = pdfNotes?.pages[pdfNotes.currentPage];
   const invalid = !page || openFileTreeDrawer || waiting || inert;
   const pageLabel = `p. ${page?.num ?? "???"}`;
+
+  const updateNotesSnapshot = useCallback(() => {
+    if (notesSnapshot.current) return;
+    notesSnapshot.current = structuredClone(page?.notes ?? []);
+  }, [page?.notes]);
+
+  /**
+   * 読み込み時の`PdfNotes`設定処理を行う
+   */
+  const assignPdfNotes = useCallback((pdfNotes?: PdfNotes) => {
+    setPdfNotes(pdfNotes);
+    pdfNotesSnapshot.current = structuredClone(pdfNotes);
+    notesSnapshot.current = undefined;
+    previousPageNum.current = undefined;
+  }, []);
+
+  /**
+   * 特定のページに移動する（ページ移動処理を行うのはここだけ）
+   */
+  const jumpPage = useCallback(
+    (num: number) => {
+      if (invalid) return;
+      setAlert();
+      if (pdfNotes.currentPage === num) return;
+      if (num < 0 || pdfNotes.pages.length <= num) return;
+      setPdfNotes({ ...pdfNotes, currentPage: num });
+      previousPageNum.current = pdfNotes.currentPage;
+      notesSnapshot.current = undefined;
+    },
+    [invalid, pdfNotes, setAlert]
+  );
 
   /**
    * ページをスクロールする
@@ -99,35 +146,20 @@ export default function useUpdaters({
         if (type === "section" && (sectionBreak || chapterBreak)) break;
         if (type === "chapter" && chapterBreak) break;
       }
-      if (pdfNotes.currentPage === currentPage) return;
-      setPdfNotes({ ...pdfNotes, currentPage });
-      setPreviousPageNum(pdfNotes.currentPage);
+      jumpPage(currentPage);
     },
-    [invalid, pdfNotes, setPdfNotes, setPreviousPageNum]
-  );
-
-  /**
-   * 特定のページに移動する
-   */
-  const jumpPage = useCallback(
-    (num: number) => {
-      if (invalid) return;
-      if (pdfNotes.currentPage === num) return;
-      if (num < 0 || pdfNotes.pages.length <= num) return;
-      setPdfNotes({ ...pdfNotes, currentPage: num });
-      setPreviousPageNum(pdfNotes.currentPage);
-    },
-    [invalid, pdfNotes, setPdfNotes, setPreviousPageNum]
+    [invalid, jumpPage, pdfNotes?.currentPage, pdfNotes?.pages]
   );
 
   const _popNote = useCallback(
     (note: NoteType) => {
       if (!page) return;
+      updateNotesSnapshot();
       page.notes = page.notes?.filter((n) => n !== note);
       if (!page.notes) return;
       if (page.notes.length === 0) page.notes = undefined;
     },
-    [page]
+    [page, updateNotesSnapshot]
   );
   /**
    * `PdfNotes`オブジェクトの現在ページから注釈を消去する。
@@ -144,11 +176,12 @@ export default function useUpdaters({
   const _pushNote = useCallback(
     (note: NoteType) => {
       if (!page) return;
+      updateNotesSnapshot();
       page.notes ??= [];
       page.notes.push(note);
       pdfNotes.pages[pdfNotes.currentPage] = page;
     },
-    [page, pdfNotes?.currentPage, pdfNotes?.pages]
+    [page, pdfNotes?.currentPage, pdfNotes?.pages, updateNotesSnapshot]
   );
   /**
    * `PdfNotes`オブジェクトの現在ページに注釈を追加する。
@@ -176,6 +209,51 @@ export default function useUpdaters({
     },
     [_popNote, _pushNote, invalid, pdfNotes, setPdfNotes]
   );
+
+  /**
+   * （注釈以外の）ページの設定を更新する
+   */
+  const updatePageSettings = useCallback(
+    (settings: Partial<Omit<Page, "notes">>, pageNum?: number) => {
+      if (!pdfNotes) return;
+      pageNum ??= pdfNotes.currentPage;
+      const page = pdfNotes.pages[pageNum];
+      if (!page) return;
+      pdfNotes.pages[pageNum] = { ...page, ...settings };
+      if (Object.keys(settings).includes("numRestart")) {
+        updatePageNum(pdfNotes);
+      }
+      setPdfNotes({ ...pdfNotes });
+    },
+    [pdfNotes, setPdfNotes]
+  );
+
+  /**
+   * PDFファイルの設定を更新する
+   */
+  const updateFileSettings = useCallback(
+    (settings: Partial<PdfSettings>) => {
+      if (!pdfNotes) return;
+      setPdfNotes({
+        ...pdfNotes,
+        settings: { ...pdfNotes.settings, ...settings },
+      });
+    },
+    [pdfNotes, setPdfNotes]
+  );
+
+  /**
+   * 今いる章の開始ページの番号を返す
+   */
+  const getChpapterStartPageNum = useCallback(() => {
+    if (invalid) return 0;
+    let pageNum = 0;
+    for (let i = 1; i <= pdfNotes.currentPage; i++) {
+      if (pdfNotes.pages[i]?.chapter === undefined) continue;
+      pageNum = i;
+    }
+    return pageNum;
+  }, [invalid, pdfNotes?.currentPage, pdfNotes?.pages]);
 
   /**
    * 部名・章名・ページ番号の候補を返す
@@ -262,13 +340,53 @@ export default function useUpdaters({
         setPdfNotes({ ...pdfNotes });
       }
       if (e.key === " ") {
-        if (previousPageNum === undefined) return;
-        jumpPage(previousPageNum);
+        if (previousPageNum.current === undefined) return;
+        jumpPage(previousPageNum.current);
       }
       if (e.key === "Delete") {
-        if (e.ctrlKey) {
-          page.notes = undefined;
-          setPdfNotes({ ...pdfNotes });
+        if (e.shiftKey) {
+          // ページ内注釈の全削除
+          if (!page.notes || page.notes.length === 0) {
+            setAlert("info", "削除する注釈がありません");
+          } else {
+            updateNotesSnapshot();
+            page.notes = undefined;
+            setPdfNotes({ ...pdfNotes });
+            setAlert("info", "このページの注釈を全て削除しました");
+          }
+        } else if (e.ctrlKey) {
+          // ページ内注釈のリセット
+          if (notesSnapshot.current) {
+            page.notes =
+              notesSnapshot.current.length === 0
+                ? undefined
+                : notesSnapshot.current;
+            setPdfNotes({ ...pdfNotes });
+            notesSnapshot.current = undefined;
+            setAlert(
+              "info",
+              "このページの注釈を、ページ表示直後の状態にリセットしました"
+            );
+          } else {
+            setAlert("info", "未変更のため、リセットする必要はありません");
+          }
+        } else if (e.altKey) {
+          // 注釈・設定の全リセット
+          if (pdfNotesSnapshot.current) {
+            if (
+              window.confirm(
+                "このPDF中の全ての注釈・設定を、PDF読み込み直後の状態にリセットします"
+              )
+            ) {
+              assignPdfNotes(pdfNotesSnapshot.current);
+              setAlert(
+                "info",
+                "全ての注釈・設定を、PDF読み込み直後の状態にリセットしました"
+              );
+            }
+          } else {
+            setAlert("info", "リセットできません");
+          }
         }
       }
       if (e.key === "Escape") {
@@ -278,6 +396,7 @@ export default function useUpdaters({
       }
     },
     [
+      assignPdfNotes,
       getPreferredLabels,
       invalid,
       jumpPage,
@@ -285,18 +404,25 @@ export default function useUpdaters({
       pdfNotes,
       previousPageNum,
       scrollPage,
-      setPdfNotes,
+      setAlert,
+      updateNotesSnapshot,
     ]
   );
 
   return {
-    page,
+    pdfNotes, // この3つは関数ではないのでUpdatersの定義に含めていない
+    page, //
+    previousPageNum: previousPageNum.current,
+    assignPdfNotes,
     pageLabel,
     scrollPage,
     jumpPage,
     popNote,
     pushNote,
     updateNote,
+    updateFileSettings,
+    updatePageSettings,
+    getChpapterStartPageNum,
     getPreferredLabels,
     handleKeyDown,
   };

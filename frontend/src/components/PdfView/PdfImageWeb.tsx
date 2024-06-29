@@ -9,9 +9,8 @@ import PdfNotesContext, {
   PageSize,
 } from "@/contexts/PdfNotesContext/PdfNotesContext";
 
-if (import.meta.env.MODE === "web") {
-  pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-}
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
 const options = {
   cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
   standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts`,
@@ -21,18 +20,17 @@ const options = {
  * PDF画像を表示するコンポーネント
  */
 export default function PdfImageWeb() {
-  const { model } = useContext(ModelContext);
+  const { model, modelFlags } = useContext(ModelContext);
   const {
     id,
     pdfNotes,
-    pageSizes,
+    pageLabel,
     setId,
-    setPdfNotes,
     setPageSizes,
-    updaters: { pageLabel },
+    updaters: { assignPdfNotes },
   } = useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);
-  const { readOnly, waiting, setWaiting, setOpenFileTreeDrawer, setAlert } =
+  const { readOnly, setWaiting, setOpenFileTreeDrawer, setAlert } =
     useContext(UiContext);
 
   const [file, setFile] = useState<string | File>();
@@ -45,43 +43,44 @@ export default function PdfImageWeb() {
   useEffect(() => {
     setFile(undefined);
     if (!id) return;
-    setWaiting(true);
+    // ここに来た時点でpdfNotesの取得は終わっている @OpenFileDrawer
     model
       .getFileFromId(id)
-      .then((file) => {
-        setFile(file);
+      .then((newFile) => {
+        setFile(newFile);
+        if (modelFlags.isMock) {
+          // モックの場合は空白PDFを連続で開く可能性があるが、その時はonLoadSuccessが呼ばれないので、ここでUIを更新しておく
+          setWaiting(false);
+          setOpenFileTreeDrawer(false);
+        }
       })
       .catch(() => {
         setAlert("error", "PDFファイルの取得に失敗しました");
+        setId(undefined);
+        setWaiting(false);
+        setOpenFileTreeDrawer(true);
       });
-  }, [id, model, setWaiting, setAlert]);
-
-  useEffect(() => {
-    // 読み込み終了時の処理
-    if (file && waiting && pageSizes && pdfNotes) {
-      const name = file instanceof File ? file.name : file;
-      setPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
-      setWaiting(false);
-      setOpenFileTreeDrawer(false);
-    }
   }, [
-    file,
-    pageSizes,
-    pdfNotes,
-    setOpenFileTreeDrawer,
-    setPdfNotes,
+    id,
+    model,
+    modelFlags,
     setWaiting,
-    waiting,
     setAlert,
+    setId,
+    setOpenFileTreeDrawer,
   ]);
-
   return (
     <Document
       file={file}
       onLoadSuccess={(doc) => {
-        setSizes().catch(() => undefined); // 読み込みは成功しているのでエラーにはならないはず
+        setSizes().catch(() => undefined); // model.updateHistoryが失敗する可能性があるが、メッセージを出す必要もないので無視する
+        // ウェブ版では↓の処理はPdfNotesの取得時には行わずここで行う
+        setWaiting(false);
+        setOpenFileTreeDrawer(false);
+        return;
 
         async function setSizes() {
+          if (!file) return;
           const pageSizes: PageSize[] = [];
           for (let i = 0; i < doc.numPages; i++) {
             const page = await doc.getPage(i + 1);
@@ -91,6 +90,15 @@ export default function PdfImageWeb() {
             });
           }
           setPageSizes(pageSizes);
+
+          // ページ数を調節する
+          const name = (file instanceof File ? file.name : file).replace(
+            /.pdf$/i,
+            ""
+          );
+          assignPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
+
+          // 履歴を更新
           if (id && !readOnly) {
             await model.updateHistory(id, pageSizes.length);
           }

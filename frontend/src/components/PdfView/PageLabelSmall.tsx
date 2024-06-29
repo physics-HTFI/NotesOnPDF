@@ -17,7 +17,8 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
     id,
     pdfNotes,
     previousPageNum,
-    updaters: { jumpPage, pageLabel },
+    pageLabel,
+    updaters: { jumpPage },
   } = useContext(PdfNotesContext);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
@@ -61,7 +62,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
           disableInteractive
           title={
             <span>
-              【現在地】
+              【現在位置】
               <br />
               {`全体： ${curTotal} / ${total}`} <br />
               {`チャプター内： ${curChapter} / ${chapter}`} <br />

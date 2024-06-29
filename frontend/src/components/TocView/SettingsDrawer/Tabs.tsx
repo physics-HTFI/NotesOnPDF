@@ -12,9 +12,7 @@ export default function Tabs({
   tab: number;
   setTab: (i: number) => void;
 }): ReactNode {
-  const {
-    updaters: { pageLabel },
-  } = useContext(PdfNotesContext);
+  const { pageLabel } = useContext(PdfNotesContext);
   return (
     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
       <MaterialTabs

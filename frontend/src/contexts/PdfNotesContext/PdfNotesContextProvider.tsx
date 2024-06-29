@@ -19,10 +19,19 @@ const putPdfNotesDebounced = debounce(
     setAlert: (
       severity?: "error" | "info" | undefined,
       message?: ReactNode
-    ) => void
+    ) => void,
+    setReadOnly: (readOnly: boolean) => void
   ) => {
     model.putPdfNotes(id, pdfNotes).catch(() => {
-      setAlert("error", "注釈ファイルの保存に失敗しました");
+      setAlert(
+        "error",
+        <span>
+          注釈ファイルの保存に失敗しました。
+          <br />
+          読み取り専用モードに切り替えました。
+        </span>
+      );
+      setReadOnly(true);
     });
   },
   1000
@@ -33,23 +42,12 @@ const putPdfNotesDebounced = debounce(
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
-  const { readOnly, setAlert } = useContext(UiContext);
-  const [id, setId_] = useState<string>();
-  const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
+  const { readOnly, setAlert, setReadOnly } = useContext(UiContext);
+  const [id, setId] = useState<string>();
   const [pageSizes, setPageSizes] = useState<PageSize[]>();
-  const [previousPageNum, setPreviousPageNum] = useState<number>();
   const { getNewCoveragesOrUndefined } = useNewCoverages();
-  const updaters = useUpdaters({
-    pdfNotes,
-    setPdfNotes,
-    previousPageNum,
-    setPreviousPageNum,
-  });
-
-  const setId = (id?: string) => {
-    setId_(id);
-    setPreviousPageNum(undefined);
-  };
+  const updaters = useUpdaters();
+  const pdfNotes = updaters.pdfNotes;
 
   // `pdfNotes`が変更されたときの処理
   useEffect(() => {
@@ -60,11 +58,22 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       ?.scrollIntoView({ block: "nearest" });
     if (!readOnly) {
       // 注釈ファイル保存
-      putPdfNotesDebounced(id, pdfNotes, model, setAlert);
+      putPdfNotesDebounced(id, pdfNotes, model, setAlert, setReadOnly);
       // 必要であれば`coverages`を更新する
       const newCoverages = getNewCoveragesOrUndefined(id, pdfNotes);
       if (newCoverages) {
         setCoverages(newCoverages);
+        model.putCoverages(newCoverages).catch(() => {
+          setAlert(
+            "error",
+            <span>
+              進捗率ファイルの保存に失敗しました。
+              <br />
+              読み取り専用モードに切り替えました。
+            </span>
+          );
+          setReadOnly(true);
+        });
       }
     }
   }, [
@@ -75,6 +84,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     readOnly,
     setAlert,
     setCoverages,
+    setReadOnly,
   ]);
 
   return (
@@ -82,12 +92,12 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       value={{
         id,
         pdfNotes,
+        page: updaters.page,
+        pageLabel: updaters.pageLabel,
+        previousPageNum: updaters.previousPageNum,
         pageSizes,
-        previousPageNum,
         setId,
-        setPdfNotes,
         setPageSizes,
-        setPreviousPageNum,
         updaters,
       }}
     >

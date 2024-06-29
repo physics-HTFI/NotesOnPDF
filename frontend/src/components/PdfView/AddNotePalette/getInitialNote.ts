@@ -20,7 +20,7 @@ export default function getInitialNote(
         y1: y,
         x2: x,
         y2: y,
-        heads: ["end"],
+        style: "normal",
       },
     };
 
@@ -34,7 +34,7 @@ export default function getInitialNote(
         y1: y,
         x2: x,
         y2: y,
-        heads: ["start", "end"],
+        style: "normal",
       },
     };
 
@@ -66,6 +66,7 @@ export default function getInitialNote(
       x,
       y,
       html: "",
+      style: "normal",
     };
 
   if (type === "PageLink")

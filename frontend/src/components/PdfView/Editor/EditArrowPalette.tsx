@@ -1,20 +1,20 @@
 import { useContext } from "react";
-import { Arrow, Bracket } from "@/types/PdfNotes";
+import { Arrow } from "@/types/PdfNotes";
 import Svg from "../../common/Svg";
 import ArrowItem from "../Items/Arrow";
-import BracketItem from "../Items/Bracket";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Palette from "@/components/common/Palette/Palette";
+import getVector from "./getVector";
 
 /**
- * Arrow, Bracketの編集パレット
+ * Arrowの編集パレット
  */
 export default function EditArrowPalette({
   params,
   onClose,
 }: {
-  params: Arrow | Bracket;
+  params: Arrow;
   onClose: () => void;
 }) {
   const {
@@ -23,88 +23,47 @@ export default function EditArrowPalette({
   const { pageRect, mouse } = useContext(MouseContext);
   if (!pageRect || !mouse) return undefined;
 
-  const start = params.heads.includes("start");
-  const end = params.heads.includes("end");
-  const currentHeads =
-    start && end ? "both" : start ? "start" : end ? "end" : "none";
   const L = 40;
   const pageRectIcon = new DOMRect(0, 0, 1.5 * L, 1.5 * L);
-  const headsList =
-    params.type === "Arrow"
-      ? (["end", "both", "start", "none"] as const)
-      : (["both", "start", "none", "end"] as const);
+  const styles = [
+    "normal",
+    "both",
+    "inverted",
+    "single",
+    "double",
+  ] satisfies (typeof params.style)[];
 
   /** 1つのアイコンを返す */
   const renderIcon = (i: number) => {
-    const heads = headsList[i];
-    if (!heads) return undefined;
-    const line: Arrow | Bracket = {
-      type: params.type,
-      heads: getHeads(heads),
-      ...getVector(params, pageRect, params.type === "Arrow" ? 0.8 : 0.7),
+    const style = styles[i];
+    if (!style) return undefined;
+    const line: Arrow = {
+      type: "Arrow",
+      style,
+      ...getVector(params, pageRect, 0.8),
     };
     return (
       <Svg pageRect={pageRectIcon}>
-        {line.type === "Arrow" ? (
-          <ArrowItem pageRect={pageRectIcon} params={line} disableNodes />
-        ) : (
-          <BracketItem pageRect={pageRectIcon} params={line} disableNodes />
-        )}
+        <ArrowItem pageRect={pageRectIcon} params={line} />
       </Svg>
     );
-  };
-
-  const handleClose = (i?: number) => {
-    onClose();
-    const newHeads = i === undefined ? undefined : headsList[i];
-    if (!newHeads) return; // キャンセル時
-    if (newHeads === currentHeads) return;
-    updateNote(params, { ...params, heads: getHeads(newHeads) });
   };
 
   return (
     <Palette
       open
-      numIcons={4}
+      numIcons={5}
       renderIcon={renderIcon}
-      selected={headsList.indexOf(currentHeads)}
+      selected={styles.indexOf(params.style)}
       L={L}
       xy={mouse}
-      onClose={handleClose}
+      onClose={(i?: number) => {
+        onClose();
+        const style = i === undefined ? undefined : styles[i];
+        if (!style) return; // キャンセル時
+        if (style === params.style) return;
+        updateNote(params, { ...params, style });
+      }}
     />
   );
-}
-
-//|
-//| ローカル関数
-//|
-
-/**
- * 文字列を`params.heads`の値に変換する
- */
-function getHeads(headsStr: string): ("start" | "end")[] {
-  return headsStr === "start"
-    ? ["start"]
-    : headsStr === "end"
-    ? ["end"]
-    : headsStr === "both"
-    ? ["start", "end"]
-    : [];
-}
-
-/**
- * 与えられた直線と同じ向きを持つ`ToggleButton`用ベクトルを返す
- */
-function getVector(params: Arrow | Bracket, pageRect: DOMRect, scale: number) {
-  const x = (params.x2 - params.x1) * pageRect.width;
-  const y = (params.y2 - params.y1) * pageRect.height;
-  const l = Math.sqrt(x ** 2 + y ** 2);
-  const unitX = x / l;
-  const unitY = y / l;
-  return {
-    x1: 0.5 - scale * 0.5 * unitX,
-    y1: 0.5 - scale * 0.5 * unitY,
-    x2: 0.5 + scale * 0.5 * unitX,
-    y2: 0.5 + scale * 0.5 * unitY,
-  };
 }

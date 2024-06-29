@@ -1,7 +1,7 @@
-import IModel from "@/models/IModel";
+import IModel, { ModelFlags } from "@/models/IModel";
 import ModelDesktop from "@/models/Model.Desktop";
 import ModelNull from "@/models/Model.Null";
-import AppSettings from "@/types/AppSettings";
+import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import UiContext from "../UiContext";
 import Coverages, { Coverage } from "@/types/Coverages";
@@ -17,13 +17,17 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
   const [model, setModel] = useState<IModel>(() =>
     import.meta.env.MODE === "web" ? new ModelNull() : new ModelDesktop()
   );
-  const { readOnly, setAlert } = useContext(UiContext);
+  const { setAlert } = useContext(UiContext);
+  const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
-  const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
+  const [initialized, setInitialized] = useState(false);
+  const [modelFlags, setModelFlags] = useState<ModelFlags>(model.getFlags());
 
-  const initialized = !!appSettings && !!fileTree && !!coverages;
+  useEffect(() => {
+    setModelFlags(model.getFlags());
+  }, [model]);
 
   // `appSettings, FileTree, Coverages`を取得する
   useEffect(() => {
@@ -33,6 +37,7 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
         setAppSettings(appSettings);
         setFileTree(fileTree);
         setCoverages(coverages);
+        setInitialized(true);
       })
       .catch((e?: Error) => {
         if (!e?.message) return;
@@ -40,27 +45,11 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
       });
   }, [model, setAlert, serverFailed]);
 
-  // `appSettings`を保存する
-  useEffect(() => {
-    if (!appSettings || readOnly) return;
-    model.putAppSettings(appSettings).catch(() => {
-      setAlert("error", "設定ファイルの保存に失敗しました");
-    });
-  }, [appSettings, model, readOnly, setAlert]);
-
-  // `coverages`を保存する
-  useEffect(() => {
-    if (!coverages || readOnly) return;
-    model.putCoverages(coverages).catch(() => {
-      setAlert("error", "進捗率ファイルの保存に失敗しました");
-    });
-  }, [coverages, model, readOnly, setAlert]);
-
   return (
     <ModelContext.Provider
       value={{
         model,
-        modelFlags: model.getFlags(),
+        modelFlags,
         appSettings,
         fileTree,
         coverages,
@@ -101,9 +90,12 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
  * `AppSettings, FileTree, Coverages`を取得する
  */
 async function loadAll(model: IModel) {
-  const appSettings = await model.getAppSettings().catch(() => {
-    throw new Error("設定ファイルの取得に失敗しました");
-  });
+  const appSettings: AppSettings = {
+    ...GetAppSettings_default(),
+    ...(await model.getAppSettings().catch(() => {
+      throw new Error("設定ファイルの取得に失敗しました");
+    })),
+  };
   const fileTree = await model.getFileTree().catch(() => {
     throw new Error("ファイルツリーの取得に失敗しました");
   });

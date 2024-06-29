@@ -10,11 +10,9 @@ export default class ModelDesktop implements IModel {
   private origin = import.meta.env.DEV ? "http://localhost:8000" : "";
 
   getFlags = () => ({
-    canToggleReadOnly: true,
-    canOpenHistory: true,
+    isMock: false,
     canOpenFileDialog: true,
     canOpenGithub: false,
-    isWeb: false,
   });
 
   getEventSource = () =>

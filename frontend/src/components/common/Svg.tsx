@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 /**
  * <svg>要素
@@ -7,10 +7,12 @@ export default function Svg({
   pageRect,
   children,
   noPointerEvents,
+  style,
 }: {
   pageRect: DOMRect;
   children: ReactNode;
   noPointerEvents?: boolean;
+  style?: CSSProperties;
 }) {
   return (
     <svg
@@ -23,6 +25,7 @@ export default function Svg({
         top: 0,
         overflow: "visible",
         pointerEvents: noPointerEvents ? "none" : undefined,
+        ...style,
       }}
     >
       {children}

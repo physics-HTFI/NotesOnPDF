@@ -5,11 +5,13 @@ import { ResultGetPdfNotes } from "@/models/IModel";
  */
 export default interface PdfNotes {
   title: string;
-  version: string;
+  version: number;
   currentPage: number;
   pages: Page[];
   settings: Settings;
 }
+
+export const VERSION = 1;
 
 export type NoteType =
   | Rect
@@ -20,14 +22,13 @@ export type NoteType =
   | Memo
   | PageLink
   | Chip;
-export type Heads = "end" | "start" | "both" | "none";
 export interface Arrow {
   type: "Arrow";
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-  heads: ("start" | "end")[];
+  style: "normal" | "inverted" | "both" | "single" | "double";
 }
 export interface Bracket {
   type: "Bracket";
@@ -35,7 +36,7 @@ export interface Bracket {
   y1: number;
   x2: number;
   y2: number;
-  heads: ("start" | "end")[];
+  style: "normal" | "start" | "middle" | "end";
 }
 export interface Chip {
   type: "Chip";
@@ -56,6 +57,7 @@ export interface Memo {
   x: number;
   y: number;
   html: string;
+  style: "normal" | "fold";
 }
 export interface PageLink {
   type: "PageLink";
@@ -66,7 +68,7 @@ export interface PageLink {
 export interface Polygon {
   type: "Polygon";
   points: [number, number][];
-  style: "filled" | "outlined";
+  style: "filled" | "outlined" | "colorize";
 }
 export interface Rect {
   type: "Rect";
@@ -74,7 +76,7 @@ export interface Rect {
   y: number;
   width: number;
   height: number;
-  style: "filled" | "outlined";
+  style: "filled" | "outlined" | "colorize";
 }
 /** ノード位置編集時のマーカー */
 export interface Node {
@@ -144,9 +146,10 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
   ) {
     return result.pdfNotes;
   }
+  const addsTitle = !result.pdfNotes || result.pdfNotes.pages.length === 0; // pages===0は、ウェブ版で始めて開くPDFのタイトルを追加するために必要
   const notes: PdfNotes = result.pdfNotes ?? {
     title: result.name,
-    version: "1.0",
+    version: VERSION,
     currentPage: 0,
     settings: { fontSize: 100, offsetTop: 0, offsetBottom: 0 },
     pages: [],
@@ -157,7 +160,7 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
     notes.pages.push({ num: i + 1 });
   }
   updatePageNum(notes);
-  if (!result.pdfNotes && notes.pages[0]) {
+  if (addsTitle && notes.pages[0]) {
     notes.pages[0].volume = result.name;
   }
   return notes;

@@ -15,6 +15,7 @@ namespace backend
         {
             pdf = new DocumentRenderer(path);
             pdf.RenderOption.Background = Color.White;
+            pdf.RenderOption.Annotation = true;
             return Task.CompletedTask;
         }
 

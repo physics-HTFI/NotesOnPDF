@@ -1,5 +1,4 @@
 import { Tooltip } from "@mui/material";
-import { grey } from "@mui/material/colors";
 
 /**
  * 節区切り
@@ -23,8 +22,8 @@ export default function Separator({
       style={{
         height: 11,
         width: 1,
-        borderLeft: `2px solid ${grey[100]}`,
-        borderRight: `4px solid ${grey[100]}`,
+        marginLeft: 2,
+        marginRight: 4,
         background: "darkgray",
         display: "inline-block",
         cursor: "pointer",

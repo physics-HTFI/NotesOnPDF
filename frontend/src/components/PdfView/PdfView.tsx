@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { lazy, useContext, useEffect, useState } from "react";
 import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
 import SpeedDial, { Mode } from "./SpeedDial";
@@ -11,18 +11,25 @@ import Editor from "./Editor/Editor";
 import { grey } from "@mui/material/colors";
 import Move from "./Move";
 import PdfImageDesktop from "./PdfImageDesktop";
-import PdfImageWeb from "./PdfImageWeb";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import UiContext from "@/contexts/UiContext";
+
+const PdfImageWeb =
+  import.meta.env.MODE === "web"
+    ? lazy(() => import("./PdfImageWeb"))
+    : undefined;
 
 /**
  * Pdfを表示するコンポーネント
  */
 export default function PdfView() {
-  const { modelFlags, appSettings } = useContext(ModelContext);
+  const { setAlert } = useContext(UiContext);
+  const { appSettings } = useContext(ModelContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
   const {
-    updaters: { page, updateNote, scrollPage, handleKeyDown },
+    page,
+    updaters: { updateNote, scrollPage, handleKeyDown },
   } = useContext(PdfNotesContext);
 
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -92,6 +99,7 @@ export default function PdfView() {
         if (mode ?? moveNote) return;
         setMouse({ pageX: e.pageX, pageY: e.pageY });
         setPaletteOpen(true);
+        setAlert();
       }}
     >
       {/* PDF画像がある要素 */}
@@ -111,7 +119,7 @@ export default function PdfView() {
         disableGutters
       >
         {/* 画像 */}
-        {modelFlags.isWeb ? <PdfImageWeb /> : <PdfImageDesktop />}
+        {PdfImageWeb ? <PdfImageWeb /> : <PdfImageDesktop />}
 
         {/* 注釈アイテム */}
         <Items

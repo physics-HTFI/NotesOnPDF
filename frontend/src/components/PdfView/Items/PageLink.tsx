@@ -4,7 +4,7 @@ import { Shortcut } from "@mui/icons-material";
 import { Node, NoteType, PageLink as PageLinkType } from "@/types/PdfNotes";
 import { Mode } from "../SpeedDial";
 import MouseContext from "@/contexts/MouseContext";
-import useCursor from "./useCursor";
+import useCursor from "./utils/useCursor";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
@@ -20,13 +20,12 @@ export default function PageLink({
   onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
 }) {
   const [hover, setHover] = useState(false);
-  const { getCursor } = useCursor(mode);
+  const { cursor } = useCursor(mode);
   const {
     pdfNotes,
     updaters: { jumpPage },
   } = useContext(PdfNotesContext);
   const { scale } = useContext(MouseContext);
-  const cursor = getCursor() ?? "pointer";
   if (!pdfNotes) return <></>;
   return (
     <>
@@ -35,7 +34,7 @@ export default function PageLink({
           position: "absolute",
           left: `${100 * params.x}%`,
           top: `${100 * params.y}%`,
-          cursor,
+          cursor: cursor ?? "pointer",
           opacity: mode && hover ? 0.5 : 1,
           background: !mode && hover ? "mediumseagreen" : "green",
           fontSize: "75%",
@@ -55,7 +54,7 @@ export default function PageLink({
           onMouseDown?.(e, params);
         }}
         onMouseEnter={() => {
-          setHover(!!cursor);
+          setHover(true);
         }}
         onMouseLeave={() => {
           setHover(false);

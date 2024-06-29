@@ -1,7 +1,7 @@
 import { Box, Paper, SxProps } from "@mui/material";
 import { Mouse } from "@/contexts/MouseContext";
 import { ReactNode } from "react";
-import Background from "./Background";
+import Foreground from "./Foreground";
 
 /**
  * パレット型の選択ダイアログ
@@ -74,7 +74,7 @@ export default function Palette({
           {renderIcon(i)}
         </Box>
       ))}
-      <Background
+      <Foreground
         L={L}
         divisions={numIcons}
         selected={selected}

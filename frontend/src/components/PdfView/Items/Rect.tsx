@@ -1,8 +1,9 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent } from "react";
 import { Mode } from "../SpeedDial";
 import { Rect as RectType, Node as NodeType, NoteType } from "@/types/PdfNotes";
-import Node from "./Node";
-import useCursor from "./useCursor";
+import getPolygonStyle from "./utils/getPolygonStyle";
+import Nodes from "./Node";
+import useCursor from "./utils/useCursor";
 
 /**
  * 長方形
@@ -10,29 +11,17 @@ import useCursor from "./useCursor";
 export default function Rect({
   params,
   mode,
+  moving,
   pageRect,
   onMouseDown,
-  disableNodes,
 }: {
   params: RectType;
   mode?: Mode;
+  moving?: boolean;
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
-  disableNodes?: boolean;
 }) {
-  const [hover, setHover] = useState(false);
-  const { getCursor, isMove } = useCursor(mode);
-  const cursor = disableNodes ? undefined : getCursor();
-  const node =
-    !disableNodes && isMove
-      ? {
-          target: params,
-          visible: hover,
-          pageRect,
-          onMouseDown,
-          isGrab: mode === "move",
-        }
-      : undefined;
+  const { cursor, hover, onMouseEnter, onMouseLeave } = useCursor(mode);
 
   return (
     <>
@@ -41,28 +30,21 @@ export default function Rect({
         y={params.y * pageRect.height}
         width={params.width * pageRect.width}
         height={params.height * pageRect.height}
-        style={{
-          fill: "red",
-          stroke: params.style === "outlined" ? "red" : "none",
-          fillOpacity: params.style === "outlined" ? 0 : hover ? 0.2 : 0.3,
-          strokeOpacity: hover ? 0.5 : 1,
-          cursor,
-          mixBlendMode: "multiply",
-        }}
+        style={getPolygonStyle(params, hover, cursor, moving)}
         onMouseDown={(e) => {
           onMouseDown?.(e, params);
         }}
-        onMouseEnter={() => {
-          setHover(!!cursor);
-        }}
-        onMouseLeave={() => {
-          setHover(false);
-        }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       />
-      {node && <Node index={0} {...node} />}
-      {node && <Node index={1} {...node} />}
-      {node && <Node index={2} {...node} />}
-      {node && <Node index={3} {...node} />}
+
+      <Nodes
+        target={params}
+        mode={mode}
+        visible={hover}
+        pageRect={pageRect}
+        onMouseDown={onMouseDown}
+      />
     </>
   );
 }
