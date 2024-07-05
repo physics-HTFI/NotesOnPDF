@@ -54,7 +54,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     if (!pdfNotes || !id) return;
     // 目次パネル中の選択されたページが隠れないようにスクロールする
     document
-      .getElementById(String(pdfNotes.currentPage))
+      .getElementById(String(updaters.imageNum))
       ?.scrollIntoView({ block: "nearest" });
     if (!readOnly) {
       // 注釈ファイル保存
@@ -85,6 +85,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     setAlert,
     setCoverages,
     setReadOnly,
+    updaters.imageNum,
   ]);
 
   return (
@@ -95,6 +96,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
         page: updaters.page,
         pageLabel: updaters.pageLabel,
         previousPageNum: updaters.previousPageNum,
+        imageNum: updaters.imageNum,
         pageSizes,
         setId,
         setPageSizes,

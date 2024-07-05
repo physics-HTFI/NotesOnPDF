@@ -16,17 +16,21 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const {
     id,
     pdfNotes,
+    imageNum,
     previousPageNum,
     pageLabel,
-    updaters: { jumpPage },
+    updaters: { jumpPageStart: jumpPage },
   } = useContext(PdfNotesContext);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
-  if (!pdfNotes || !id) return <></>;
+  if (!pdfNotes || !id || imageNum === undefined) return <></>;
   const coverage = GetCoverage(pdfNotes);
   const color = "#2e7d32";
 
-  const { curTotal, total, curChapter, chapter } = getPageNums(pdfNotes);
+  const { curTotal, total, curChapter, chapter } = getPageNums(
+    pdfNotes,
+    imageNum
+  );
 
   return (
     <Stack
@@ -87,7 +91,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
       {openJumpDialog && (
         <PageInput
           open
-          pageNumInit={pdfNotes.currentPage}
+          pageNumInit={imageNum}
           onClose={(page) => {
             setOpenJumpDialog(false);
             if (page === undefined) return;
@@ -125,13 +129,13 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
 /**
  * 現在ページのページ番号を取得
  */
-function getPageNums(pdfNotes: PdfNotes) {
+function getPageNums(pdfNotes: PdfNotes, imageNum: number) {
   const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
   let found = false;
   for (let i = 0; i < pdfNotes.pages.length; i++) {
     const p = pdfNotes.pages[i];
     if (!p) continue;
-    const before = i <= pdfNotes.currentPage;
+    const before = i <= imageNum;
     const isChapterStart =
       p.volume !== undefined || p.part !== undefined || p.chapter !== undefined;
     if (isChapterStart) {

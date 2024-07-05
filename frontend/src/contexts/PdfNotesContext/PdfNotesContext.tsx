@@ -16,6 +16,7 @@ const PdfNotesContext = createContext<{
   page?: Page;
   pageSizes?: PageSize[];
   pageLabel: string;
+  imageNum?: number;
   previousPageNum?: number;
   setId: (id?: string) => void;
   setPageSizes: (pageSizes?: PageSize[]) => void;
@@ -27,7 +28,8 @@ const PdfNotesContext = createContext<{
   updaters: {
     assignPdfNotes: () => undefined,
     scrollPage: () => undefined,
-    jumpPage: () => undefined,
+    jumpPageStart: () => undefined,
+    jumpPageEnd: () => undefined,
     popNote: () => undefined,
     pushNote: () => undefined,
     updateNote: () => undefined,

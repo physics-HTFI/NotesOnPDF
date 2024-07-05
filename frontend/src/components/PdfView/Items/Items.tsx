@@ -16,7 +16,7 @@ import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 /**
- * PDFビュークリック時に表示されるコントロール
+ * 注釈を表示するコントロール
  */
 export default function Items({
   mode,
