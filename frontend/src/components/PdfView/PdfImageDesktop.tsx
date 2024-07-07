@@ -21,7 +21,6 @@ export default function PdfImageDesktop() {
   const [src, setSrc] = useState("");
   const [reading, setReading] = useState(false);
   const nextSrc = useRef("");
-  console.log(imageNum);
 
   if (!id || !pageRect || imageNum === undefined) {
     return <></>;

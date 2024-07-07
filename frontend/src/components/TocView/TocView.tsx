@@ -27,6 +27,13 @@ export default function TocView() {
           height: "100vh",
           boxSizing: "border-box",
         }}
+        onWheel={(e) => {
+          const target = e.currentTarget;
+          const isScrollBarVisible = target.scrollHeight > target.clientHeight;
+          if (isScrollBarVisible) {
+            e.stopPropagation();
+          }
+        }}
       >
         {/* レンダリングコストが高いのでメモ化する */}
         {useMemo(
