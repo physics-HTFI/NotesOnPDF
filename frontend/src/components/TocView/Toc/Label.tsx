@@ -44,7 +44,7 @@ export default function Label({
           : type === "part"
           ? { pt: 1 }
           : {
-              pt: 1,
+              pt: 0.6,
               fontSize: "110%",
               lineHeight: 1,
               minHeight: 6,
