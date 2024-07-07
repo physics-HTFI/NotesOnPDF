@@ -417,6 +417,8 @@ export default function useUpdaters() {
         }
       }
       if (e.key === "Escape") {
+        const page = pdfNotes.pages[imageNum]; // ページ切り替え直後に実行したときに前のページに適用されるのを防ぐ
+        if (!page) return;
         const current = page.style?.some((s) => s === "excluded");
         page.style = editPageStyle(page.style, "excluded", !current);
         setPdfNotes({ ...pdfNotes });
@@ -425,11 +427,11 @@ export default function useUpdaters() {
     [
       assignPdfNotes,
       getPreferredLabels,
+      imageNum,
       invalid,
       jumpPageStart,
       page,
       pdfNotes,
-      previousPageNum,
       scrollPage,
       setAlert,
       updateNotesSnapshot,
