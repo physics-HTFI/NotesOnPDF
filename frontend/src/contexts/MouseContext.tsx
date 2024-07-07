@@ -26,11 +26,16 @@ export default MouseContext;
  * `MouseContext`のプロバイダー
  */
 export function MouseContextProvider({ children }: { children: ReactNode }) {
-  const { pdfNotes, pageSizes } = useContext(PdfNotesContext);
+  const { pdfNotes, pageSizes, imageNum } = useContext(PdfNotesContext);
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
   const [refContainer, setRefContainer] = useState<HTMLDivElement>();
   const containerRect = refContainer?.getBoundingClientRect();
-  const { pageRect, top, bottom } = getRect(pdfNotes, pageSizes, containerRect);
+  const { pageRect, top, bottom } = getRect(
+    pdfNotes,
+    imageNum,
+    pageSizes,
+    containerRect
+  );
 
   const scale =
     !pdfNotes || !pageRect
@@ -51,11 +56,13 @@ export function MouseContextProvider({ children }: { children: ReactNode }) {
  */
 function getRect(
   pdfNotes?: PdfNotes,
+  imageNum?: number,
   pageSizes?: PageSize[],
   containerRect?: DOMRect
 ): { pageRect?: DOMRect; top?: number; bottom?: number } {
-  if (!pdfNotes || !pageSizes || !containerRect) return {};
-  const size = pageSizes[pdfNotes.currentPage];
+  if (!pdfNotes || !pageSizes || !containerRect || imageNum === undefined)
+    return {};
+  const size = pageSizes[imageNum];
   if (!size) return {};
   const pageRatio = size.width / size.height;
   return preferredSize(

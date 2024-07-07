@@ -11,7 +11,8 @@ import Label from "./Label";
 const ToC = () => {
   const {
     pdfNotes,
-    updaters: { jumpPage, getChpapterStartPageNum },
+    imageNum,
+    updaters: { jumpPageStart: jumpPage, getChpapterStartPageNum },
   } = useContext(PdfNotesContext);
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
   if (!pdfNotes) return [];
@@ -64,7 +65,7 @@ const ToC = () => {
         key={`page-${i}`}
         sectionBreakInner={page.style?.includes("break-middle")}
         tooltip={`p. ${pageNum}`}
-        isCurrent={i === pdfNotes.currentPage}
+        isCurrent={i === imageNum}
         page={page}
         onClick={handleClick}
         index={i}
@@ -88,7 +89,7 @@ const ToC = () => {
           key={`page-right-${i}`}
           sectionBreakInner={page.style.includes("break-middle")}
           tooltip={`p. ${pageNum}`}
-          isCurrent={i === pdfNotes.currentPage}
+          isCurrent={i === imageNum}
           page={page}
           onClick={handleClick}
           index={i}

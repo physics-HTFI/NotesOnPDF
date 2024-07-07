@@ -24,6 +24,7 @@ export default function PdfImageWeb() {
   const {
     id,
     pdfNotes,
+    imageNum,
     pageLabel,
     setId,
     setPageSizes,
@@ -115,7 +116,7 @@ export default function PdfImageWeb() {
       noData={""}
     >
       <Page
-        pageIndex={pdfNotes?.currentPage}
+        pageIndex={imageNum}
         width={pageRect?.width}
         error={""}
         loading={""}
@@ -139,14 +140,14 @@ function useReading() {
     id: string;
     page: number;
   }>();
-  const { id, pdfNotes } = useContext(PdfNotesContext);
+  const { id, pdfNotes, imageNum } = useContext(PdfNotesContext);
 
   const isReading = () => {
-    if (pdfNotes && id) {
-      if (prev?.id !== id || prev.page !== pdfNotes.currentPage) {
+    if (pdfNotes && id && imageNum !== undefined) {
+      if (prev?.id !== id || prev.page !== imageNum) {
         setPrev({
           id,
-          page: pdfNotes.currentPage,
+          page: imageNum,
         });
         return true;
       }

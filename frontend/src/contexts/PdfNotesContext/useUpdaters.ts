@@ -24,9 +24,16 @@ export interface Updaters {
   scrollPage(forward: boolean, type?: "section" | "chapter"): void;
 
   /**
-   * 特定のページに移動する
+   * 特定のページへの移動処理を開始する。
+   * ウェブ版はこれを呼ぶだけで移動処理が終わる。
+   * デスクトップ版は画像読み込みだけ行うので、読み込み後に`jumpPageEnd`を実行して移動処理を行う。
    */
-  jumpPage(num: number, isDisplayed?: boolean): void;
+  jumpPageStart(num: number): void;
+
+  /**
+   * 特定のページへの移動処理の後半（デスクトップ版のみ）
+   */
+  jumpPageEnd(num: number): void;
 
   /**
    * `PdfNotes`オブジェクトの現在ページから注釈を消去する。
@@ -85,11 +92,13 @@ export default function useUpdaters() {
   const { inert } = useContext(ModelContext);
   const { openFileTreeDrawer, waiting, setAlert } = useContext(UiContext);
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
+  const [imageNum, setImageNum] = useState<number>();
   const pdfNotesSnapshot = useRef<PdfNotes>();
   const notesSnapshot = useRef<NoteType[]>();
   const previousPageNum = useRef<number>();
   const page = pdfNotes?.pages[pdfNotes.currentPage];
-  const invalid = !page || openFileTreeDrawer || waiting || inert;
+  const invalid =
+    !page || openFileTreeDrawer || waiting || inert || imageNum === undefined;
   const pageLabel = `p. ${page?.num ?? "???"}`;
 
   const updateNotesSnapshot = useCallback(() => {
@@ -102,25 +111,43 @@ export default function useUpdaters() {
    */
   const assignPdfNotes = useCallback((pdfNotes?: PdfNotes) => {
     setPdfNotes(pdfNotes);
+    setImageNum(pdfNotes?.currentPage);
     pdfNotesSnapshot.current = structuredClone(pdfNotes);
     notesSnapshot.current = undefined;
     previousPageNum.current = undefined;
   }, []);
 
   /**
-   * 特定のページに移動する（ページ移動処理を行うのはここだけ）
+   * 実際の移動処理
    */
-  const jumpPage = useCallback(
+  const jumpPageEnd = useCallback(
     (num: number) => {
       if (invalid) return;
-      setAlert();
-      if (pdfNotes.currentPage === num) return;
-      if (num < 0 || pdfNotes.pages.length <= num) return;
       setPdfNotes({ ...pdfNotes, currentPage: num });
       previousPageNum.current = pdfNotes.currentPage;
       notesSnapshot.current = undefined;
     },
-    [invalid, pdfNotes, setAlert]
+    [invalid, pdfNotes]
+  );
+
+  /**
+   * 特定のページに移動する（ページ移動処理を行うのはここだけ）
+   */
+  const jumpPageStart = useCallback(
+    (num: number) => {
+      if (invalid) return;
+      setAlert();
+      if (imageNum === num) return;
+      if (num < 0 || pdfNotes.pages.length <= num) return;
+      if (import.meta.env.MODE === "web") {
+        setImageNum(num);
+        jumpPageEnd(num); // ウェブ版ではすぐに更新する
+      } else {
+        setImageNum(num);
+        // デスクトップ版では、画像読み込み後にjumpPageEndを呼ぶ
+      }
+    },
+    [invalid, imageNum, pdfNotes?.pages.length, setAlert, jumpPageEnd]
   );
 
   /**
@@ -129,16 +156,16 @@ export default function useUpdaters() {
   const scrollPage = useCallback(
     (forward: boolean, type?: "section" | "chapter") => {
       if (invalid) return;
-      let currentPage = pdfNotes.currentPage;
+      let nextPage = imageNum;
       for (;;) {
         const candidate = Math.max(
           0,
-          Math.min(pdfNotes.pages.length - 1, currentPage + (forward ? 1 : -1))
+          Math.min(pdfNotes.pages.length - 1, nextPage + (forward ? 1 : -1))
         );
-        if (currentPage === candidate) break; // これ以上スクロールできなくなった
-        currentPage = candidate;
+        if (nextPage === candidate) break; // これ以上スクロールできなくなった
+        nextPage = candidate;
         if (!type) break;
-        const page = pdfNotes.pages[currentPage];
+        const page = pdfNotes.pages[nextPage];
         const sectionBreak =
           page?.style?.some((s) => s.includes("break")) === true;
         const chapterBreak =
@@ -146,9 +173,9 @@ export default function useUpdaters() {
         if (type === "section" && (sectionBreak || chapterBreak)) break;
         if (type === "chapter" && chapterBreak) break;
       }
-      jumpPage(currentPage);
+      jumpPageStart(nextPage);
     },
-    [invalid, jumpPage, pdfNotes?.currentPage, pdfNotes?.pages]
+    [invalid, jumpPageStart, imageNum, pdfNotes?.pages]
   );
 
   const _popNote = useCallback(
@@ -341,7 +368,7 @@ export default function useUpdaters() {
       }
       if (e.key === " ") {
         if (previousPageNum.current === undefined) return;
-        jumpPage(previousPageNum.current);
+        jumpPageStart(previousPageNum.current);
       }
       if (e.key === "Delete") {
         if (e.shiftKey) {
@@ -399,7 +426,7 @@ export default function useUpdaters() {
       assignPdfNotes,
       getPreferredLabels,
       invalid,
-      jumpPage,
+      jumpPageStart,
       page,
       pdfNotes,
       previousPageNum,
@@ -410,13 +437,15 @@ export default function useUpdaters() {
   );
 
   return {
-    pdfNotes, // この3つは関数ではないのでUpdatersの定義に含めていない
+    pdfNotes, // この4つは関数ではないのでUpdatersの定義に含めていない
     page, //
+    imageNum, //
     previousPageNum: previousPageNum.current,
     assignPdfNotes,
     pageLabel,
     scrollPage,
-    jumpPage,
+    jumpPageStart,
+    jumpPageEnd,
     popNote,
     pushNote,
     updateNote,

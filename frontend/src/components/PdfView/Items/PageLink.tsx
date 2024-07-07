@@ -23,7 +23,7 @@ export default function PageLink({
   const { cursor } = useCursor(mode);
   const {
     pdfNotes,
-    updaters: { jumpPage },
+    updaters: { jumpPageStart: jumpPage },
   } = useContext(PdfNotesContext);
   const { scale } = useContext(MouseContext);
   if (!pdfNotes) return <></>;

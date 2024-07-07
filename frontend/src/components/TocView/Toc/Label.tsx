@@ -19,7 +19,7 @@ export default function Label({
   highlight?: boolean;
 }) {
   const {
-    updaters: { jumpPage, updatePageSettings },
+    updaters: { jumpPageStart: jumpPage, updatePageSettings },
   } = useContext(PdfNotesContext);
   const [xy, setXy] = useState<{ x: number; y: number }>();
 
@@ -39,12 +39,12 @@ export default function Label({
         color: highlight ? "crimson" : "gray",
         ...(type === "volume"
           ? {
-              "&:not(:first-of-type)": { pt: 1 },
+              "&:not(:first-of-type)": { pt: 1.5 },
             }
           : type === "part"
-          ? { pt: 0.8 }
+          ? { pt: 1 }
           : {
-              pt: 0.5,
+              pt: 0.6,
               fontSize: "110%",
               lineHeight: 1,
               minHeight: 6,

@@ -12,24 +12,25 @@ export default function PdfImageDesktop() {
   const { model } = useContext(ModelContext);
   const { setAlert } = useContext(UiContext);
   const { pageRect } = useContext(MouseContext);
-  const { id, pdfNotes, pageLabel } = useContext(PdfNotesContext);
+  const {
+    id,
+    pageLabel,
+    imageNum,
+    updaters: { jumpPageEnd },
+  } = useContext(PdfNotesContext);
   const [src, setSrc] = useState("");
   const [reading, setReading] = useState(false);
   const nextSrc = useRef("");
+  console.log(imageNum);
 
-  if (!id || !pdfNotes || !pageRect) {
+  if (!id || !pageRect || imageNum === undefined) {
     return <></>;
   }
 
   const width = Math.round(pageRect.width);
   const height = Math.round(pageRect.height);
   try {
-    nextSrc.current = model.getPageImageUrl(
-      id,
-      pdfNotes.currentPage,
-      width,
-      height
-    );
+    nextSrc.current = model.getPageImageUrl(id, imageNum, width, height);
   } catch {
     setAlert("error", "ページ画像の取得に失敗しました");
   }
@@ -45,9 +46,14 @@ export default function PdfImageDesktop() {
     <>
       <img
         src={src}
-        style={{ width, height }}
+        style={{
+          width,
+          height,
+          objectFit: reading ? "none" : undefined,
+        }}
         onLoad={() => {
           setReading(false);
+          jumpPageEnd(imageNum);
         }}
         onError={() => {
           setReading(false);
