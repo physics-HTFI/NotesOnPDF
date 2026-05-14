@@ -40,7 +40,7 @@ export default function TocView() {
           () => (
             <ToC />
           ),
-          []
+          [],
         )}
       </Box>
 

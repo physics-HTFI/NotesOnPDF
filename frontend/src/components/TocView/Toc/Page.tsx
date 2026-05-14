@@ -5,7 +5,7 @@ import { Page as PageParams } from "@/types/PdfNotes";
  * ページ要素
  */
 export default function Page({
-  sectionBreakInner,
+  sectionBreak,
   tooltip,
   isCurrent,
   page,
@@ -17,7 +17,7 @@ export default function Page({
   openTooltips,
   setOpenTooltips,
 }: {
-  sectionBreakInner?: boolean;
+  sectionBreak?: "before" | "after" | "full";
   tooltip?: string;
   isCurrent?: boolean;
   page?: PageParams;
@@ -31,26 +31,33 @@ export default function Page({
       return page?.notes ? "magenta" : "red";
     } else {
       return page?.notes && !page.style?.includes("excluded")
-        ? "limegreen"
-        : "black";
+        ? "#00cd5b"
+        : undefined;
     }
   };
+  const radius = 3.5;
   const style = {
-    display: "inline-block",
-    width: sectionBreakInner ? 3 : 7,
-    height: 7,
+    width:
+      sectionBreak === "before" || sectionBreak === "after"
+        ? radius
+        : undefined,
+    borderRadius:
+      sectionBreak === "before"
+        ? `${radius}px 0 0 ${radius}px`
+        : sectionBreak === "after"
+          ? `0 ${radius}px ${radius}px 0`
+          : undefined,
+    marginRight: sectionBreak === "after" ? 0 : undefined,
     background: getPageColor(isCurrent, page),
-    marginRight: 2,
-    marginBottom: 2,
-    marginTop: 2,
-    opacity: page?.style?.includes("excluded") ? 0.3 : 1,
-    cursor: "pointer",
+    opacity: page?.style?.includes("excluded") ? 0.3 : undefined,
   };
+  const hasStyle = Object.values(style).some((v) => v !== undefined);
   const openTooltip = index !== undefined && openTooltips?.[index];
   return (
     <span
       id={String(index)}
-      style={openTooltip ? undefined : style}
+      className={openTooltip ? undefined : "page"}
+      style={(openTooltip ?? !hasStyle) ? undefined : style}
       onClick={onClick}
       onMouseEnter={() => {
         if (!setOpenTooltips || !openTooltips) return;
@@ -64,7 +71,11 @@ export default function Page({
           enterDelay={0}
           leaveDelay={0}
         >
-          <span style={style} onClick={onClick} />
+          <span
+            className="page"
+            style={hasStyle ? style : undefined}
+            onClick={onClick}
+          />
         </Tooltip>
       )}
     </span>

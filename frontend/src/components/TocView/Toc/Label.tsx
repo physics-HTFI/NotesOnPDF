@@ -27,28 +27,29 @@ export default function Label({
     type === "volume"
       ? page.volume
       : type === "part"
-      ? page.part
-      : page.chapter;
+        ? page.part
+        : page.chapter;
 
   if (label === undefined) return undefined;
   return (
     <Typography
-      variant={type === "volume" ? "body1" : "body2"}
+      variant={"body2"}
       sx={{
         whiteSpace: "nowrap",
-        color: highlight ? "crimson" : "gray",
+        color: highlight ? "crimson" : "#666",
         ...(type === "volume"
           ? {
               "&:not(:first-of-type)": { pt: 1.5 },
+              "font-weight": "bold",
             }
           : type === "part"
-          ? { pt: 1 }
-          : {
-              pt: 0.6,
-              fontSize: "110%",
-              lineHeight: 1,
-              minHeight: 6,
-            }),
+            ? { pt: 1 }
+            : {
+                pt: 0.6,
+                fontSize: "110%",
+                lineHeight: 1,
+                minHeight: 6,
+              }),
       }}
     >
       <span

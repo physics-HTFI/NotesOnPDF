@@ -4,6 +4,7 @@ import Page from "./Page";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { MathJax } from "better-react-mathjax";
 import Label from "./Label";
+import "./style.css";
 
 /**
  * @returns 目次の内容
@@ -33,7 +34,7 @@ const ToC = () => {
 
     // 巻名、部名、章名を追加
     toc.push(
-      <Label key={`volume-${i}`} type="volume" pageNum={i} page={page} />
+      <Label key={`volume-${i}`} type="volume" pageNum={i} page={page} />,
     );
     toc.push(<Label key={`part-${i}`} type="part" pageNum={i} page={page} />);
     toc.push(
@@ -43,7 +44,7 @@ const ToC = () => {
         pageNum={i}
         page={page}
         highlight={i === chapterStart}
-      />
+      />,
     );
     // 節区切りを追加
     pageNum = page.numRestart ?? pageNum;
@@ -56,14 +57,16 @@ const ToC = () => {
           index={i}
           openTooltips={openTooltips}
           setOpenTooltips={setOpenTooltips}
-        />
+        />,
       );
     }
     // ページを追加
     toc.push(
       <Page
         key={`page-${i}`}
-        sectionBreakInner={page.style?.includes("break-middle")}
+        sectionBreak={
+          page.style?.includes("break-middle") ? "before" : undefined
+        }
         tooltip={`p. ${pageNum}`}
         isCurrent={i === imageNum}
         page={page}
@@ -71,7 +74,7 @@ const ToC = () => {
         index={i}
         openTooltips={openTooltips}
         setOpenTooltips={setOpenTooltips}
-      />
+      />,
     );
     if (page.style?.includes("break-middle")) {
       toc.push(
@@ -82,12 +85,14 @@ const ToC = () => {
           index={i}
           openTooltips={openTooltips}
           setOpenTooltips={setOpenTooltips}
-        />
+        />,
       );
       toc.push(
         <Page
           key={`page-right-${i}`}
-          sectionBreakInner={page.style.includes("break-middle")}
+          sectionBreak={
+            page.style.includes("break-middle") ? "after" : undefined
+          }
           tooltip={`p. ${pageNum}`}
           isCurrent={i === imageNum}
           page={page}
@@ -95,7 +100,7 @@ const ToC = () => {
           index={i}
           openTooltips={openTooltips}
           setOpenTooltips={setOpenTooltips}
-        />
+        />,
       );
     }
     ++pageNum;

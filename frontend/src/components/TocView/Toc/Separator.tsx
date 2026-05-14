@@ -8,23 +8,25 @@ export default function Separator({
   tooltip,
   index,
   openTooltips,
+  visible,
   setOpenTooltips,
 }: {
   onClick?: () => void;
   tooltip?: string;
   index?: number;
   openTooltips?: boolean[];
+  visible?: boolean;
   setOpenTooltips?: (openTooltips: boolean[]) => void;
 }) {
   const openTooltip = index !== undefined && openTooltips?.[index];
   const separator = (
     <span
       style={{
-        height: 11,
+        height: visible ? 10 : undefined,
         width: 1,
         marginLeft: 2,
-        marginRight: 4,
-        background: "darkgray",
+        marginRight: 2,
+        background: visible ? "darkgray" : undefined,
         display: "inline-block",
         cursor: "pointer",
       }}

@@ -95,7 +95,7 @@ export default function PdfImageWeb() {
           // ページ数を調節する
           const name = (file instanceof File ? file.name : file).replace(
             /.pdf$/i,
-            ""
+            "",
           );
           assignPdfNotes(createOrGetPdfNotes({ name, pdfNotes, pageSizes }));
 

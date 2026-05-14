@@ -25,8 +25,8 @@ export default function SectionBreak({
       ? "before-middle"
       : "before"
     : breakMiddle
-    ? "middle"
-    : "none";
+      ? "middle"
+      : "none";
   return (
     <Box
       sx={{
@@ -78,7 +78,7 @@ export default function SectionBreak({
             disableInteractive
           >
             <span style={{ marginBottom: -3 }}>
-              <Separator />
+              <Separator visible />
               <Page />
             </span>
           </Tooltip>
@@ -95,9 +95,9 @@ export default function SectionBreak({
             disableInteractive
           >
             <span style={{ marginLeft: 2, marginBottom: -3 }}>
-              <Page sectionBreakInner={true} />
-              <Separator />
-              <Page sectionBreakInner={true} />
+              <Page sectionBreak="before" />
+              <Separator visible />
+              <Page sectionBreak="after" />
             </span>
           </Tooltip>
         </ToggleButton>
@@ -113,10 +113,10 @@ export default function SectionBreak({
             disableInteractive
           >
             <span style={{ marginBottom: -3 }}>
-              <Separator />
-              <Page sectionBreakInner={true} />
-              <Separator />
-              <Page sectionBreakInner={true} />
+              <Separator visible />
+              <Page sectionBreak="before" />
+              <Separator visible />
+              <Page sectionBreak="after" />
             </span>
           </Tooltip>
         </ToggleButton>
