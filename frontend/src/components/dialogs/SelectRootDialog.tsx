@@ -32,7 +32,7 @@ export default function SelectRootDialog() {
 
   const alertBrowserCannotOpenDirectory = () => {
     alert(
-      "このブラウザは、フォルダの読み込みに対応していません。\nGoogle Chrome または Microsoft Edge を使用してください。"
+      "このブラウザは、フォルダの読み込みに対応していません。\nGoogle Chrome または Microsoft Edge を使用してください。",
     );
   };
 
@@ -87,7 +87,7 @@ export default function SelectRootDialog() {
           <TextField
             margin="dense"
             label={"基準フォルダ"}
-            helperText="このフォルダ内のPDFファイルを検索します (ドラッグ＆ドロップも可)"
+            helperText="このフォルダ内のPDFファイルが開けるようになります (ドラッグ＆ドロップも可)"
             value={dirHandle?.name ?? ""}
             fullWidth
             variant="standard"
@@ -189,7 +189,7 @@ export default function SelectRootDialog() {
                   閲覧・編集などは一通りできますが、保存はされません。
                   <br />
                   再読み込みすると元に戻ります。
-                </>
+                </>,
               );
               setOpen(false);
             }}
