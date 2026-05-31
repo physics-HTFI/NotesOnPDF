@@ -1,4 +1,4 @@
-import { NoteType } from "@/types/PdfNotes";
+import { type NoteType } from "@/types/PdfNotes";
 import ChipEditor from "./ChipEditor";
 import PageLinkEditor from "./PageLinkEditor";
 import MemoEditor from "./MemoEditor";

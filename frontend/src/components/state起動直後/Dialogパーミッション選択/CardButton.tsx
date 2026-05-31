@@ -35,7 +35,7 @@ export function CardButton({
     >
       <CardActionArea onClick={onClick}>
         <CardContent>
-          <Stack direction="row" gap={1}>
+          <Stack sx={{ direction: "row", gap: 1 }}>
             <Icon sx={{ color }} />
             <Box>
               <Typography

@@ -1,6 +1,6 @@
 import { Box, TextField, Tooltip } from "@mui/material";
 import Checkbox from "./Checkbox";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 /**
  * ☑ラベル ________
@@ -36,13 +36,15 @@ export default function CheckboxText({
           hidden={!checked}
           value={textLocal}
           variant="standard"
-          InputProps={{
-            sx: {
-              fontSize: "140%",
-              visibility: checked ? undefined : "hidden",
-              height: 30,
-              width: "auto",
-              flexGrow: 1,
+          slotProps={{
+            input: {
+              sx: {
+                fontSize: "140%",
+                visibility: checked ? undefined : "hidden",
+                height: 30,
+                width: "auto",
+                flexGrow: 1,
+              },
             },
           }}
           onChange={(e) => {

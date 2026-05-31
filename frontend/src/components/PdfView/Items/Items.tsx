@@ -1,4 +1,4 @@
-import { MouseEvent, useContext } from "react";
+import { type MouseEvent, useContext } from "react";
 import Arrow from "./Arrow";
 import Bracket from "./Bracket";
 import Marker from "./Marker";
@@ -8,8 +8,8 @@ import Rect from "./Rect";
 import Polygon from "./Polygon";
 import Chip from "./Chip";
 import Svg from "../../common/Svg";
-import { Mode } from "../SpeedDial";
-import { Node as NodeType, NoteType } from "@/types/PdfNotes";
+import type { Mode } from "../SpeedDial";
+import type { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./utils/SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
@@ -61,7 +61,7 @@ export default function Items({
   });
 
   const notes: NoteType[] = page.notes.filter((n) =>
-    moveNote?.type === "Node" ? n !== moveNote.target : n !== moveNote
+    moveNote?.type === "Node" ? n !== moveNote.target : n !== moveNote,
   );
   return (
     <>

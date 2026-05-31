@@ -1,6 +1,6 @@
-import { Box, Paper, SxProps } from "@mui/material";
-import { Mouse } from "@/contexts/MouseContext";
-import { ReactNode } from "react";
+import { Box, Paper, type SxProps } from "@mui/material";
+import { type Mouse } from "@/contexts/MouseContext";
+import { type ReactNode } from "react";
 import Foreground from "./Foreground";
 
 /**

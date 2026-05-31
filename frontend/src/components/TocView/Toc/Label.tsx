@@ -1,5 +1,5 @@
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import { Page } from "@/types/PdfNotes";
+import { type Page } from "@/types/PdfNotes";
 import { Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import LabelEditor from "./LabelEditor";
@@ -40,7 +40,7 @@ export default function Label({
         ...(type === "volume"
           ? {
               "&:not(:first-of-type)": { pt: 1.5 },
-              "font-weight": "bold",
+              fontWeight: "bold",
             }
           : type === "part"
             ? { pt: 1 }

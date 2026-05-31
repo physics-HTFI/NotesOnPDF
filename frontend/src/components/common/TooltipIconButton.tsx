@@ -1,5 +1,5 @@
-import { Box, IconButton, SxProps, Tooltip } from "@mui/material";
-import { MouseEventHandler, ReactNode, useState } from "react";
+import { Box, IconButton, type SxProps, Tooltip } from "@mui/material";
+import { type MouseEventHandler, type ReactNode, useState } from "react";
 
 type Placement =
   | "bottom-end"

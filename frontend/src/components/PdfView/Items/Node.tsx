@@ -1,5 +1,5 @@
-import { MouseEvent, useContext, useState } from "react";
-import {
+import { type MouseEvent, useContext, useState } from "react";
+import type {
   Arrow,
   Bracket,
   Marker,
@@ -9,7 +9,7 @@ import {
   Rect,
 } from "@/types/PdfNotes";
 import { green } from "@mui/material/colors";
-import { Mode } from "../SpeedDial";
+import { type Mode } from "../SpeedDial";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
@@ -40,11 +40,11 @@ export default function Nodes({
             target.y + (i / 2 < 1 ? 0 : target.height),
           ])
       : target.type === "Polygon"
-      ? target.points
-      : [
-          [target.x1, target.y1],
-          [target.x2, target.y2],
-        ];
+        ? target.points
+        : [
+            [target.x1, target.y1],
+            [target.x2, target.y2],
+          ];
 
   const [hover, setHover] = useState(points.map(() => false));
 

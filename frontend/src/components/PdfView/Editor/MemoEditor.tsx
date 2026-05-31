@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from "react";
 import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
-import { Memo } from "@/types/PdfNotes";
+import { type Memo } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";

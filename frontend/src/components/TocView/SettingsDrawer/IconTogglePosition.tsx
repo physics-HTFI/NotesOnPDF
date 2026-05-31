@@ -4,7 +4,7 @@ import {
   KeyboardDoubleArrowUp,
 } from "@mui/icons-material";
 import { grey } from "@mui/material/colors";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 /**
  * 設定パネル位置変更ボタン

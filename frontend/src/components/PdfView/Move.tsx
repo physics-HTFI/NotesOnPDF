@@ -8,7 +8,7 @@ import Rect from "./Items/Rect";
 import Polygon from "./Items/Polygon";
 import Svg from "../common/Svg";
 import Chip from "./Items/Chip";
-import { Node, NoteType } from "@/types/PdfNotes";
+import type { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import MouseContext from "@/contexts/MouseContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
@@ -25,11 +25,11 @@ export default function Move({
   onClose: (
     newNote?: NoteType,
     oldNote?: NoteType,
-    addPolygon?: boolean
+    addPolygon?: boolean,
   ) => void;
 }) {
   const [dXY, setDXY] = useState<[number, number]>();
-  const ref = useRef<HTMLElement>();
+  const ref = useRef<HTMLElement>(undefined);
   const { mouse, setMouse, pageRect } = useContext(MouseContext);
   const { appSettings } = useContext(ModelContext);
   const { page } = useContext(PdfNotesContext);
@@ -105,7 +105,7 @@ export default function Move({
           setMouse({ pageX: e.pageX, pageY: e.pageY });
           const δxy =
             params.type === "Node"
-              ? dXY ?? [0, 0]
+              ? (dXY ?? [0, 0])
               : getDxy({ pageX: e.pageX, pageY: e.pageY });
           const noMove = δxy[0] === 0 && δxy[1] === 0;
           const isPolygonNode =
@@ -124,7 +124,7 @@ export default function Move({
             onClose(
               params.target,
               getTransformed(params, δxy),
-              noMove && isPolygonNode
+              noMove && isPolygonNode,
             );
           } else {
             onClose(params, getTranslated(params, δxy));
@@ -140,7 +140,7 @@ export default function Move({
               params,
               getDxy({ pageX: e.pageX, pageY: e.pageY }),
               pageRect,
-              appSettings.snapNotes
+              appSettings.snapNotes,
             );
             if (!δxy) return;
             setDXY(δxy);
@@ -255,7 +255,7 @@ function getValidatedXY(
   params: Node,
   dxy: [number, number],
   pageRect: DOMRect,
-  snap: boolean
+  snap: boolean,
 ): [number, number] | undefined {
   const t = getTransformed(params, dxy);
   const width = (dx: number) => pageRect.width * Math.abs(dx);
@@ -296,7 +296,7 @@ function getValidatedXY(
       const P = t.points[params.index] ?? [0, 0];
       if (
         t.points.some(
-          (p) => p !== P && width(P[0] - p[0]) < 5 && height(P[1] - p[1]) < 5
+          (p) => p !== P && width(P[0] - p[0]) < 5 && height(P[1] - p[1]) < 5,
         )
       )
         return undefined;

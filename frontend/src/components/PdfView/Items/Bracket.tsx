@@ -1,10 +1,10 @@
-import { MouseEvent } from "react";
-import {
+import type { MouseEvent } from "react";
+import type {
   Bracket as BracketParams,
   Node as NodeType,
   NoteType,
 } from "@/types/PdfNotes";
-import { Mode } from "../SpeedDial";
+import type { Mode } from "../SpeedDial";
 import useCursor from "./utils/useCursor";
 import Nodes from "./Node";
 

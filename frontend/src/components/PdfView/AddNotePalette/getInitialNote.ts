@@ -1,5 +1,5 @@
-import { Node, NoteType } from "@/types/PdfNotes";
-import { PaletteIconType } from "@/types/AppSettings";
+import type { Node, NoteType } from "@/types/PdfNotes";
+import type { PaletteIconType } from "@/types/AppSettings";
 
 /**
  * `type`に応じた注釈の初期値を返す
@@ -8,7 +8,7 @@ export default function getInitialNote(
   x: number,
   y: number,
   page: number,
-  type?: PaletteIconType
+  type?: PaletteIconType,
 ): NoteType | Node | undefined {
   if (type === "Arrow")
     return {

@@ -1,11 +1,14 @@
-import IModel, { ModelFlags } from "@/models/IModel";
+import type IModel from "@/models/IModel";
+import { type ModelFlags } from "@/models/IModel";
 import ModelDesktop from "@/models/Model.Desktop";
 import ModelNull from "@/models/Model.Null";
-import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import type AppSettings from "@/types/AppSettings";
+import { GetAppSettings_default } from "@/types/AppSettings";
+import { type ReactNode, useContext, useEffect, useState } from "react";
 import UiContext from "../UiContext";
-import Coverages, { Coverage } from "@/types/Coverages";
-import FileTree from "@/types/FileTree";
+import type Coverages from "@/types/Coverages";
+import type { Coverage } from "@/types/Coverages";
+import { findTreeItem, type FileTree } from "@/types/FileTree";
 import CriticalError from "./CriticalError";
 import ModelContext from "./ModelContext";
 import useServerSideEvents from "./useServerSideEvents";
@@ -15,7 +18,7 @@ import useServerSideEvents from "./useServerSideEvents";
  */
 export function ModelContextProvider({ children }: { children: ReactNode }) {
   const [model, setModel] = useState<IModel>(() =>
-    import.meta.env.MODE === "web" ? new ModelNull() : new ModelDesktop()
+    import.meta.env.MODE === "web" ? new ModelNull() : new ModelDesktop(),
   );
   const { setAlert } = useContext(UiContext);
   const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
@@ -106,11 +109,13 @@ async function loadAll(model: IModel) {
   return { appSettings, fileTree, coverages };
 
   /** `Coverages`から、ファイルツリー内に存在しないファイルの情報を削除する */
-  function trimCoverages(coverages: Coverages, fileTree: FileTree) {
+  function trimCoverages(coverages: Coverages, fileTree?: FileTree) {
     const pdfs: Record<string, Coverage> = {};
-    for (const [id, coverage] of Object.entries(coverages.pdfs)) {
-      if (!fileTree.some((f) => f.id === id)) continue;
-      pdfs[id] = coverage;
+    if (fileTree) {
+      for (const [path, coverage] of Object.entries(coverages.pdfs)) {
+        if (!findTreeItem(fileTree, path)) continue;
+        pdfs[path] = coverage;
+      }
     }
     coverages.pdfs = pdfs;
   }

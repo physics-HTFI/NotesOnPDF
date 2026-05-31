@@ -7,7 +7,7 @@ import PageNumberRestart from "./PageNumberRestart";
 import LabelSlider from "./LabelSlider";
 import Checkbox from "./Checkbox";
 import ClickOptionSelect from "./ClickOptionSelect";
-import AppSettings from "@/types/AppSettings";
+import type AppSettings from "@/types/AppSettings";
 import { UiContext } from "@/contexts/UiContext";
 import IconClose from "./IconClose";
 import IconTogglePosition from "./IconTogglePosition";
@@ -36,7 +36,7 @@ export default function SettingsDrawer() {
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
   const [variant, setVariant] = useState<"persistent" | "temporary">(
-    "temporary"
+    "temporary",
   );
 
   if (!appSettings || !pdfNotes) return <></>;
@@ -60,7 +60,7 @@ export default function SettingsDrawer() {
           設定ファイルの保存に失敗しました。
           <br />
           読み取り専用モードに切り替えました。
-        </span>
+        </span>,
       );
       setReadOnly(true);
     });
@@ -83,12 +83,14 @@ export default function SettingsDrawer() {
       variant={variant}
       anchor={isBottom ? "bottom" : "top"}
       open={openSettingsDrawer}
-      PaperProps={{
-        square: false,
-        sx: {
-          position: "absolute",
-          borderRadius: isBottom ? "10px 10px 0 0" : "0 0 10px 10px",
-          overflow: "visible", // 「閉じるアイコン」を表示する
+      slotProps={{
+        paper: {
+          square: false,
+          sx: {
+            position: "absolute",
+            borderRadius: isBottom ? "10px 10px 0 0" : "0 0 10px 10px",
+            overflow: "visible", // 「閉じるアイコン」を表示する
+          },
         },
       }}
     >
@@ -171,7 +173,7 @@ export default function SettingsDrawer() {
                 let style = editPageStyle(
                   page?.style,
                   "break-before",
-                  breakBefore
+                  breakBefore,
                 );
                 style = editPageStyle(style, "break-middle", breakMiddle);
                 updatePageSettings({ style });

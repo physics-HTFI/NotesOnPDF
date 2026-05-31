@@ -1,6 +1,10 @@
-import { MouseEvent } from "react";
-import { Mode } from "../SpeedDial";
-import { Rect as RectType, Node as NodeType, NoteType } from "@/types/PdfNotes";
+import type { MouseEvent } from "react";
+import type { Mode } from "../SpeedDial";
+import type {
+  Rect as RectType,
+  Node as NodeType,
+  NoteType,
+} from "@/types/PdfNotes";
 import getPolygonStyle from "./utils/getPolygonStyle";
 import Nodes from "./Node";
 import useCursor from "./utils/useCursor";

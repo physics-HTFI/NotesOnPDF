@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useState } from "react";
+import { type ReactNode, useContext, useState } from "react";
 import Separator from "./Separator";
 import Page from "./Page";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";

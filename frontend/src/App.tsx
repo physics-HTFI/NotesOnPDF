@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Group, Panel, Separator } from "react-resizable-panels";
 import { Box, ThemeProvider, createTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import OpenFileDrawer from "@/components/OpenFileDrawer/OpenFileDrawer";
@@ -86,20 +86,20 @@ export default function App() {
           {/* フォルダ選択ダイアログ */}
           {import.meta.env.MODE === "web" && <Dialog起動直後 />}
 
-          <MathJaxContext version={3} config={mathjaxConfig}>
+          <MathJaxContext version={4} config={mathjaxConfig}>
             <PdfNotesContextProvider>
               <Box sx={{ userSelect: "none" }}>
                 {/* ファイルツリー */}
                 <OpenFileDrawer />
 
-                <PanelGroup direction="horizontal">
+                <Group>
                   {/* 目次 */}
-                  <Panel defaultSizePixels={270} minSizePixels={40}>
+                  <Panel defaultSize={270} minSize={40}>
                     <TocView />
                   </Panel>
 
                   {/* リサイズハンドル */}
-                  <PanelResizeHandle>
+                  <Separator>
                     <Box
                       sx={{
                         width: 5,
@@ -107,15 +107,15 @@ export default function App() {
                         background: grey[400],
                       }}
                     />
-                  </PanelResizeHandle>
+                  </Separator>
 
                   {/* PDFビュー */}
-                  <Panel minSizePixels={200}>
+                  <Panel minSize={200}>
                     <MouseContextProvider>
                       <PdfView />
                     </MouseContextProvider>
                   </Panel>
-                </PanelGroup>
+                </Group>
               </Box>
             </PdfNotesContextProvider>
           </MathJaxContext>

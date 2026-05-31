@@ -1,4 +1,4 @@
-import IModel from "@/models/IModel";
+import type IModel from "@/models/IModel";
 import { useContext, useEffect, useRef, useState } from "react";
 import UiContext from "../UiContext";
 
@@ -9,7 +9,7 @@ export default function useServerSideEvents(model: IModel) {
   const { setAlert } = useContext(UiContext);
   const [serverFailed, setServerFailed] = useState(false);
   const [rootDirectoryChanged, setRootDirectoryChanged] = useState(false);
-  const eventSource = useRef<EventSource>();
+  const eventSource = useRef<EventSource>(undefined);
 
   useEffect(() => {
     if (eventSource.current) return;

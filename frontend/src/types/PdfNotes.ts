@@ -1,4 +1,4 @@
-import { ResultGetPdfNotes } from "@/models/IModel";
+import type { ResultGetPdfNotes } from "@/models/IModel";
 
 /**
  * 1つのPDFファイルに追加された全ての情報
@@ -113,7 +113,7 @@ export interface Page {
 export const editPageStyle = (
   style: PageStyle[] | undefined,
   item: PageStyle,
-  adds: boolean
+  adds: boolean,
 ) => {
   const set = new Set(style);
   if (adds) set.add(item);
@@ -183,7 +183,7 @@ export function updatePageNum(pdfNotes: PdfNotes) {
  */
 export const fromDisplayedPage = (
   pdfNotes: PdfNotes,
-  displayedPageNumber: number
+  displayedPageNumber: number,
 ): number => {
   const current = pdfNotes.pages[pdfNotes.currentPage]?.num;
   if (current === undefined) return -1;

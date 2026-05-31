@@ -1,5 +1,5 @@
 import { Folder } from "@mui/icons-material";
-import { Box, Button, SxProps, Typography } from "@mui/material";
+import { Box, Button, type SxProps, Typography } from "@mui/material";
 
 export function PanelButton({
   icon,

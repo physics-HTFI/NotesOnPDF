@@ -1,7 +1,9 @@
-import PdfNotes from "@/types/PdfNotes";
+import type PdfNotes from "@/types/PdfNotes";
 import { Box } from "@mui/material";
-import { ReactNode, createContext, useContext, useState } from "react";
-import PdfNotesContext, { PageSize } from "./PdfNotesContext/PdfNotesContext";
+import { type ReactNode, createContext, useContext, useState } from "react";
+import PdfNotesContext, {
+  type PageSize,
+} from "./PdfNotesContext/PdfNotesContext";
 
 export interface Mouse {
   pageX: number;
@@ -34,7 +36,7 @@ export function MouseContextProvider({ children }: { children: ReactNode }) {
     pdfNotes,
     imageNum,
     pageSizes,
-    containerRect
+    containerRect,
   );
 
   const scale =
@@ -58,7 +60,7 @@ function getRect(
   pdfNotes?: PdfNotes,
   imageNum?: number,
   pageSizes?: PageSize[],
-  containerRect?: DOMRect
+  containerRect?: DOMRect,
 ): { pageRect?: DOMRect; top?: number; bottom?: number } {
   if (!pdfNotes || !pageSizes || !containerRect || imageNum === undefined)
     return {};
@@ -71,7 +73,7 @@ function getRect(
     pageRatio,
     containerRect.width,
     containerRect.height,
-    containerRect.x
+    containerRect.x,
   );
 
   /**
@@ -83,7 +85,7 @@ function getRect(
     pageRatio: number, // width / height
     viewW: number,
     viewH: number,
-    viewX: number
+    viewX: number,
   ) {
     const imgH = viewH / (1 - offsetTop - offsetBottom);
     const imgW = pageRatio * imgH;

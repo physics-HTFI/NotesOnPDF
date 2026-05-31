@@ -1,8 +1,12 @@
-import { MouseEvent, useContext, useState } from "react";
+import { type MouseEvent, useContext, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
-import { Node, NoteType, PageLink as PageLinkType } from "@/types/PdfNotes";
-import { Mode } from "../SpeedDial";
+import type {
+  Node,
+  NoteType,
+  PageLink as PageLinkType,
+} from "@/types/PdfNotes";
+import type { Mode } from "../SpeedDial";
 import MouseContext from "@/contexts/MouseContext";
 import useCursor from "./utils/useCursor";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";

@@ -1,7 +1,11 @@
 import { alpha, styled } from "@mui/material/styles";
 import { Box, Tooltip, Typography } from "@mui/material";
-import { TreeItem, TreeItemProps, treeItemClasses } from "@mui/x-tree-view";
-import { Coverage } from "@/types/Coverages";
+import {
+  TreeItem,
+  type TreeItemProps,
+  treeItemClasses,
+} from "@mui/x-tree-view";
+import { type Coverage } from "@/types/Coverages";
 import Progress from "./Progress";
 
 /**

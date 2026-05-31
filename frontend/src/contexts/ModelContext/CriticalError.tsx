@@ -1,5 +1,5 @@
 import { Alert, Backdrop, Button, Snackbar, Stack } from "@mui/material";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 /**
  * バックエンドが起動していない、または、設定を変更してためにリロードが必要であることを示すスナックバー

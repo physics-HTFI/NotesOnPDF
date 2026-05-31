@@ -1,4 +1,4 @@
-import PdfNotes from "./PdfNotes";
+import type PdfNotes from "./PdfNotes";
 
 /**
  * 1つのPDFファイルの進捗情報
@@ -18,9 +18,9 @@ export interface Coverage {
  * 開いたことのあるPDFの進捗情報を保持する
  */
 export default interface Coverages {
-  /** 前回開いたPDFファイルのID */
-  recentId?: string;
-  /** 各PDFの進捗率。keyはID */
+  /** 前回開いたPDFファイルのパス */
+  recentPath?: string;
+  /** 各PDFの進捗率。keyはパス */
   pdfs: Record<string, Coverage>;
 }
 
@@ -32,7 +32,7 @@ export const GetCoverage = (pdfNotes: PdfNotes): Coverage => {
     pdfNotes.pages.length -
     pdfNotes.pages.filter((p) => p.style?.includes("excluded")).length;
   const notedPages = pdfNotes.pages.filter(
-    (p) => !p.style?.includes("excluded") && p.notes?.length
+    (p) => !p.style?.includes("excluded") && p.notes?.length,
   ).length;
   return {
     allPages: pdfNotes.pages.length,
@@ -40,7 +40,7 @@ export const GetCoverage = (pdfNotes: PdfNotes): Coverage => {
     notedPages,
     percent: Math.min(
       100,
-      Math.max(0, Math.round((100 * notedPages) / Math.max(1, enabledPages)))
+      Math.max(0, Math.round((100 * notedPages) / Math.max(1, enabledPages))),
     ),
   };
 };

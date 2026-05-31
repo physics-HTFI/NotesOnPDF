@@ -1,6 +1,7 @@
-import PdfNotes, { Page } from "@/types/PdfNotes";
+import type PdfNotes from "@/types/PdfNotes";
+import type { Page } from "@/types/PdfNotes";
 import { createContext } from "react";
-import { Updaters } from "./useUpdaters";
+import { type Updaters } from "./useUpdaters";
 
 export interface PageSize {
   width: number;

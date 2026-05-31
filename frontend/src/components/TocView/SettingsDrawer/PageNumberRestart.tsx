@@ -15,7 +15,7 @@ export default function PageNumberRestart({
 }) {
   const isManual = numRestart !== undefined;
   const restart =
-    numRestart === null ? null : numRestart ?? preferredPageNumber;
+    numRestart === null ? null : (numRestart ?? preferredPageNumber);
 
   return (
     <Box sx={{ whiteSpace: "nowrap" }}>
@@ -38,7 +38,14 @@ export default function PageNumberRestart({
             num === null ? null : Math.min(99999, Math.max(1, num));
           onChange(isManual ? numValidated : undefined);
         }}
-        InputProps={{ sx: { fontSize: "140%", pl: 1 } }}
+        slotProps={{
+          input: {
+            sx: {
+              fontSize: "140%",
+              pl: 1,
+            },
+          },
+        }}
         type="number"
         sx={{
           pl: 3.5,

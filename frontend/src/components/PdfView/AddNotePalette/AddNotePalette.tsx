@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import MouseContext from "@/contexts/MouseContext";
-import { Node, NoteType } from "@/types/PdfNotes";
+import type { Node, NoteType } from "@/types/PdfNotes";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import getInitialNote from "./getInitialNote";
@@ -39,8 +39,8 @@ export default function AddNotePalette({
             (mouse.pageX - pageRect.x) / pageRect.width,
             (mouse.pageY - pageRect.y) / pageRect.height,
             pdfNotes.currentPage,
-            appSettings?.paletteIcons[i ?? -1]
-          )
+            appSettings?.paletteIcons[i ?? -1],
+          ),
         );
       }}
     />

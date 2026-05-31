@@ -1,4 +1,4 @@
-import { ReactNode, useContext } from "react";
+import { type ReactNode, useContext } from "react";
 import { Modal, Paper } from "@mui/material";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";

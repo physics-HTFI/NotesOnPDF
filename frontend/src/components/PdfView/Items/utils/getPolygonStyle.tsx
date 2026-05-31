@@ -1,11 +1,14 @@
-import { CSSProperties } from "react";
-import { Rect as RectType, Polygon as PolygonType } from "@/types/PdfNotes";
+import type { CSSProperties } from "react";
+import type {
+  Rect as RectType,
+  Polygon as PolygonType,
+} from "@/types/PdfNotes";
 
 export default function getPolygonStyle(
   params: PolygonType | RectType,
   hover: boolean,
   cursor: string | undefined,
-  moving?: boolean
+  moving?: boolean,
 ): CSSProperties {
   const isColorize = params.style === "colorize" && !hover && !moving;
 

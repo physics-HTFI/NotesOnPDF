@@ -1,11 +1,11 @@
-import PdfNotes from "@/types/PdfNotes";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import type PdfNotes from "@/types/PdfNotes";
+import { type ReactNode, useContext, useEffect, useState } from "react";
 import { debounce } from "@mui/material";
-import IModel from "@/models/IModel";
+import type IModel from "@/models/IModel";
 import ModelContext from "../ModelContext/ModelContext";
 import UiContext from "../UiContext";
 import useNewCoverages from "./useNewCoverages";
-import PdfNotesContext, { PageSize } from "./PdfNotesContext";
+import PdfNotesContext, { type PageSize } from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
 
 /**
@@ -18,9 +18,9 @@ const putPdfNotesDebounced = debounce(
     model: IModel,
     setAlert: (
       severity?: "error" | "info" | undefined,
-      message?: ReactNode
+      message?: ReactNode,
     ) => void,
-    setReadOnly: (readOnly: boolean) => void
+    setReadOnly: (readOnly: boolean) => void,
   ) => {
     model.putPdfNotes(id, pdfNotes).catch(() => {
       setAlert(
@@ -29,12 +29,12 @@ const putPdfNotesDebounced = debounce(
           注釈ファイルの保存に失敗しました。
           <br />
           読み取り専用モードに切り替えました。
-        </span>
+        </span>,
       );
       setReadOnly(true);
     });
   },
-  1000
+  1000,
 );
 
 /**
@@ -70,7 +70,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
               進捗率ファイルの保存に失敗しました。
               <br />
               読み取り専用モードに切り替えました。
-            </span>
+            </span>,
           );
           setReadOnly(true);
         });

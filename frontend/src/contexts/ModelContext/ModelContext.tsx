@@ -1,9 +1,10 @@
-import IModel, { ModelFlags } from "@/models/IModel";
+import type IModel from "@/models/IModel";
+import type { ModelFlags } from "@/models/IModel";
 import ModelNull from "@/models/Model.Null";
-import AppSettings from "@/types/AppSettings";
+import type AppSettings from "@/types/AppSettings";
 import { createContext } from "react";
-import Coverages from "@/types/Coverages";
-import FileTree from "@/types/FileTree";
+import type Coverages from "@/types/Coverages";
+import type { FileTree } from "@/types/FileTree";
 
 /**
  * `IModel`および初期化に必要なデータ（`appSettings`, `fileTree`, `coverages`）の取得・設定

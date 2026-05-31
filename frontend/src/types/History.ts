@@ -1,29 +1,26 @@
 export interface HistoryEntry {
-  id: string;
+  path: string;
   name: string;
   pages: string;
   origin: string;
   accessDate: string;
 }
 
-type History = HistoryEntry[];
-
-export default History;
+export type History = HistoryEntry[];
 
 export function updateHistory(
   history: History,
-  id: string,
   path: string,
-  pages: number
+  pages: number,
 ): History {
   const entry: HistoryEntry = {
-    id,
+    path,
     name: path.split("/").pop() ?? "",
     pages: String(pages),
     origin: "ツリー内",
     accessDate: nowToString(),
   };
-  history = history.filter((e) => e.id !== entry.id);
+  history = history.filter((e) => e.path !== entry.path);
   history = [entry, ...history];
   return history;
 }

@@ -1,5 +1,5 @@
 import { Tooltip } from "@mui/material";
-import { Page as PageParams } from "@/types/PdfNotes";
+import { type Page as PageParams } from "@/types/PdfNotes";
 
 /**
  * ページ要素

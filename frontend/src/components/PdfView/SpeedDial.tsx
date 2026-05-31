@@ -81,87 +81,109 @@ export default function SpeedDial({
       >
         {/* PDF選択パネルを開く */}
         <SpeedDialAction
-          tooltipTitle={"PDF選択パネルを開きます"}
           icon={<KeyboardArrowRight />}
           disableInteractive
           onClick={() => {
             setOpenFileTreeDrawer(true);
             setMode(undefined);
           }}
-          tooltipPlacement="right"
+          slotProps={{
+            tooltip: {
+              title: "PDF選択パネルを開きます",
+              placement: "right",
+            },
+          }}
         />
 
         {/* 設定パネルの開閉 */}
         <SpeedDialAction
-          tooltipTitle={`設定パネルを${
-            openSettingsDrawer ? "閉じます" : "開きます"
-          }`}
           disableInteractive
           icon={<Settings />}
           onClick={() => {
             setOpenSettingsDrawer(!openSettingsDrawer);
             setMode(undefined);
           }}
-          tooltipPlacement="right"
+          slotProps={{
+            tooltip: {
+              title: `設定パネルを${
+                openSettingsDrawer ? "閉じます" : "開きます"
+              }`,
+              placement: "right",
+            },
+          }}
         />
 
         {/* 注釈の移動・変形 */}
         <SpeedDialAction
-          tooltipTitle={
-            <span>
-              注釈の移動・変形モードを切り替えます
-              <br />
-              <br />
-              [Escape] 操作のキャンセル、モード解除
-            </span>
-          }
           disableInteractive
           icon={<OpenWith sx={{ color: "mediumseagreen" }} />}
           sx={{ background: mode === "move" ? green[50] : undefined }}
           onClick={() => {
             setMode(mode !== "move" ? "move" : undefined);
           }}
-          tooltipPlacement="right"
+          slotProps={{
+            tooltip: {
+              title: (
+                <span>
+                  注釈の移動・変形モードを切り替えます
+                  <br />
+                  <br />
+                  [Escape] 操作のキャンセル、モード解除
+                </span>
+              ),
+              placement: "right",
+            },
+          }}
         />
 
         {/* 注釈の編集 */}
         <SpeedDialAction
-          tooltipTitle={
-            <span>
-              注釈の文字列・線種の変更モードを切り替えます <br />
-              <br />
-              [Escape] 操作のキャンセル、モード解除
-            </span>
-          }
           disableInteractive
           icon={<Edit sx={{ color: "cornflowerblue" }} />}
           sx={{ background: mode === "edit" ? blue[50] : undefined }}
           onClick={() => {
             setMode(mode !== "edit" ? "edit" : undefined);
           }}
-          tooltipPlacement="right"
+          slotProps={{
+            tooltip: {
+              title: (
+                <span>
+                  注釈の文字列・線種の変更モードを切り替えます <br />
+                  <br />
+                  [Escape] 操作のキャンセル、モード解除
+                </span>
+              ),
+              placement: "right",
+            },
+          }}
         />
 
         {/* 注釈の削除 */}
         <SpeedDialAction
-          tooltipTitle={
-            <span>
-              注釈の削除モードを切り替えます <br />
-              <br />
-              [Escape] 削除モード解除 <br />
-              [Shift+Delete] 現在ページ内の全注釈を削除 <br />
-              [Ctrl+Delete] 現在ページの注釈を、ページ表示直後の状態にリセット
-              <br />
-              [Alt+Delete] 全ての注釈・設定を、PDF読み込み直後の状態にリセット
-            </span>
-          }
           disableInteractive
           icon={<Delete sx={{ color: "palevioletred" }} />}
           sx={{ background: mode === "delete" ? red[50] : undefined }}
           onClick={() => {
             setMode(mode !== "delete" ? "delete" : undefined);
           }}
-          tooltipPlacement="right"
+          slotProps={{
+            tooltip: {
+              title: (
+                <span>
+                  注釈の削除モードを切り替えます <br />
+                  <br />
+                  [Escape] 削除モード解除 <br />
+                  [Shift+Delete] 現在ページ内の全注釈を削除 <br />
+                  [Ctrl+Delete]
+                  現在ページの注釈を、ページ表示直後の状態にリセット
+                  <br />
+                  [Alt+Delete]
+                  全ての注釈・設定を、PDF読み込み直後の状態にリセット
+                </span>
+              ),
+              placement: "right",
+            },
+          }}
         />
       </MUISpeedDial>
     </Box>

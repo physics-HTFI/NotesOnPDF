@@ -1,6 +1,6 @@
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { Box, Tab, Tabs as MaterialTabs, Tooltip } from "@mui/material";
-import { ReactNode, useContext } from "react";
+import { type ReactNode, useContext } from "react";
 
 /**
  * タブ

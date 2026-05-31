@@ -6,14 +6,14 @@ import MouseContext from "@/contexts/MouseContext";
 import PageLabelLarge from "./PageLabelLarge";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext, {
-  PageSize,
+  type PageSize,
 } from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const options = {
   cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-  standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts`,
+  standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
 };
 
 /**
@@ -46,14 +46,9 @@ export default function PdfImageWeb() {
     if (!id) return;
     // ここに来た時点でpdfNotesの取得は終わっている @OpenFileDrawer
     model
-      .getFileFromId(id)
+      .getFileFromPath(id)
       .then((newFile) => {
         setFile(newFile);
-        if (modelFlags.isMock) {
-          // モックの場合は空白PDFを連続で開く可能性があるが、その時はonLoadSuccessが呼ばれないので、ここでUIを更新しておく
-          setWaiting(false);
-          setOpenFileTreeDrawer(false);
-        }
       })
       .catch(() => {
         setAlert("error", "PDFファイルの取得に失敗しました");

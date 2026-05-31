@@ -21,7 +21,7 @@ export default function Dialogパーミッション選択({
     <Dialog open>
       <DialogTitle>モードの選択： {folder.name}</DialogTitle>
       <DialogContent>
-        <Stack direction="column" gap={2}>
+        <Stack sx={{ direction: "column", gap: 2 }}>
           {/* 書き込み可能 */}
           <CardButton
             color="steelblue"

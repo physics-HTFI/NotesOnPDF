@@ -1,4 +1,4 @@
-import { DBSchema, openDB } from "idb";
+import { type DBSchema, openDB } from "idb";
 
 const DB_NAME = "history-db";
 const STORE_NAME = "history-store";

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Chip, Stack, Tooltip } from "@mui/material";
 import { Reply } from "@mui/icons-material";
 import MouseContext from "@/contexts/MouseContext";
-import PdfNotes from "@/types/PdfNotes";
+import type PdfNotes from "@/types/PdfNotes";
 import Progress from "../OpenFileDrawer/FileTreeView/Progress";
 import { GetCoverage } from "@/types/Coverages";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
@@ -29,7 +29,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
 
   const { curTotal, total, curChapter, chapter } = getPageNums(
     pdfNotes,
-    imageNum
+    imageNum,
   );
 
   return (

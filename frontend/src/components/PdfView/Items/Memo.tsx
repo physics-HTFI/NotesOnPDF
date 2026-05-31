@@ -1,9 +1,9 @@
-import { MouseEvent, useContext, useState } from "react";
+import { type MouseEvent, useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
-import { Mode } from "../SpeedDial";
+import { type Mode } from "../SpeedDial";
 import MouseContext from "@/contexts/MouseContext";
-import { Node, Memo as NoteParams, NoteType } from "@/types/PdfNotes";
+import type { Node, Memo as NoteParams, NoteType } from "@/types/PdfNotes";
 import useCursor from "./utils/useCursor";
 import DOMPurify from "dompurify";
 
@@ -23,7 +23,7 @@ export default function Memo({
   const { cursor } = useCursor(mode);
   const { scale } = useContext(MouseContext);
   const htmlFolded = params.html.match(
-    params.style === "fold" && !hover ? /^.*/ : /[\s\S]*/
+    params.style === "fold" && !hover ? /^.*/ : /[\s\S]*/,
   )?.[0];
   const folded = htmlFolded !== params.html;
   const html = (!htmlFolded ? "" : htmlFolded)

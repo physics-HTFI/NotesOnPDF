@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Arrow } from "@/types/PdfNotes";
+import { type Arrow } from "@/types/PdfNotes";
 import Svg from "../../common/Svg";
 import ArrowItem from "../Items/Arrow";
 import MouseContext from "@/contexts/MouseContext";

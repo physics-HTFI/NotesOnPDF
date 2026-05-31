@@ -1,35 +1,31 @@
-export interface FileTreeEntry {
+export interface FileTreeItemPdf {
+  type: "file";
   path: string;
-  id: string;
-  children: string[] | null;
+  name: string;
+  handle: FileSystemFileHandle;
 }
 
-/**
- * フォルダの`children`は、フォルダ内の要素の`id`。
- * ルートフォルダは`path === ""`。
- * PDFファイルの`children`は`null`。
- * @example
- *  [
- *     { path: "", id: "0", children: ["1", "9", "12"] },
- *     { path: "dummy1/", id: "1", children: ["2"] },
- *     { path: "dummy1/dummy11/", id: "2", children: ["3", "4", "5"] },
- *     { path: "dummy1/dummy11/11A.pdf", id: "3", children: null },
- *     { path: "dummy1/dummy11/11B.pdf", id: "4", children: null },
- *     { path: "dummy1/dummy11/11C.pdf", id: "5", children: null },
- *     { path: "dummy1/dummy11/dummy1A.pdf", id: "6", children: null },
- *     { path: "dummy1/dummy11/dummy1B.pdf", id: "7", children: null },
- *     { path: "dummy1/dummy11/dummy1C.pdf", id: "8", children: null },
- *     { path: "dummy2/dummy2/", id: "9", children: ["10", "11"] },
- *     { path: "dummy2/dummy2A.pdf", id: "10", children: null },
- *     { path: "dummy2/dummy2B.pdf", id: "11", children: null },
- *     { path: "文書1.pdf", id: "12", children: null },
- *   ]
- */
-type FileTree = FileTreeEntry[];
-export default FileTree;
+export interface FileTree {
+  type: "folder";
+  path: string;
+  name: string;
+  handle: FileSystemDirectoryHandle;
+  children: (FileTree | FileTreeItemPdf)[];
+}
 
-export const GetFileTreeRoot = (): FileTreeEntry => ({
-  id: "0",
-  path: "",
-  children: [],
-});
+export function findTreeItem(
+  fileTree: FileTree,
+  path: string,
+): FileTree | FileTreeItemPdf | undefined {
+  if (fileTree.path === path) return fileTree;
+  for (const child of fileTree.children) {
+    if (child.type === "file") {
+      if (child.path === path) return child;
+    } else {
+      if (!path.startsWith(child.path)) continue;
+      const found = findTreeItem(child, path);
+      if (found) return found;
+    }
+  }
+  return undefined;
+}

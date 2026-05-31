@@ -1,4 +1,4 @@
-import { Arrow, Bracket } from "@/types/PdfNotes";
+import type { Arrow, Bracket } from "@/types/PdfNotes";
 
 /**
  * 与えられた直線と同じ向きを持つ`Palette`アイコン用ベクトルを返す
@@ -6,7 +6,7 @@ import { Arrow, Bracket } from "@/types/PdfNotes";
 export default function getVector(
   params: Arrow | Bracket,
   pageRect: DOMRect,
-  scale: number
+  scale: number,
 ) {
   const x = (params.x2 - params.x1) * pageRect.width;
   const y = (params.y2 - params.y1) * pageRect.height;

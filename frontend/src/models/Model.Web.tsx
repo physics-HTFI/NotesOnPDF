@@ -1,10 +1,16 @@
-import FileTree, { FileTreeEntry, GetFileTreeRoot } from "@/types/FileTree";
-import Coverages, { GetCoverages_empty } from "@/types/Coverages";
-import IModel, { ResultGetPdfNotes } from "./IModel";
-import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
-import History, { updateHistory } from "@/types/History";
-import PdfNotes from "@/types/PdfNotes";
-import { md5 } from "js-md5";
+import {
+  findTreeItem,
+  type FileTree,
+  type FileTreeItemPdf,
+} from "@/types/FileTree";
+import type Coverages from "@/types/Coverages";
+import { GetCoverages_empty } from "@/types/Coverages";
+import type IModel from "./IModel";
+import type { ResultGetPdfNotes } from "./IModel";
+import type AppSettings from "@/types/AppSettings";
+import { GetAppSettings_default } from "@/types/AppSettings";
+import { type History, updateHistory } from "@/types/History";
+import type PdfNotes from "@/types/PdfNotes";
 
 const PATH_SETTINGS = ".NotesOnPDF/settings.json";
 const PATH_COVERAGES = ".NotesOnPDF/coverages.json";
@@ -15,7 +21,7 @@ export default class ModelWeb implements IModel {
     const getHistory = async () =>
       JSON.parse(await this.getTextFromPath(PATH_HISTORY)) as History;
 
-    this.fileTree = [];
+    this.fileTree = undefined;
     this.history = [];
     getHistory()
       .then((h) => (this.history = h))
@@ -23,69 +29,58 @@ export default class ModelWeb implements IModel {
   }
 
   getFlags = () => ({
-    isMock: false,
     canOpenFileDialog: false,
     canOpenGithub: true,
   });
   getEventSource = () => undefined;
 
   getFileTree = async () => {
-    const root = GetFileTreeRoot();
-    const fileTree: FileTree = [root];
-    console.log(this.dirHandle);
-    await this.dirHandle.requestPermission?.();
-    await addEntries(fileTree, root, this.dirHandle);
-    this.fileTree = removeEmptyDirectories(fileTree);
+    const fileTree: FileTree = {
+      type: "folder",
+      path: "/",
+      name: "root",
+      handle: this.dirHandle,
+      children: [],
+    };
+    await addEntries(fileTree, this.dirHandle);
+    this.fileTree = fileTree;
     return fileTree;
 
     async function addEntries(
       fileTree: FileTree,
-      root: FileTreeEntry,
       dHandle: FileSystemDirectoryHandle,
     ) {
       // フォルダを追加
       for await (const [name, handle] of dHandle) {
         if (handle.kind === "directory") {
-          const path = !root.path ? name : `${root.path}/${name}`;
-          const id = md5(path).substring(0, 10);
-          const entry: FileTreeEntry = { id, path, children: [] };
-          await addEntries(fileTree, entry, handle);
-          root.children?.push(id);
-          fileTree.push(entry);
+          const path = `${fileTree.path}/${name}/`;
+          const entry: FileTree = {
+            type: "folder",
+            path,
+            name,
+            handle,
+            children: [],
+          };
+          await addEntries(entry, handle);
+          if (entry.children.length === 0) continue; // 空ディレクトリは、ファイルツリー上でPDFファイルとして表示されてしまうので取り除く
+          fileTree.children.push(entry);
         }
       }
       // ファイルを追加（フォルダの後ろに追加する）
       for await (const [name, handle] of dHandle) {
         if (handle.kind === "file") {
           if (!name.toLowerCase().endsWith(".pdf")) continue;
-          const path = !root.path ? name : `${root.path}/${name}`;
-          const id = md5(path).substring(0, 10);
-          const entry: FileTreeEntry = { id, path, children: null };
-          root.children?.push(id);
-          fileTree.push(entry);
+          const path = `${fileTree.path}/${name}`;
+          const entry: FileTreeItemPdf = { type: "file", path, name, handle };
+          fileTree.children.push(entry);
         }
       }
-    }
-    // 空ディレクトリがあるとファイルツリー上でPDFファイルとして表示されてしまうので取り除く
-    function removeEmptyDirectories(fileTree: FileTree): FileTree {
-      for (;;) {
-        const length = fileTree.length;
-        fileTree = fileTree.filter((e) => e.children?.length !== 0);
-        for (const entry of fileTree) {
-          if (!entry.children) continue;
-          entry.children = entry.children.filter((id) =>
-            fileTree.find((e) => e.id === id),
-          );
-        }
-        if (length === fileTree.length) break;
-      }
-      return fileTree;
     }
   };
 
   getHistory = async () => Promise.resolve(this.history);
-  updateHistory = async (id: string, pages: number) => {
-    this.history = updateHistory(this.history, id, this.idToPath(id), pages);
+  updateHistory = async (path: string, pages: number) => {
+    this.history = updateHistory(this.history, path, pages);
     await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
   };
   deleteHistoryAll = async () => {
@@ -93,18 +88,17 @@ export default class ModelWeb implements IModel {
     await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
   };
   deleteHistory = async (id: string) => {
-    this.history = this.history.filter((h) => h.id !== id);
+    this.history = this.history.filter((h) => h.path !== id);
     await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
   };
 
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
-  getFileFromId = async (id: string) => {
-    const fileHandle = await this.getFileHandleFromPath(
-      this.idToPath(id),
-      false,
-    );
-    return await fileHandle.getFile();
+  getFileFromPath = async (path: string) => {
+    if (!this.fileTree) return Promise.reject();
+    const item = findTreeItem(this.fileTree, path);
+    if (!item || item.type !== "file") return Promise.reject();
+    return item.handle.getFile();
   };
 
   getCoverages = async () => {
@@ -120,8 +114,8 @@ export default class ModelWeb implements IModel {
     await this.writeToPath(PATH_COVERAGES, JSON.stringify(coverages, null, 2));
   };
 
-  getPdfNotes = async (id: string): Promise<ResultGetPdfNotes> => {
-    const { name, jsonPath } = this.parseId(id);
+  getPdfNotes = async (path: string): Promise<ResultGetPdfNotes> => {
+    const { name, jsonPath } = this.parsePath(path);
     try {
       return {
         name,
@@ -131,8 +125,8 @@ export default class ModelWeb implements IModel {
       return { name };
     }
   };
-  putPdfNotes = async (id: string, pdfNotes: PdfNotes) => {
-    const { jsonPath } = this.parseId(id);
+  putPdfNotes = async (path: string, pdfNotes: PdfNotes) => {
+    const { jsonPath } = this.parsePath(path);
     await this.writeToPath(jsonPath, JSON.stringify(pdfNotes));
   };
 
@@ -155,14 +149,8 @@ export default class ModelWeb implements IModel {
   //| private
   //|
 
-  private fileTree: FileTree;
+  private fileTree: FileTree | undefined;
   private history: History;
-
-  private idToPath = (id: string) => {
-    const entry = this.fileTree.find((e) => e.id === id);
-    if (!entry) throw new Error();
-    return entry.path;
-  };
 
   private getFileHandleFromPath = async (
     path: string,
@@ -199,8 +187,7 @@ export default class ModelWeb implements IModel {
     await file.close();
   };
 
-  private parseId = (id: string) => {
-    const path = this.idToPath(id);
+  private parsePath = (path: string) => {
     const match = path.match(/([^/]+)\.[^.]*$/);
     const [name, jsonPath] = [match?.[1], `${path}.json`];
     if (!name) throw new Error();

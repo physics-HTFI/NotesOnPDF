@@ -1,6 +1,6 @@
-import { MouseEvent } from "react";
-import { Mode } from "../SpeedDial";
-import {
+import type { MouseEvent } from "react";
+import type { Mode } from "../SpeedDial";
+import type {
   Marker as MarkerType,
   Node as NodeType,
   NoteType,

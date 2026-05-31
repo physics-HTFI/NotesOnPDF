@@ -1,7 +1,7 @@
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { Close } from "@mui/icons-material";
 import { grey } from "@mui/material/colors";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 /**
  * 閉じるボタン

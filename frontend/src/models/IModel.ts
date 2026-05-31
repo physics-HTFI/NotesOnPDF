@@ -1,36 +1,36 @@
-import FileTree from "@/types/FileTree";
-import Coverages from "@/types/Coverages";
-import PdfNotes from "@/types/PdfNotes";
-import AppSettings from "@/types/AppSettings";
-import History from "@/types/History";
-import { PageSize } from "@/contexts/PdfNotesContext/PdfNotesContext";
+import type { FileTree } from "@/types/FileTree";
+import type Coverages from "@/types/Coverages";
+import type PdfNotes from "@/types/PdfNotes";
+import type AppSettings from "@/types/AppSettings";
+import type { History } from "@/types/History";
+import { type PageSize } from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 export default interface IModel {
   getFlags(): ModelFlags;
   getEventSource(): EventSource | undefined;
 
-  getFileTree(): Promise<FileTree>;
+  getFileTree(): Promise<FileTree | undefined>;
 
   getHistory(): Promise<History>;
-  updateHistory(id: string, pages: number): Promise<void>;
+  updateHistory(path: string, pages: number): Promise<void>;
   deleteHistoryAll(): Promise<void>;
-  deleteHistory(id: string): Promise<void>;
+  deleteHistory(path: string): Promise<void>;
 
   getIdFromExternalFile(): Promise<string>;
   getIdFromUrl(url: string): Promise<string>;
-  getFileFromId(id: string): Promise<string | File>;
+  getFileFromPath(path: string): Promise<string | File>;
 
   getCoverages(): Promise<Coverages>;
   putCoverages(coverages: Coverages): Promise<void>;
 
-  getPdfNotes(id: string): Promise<ResultGetPdfNotes>;
-  putPdfNotes(id: string, pdfNotes: PdfNotes): Promise<void>;
+  getPdfNotes(path: string): Promise<ResultGetPdfNotes>;
+  putPdfNotes(path: string, pdfNotes: PdfNotes): Promise<void>;
 
   getPageImageUrl(
-    id: string,
+    path: string,
     page: number,
     width: number,
-    height: number
+    height: number,
   ): string;
 
   getAppSettings(): Promise<AppSettings>;
@@ -44,7 +44,6 @@ export interface ResultGetPdfNotes {
 }
 
 export interface ModelFlags {
-  isMock: boolean;
   canOpenFileDialog: boolean;
   canOpenGithub: boolean;
 }

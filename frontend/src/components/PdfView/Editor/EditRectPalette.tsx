@@ -1,4 +1,4 @@
-import { Rect, Polygon } from "@/types/PdfNotes";
+import type { Rect, Polygon } from "@/types/PdfNotes";
 import Svg from "../../common/Svg";
 import RectSvg from "../Items/Rect";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";

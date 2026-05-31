@@ -1,16 +1,18 @@
-import FileTree from "@/types/FileTree";
-import PdfNotes from "@/types/PdfNotes";
-import Coverages, { GetCoverages_empty } from "@/types/Coverages";
-import IModel, { ResultGetPdfNotes } from "./IModel";
-import AppSettings, { GetAppSettings_default } from "@/types/AppSettings";
-import History from "@/types/History";
-import { PageSize } from "@/contexts/PdfNotesContext/PdfNotesContext";
+import type { FileTree } from "@/types/FileTree";
+import type PdfNotes from "@/types/PdfNotes";
+import type Coverages from "@/types/Coverages";
+import { GetCoverages_empty } from "@/types/Coverages";
+import type IModel from "./IModel";
+import type { ResultGetPdfNotes } from "./IModel";
+import type AppSettings from "@/types/AppSettings";
+import { GetAppSettings_default } from "@/types/AppSettings";
+import type { History } from "@/types/History";
+import type { PageSize } from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 export default class ModelDesktop implements IModel {
   private origin = import.meta.env.DEV ? "http://localhost:8000" : "";
 
   getFlags = () => ({
-    isMock: false,
     canOpenFileDialog: true,
     canOpenGithub: false,
   });
@@ -54,14 +56,14 @@ export default class ModelDesktop implements IModel {
 
   getIdFromUrl = async (url: string): Promise<string> => {
     const res = await fetch(
-      this.origin + `/api/web-pdf-id?${encodeURIComponent(url)}`
+      this.origin + `/api/web-pdf-id?${encodeURIComponent(url)}`,
     );
     if (!res.ok) return Promise.reject();
     const id = (await res.json()) as string;
     return id;
   };
 
-  getFileFromId = () => Promise.reject();
+  getFileFromPath = () => Promise.reject();
 
   getCoverages = async (): Promise<Coverages> => {
     const res = await fetch(this.origin + "/api/coverage");
@@ -78,7 +80,7 @@ export default class ModelDesktop implements IModel {
 
   getPdfNotes = async (id: string): Promise<ResultGetPdfNotes> => {
     const res = await fetch(
-      this.origin + `/api/notes/${encodeURIComponent(id)}`
+      this.origin + `/api/notes/${encodeURIComponent(id)}`,
     );
     if (!res.ok) return Promise.reject();
     const { name, pageSizes, pdfNotes } = (await res.json()) as {

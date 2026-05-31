@@ -1,52 +1,51 @@
 import { useContext } from "react";
-import { TreeView } from "@mui/x-tree-view";
-import { KeyboardArrowDown, KeyboardArrowRight } from "@mui/icons-material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
-import getTreeItems from "@/components/OpenFileDrawer/FileTreeView/getTreeItems";
+import { RichTreeView } from "@mui/x-tree-view";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 
 /**
  * ファイル一覧を表示するコンポーネント
  */
 export default function FileTreeView({
-  selectedPath,
-  expanded,
-  setSelectedPath,
-  setExpanded,
-  onSelectPdfById,
+  selectedItemPath,
+  expandedItemPaths: expandedItemPaths,
+  setSelectedItemPath,
+  setExpandedItemPaths,
+  onSelectPdf,
 }: {
-  selectedPath?: string;
-  expanded: string[];
-  setSelectedPath: (path: string) => void;
-  setExpanded: (expanded: string[]) => void;
-  onSelectPdfById: (id: string) => void;
+  selectedItemPath?: string;
+  expandedItemPaths: string[];
+  setSelectedItemPath: (path: string) => void;
+  setExpandedItemPaths: (expanded: string[]) => void;
+  onSelectPdf: (path: string) => void;
 }) {
-  const { fileTree, coverages } = useContext(ModelContext);
+  const { fileTree } = useContext(ModelContext);
 
-  // ファイル数が増えてくると重くなる可能性がある。
-  // しかし、（モーダルな）ドロワーが閉じているときはその内部は再レンダーされないので、
-  // ページ移動のたびにここが再レンダーされることない。よってメモ化は不要。
+  if (!fileTree) return null;
   return (
-    fileTree && (
-      <TreeView
-        expanded={expanded}
-        selected={selectedPath ?? ""}
-        defaultCollapseIcon={<KeyboardArrowDown />}
-        defaultEndIcon={<FontAwesomeIcon icon={faFilePdf} />}
-        defaultExpandIcon={<KeyboardArrowRight />}
-        onNodeSelect={(_, path) => {
-          const file = fileTree.find((i) => i.path === path);
-          if (!file || file.children) return; // `children`がある場合はPDFファイルではなくフォルダ
-          setSelectedPath(file.path);
-          onSelectPdfById(file.id);
-        }}
-        onNodeToggle={(_, nodeIds) => {
-          setExpanded(nodeIds);
-        }}
-      >
-        {getTreeItems(fileTree, coverages)}
-      </TreeView>
-    )
+    <RichTreeView
+      items={fileTree?.children ?? []}
+      itemChildrenIndentation={10}
+      selectedItems={selectedItemPath}
+      expandedItems={expandedItemPaths}
+      getItemId={(item) => item.path}
+      isItemSelectionDisabled={(item) => item.type === "folder"}
+      getItemLabel={(item) => item.name}
+      onSelectedItemsChange={(_, path) => {
+        if (!path) return;
+        setSelectedItemPath(path);
+        onSelectPdf(path);
+      }}
+      onExpandedItemsChange={(_, paths) => setExpandedItemPaths(paths)}
+      //slots={{ item: CustomTreeViewItem }}
+      sx={{
+        p: 1,
+        minWidth: 200,
+        position: "sticky", // (1) スクロールしても常に表示する
+        top: 0, // (1)
+        alignSelf: "flex-start", // (1)
+        overflow: "auto", // (2) アイテムが多い場合にスクロール可能にする
+        maxHeight: "100vh", // (2)
+      }}
+    />
   );
 }

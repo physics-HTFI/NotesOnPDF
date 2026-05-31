@@ -1,8 +1,8 @@
 import { lazy, useContext, useEffect, useState } from "react";
 import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
-import SpeedDial, { Mode } from "./SpeedDial";
-import { Node, NoteType } from "@/types/PdfNotes";
+import SpeedDial, { type Mode } from "./SpeedDial";
+import type { Node, NoteType } from "@/types/PdfNotes";
 import AddNotePalette from "./AddNotePalette/AddNotePalette";
 import Excluded from "./Excluded";
 import Items from "./Items/Items";
@@ -50,8 +50,8 @@ export default function PdfView() {
         e.getModifierState("Shift")
           ? "section"
           : e.getModifierState("Control")
-          ? "chapter"
-          : undefined
+            ? "chapter"
+            : undefined,
       );
     };
     const handleKeyDownAll = (e: KeyboardEvent) => {
@@ -197,9 +197,9 @@ function getBackground(mode: Mode): string {
     mode === "edit"
       ? "#e0e0f8"
       : mode === "move"
-      ? "#e0e5e0"
-      : mode === "delete"
-      ? "#eae0e0"
-      : base;
+        ? "#e0e5e0"
+        : mode === "delete"
+          ? "#eae0e0"
+          : base;
   return `repeating-linear-gradient(-60deg, ${stripe}, ${stripe} 5px, ${base} 5px, ${base} 10px)`;
 }

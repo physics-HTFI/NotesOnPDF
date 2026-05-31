@@ -30,7 +30,7 @@ export function Dialogフォルダ選択({
       <Dialog open>
         <Title />
         <DialogContent>
-          <Stack direction="row" gap={2} alignItems="baseline">
+          <Stack sx={{ flexDirection: "row", gap: 2, alignItems: "baseline" }}>
             <Buttonフォルダ選択 onSelect={handleSelect} />
             <Panelドラッグドロップ onSelect={handleSelect} />
           </Stack>

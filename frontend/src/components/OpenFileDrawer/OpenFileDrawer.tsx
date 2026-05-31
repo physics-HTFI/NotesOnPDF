@@ -6,6 +6,7 @@ import UiContext from "@/contexts/UiContext";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { findTreeItem } from "@/types/FileTree";
 
 /**
  * ファイル一覧を表示するドロワー
@@ -33,15 +34,15 @@ export default function OpenFileDrawer() {
   if (
     selectedPath === undefined &&
     fileTree &&
-    coverages?.recentId !== undefined
+    coverages?.recentPath !== undefined
   ) {
-    const path = fileTree.find((i) => i.id === coverages.recentId)?.path;
+    const path = findTreeItem(fileTree, coverages.recentPath)?.path;
     if (path) {
       setSelectedPath(path);
       setExpanded(
         [...path.matchAll(/(?<=[\\/])/g)].map((m) =>
-          path.substring(0, (m.index ?? 0) - 1)
-        )
+          path.substring(0, (m.index ?? 0) - 1),
+        ),
       );
     } else {
       setSelectedPath("");
@@ -70,7 +71,7 @@ export default function OpenFileDrawer() {
                 NotesOnPDFのバージョンが古すぎます。
                 <br />
                 新しいNotesOnPDFを使用してください。
-              </span>
+              </span>,
             );
             return;
           }
@@ -87,7 +88,7 @@ export default function OpenFileDrawer() {
         .catch(() => {
           setAlert(
             "error",
-            "PDFファイル (または注釈ファイル) の読み込みに失敗しました"
+            "PDFファイル (または注釈ファイル) の読み込みに失敗しました",
           );
           setWaiting(false);
         })
@@ -109,7 +110,7 @@ export default function OpenFileDrawer() {
       setPageSizes,
       setWaiting,
       setAlert,
-    ]
+    ],
   );
 
   return (
@@ -120,17 +121,19 @@ export default function OpenFileDrawer() {
         if (!id) return;
         setOpenFileTreeDrawer(false);
       }}
-      PaperProps={{
-        square: false,
-        sx: {
-          borderRadius: "0 5px 5px 0",
-          color: "dimgray",
-          maxWidth: 500,
-          minWidth: 280,
-          overflowX: "hidden",
-          background: readOnly
-            ? `repeating-linear-gradient(-60deg, #fffcfc, #fffcfc 5px, white 5px, white 10px)`
-            : undefined,
+      slotProps={{
+        paper: {
+          square: false,
+          sx: {
+            borderRadius: "0 5px 5px 0",
+            color: "dimgray",
+            maxWidth: 500,
+            minWidth: 280,
+            overflowX: "hidden",
+            background: readOnly
+              ? `repeating-linear-gradient(-60deg, #fffcfc, #fffcfc 5px, white 5px, white 10px)`
+              : undefined,
+          },
         },
       }}
       onWheel={(e) => {
@@ -142,11 +145,11 @@ export default function OpenFileDrawer() {
 
       {/* ツリービュー */}
       <FileTreeView
-        selectedPath={selectedPath}
-        expanded={expanded}
-        setSelectedPath={setSelectedPath}
-        setExpanded={setExpanded}
-        onSelectPdfById={handleSelectPdfById}
+        selectedItemPath={selectedPath}
+        expandedItemPaths={expanded}
+        setSelectedItemPath={setSelectedPath}
+        setExpandedItemPaths={setExpanded}
+        onSelectPdf={handleSelectPdfById}
       />
     </Drawer>
   );

@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from "react";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
-import { Mode } from "../../SpeedDial";
+import { type Mode } from "../../SpeedDial";
 
 export default function useCursor(mode?: Mode, disableEditable?: boolean) {
   const { appSettings } = useContext(ModelContext);
@@ -11,16 +11,16 @@ export default function useCursor(mode?: Mode, disableEditable?: boolean) {
       appSettings?.rightClick === "delete" ||
       appSettings?.middleClick === "move" ||
       appSettings?.middleClick === "delete"
-    : appSettings?.rightClick ?? appSettings?.middleClick;
+    : (appSettings?.rightClick ?? appSettings?.middleClick);
 
   const cursor =
     mode === "move"
       ? "move"
       : (!disableEditable && mode === "edit") || mode === "delete"
-      ? "pointer"
-      : isAlias
-      ? "alias"
-      : undefined;
+        ? "pointer"
+        : isAlias
+          ? "alias"
+          : undefined;
 
   const onMouseEnter = useCallback(() => {
     setHover(!!cursor);

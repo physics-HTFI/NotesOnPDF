@@ -1,4 +1,4 @@
-import { Coverage } from "@/types/Coverages";
+import { type Coverage } from "@/types/Coverages";
 
 /**
  * 進捗状況

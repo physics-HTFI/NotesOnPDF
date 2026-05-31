@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Bracket } from "@/types/PdfNotes";
+import { type Bracket } from "@/types/PdfNotes";
 import Svg from "../../common/Svg";
 import BracketItem from "../Items/Bracket";
 import MouseContext from "@/contexts/MouseContext";

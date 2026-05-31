@@ -1,9 +1,10 @@
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import UiContext from "@/contexts/UiContext";
-import PdfNotes, {
-  NoteType,
-  Page,
-  Settings as PdfSettings,
+import type PdfNotes from "@/types/PdfNotes";
+import {
+  type NoteType,
+  type Page,
+  type Settings as PdfSettings,
   editPageStyle,
   updatePageNum,
 } from "@/types/PdfNotes";
@@ -61,7 +62,7 @@ export interface Updaters {
    */
   updatePageSettings(
     settings: Partial<Omit<Page, "notes">>,
-    pageNum?: number
+    pageNum?: number,
   ): void;
 
   /**
@@ -93,9 +94,9 @@ export default function useUpdaters() {
   const { openFileTreeDrawer, waiting, setAlert } = useContext(UiContext);
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [imageNum, setImageNum] = useState<number>();
-  const pdfNotesSnapshot = useRef<PdfNotes>();
-  const notesSnapshot = useRef<NoteType[]>();
-  const previousPageNum = useRef<number>();
+  const pdfNotesSnapshot = useRef<PdfNotes>(undefined);
+  const notesSnapshot = useRef<NoteType[]>(undefined);
+  const previousPageNum = useRef<number | undefined>(undefined);
   const page = pdfNotes?.pages[pdfNotes.currentPage];
   const invalid =
     !page || openFileTreeDrawer || waiting || inert || imageNum === undefined;
@@ -127,7 +128,7 @@ export default function useUpdaters() {
       previousPageNum.current = pdfNotes.currentPage;
       notesSnapshot.current = undefined;
     },
-    [invalid, pdfNotes]
+    [invalid, pdfNotes],
   );
 
   /**
@@ -147,7 +148,7 @@ export default function useUpdaters() {
         // デスクトップ版では、画像読み込み後にjumpPageEndを呼ぶ
       }
     },
-    [invalid, imageNum, pdfNotes?.pages.length, setAlert, jumpPageEnd]
+    [invalid, imageNum, pdfNotes?.pages.length, setAlert, jumpPageEnd],
   );
 
   /**
@@ -160,7 +161,7 @@ export default function useUpdaters() {
       for (;;) {
         const candidate = Math.max(
           0,
-          Math.min(pdfNotes.pages.length - 1, nextPage + (forward ? 1 : -1))
+          Math.min(pdfNotes.pages.length - 1, nextPage + (forward ? 1 : -1)),
         );
         if (nextPage === candidate) break; // これ以上スクロールできなくなった
         nextPage = candidate;
@@ -175,7 +176,7 @@ export default function useUpdaters() {
       }
       jumpPageStart(nextPage);
     },
-    [invalid, jumpPageStart, imageNum, pdfNotes?.pages]
+    [invalid, jumpPageStart, imageNum, pdfNotes?.pages],
   );
 
   const _popNote = useCallback(
@@ -186,7 +187,7 @@ export default function useUpdaters() {
       if (!page.notes) return;
       if (page.notes.length === 0) page.notes = undefined;
     },
-    [page, updateNotesSnapshot]
+    [page, updateNotesSnapshot],
   );
   /**
    * `PdfNotes`オブジェクトの現在ページから注釈を消去する。
@@ -197,7 +198,7 @@ export default function useUpdaters() {
       _popNote(note);
       setPdfNotes({ ...pdfNotes });
     },
-    [_popNote, invalid, pdfNotes, setPdfNotes]
+    [_popNote, invalid, pdfNotes, setPdfNotes],
   );
 
   const _pushNote = useCallback(
@@ -208,7 +209,7 @@ export default function useUpdaters() {
       page.notes.push(note);
       pdfNotes.pages[pdfNotes.currentPage] = page;
     },
-    [page, pdfNotes?.currentPage, pdfNotes?.pages, updateNotesSnapshot]
+    [page, pdfNotes?.currentPage, pdfNotes?.pages, updateNotesSnapshot],
   );
   /**
    * `PdfNotes`オブジェクトの現在ページに注釈を追加する。
@@ -219,7 +220,7 @@ export default function useUpdaters() {
       _pushNote(note);
       setPdfNotes({ ...pdfNotes });
     },
-    [_pushNote, invalid, pdfNotes, setPdfNotes]
+    [_pushNote, invalid, pdfNotes, setPdfNotes],
   );
 
   /**
@@ -234,7 +235,7 @@ export default function useUpdaters() {
       _pushNote(push);
       setPdfNotes({ ...pdfNotes });
     },
-    [_popNote, _pushNote, invalid, pdfNotes, setPdfNotes]
+    [_popNote, _pushNote, invalid, pdfNotes, setPdfNotes],
   );
 
   /**
@@ -252,7 +253,7 @@ export default function useUpdaters() {
       }
       setPdfNotes({ ...pdfNotes });
     },
-    [pdfNotes, setPdfNotes]
+    [pdfNotes, setPdfNotes],
   );
 
   /**
@@ -266,7 +267,7 @@ export default function useUpdaters() {
         settings: { ...pdfNotes.settings, ...settings },
       });
     },
-    [pdfNotes, setPdfNotes]
+    [pdfNotes, setPdfNotes],
   );
 
   /**
@@ -392,7 +393,7 @@ export default function useUpdaters() {
             notesSnapshot.current = undefined;
             setAlert(
               "info",
-              "このページの注釈を、ページ表示直後の状態にリセットしました"
+              "このページの注釈を、ページ表示直後の状態にリセットしました",
             );
           } else {
             setAlert("info", "未変更のため、リセットする必要はありません");
@@ -402,13 +403,13 @@ export default function useUpdaters() {
           if (pdfNotesSnapshot.current) {
             if (
               window.confirm(
-                "このPDF中の全ての注釈・設定を、PDF読み込み直後の状態にリセットします"
+                "このPDF中の全ての注釈・設定を、PDF読み込み直後の状態にリセットします",
               )
             ) {
               assignPdfNotes(pdfNotesSnapshot.current);
               setAlert(
                 "info",
-                "全ての注釈・設定を、PDF読み込み直後の状態にリセットしました"
+                "全ての注釈・設定を、PDF読み込み直後の状態にリセットしました",
               );
             }
           } else {
@@ -435,7 +436,7 @@ export default function useUpdaters() {
       scrollPage,
       setAlert,
       updateNotesSnapshot,
-    ]
+    ],
   );
 
   return {

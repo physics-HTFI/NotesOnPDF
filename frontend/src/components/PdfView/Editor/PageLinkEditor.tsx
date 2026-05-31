@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { PageLink } from "@/types/PdfNotes";
+import { type PageLink } from "@/types/PdfNotes";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import PageInput from "./PageInput";
 

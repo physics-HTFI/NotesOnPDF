@@ -2,10 +2,10 @@ import {
   Box,
   MenuItem,
   Select,
-  SelectChangeEvent,
+  type SelectChangeEvent,
   Typography,
 } from "@mui/material";
-import { ClickOption } from "@/types/AppSettings";
+import type { ClickOption } from "@/types/AppSettings";
 import { Delete, Edit, OpenWith } from "@mui/icons-material";
 
 /**

@@ -11,7 +11,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import History from "@/types/History";
+import type { History } from "@/types/History";
 import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import { Delete } from "@mui/icons-material";
@@ -70,7 +70,7 @@ export default function HistoryDialog({
               if (readOnly) {
                 setAlert(
                   "error",
-                  <span>読み取り専用モードのため消去できません</span>
+                  <span>読み取り専用モードのため消去できません</span>,
                 );
                 return;
               }
@@ -86,7 +86,7 @@ export default function HistoryDialog({
                       履歴の消去に失敗しました。
                       <br />
                       読み取り専用モードに切り替えました。
-                    </span>
+                    </span>,
                   );
                   setReadOnly(true);
                 });
@@ -129,10 +129,10 @@ export default function HistoryDialog({
               {history.map((row) => (
                 <TableRow
                   hover
-                  key={row.id}
+                  key={row.path}
                   sx={{ cursor: "pointer" }}
                   onClick={() => {
-                    onClose(row.id);
+                    onClose(row.path);
                   }}
                 >
                   <TableCell component="th" scope="row" sx={{ height: 30 }}>
@@ -149,14 +149,16 @@ export default function HistoryDialog({
                         if (readOnly) {
                           setAlert(
                             "error",
-                            <span>読み取り専用モードのため消去できません</span>
+                            <span>読み取り専用モードのため消去できません</span>,
                           );
                           return;
                         }
                         model
-                          .deleteHistory(row.id)
+                          .deleteHistory(row.path)
                           .then(() => {
-                            setHistory(history.filter((h) => h.id !== row.id));
+                            setHistory(
+                              history.filter((h) => h.path !== row.path),
+                            );
                           })
                           .catch(() => {
                             setAlert(
@@ -165,7 +167,7 @@ export default function HistoryDialog({
                                 履歴の消去に失敗しました。
                                 <br />
                                 読み取り専用モードに切り替えました。
-                              </span>
+                              </span>,
                             );
                             setReadOnly(true);
                           });
