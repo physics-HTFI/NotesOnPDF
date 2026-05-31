@@ -14,6 +14,8 @@ import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "../common/TooltipIconButton";
 import { useHistory } from "./useHistory/useHistory";
 import { History } from "./History";
+import { alertBrowserCannotOpenDirectory } from "./utils/alertBrowserCannotOpenDirectory";
+import { DragAndDropListener } from "./DragAndDropListener/DragAndDropListener";
 
 /**
  * 基準フォルダを選択するダイアログ
@@ -37,44 +39,9 @@ export default function SelectRootDialog({
     setModel(new ModelWeb(handle));
   };
 
-  const alertBrowserCannotOpenDirectory = () => {
-    alert(
-      "このブラウザは、フォルダの読み込みに対応していません。\nGoogle Chrome または Microsoft Edge を使用してください。",
-    );
-  };
-
   return (
     <>
-      <Dialog
-        open={open}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDraggingColor("mistyrose");
-        }}
-        onDragLeave={() => {
-          setDraggingColor(undefined);
-        }}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDraggingColor(undefined);
-          setDirHandle(undefined);
-          void setHandle();
-
-          async function setHandle() {
-            for (const item of e.dataTransfer.items) {
-              if (!item.getAsFileSystemHandle) {
-                alertBrowserCannotOpenDirectory();
-                return;
-              }
-              const handle = await item.getAsFileSystemHandle();
-              if (!handle) continue;
-              if (handle.kind === "directory") {
-                setDirHandle(handle as FileSystemDirectoryHandle);
-              }
-            }
-          }
-        }}
-      >
+      <Dialog open={open}>
         <DialogTitle
           sx={{
             display: "flex",
@@ -128,15 +95,10 @@ export default function SelectRootDialog({
                 ),
               }}
             />
-            <TooltipIconButton
-              icon={<DoubleArrow sx={{ fontSize: 40 }} />}
-              onClick={() => {
-                if (!dirHandle) return;
-                void handleSelect(dirHandle);
+            <DragAndDropListener
+              onSelect={(handle) => {
+                void handleSelect(handle);
               }}
-              disabled={!dirHandle}
-              sx={{ color: "steelblue" }}
-              tooltipTitle="このフォルダを開きます"
             />
           </Stack>
 
