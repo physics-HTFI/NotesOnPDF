@@ -18,11 +18,15 @@ export function Dialog起動直後() {
       <Dialogパーミッション選択
         folder={folder}
         onPermissionSelected={(mode) => {
-          if (mode === "readWrite") {
+          if (mode === "readwrite") {
             setReadOnly(false);
-          } else {
+          } else if (mode === "read") {
             setReadOnly(true);
+          } else {
+            setFolder(undefined);
+            return;
           }
+
           setModel(new ModelWeb(folder));
           setIsPermissionGranted(true);
         }}

@@ -8,7 +8,7 @@ declare global {
   interface FileSystemDirectoryHandle {
     requestPermission?: (option?: {
       mode: "read" | "readwrite";
-    }) => Promise<void>;
+    }) => Promise<"granted" | "denied" | "prompt">;
   }
 }
 

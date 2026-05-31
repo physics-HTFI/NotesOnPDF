@@ -1,15 +1,6 @@
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Stack } from "@mui/material";
 import { Lock, LockOpen } from "@mui/icons-material";
+import { CardButton } from "./CardButton";
 
 /**
  * 「読み込み専用」か「書き込み可能」かを選択するダイアログ
@@ -19,22 +10,25 @@ export default function Dialogパーミッション選択({
   onPermissionSelected,
 }: {
   folder: FileSystemDirectoryHandle;
-  onPermissionSelected: (mode: "read" | "readWrite") => void;
+  onPermissionSelected: (mode: "read" | "readwrite" | "denied") => void;
 }) {
+  const handlePermissionDenied = async (mode: "read" | "readwrite") => {
+    const result = await folder.requestPermission?.({ mode });
+    onPermissionSelected(result === "granted" ? mode : "denied");
+  };
+
   return (
     <Dialog open>
-      <DialogTitle sx={{ backgroundColor: "gainsboro" }}>
-        モードの選択： {folder.name}
-      </DialogTitle>
-      <DialogContent sx={{ backgroundColor: "gainsboro" }}>
+      <DialogTitle>モードの選択： {folder.name}</DialogTitle>
+      <DialogContent>
         <Stack direction="column" gap={2}>
           {/* 書き込み可能 */}
-          <MyCard
+          <CardButton
             color="steelblue"
             title="自動保存モード（読み込み＆書き込み）"
             Icon={LockOpen}
             onClick={() => {
-              onPermissionSelected("readWrite");
+              void handlePermissionDenied("readwrite");
             }}
           >
             変更が加えられた際に、注釈ファイルを自動保存します。
@@ -43,65 +37,21 @@ export default function Dialogパーミッション選択({
             <br />
             また、選択フォルダ直下に、設定フォルダ &quot;.NotesOnPdf&quot;
             が生成されます。
-          </MyCard>
+          </CardButton>
 
           {/* 読み取り専用 */}
-          <MyCard
+          <CardButton
             color="firebrick"
             title="読み取り専用モード（読み込みのみ）"
             Icon={Lock}
             onClick={() => {
-              onPermissionSelected("read");
+              void handlePermissionDenied("read");
             }}
           >
             閲覧や編集はできますが、保存は一切行われません。
-          </MyCard>
+          </CardButton>
         </Stack>
       </DialogContent>
     </Dialog>
-  );
-}
-
-/**
- * カードのテンプレート
- */
-function MyCard({
-  color,
-  title,
-  children,
-  Icon,
-  onClick,
-}: {
-  color: string;
-  title: string;
-  children: React.ReactNode;
-  Icon: typeof Lock;
-  onClick: () => void;
-}) {
-  return (
-    <Card>
-      <CardActionArea onClick={onClick}>
-        <CardContent>
-          <Stack direction="row" gap={1}>
-            <Icon sx={{ color }} />
-            <Box>
-              <Typography
-                variant="body1"
-                sx={{
-                  pt: "4px",
-                  pb: 1,
-                  display: "inline-block",
-                  color,
-                  cursor: "pointer",
-                }}
-              >
-                {title}
-              </Typography>
-              <Box sx={{ fontWeight: "normal" }}>{children}</Box>
-            </Box>
-          </Stack>
-        </CardContent>
-      </CardActionArea>
-    </Card>
   );
 }
