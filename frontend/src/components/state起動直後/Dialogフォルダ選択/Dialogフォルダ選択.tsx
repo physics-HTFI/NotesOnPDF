@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,38 +5,32 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import ModelWeb from "@/models/Model.Web";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
 import { useHistory } from "./useHistory/useHistory";
-import { History } from "./History";
 import { Panelドラッグドロップ } from "./Panelドラッグドロップ/Panelドラッグドロップ";
 import { Buttonフォルダ選択 } from "./Buttonフォルダ選択";
+import { Table履歴 } from "./Table履歴";
 
 /**
  * 基準フォルダを選択するダイアログ
  */
-export default function SelectRootDialog({
-  open,
-  onClose,
+export function Dialogフォルダ選択({
+  onSelect,
 }: {
-  open: boolean;
-  onClose: () => void;
+  onSelect: (folder: FileSystemDirectoryHandle) => void;
 }) {
-  const { setModel } = useContext(ModelContext);
   const history = useHistory();
 
-  const handleSelect = (handle: FileSystemDirectoryHandle) => {
-    onClose();
-    setModel(new ModelWeb(handle));
-    history.add(handle);
+  const handleSelect = (folder: FileSystemDirectoryHandle) => {
+    onSelect(folder);
+    history.add(folder);
   };
 
   return (
     <>
-      <Dialog open={open}>
+      <Dialog open>
         <Title />
         <DialogContent>
-          <Stack direction="row" gap={1} alignItems="baseline">
+          <Stack direction="row" gap={2} alignItems="baseline">
             <Buttonフォルダ選択 onSelect={handleSelect} />
             <Panelドラッグドロップ onSelect={handleSelect} />
           </Stack>
@@ -46,7 +39,7 @@ export default function SelectRootDialog({
           <Typography variant="body1" sx={{ mt: 3, mb: 1 }}>
             履歴から開く
           </Typography>
-          <History
+          <Table履歴
             folders={history.folders}
             onSelect={handleSelect}
             onRemoveAt={history.removeAt}

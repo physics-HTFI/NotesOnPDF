@@ -6,13 +6,13 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import TooltipIconButton from "../common/TooltipIconButton";
 import { Delete } from "@mui/icons-material";
+import TooltipIconButton from "@/components/common/TooltipIconButton";
 
 /**
  * 履歴を表示するコンポーネント
  */
-export function History({
+export function Table履歴({
   folders,
   onRemoveAt,
   onSelect,

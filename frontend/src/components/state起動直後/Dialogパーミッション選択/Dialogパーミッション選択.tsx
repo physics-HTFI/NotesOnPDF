@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import {
   Box,
   Card,
@@ -11,24 +10,21 @@ import {
   Typography,
 } from "@mui/material";
 import { Lock, LockOpen } from "@mui/icons-material";
-import UiContext from "@/contexts/UiContext";
 
 /**
  * 「読み込み専用」か「書き込み可能」かを選択するダイアログ
  */
-export default function IsWritableDialog({
-  open,
-  onClose,
+export default function Dialogパーミッション選択({
+  folder,
+  onPermissionSelected,
 }: {
-  open: boolean;
-  onClose: () => void;
+  folder: FileSystemDirectoryHandle;
+  onPermissionSelected: (mode: "read" | "readWrite") => void;
 }) {
-  const { setReadOnly } = useContext(UiContext);
-
   return (
-    <Dialog open={open} fullWidth>
+    <Dialog open>
       <DialogTitle sx={{ backgroundColor: "gainsboro" }}>
-        選択してください
+        モードの選択： {folder.name}
       </DialogTitle>
       <DialogContent sx={{ backgroundColor: "gainsboro" }}>
         <Stack direction="column" gap={2}>
@@ -38,15 +34,14 @@ export default function IsWritableDialog({
             title="自動保存モード（読み込み＆書き込み）"
             Icon={LockOpen}
             onClick={() => {
-              setReadOnly(false);
-              onClose();
+              onPermissionSelected("readWrite");
             }}
           >
             変更が加えられた際に、注釈ファイルを自動保存します。
             <br />
             注釈ファイル名は &quot;(PDFファイルパス).json&quot; です。
             <br />
-            また、基準フォルダ直下に、設定フォルダ &quot;.NotesOnPdf&quot;
+            また、選択フォルダ直下に、設定フォルダ &quot;.NotesOnPdf&quot;
             が生成されます。
           </MyCard>
 
@@ -56,8 +51,7 @@ export default function IsWritableDialog({
             title="読み取り専用モード（読み込みのみ）"
             Icon={Lock}
             onClick={() => {
-              setReadOnly(true);
-              onClose();
+              onPermissionSelected("read");
             }}
           >
             閲覧や編集はできますが、保存は一切行われません。
