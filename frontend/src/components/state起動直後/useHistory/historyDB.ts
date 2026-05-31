@@ -6,6 +6,9 @@ const KEY_NAME = "history";
 const DB_VERSION = 1;
 const MAX_HISTORY = 10;
 
+/**
+ * 履歴の取得、追加、削除を行う
+ */
 export const historyDB = {
   addAsync: addFolderToHistoryAsync,
   loadAsync: loadHistoryAsync,

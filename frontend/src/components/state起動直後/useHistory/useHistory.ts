@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { historyDB } from "./utils/history";
+import { historyDB } from "./historyDB";
 
+/**
+ * 履歴の取得、追加、削除を行うフック
+ */
 export const useHistory = () => {
   const [folders, setFolders] = useState<FileSystemDirectoryHandle[]>([]);
 
