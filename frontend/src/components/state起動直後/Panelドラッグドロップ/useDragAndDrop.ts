@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { alertBrowserCannotOpenDirectory } from "../utils/alertBrowserCannotOpenDirectory";
+import { alertBrowserCannotOpenDirectory } from "../share/alertBrowserCannotOpenDirectory";
 
 /**
  * @example

@@ -27,7 +27,7 @@ export const useHistory = () => {
 
   return {
     folders,
-    addAsync,
-    removeAtAsync,
+    add: (f: FileSystemDirectoryHandle) => void addAsync(f),
+    removeAt: (index: number) => void removeAtAsync(index),
   };
 };
