@@ -1,24 +1,19 @@
 import { useContext, useState } from "react";
 import {
-  Box,
   Dialog,
   DialogContent,
   DialogTitle,
   InputAdornment,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
-import { Delete, DoubleArrow, Folder } from "@mui/icons-material";
+import { DoubleArrow, Folder } from "@mui/icons-material";
 import ModelWeb from "@/models/Model.Web";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
-import TooltipIconButton from "../../common/TooltipIconButton";
+import TooltipIconButton from "../common/TooltipIconButton";
 import { useHistory } from "./useHistory/useHistory";
+import { History } from "./History";
 
 /**
  * 基準フォルダを選択するダイアログ
@@ -33,11 +28,11 @@ export default function SelectRootDialog({
   const { setModel } = useContext(ModelContext);
   const [dirHandle, setDirHandle] = useState<FileSystemDirectoryHandle>();
   const [draggingColor, setDraggingColor] = useState<string>();
-  const { folders, removeAtAsync, addFolderHandleAsync } = useHistory();
+  const history = useHistory();
 
   const handleSelect = async (handle: FileSystemDirectoryHandle) => {
     onClose();
-    await addFolderHandleAsync(handle);
+    await history.addAsync(handle);
     await handle.requestPermission?.({ mode: "read" }); // 履歴から開く際に必要
     setModel(new ModelWeb(handle));
   };
@@ -150,8 +145,10 @@ export default function SelectRootDialog({
             履歴から開く
           </Typography>
           <History
-            folders={folders}
-            removeAtAsync={removeAtAsync}
+            folders={history.folders}
+            onRemoveAt={(index) => {
+              void history.removeAtAsync(index);
+            }}
             onSelect={(folder) => {
               void handleSelect(folder);
             }}
@@ -159,60 +156,5 @@ export default function SelectRootDialog({
         </DialogContent>
       </Dialog>
     </>
-  );
-}
-
-/**
- * 履歴を表示するコンポーネント
- */
-function History({
-  folders,
-  removeAtAsync,
-  onSelect,
-}: {
-  folders: FileSystemDirectoryHandle[];
-  removeAtAsync: (index: number) => Promise<void>;
-  onSelect: (folder: FileSystemDirectoryHandle) => void;
-}) {
-  if (folders.length === 0) return "なし";
-  return (
-    <TableContainer
-      component={Box}
-      sx={{
-        background: "white",
-        borderRadius: 2,
-      }}
-    >
-      <Table size="small">
-        <TableBody>
-          {folders.map((folder) => (
-            <TableRow
-              hover
-              key={folder.name}
-              sx={{ cursor: "pointer" }}
-              onClick={() => {
-                onSelect(folder);
-              }}
-            >
-              <TableCell component="th" scope="row">
-                {folder.name}
-              </TableCell>
-              <TableCell sx={{ width: 30 }}>
-                <TooltipIconButton
-                  icon={<Delete />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    void removeAtAsync(folders.indexOf(folder));
-                  }}
-                  sx={{ color: "steelblue" }}
-                  tooltipTitle="この履歴を削除します"
-                  tooltipPlacement="right"
-                />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
   );
 }

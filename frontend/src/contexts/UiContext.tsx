@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useCallback, useState } from "react";
-import Waiting from "@/components/dialogs/Waiting";
+import Waiting from "@/components/common/Waiting";
 import { Alert, Snackbar } from "@mui/material";
 
 /**
@@ -45,7 +45,7 @@ export function UiContextProvider({ children }: { children: ReactNode }) {
       setAlert(alert);
       setSeverity(alert === undefined ? undefined : severity);
     },
-    []
+    [],
   );
 
   return (

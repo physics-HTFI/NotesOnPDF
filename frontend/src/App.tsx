@@ -8,10 +8,10 @@ import TocView from "@/components/TocView/TocView";
 import { UiContextProvider } from "./contexts/UiContext";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
-import SelectRootDialog from "./components/dialogs/起動直後/SelectRootDialog";
+import SelectRootDialog from "./components/state起動直後/SelectRootDialog";
 import { ModelContextProvider } from "./contexts/ModelContext/ModelContextProvider";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesContextProvider";
-import IsWritableDialog from "./components/dialogs/起動直後/IsWritableDialog";
+import IsWritableDialog from "./components/state起動直後/IsWritableDialog";
 
 /**
  * 数式表示のコンフィグ

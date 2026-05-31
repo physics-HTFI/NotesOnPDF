@@ -11,14 +11,11 @@ export const useHistory = () => {
     })().catch(() => undefined);
   }, []);
 
-  const addFolderHandleAsync = useCallback(
-    async (handle?: FileSystemDirectoryHandle) => {
-      if (!handle) return;
-      await historyDB.addAsync(handle);
-      setFolders(await historyDB.loadAsync());
-    },
-    [],
-  );
+  const addAsync = useCallback(async (handle?: FileSystemDirectoryHandle) => {
+    if (!handle) return;
+    await historyDB.addAsync(handle);
+    setFolders(await historyDB.loadAsync());
+  }, []);
 
   const removeAtAsync = useCallback(async (index: number) => {
     await historyDB.removeAtAsync(index);
@@ -27,7 +24,7 @@ export const useHistory = () => {
 
   return {
     folders,
-    addFolderHandleAsync,
+    addAsync,
     removeAtAsync,
   };
 };

@@ -10,7 +10,7 @@ import {
 } from "@mui/icons-material";
 import InputStringDialog from "./InputStringDialog";
 import HistoryDialog from "./HistoryDialog";
-import Waiting from "../../dialogs/Waiting";
+import Waiting from "../../common/Waiting";
 import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
@@ -104,7 +104,7 @@ export default function Header({
               ファイルを選択してください
               <br />
               選択ダイアログは、ブラウザの後ろに隠れていることがあります
-            </span>
+            </span>,
           );
           model
             .getIdFromExternalFile()
