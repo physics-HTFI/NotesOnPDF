@@ -32,6 +32,8 @@ export default class ModelWeb implements IModel {
   getFileTree = async () => {
     const root = GetFileTreeRoot();
     const fileTree: FileTree = [root];
+    console.log(this.dirHandle);
+    await this.dirHandle.requestPermission?.();
     await addEntries(fileTree, root, this.dirHandle);
     this.fileTree = removeEmptyDirectories(fileTree);
     return fileTree;
@@ -39,7 +41,7 @@ export default class ModelWeb implements IModel {
     async function addEntries(
       fileTree: FileTree,
       root: FileTreeEntry,
-      dHandle: FileSystemDirectoryHandle
+      dHandle: FileSystemDirectoryHandle,
     ) {
       // フォルダを追加
       for await (const [name, handle] of dHandle) {
@@ -72,7 +74,7 @@ export default class ModelWeb implements IModel {
         for (const entry of fileTree) {
           if (!entry.children) continue;
           entry.children = entry.children.filter((id) =>
-            fileTree.find((e) => e.id === id)
+            fileTree.find((e) => e.id === id),
           );
         }
         if (length === fileTree.length) break;
@@ -100,7 +102,7 @@ export default class ModelWeb implements IModel {
   getFileFromId = async (id: string) => {
     const fileHandle = await this.getFileHandleFromPath(
       this.idToPath(id),
-      false
+      false,
     );
     return await fileHandle.getFile();
   };
@@ -108,7 +110,7 @@ export default class ModelWeb implements IModel {
   getCoverages = async () => {
     try {
       return JSON.parse(
-        await this.getTextFromPath(PATH_COVERAGES)
+        await this.getTextFromPath(PATH_COVERAGES),
       ) as Coverages;
     } catch {
       return GetCoverages_empty();
@@ -139,7 +141,7 @@ export default class ModelWeb implements IModel {
   getAppSettings = async () => {
     try {
       return JSON.parse(
-        await this.getTextFromPath(PATH_SETTINGS)
+        await this.getTextFromPath(PATH_SETTINGS),
       ) as AppSettings;
     } catch {
       return GetAppSettings_default();
@@ -164,7 +166,7 @@ export default class ModelWeb implements IModel {
 
   private getFileHandleFromPath = async (
     path: string,
-    create: boolean
+    create: boolean,
   ): Promise<FileSystemFileHandle> => {
     const breadcrumb = path.split("/");
     const name = breadcrumb.pop();

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Box, ThemeProvider, createTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
@@ -8,9 +8,10 @@ import TocView from "@/components/TocView/TocView";
 import { UiContextProvider } from "./contexts/UiContext";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
-import SelectRootDialog from "./components/dialogs/SelectRootDialog";
+import SelectRootDialog from "./components/dialogs/起動直後/SelectRootDialog";
 import { ModelContextProvider } from "./contexts/ModelContext/ModelContextProvider";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesContextProvider";
+import IsWritableDialog from "./components/dialogs/起動直後/IsWritableDialog";
 
 /**
  * 数式表示のコンフィグ
@@ -71,6 +72,9 @@ const theme = createTheme({
 });
 
 export default function App() {
+  const [isOpen_SelectRootDialog, setIsOpen_SelectRootDialog] = useState(true);
+  const [isOpen_IsWritableDialog, setIsOpen_IsWritableDialog] = useState(true);
+
   // 右クリックメニューを無効にする
   useEffect(() => {
     document.oncontextmenu = () => false;
@@ -83,8 +87,22 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <UiContextProvider>
         <ModelContextProvider>
-          {/* モックモデルを使用していることを示すポップアップ表示 */}
-          {import.meta.env.MODE === "web" && <SelectRootDialog />}
+          {import.meta.env.MODE === "web" && (
+            <>
+              <SelectRootDialog
+                open={isOpen_SelectRootDialog}
+                onClose={() => {
+                  setIsOpen_SelectRootDialog(false);
+                }}
+              />
+              <IsWritableDialog
+                open={!isOpen_SelectRootDialog && isOpen_IsWritableDialog}
+                onClose={() => {
+                  setIsOpen_IsWritableDialog(false);
+                }}
+              />
+            </>
+          )}
           <MathJaxContext version={3} config={mathjaxConfig}>
             <PdfNotesContextProvider>
               <Box sx={{ userSelect: "none" }}>
