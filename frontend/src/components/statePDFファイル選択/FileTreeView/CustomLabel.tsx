@@ -23,6 +23,7 @@ export function CustomLabel({ children, coverage }: CustomLabelProps) {
           display: "flex",
           py: 0.1,
           width: "stretch",
+          alignItems: "center",
         }}
       >
         {/* ファイル／フォルダ名 */}
@@ -39,6 +40,7 @@ export function CustomLabel({ children, coverage }: CustomLabelProps) {
               width: 20,
               height: 12,
               marginLeft: 8,
+              accentColor: "gray",
             }}
           />
         )}
