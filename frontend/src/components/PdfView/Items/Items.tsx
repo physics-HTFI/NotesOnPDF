@@ -38,7 +38,6 @@ export default function Items({
   if (!page?.notes || !pageRect) return <SvgDefs />;
 
   const props = <T extends NoteType | NodeType>(params: T) => ({
-    key: JSON.stringify(params),
     mode,
     pageRect,
     params,
@@ -59,6 +58,8 @@ export default function Items({
       setMouse({ pageX: e.pageX, pageY: e.pageY });
     },
   });
+  const key = <T extends NoteType | NodeType>(params: T) =>
+    JSON.stringify(params);
 
   const notes: NoteType[] = page.notes.filter((n) =>
     moveNote?.type === "Node" ? n !== moveNote.target : n !== moveNote,
@@ -68,29 +69,45 @@ export default function Items({
       <SvgDefs />
       <Svg pageRect={pageRect}>
         {notes.map((n) => {
-          return n.type === "Polygon" ? <Polygon {...props(n)} /> : undefined;
+          return n.type === "Polygon" ? (
+            <Polygon key={key(n)} {...props(n)} />
+          ) : undefined;
         })}
         {notes.map((n) => {
-          return n.type === "Rect" ? <Rect {...props(n)} /> : undefined;
+          return n.type === "Rect" ? (
+            <Rect key={key(n)} {...props(n)} />
+          ) : undefined;
         })}
         {notes.map((n) => {
-          return n.type === "Marker" ? <Marker {...props(n)} /> : undefined;
+          return n.type === "Marker" ? (
+            <Marker key={key(n)} {...props(n)} />
+          ) : undefined;
         })}
         {notes.map((n) => {
-          return n.type === "Bracket" ? <Bracket {...props(n)} /> : undefined;
+          return n.type === "Bracket" ? (
+            <Bracket key={key(n)} {...props(n)} />
+          ) : undefined;
         })}
         {notes.map((n) => {
-          return n.type === "Arrow" ? <Arrow {...props(n)} /> : undefined;
+          return n.type === "Arrow" ? (
+            <Arrow key={key(n)} {...props(n)} />
+          ) : undefined;
         })}
       </Svg>
       {notes.map((n) => {
-        return n.type === "Memo" ? <Memo {...props(n)} /> : undefined;
+        return n.type === "Memo" ? (
+          <Memo key={key(n)} {...props(n)} />
+        ) : undefined;
       })}
       {notes.map((n) => {
-        return n.type === "Chip" ? <Chip {...props(n)} /> : undefined;
+        return n.type === "Chip" ? (
+          <Chip key={key(n)} {...props(n)} />
+        ) : undefined;
       })}
       {notes.map((n) => {
-        return n.type === "PageLink" ? <PageLink {...props(n)} /> : undefined;
+        return n.type === "PageLink" ? (
+          <PageLink key={key(n)} {...props(n)} />
+        ) : undefined;
       })}
     </>
   );
