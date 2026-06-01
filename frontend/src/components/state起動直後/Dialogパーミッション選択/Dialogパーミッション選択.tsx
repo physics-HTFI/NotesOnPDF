@@ -1,6 +1,7 @@
-import { Dialog, DialogContent, DialogTitle, Stack } from "@mui/material";
-import { Lock, LockOpen } from "@mui/icons-material";
+import { DialogContent, DialogTitle, Stack } from "@mui/material";
+import { ArrowBack, Lock, LockOpen } from "@mui/icons-material";
 import { CardButton } from "./CardButton";
+import TooltipIconButton from "@/components/common/TooltipIconButton";
 
 /**
  * 「読み込み専用」か「書き込み可能」かを選択するダイアログ
@@ -8,9 +9,11 @@ import { CardButton } from "./CardButton";
 export default function Dialogパーミッション選択({
   folder,
   onPermissionSelected,
+  onCancel,
 }: {
   folder: FileSystemDirectoryHandle;
   onPermissionSelected: (mode: "read" | "readwrite" | "denied") => void;
+  onCancel: () => void;
 }) {
   const handlePermissionDenied = async (mode: "read" | "readwrite") => {
     const result = await folder.requestPermission?.({ mode });
@@ -18,14 +21,24 @@ export default function Dialogパーミッション選択({
   };
 
   return (
-    <Dialog open>
-      <DialogTitle>モードの選択： {folder.name}</DialogTitle>
+    <>
+      <DialogTitle>
+        <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <span>モード選択： "{folder.name}"</span>
+          <TooltipIconButton
+            icon={<ArrowBack />}
+            onClick={onCancel}
+            sx={{ color: "steelblue" }}
+            tooltipTitle="前のダイアログに戻ります"
+          />
+        </Stack>
+      </DialogTitle>
       <DialogContent>
-        <Stack sx={{ direction: "column", gap: 2 }}>
+        <Stack sx={{ gap: 2 }}>
           {/* 書き込み可能 */}
           <CardButton
             color="steelblue"
-            title="自動保存モード（読み込み＆書き込み）"
+            title="自動保存モード（読み取り＆書き込み）"
             Icon={LockOpen}
             onClick={() => {
               void handlePermissionDenied("readwrite");
@@ -42,7 +55,7 @@ export default function Dialogパーミッション選択({
           {/* 読み取り専用 */}
           <CardButton
             color="firebrick"
-            title="読み取り専用モード（読み込みのみ）"
+            title="読み取り専用モード（読み取りのみ）"
             Icon={Lock}
             onClick={() => {
               void handlePermissionDenied("read");
@@ -52,6 +65,6 @@ export default function Dialogパーミッション選択({
           </CardButton>
         </Stack>
       </DialogContent>
-    </Dialog>
+    </>
   );
 }

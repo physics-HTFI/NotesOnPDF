@@ -27,25 +27,23 @@ export function Dialogフォルダ選択({
 
   return (
     <>
-      <Dialog open>
-        <Title />
-        <DialogContent>
-          <Stack sx={{ flexDirection: "row", gap: 2, alignItems: "baseline" }}>
-            <Buttonフォルダ選択 onSelect={handleSelect} />
-            <Panelドラッグドロップ onSelect={handleSelect} />
-          </Stack>
+      <Title />
+      <DialogContent>
+        <Stack sx={{ flexDirection: "row", gap: 2, alignItems: "baseline" }}>
+          <Buttonフォルダ選択 onSelect={handleSelect} />
+          <Panelドラッグドロップ onSelect={handleSelect} />
+        </Stack>
 
-          {/* 履歴から選択する */}
-          <Typography variant="body1" sx={{ mt: 3, mb: 1 }}>
-            履歴から開く
-          </Typography>
-          <Table履歴
-            folders={history.folders}
-            onSelect={handleSelect}
-            onRemoveAt={history.removeAt}
-          />
-        </DialogContent>
-      </Dialog>
+        {/* 履歴から選択する */}
+        <Typography variant="body1" sx={{ mt: 3, mb: 1 }}>
+          履歴から開く
+        </Typography>
+        <Table履歴
+          folders={history.folders}
+          onSelect={handleSelect}
+          onRemoveAt={history.removeAt}
+        />
+      </DialogContent>
     </>
   );
 }
