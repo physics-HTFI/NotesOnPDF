@@ -37,7 +37,7 @@ export default class ModelWeb implements IModel {
   getFileTree = async () => {
     const fileTree: FileTree = {
       type: "folder",
-      path: "/",
+      path: "",
       name: "root",
       handle: this.dirHandle,
       children: [],
@@ -53,7 +53,7 @@ export default class ModelWeb implements IModel {
       // フォルダを追加
       for await (const [name, handle] of dHandle) {
         if (handle.kind === "directory") {
-          const path = `${fileTree.path}/${name}/`;
+          const path = fileTree.path ? `${fileTree.path}/${name}` : name;
           const entry: FileTree = {
             type: "folder",
             path,
@@ -70,7 +70,7 @@ export default class ModelWeb implements IModel {
       for await (const [name, handle] of dHandle) {
         if (handle.kind === "file") {
           if (!name.toLowerCase().endsWith(".pdf")) continue;
-          const path = `${fileTree.path}/${name}`;
+          const path = fileTree.path ? `${fileTree.path}/${name}` : name;
           const entry: FileTreeItemPdf = { type: "file", path, name, handle };
           fileTree.children.push(entry);
         }
