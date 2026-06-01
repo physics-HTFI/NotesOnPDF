@@ -83,6 +83,9 @@ export default function SettingsDrawer() {
       variant={variant}
       anchor={isBottom ? "bottom" : "top"}
       open={openSettingsDrawer}
+      onWheel={(e) => {
+        e.stopPropagation();
+      }}
       slotProps={{
         paper: {
           square: false,

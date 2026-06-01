@@ -16,6 +16,7 @@ export default function TocView() {
         height: "100vh",
         overflowWrap: "break-word",
         fontSize: "70%",
+        overflow: "hidden",
       }}
     >
       <Box
