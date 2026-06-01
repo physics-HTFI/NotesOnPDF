@@ -23,15 +23,15 @@ npm run build-web              # ビルド実行
 winget install "Node.js"       # Node.jsのインストール
 cd path/to/NotesOnPdf/frontend # NotesOnPdf/frontend/ フォルダに移動
 npm install                    # 必要なパッケージを frontend/node_modules/ にインストール
-npm run build-web              # ビルド実行
+npm run build-desktop          # ビルド実行
 ```
 
 次にバックエンドをビルドする。
 以下の操作により、`NotesOnPdf\backend\bin\release\net8.0-windows10.0.17763.0\publish\win-x64` にビルド成果物が出力される。
 
-- `Visual Studio 2022` を以下のコマンドでインストールする:  
-  `winget install "Visual Studio Community 2022"`
-- `Visual Studio 2022` を起動する。
+- `Visual Studio 2026` を以下のコマンドでインストールする:  
+  `winget install "Visual Studio Community 2026"`
+- `Visual Studio 2026` を起動する。
 - ソリューションエクスプローラの`backend`フォルダを右クリック →`発行`を選択。
 - `FolderProfile.pubxml`の`発行`ボタンをクリック。
 
