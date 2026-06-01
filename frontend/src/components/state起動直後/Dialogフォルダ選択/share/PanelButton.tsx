@@ -14,14 +14,13 @@ export function PanelButton({
 }) {
   const Icon = icon;
   return (
-    <Box>
+    <Box sx={{ flex: 1 }}>
       <Button
         variant="outlined"
         onClick={onClick}
         sx={{
           height: 150,
-          width: 150,
-          aspectRatio: "1 / 1",
+          width: "stretch",
           pointerEvents: onClick ? undefined : "none",
           display: "flex",
           flexDirection: "column",

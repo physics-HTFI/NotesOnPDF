@@ -1,4 +1,10 @@
-import { DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useHistory } from "./useHistory/useHistory";
 import { Panelドラッグドロップ } from "./Panelドラッグドロップ/Panelドラッグドロップ";
 import { Buttonフォルダ選択 } from "./Buttonフォルダ選択";
@@ -20,10 +26,12 @@ export function Dialogフォルダ選択({
   };
 
   return (
-    <>
+    <Box sx={{ width: 500 }}>
       <Title />
       <DialogContent>
-        <Stack sx={{ flexDirection: "row", gap: 2, alignItems: "baseline" }}>
+        <Stack
+          sx={{ flexDirection: "row", gap: 5, alignItems: "baseline", mx: 2 }}
+        >
           <Buttonフォルダ選択 onSelect={handleSelect} />
           <Panelドラッグドロップ onSelect={handleSelect} />
         </Stack>
@@ -38,7 +46,7 @@ export function Dialogフォルダ選択({
           onRemoveAt={history.removeAt}
         />
       </DialogContent>
-    </>
+    </Box>
   );
 }
 
