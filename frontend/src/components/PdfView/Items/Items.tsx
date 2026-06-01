@@ -68,47 +68,39 @@ export default function Items({
     <>
       <SvgDefs />
       <Svg pageRect={pageRect}>
-        {notes.map((n) => {
-          return n.type === "Polygon" ? (
+        {notes.map((n) =>
+          n.type === "Polygon" ? (
             <Polygon key={key(n)} {...props(n)} />
-          ) : undefined;
-        })}
-        {notes.map((n) => {
-          return n.type === "Rect" ? (
-            <Rect key={key(n)} {...props(n)} />
-          ) : undefined;
-        })}
-        {notes.map((n) => {
-          return n.type === "Marker" ? (
+          ) : undefined,
+        )}
+        {notes.map((n) =>
+          n.type === "Rect" ? <Rect key={key(n)} {...props(n)} /> : undefined,
+        )}
+        {notes.map((n) =>
+          n.type === "Marker" ? (
             <Marker key={key(n)} {...props(n)} />
-          ) : undefined;
-        })}
-        {notes.map((n) => {
-          return n.type === "Bracket" ? (
+          ) : undefined,
+        )}
+        {notes.map((n) =>
+          n.type === "Bracket" ? (
             <Bracket key={key(n)} {...props(n)} />
-          ) : undefined;
-        })}
-        {notes.map((n) => {
-          return n.type === "Arrow" ? (
-            <Arrow key={key(n)} {...props(n)} />
-          ) : undefined;
-        })}
+          ) : undefined,
+        )}
+        {notes.map((n) =>
+          n.type === "Arrow" ? <Arrow key={key(n)} {...props(n)} /> : undefined,
+        )}
       </Svg>
-      {notes.map((n) => {
-        return n.type === "Memo" ? (
-          <Memo key={key(n)} {...props(n)} />
-        ) : undefined;
-      })}
-      {notes.map((n) => {
-        return n.type === "Chip" ? (
-          <Chip key={key(n)} {...props(n)} />
-        ) : undefined;
-      })}
-      {notes.map((n) => {
-        return n.type === "PageLink" ? (
+      {notes.map((n) =>
+        n.type === "Memo" ? <Memo key={key(n)} {...props(n)} /> : undefined,
+      )}
+      {notes.map((n) =>
+        n.type === "Chip" ? <Chip key={key(n)} {...props(n)} /> : undefined,
+      )}
+      {notes.map((n) =>
+        n.type === "PageLink" ? (
           <PageLink key={key(n)} {...props(n)} />
-        ) : undefined;
-      })}
+        ) : undefined,
+      )}
     </>
   );
 }
