@@ -1,6 +1,9 @@
 import { useContext } from "react";
 import { RichTreeView } from "@mui/x-tree-view";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
+import { CustomTreeItem } from "./CustomTreeItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 
 /**
  * ファイル一覧を表示するコンポーネント
@@ -24,7 +27,7 @@ export default function FileTreeView({
   return (
     <RichTreeView
       items={fileTree?.children ?? []}
-      itemChildrenIndentation={10}
+      itemChildrenIndentation={0}
       selectedItems={selectedItemPath}
       expandedItems={expandedItemPaths}
       getItemId={(item) => item.path}
@@ -36,7 +39,10 @@ export default function FileTreeView({
         onSelectPdf(path);
       }}
       onExpandedItemsChange={(_, paths) => setExpandedItemPaths(paths)}
-      //slots={{ item: CustomTreeViewItem }}
+      slots={{
+        endIcon: PdfIcon,
+        item: CustomTreeItem,
+      }}
       sx={{
         p: 1,
         minWidth: 200,
@@ -48,4 +54,8 @@ export default function FileTreeView({
       }}
     />
   );
+}
+
+function PdfIcon() {
+  return <FontAwesomeIcon icon={faFilePdf} />;
 }
