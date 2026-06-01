@@ -1,10 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
 import { useHistory } from "./useHistory/useHistory";
 import { Panelドラッグドロップ } from "./Panelドラッグドロップ/Panelドラッグドロップ";
 import { Buttonフォルダ選択 } from "./Buttonフォルダ選択";

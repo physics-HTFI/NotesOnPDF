@@ -86,6 +86,7 @@ export default function PdfView() {
         background: getBackground(mode),
         height: "100vh",
         position: "relative",
+        overflow: "clip",
         cursor:
           !mode ||
           (moveNote?.type === "Node" && moveNote.target.type === "Marker")
