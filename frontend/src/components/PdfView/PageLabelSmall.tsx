@@ -3,7 +3,7 @@ import { Chip, Stack, Tooltip } from "@mui/material";
 import { Reply } from "@mui/icons-material";
 import MouseContext from "@/contexts/MouseContext";
 import type PdfNotes from "@/types/PdfNotes";
-import Progress from "../OpenFileDrawer/FileTreeView/Progress";
+import Progress from "../statePDFファイル選択/FileTreeView/Progress";
 import { GetCoverage } from "@/types/Coverages";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import TooltipIconButton from "../common/TooltipIconButton";

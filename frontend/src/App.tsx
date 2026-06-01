@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Group, Panel, Separator } from "react-resizable-panels";
 import { Box, ThemeProvider, createTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import OpenFileDrawer from "@/components/OpenFileDrawer/OpenFileDrawer";
+import OpenFileDrawer from "@/components/statePDFファイル選択/OpenFileDrawer";
 import PdfView from "@/components/PdfView/PdfView";
 import TocView from "@/components/TocView/TocView";
 import { UiContextProvider } from "./contexts/UiContext";
