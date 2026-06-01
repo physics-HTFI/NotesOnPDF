@@ -45,5 +45,4 @@ export interface ResultGetPdfNotes {
 
 export interface ModelFlags {
   canOpenFileDialog: boolean;
-  canOpenGithub: boolean;
 }

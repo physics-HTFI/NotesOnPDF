@@ -14,7 +14,6 @@ export default class ModelDesktop implements IModel {
 
   getFlags = () => ({
     canOpenFileDialog: true,
-    canOpenGithub: false,
   });
 
   getEventSource = () =>

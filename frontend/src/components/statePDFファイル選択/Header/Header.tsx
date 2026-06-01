@@ -1,8 +1,7 @@
 import { useContext, useState } from "react";
-import { Box, Divider } from "@mui/material";
+import { Box } from "@mui/material";
 import {
   FolderOpen,
-  GitHub,
   Language,
   Lock,
   LockOpen,
@@ -163,21 +162,6 @@ export default function Header({
               });
           }}
         />
-      )}
-
-      {/* 開発ページを開く */}
-      {modelFlags.canOpenGithub && (
-        <>
-          <Divider orientation="vertical" variant="middle" flexItem />
-          <TooltipIconButton
-            icon={<GitHub />}
-            onClick={() => {
-              open("https://github.com/physics-HTFI/NotesOnPDF");
-            }}
-            sx={sxButton}
-            tooltipTitle="NotesOnPdf 開発ページへのリンクを開きます"
-          />
-        </>
       )}
 
       <Waiting isWaiting={downloading} />

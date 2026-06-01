@@ -30,7 +30,6 @@ export default class ModelWeb implements IModel {
 
   getFlags = () => ({
     canOpenFileDialog: false,
-    canOpenGithub: true,
   });
   getEventSource = () => undefined;
 
