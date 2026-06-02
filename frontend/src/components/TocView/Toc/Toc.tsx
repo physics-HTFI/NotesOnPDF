@@ -16,6 +16,7 @@ const ToC = () => {
     updaters: { jumpPageStart: jumpPage, getChpapterStartPageNum },
   } = useContext(PdfNotesContext);
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
+
   if (!pdfNotes) return [];
   if (pdfNotes.pages.length !== openTooltips.length) {
     setOpenTooltips(new Array(pdfNotes.pages.length).fill(false));

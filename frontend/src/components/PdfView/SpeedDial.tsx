@@ -10,7 +10,6 @@ import {
   Edit,
   KeyboardArrowRight,
   OpenWith,
-  Settings,
 } from "@mui/icons-material";
 import { blue, green, grey, red } from "@mui/material/colors";
 import { UiContext } from "@/contexts/UiContext";
@@ -29,8 +28,7 @@ export default function SpeedDial({
   setMode: (mode: Mode) => void;
   hidden: boolean;
 }) {
-  const { openSettingsDrawer, setOpenFileTreeDrawer, setOpenSettingsDrawer } =
-    useContext(UiContext);
+  const { setOpenFileTreeDrawer } = useContext(UiContext);
   const [open, setOpen] = useState(true);
 
   return (
@@ -90,24 +88,6 @@ export default function SpeedDial({
           slotProps={{
             tooltip: {
               title: "PDF選択パネルを開きます",
-              placement: "right",
-            },
-          }}
-        />
-
-        {/* 設定パネルの開閉 */}
-        <SpeedDialAction
-          disableInteractive
-          icon={<Settings />}
-          onClick={() => {
-            setOpenSettingsDrawer(!openSettingsDrawer);
-            setMode(undefined);
-          }}
-          slotProps={{
-            tooltip: {
-              title: `設定パネルを${
-                openSettingsDrawer ? "閉じます" : "開きます"
-              }`,
               placement: "right",
             },
           }}

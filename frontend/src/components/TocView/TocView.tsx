@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import SettingsDrawer from "./SettingsDrawer/SettingsDrawer";
 import { grey } from "@mui/material/colors";
 import ToC from "./Toc/Toc";
+import { ButtonOpenSettings } from "./ButtonOpenSettings";
 
 /**
  * 目次を表示するコンポーネント
@@ -12,11 +13,11 @@ export default function TocView() {
     <Box
       sx={{
         background: grey[100],
-        position: "relative",
         height: "100vh",
         overflowWrap: "break-word",
         fontSize: "70%",
         overflow: "hidden",
+        position: "relative", // 設定ドロワー用
       }}
     >
       <Box
@@ -27,6 +28,8 @@ export default function TocView() {
           overflowX: "hidden",
           height: "100vh",
           boxSizing: "border-box",
+          display: "flex",
+          flexDirection: "column",
         }}
         onWheel={(e) => {
           const target = e.currentTarget;
@@ -39,12 +42,14 @@ export default function TocView() {
         {/* レンダリングコストが高いのでメモ化する */}
         {useMemo(
           () => (
-            <ToC />
+            <Box>
+              <ToC />
+            </Box>
           ),
           [],
         )}
+        <ButtonOpenSettings />
       </Box>
-
       <SettingsDrawer />
     </Box>
   );
