@@ -20,7 +20,7 @@ const options = {
  * PDF画像を表示するコンポーネント
  */
 export default function PdfImageWeb() {
-  const { model, modelFlags } = useContext(ModelContext);
+  const { model } = useContext(ModelContext);
   const {
     id,
     pdfNotes,
@@ -56,15 +56,7 @@ export default function PdfImageWeb() {
         setWaiting(false);
         setOpenFileTreeDrawer(true);
       });
-  }, [
-    id,
-    model,
-    modelFlags,
-    setWaiting,
-    setAlert,
-    setId,
-    setOpenFileTreeDrawer,
-  ]);
+  }, [id, model, setWaiting, setAlert, setId, setOpenFileTreeDrawer]);
   return (
     <Document
       file={file}

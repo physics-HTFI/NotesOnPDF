@@ -14,6 +14,7 @@ import PdfImageDesktop from "./PdfImageDesktop";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import UiContext from "@/contexts/UiContext";
+import { PdfImage } from "./PdfImage";
 
 const PdfImageWeb =
   import.meta.env.MODE === "web"
@@ -95,7 +96,7 @@ export default function PdfView() {
       }}
       onMouseDown={(e) => {
         if (e.button !== 0) return;
-        if (!pageRect) return;
+        //if (!pageRect) return; // todo
         if (appSettings?.cancelModeWithVoidClick) setMode(undefined);
         if (mode ?? moveNote) return;
         setMouse({ pageX: e.pageX, pageY: e.pageY });
@@ -106,9 +107,9 @@ export default function PdfView() {
       {/* PDF画像がある要素 */}
       <Container
         sx={{
-          width: pageRect?.width,
-          height: pageRect?.height,
-          visibility: pageRect ? "visible" : "collapse",
+          width: pageRect?.width ?? 500, // todo
+          height: pageRect?.height ?? 500, // todo
+          visibility: pageRect ? "visible" : "visible", // todo "collapse",
           position: "absolute",
           top,
           bottom,
@@ -120,7 +121,7 @@ export default function PdfView() {
         disableGutters
       >
         {/* 画像 */}
-        {PdfImageWeb ? <PdfImageWeb /> : <PdfImageDesktop />}
+        <PdfImage />
 
         {/* 注釈アイテム */}
         <Items
