@@ -2,10 +2,10 @@ import { useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { Lock, LockOpen, Reply, Restore } from "@mui/icons-material";
 import HistoryDialog from "./HistoryDialog";
-import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { model起動直後 } from "@/components/state起動直後/model起動直後";
+import { useAtom } from "jotai";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -16,7 +16,7 @@ export default function Header({
   onSelectPdfById?: (id: string) => void;
 }) {
   const { initialized } = useContext(ModelContext);
-  const { readOnly, setReadOnly } = useContext(UiContext);
+  const [readOnly, setReadOnly] = useAtom(model起動直後.atomReadOnly);
   const [openHistory, setOpenHistory] = useState(false);
   const reset = model起動直後.useReset();
 

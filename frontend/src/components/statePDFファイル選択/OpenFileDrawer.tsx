@@ -7,19 +7,17 @@ import FileTreeView from "./FileTreeView/FileTreeView";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { findTreeItem } from "@/types/FileTree";
+import { useAtomValue } from "jotai";
+import { model起動直後 } from "../state起動直後/model起動直後";
 
 /**
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
   const { model, fileTree, coverages } = useContext(ModelContext);
-  const {
-    readOnly,
-    setAlert,
-    setWaiting,
-    openFileTreeDrawer,
-    setOpenFileTreeDrawer,
-  } = useContext(UiContext);
+  const { setAlert, setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
+    useContext(UiContext);
+  const readOnly = useAtomValue(model起動直後.atomReadOnly);
   const {
     id,
     setId,

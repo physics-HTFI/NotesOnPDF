@@ -16,6 +16,8 @@ import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import { Delete } from "@mui/icons-material";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
+import { model起動直後 } from "@/components/state起動直後/model起動直後";
+import { useAtom } from "jotai";
 
 /**
  * PDFを開いた履歴
@@ -28,7 +30,8 @@ export default function HistoryDialog({
   onClose: (id?: string) => void;
 }) {
   const { model } = useContext(ModelContext);
-  const { readOnly, setWaiting, setAlert, setReadOnly } = useContext(UiContext);
+  const { setWaiting, setAlert } = useContext(UiContext);
+  const [readOnly, setReadOnly] = useAtom(model起動直後.atomReadOnly);
   const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {

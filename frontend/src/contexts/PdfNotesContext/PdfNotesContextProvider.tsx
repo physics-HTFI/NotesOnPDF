@@ -7,6 +7,8 @@ import UiContext from "../UiContext";
 import useNewCoverages from "./useNewCoverages";
 import PdfNotesContext, { type PageSize } from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
+import { model起動直後 } from "@/components/state起動直後/model起動直後";
+import { useAtom } from "jotai";
 
 /**
  * 間隔をあけて`pdfNotes`を保存する
@@ -42,7 +44,8 @@ const putPdfNotesDebounced = debounce(
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
-  const { readOnly, setAlert, setReadOnly } = useContext(UiContext);
+  const { setAlert } = useContext(UiContext);
+  const [readOnly, setReadOnly] = useAtom(model起動直後.atomReadOnly);
   const [id, setId] = useState<string>();
   const [pageSize, setPageSize] = useState<PageSize>();
   const { getNewCoveragesOrUndefined } = useNewCoverages();
@@ -84,7 +87,6 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     readOnly,
     setAlert,
     setCoverages,
-    setReadOnly,
     updaters.imageNum,
   ]);
 
