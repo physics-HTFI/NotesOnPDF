@@ -9,6 +9,7 @@ import { useHistory } from "./useHistory/useHistory";
 import { Panelドラッグドロップ } from "./Panelドラッグドロップ/Panelドラッグドロップ";
 import { Buttonフォルダ選択 } from "./Buttonフォルダ選択";
 import { Table履歴 } from "./Table履歴";
+import { VERSION } from "@/types/CONSTANTS";
 
 /**
  * 基準フォルダを選択するダイアログ
@@ -63,7 +64,7 @@ function Title() {
       <img src="favicon.svg" style={{ height: 24 }} />
       NotesOnPDF
       <span style={{ color: "darkgray", fontSize: "75%", marginTop: 5 }}>
-        {import.meta.env.VITE_VERSION}
+        {VERSION}
       </span>
     </DialogTitle>
   );

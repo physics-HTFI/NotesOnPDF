@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from "react";
 import { Drawer } from "@mui/material";
 import Header from "@/components/statePDFファイル選択/Header/Header";
-import { VERSION, createOrGetPdfNotes } from "@/types/PdfNotes";
+import { FORMAT_VERSION, createOrGetPdfNotes } from "@/types/PdfNotes";
 import UiContext from "@/contexts/UiContext";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
@@ -64,7 +64,7 @@ export default function OpenFileDrawer() {
       model
         .getPdfNotes(_id)
         .then((result) => {
-          if (result.pdfNotes && result.pdfNotes.version > VERSION) {
+          if (result.pdfNotes && result.pdfNotes.version > FORMAT_VERSION) {
             setAlert(
               "error",
               <span>

@@ -11,7 +11,7 @@ export default interface PdfNotes {
   settings: Settings;
 }
 
-export const VERSION = 1;
+export const FORMAT_VERSION = 1;
 
 export type NoteType =
   | Rect
@@ -148,7 +148,7 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
   const addsTitle = !result.pdfNotes || result.pdfNotes.pages.length === 0; // pages===0は、ウェブ版で始めて開くPDFのタイトルを追加するために必要
   const notes: PdfNotes = result.pdfNotes ?? {
     title: result.name,
-    version: VERSION,
+    version: FORMAT_VERSION,
     currentPage: 0,
     settings: { fontSize: 100, offsetTop: 0, offsetBottom: 0 },
     pages: [],
