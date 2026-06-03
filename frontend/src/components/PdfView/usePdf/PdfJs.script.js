@@ -2,7 +2,7 @@
 // https://github.com/mozilla/pdf.js/blob/master/examples/learning/
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://unpkg.com/pdfjs-dist/build/pdf.worker.mjs";
+  "https://unpkg.com/pdfjs-dist/build/pdf.worker.min.mjs";
 
 let pdfDoc = null;
 let pageNum = 1;
