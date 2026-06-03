@@ -20,7 +20,7 @@ const PATH_HISTORY = ".NotesOnPDF/history.web.json";
 export default class ModelWeb implements IModel {
   constructor(private dirHandle: FileSystemDirectoryHandle) {
     const getHistory = async () =>
-      JSON.parse(await this.getTextFromPath(PATH_HISTORY)) as History;
+      JSON.parse(await this._getTextFromPath(PATH_HISTORY)) as History;
 
     this.fileTree = undefined;
     this.history = [];
@@ -84,53 +84,62 @@ export default class ModelWeb implements IModel {
   getHistory = async () => Promise.resolve(this.history);
   updateHistory = async (path: string, pages: number) => {
     this.history = updateHistory(this.history, path, pages);
-    await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
+    await this._writeToPath(
+      PATH_HISTORY,
+      JSON.stringify(this.history, null, 2),
+    );
   };
   deleteHistoryAll = async () => {
     this.history = [];
-    await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
+    await this._writeToPath(
+      PATH_HISTORY,
+      JSON.stringify(this.history, null, 2),
+    );
   };
   deleteHistory = async (id: string) => {
     this.history = this.history.filter((h) => h.path !== id);
-    await this.writeToPath(PATH_HISTORY, JSON.stringify(this.history, null, 2));
+    await this._writeToPath(
+      PATH_HISTORY,
+      JSON.stringify(this.history, null, 2),
+    );
   };
 
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
-  getFileFromPath = async (path: string) => {
-    if (!this.fileTree) return Promise.reject();
+  getFileHandleFromPath = (path?: string) => {
+    if (!this.fileTree || !path) return undefined;
     const item = findTreeItem(this.fileTree, path);
-    if (!item || item.type !== "file") return Promise.reject();
-    return item.handle.getFile();
+    if (!item || item.type !== "file") return undefined;
+    return item.handle;
   };
 
   getCoverages = async () => {
     try {
       return JSON.parse(
-        await this.getTextFromPath(PATH_COVERAGES),
+        await this._getTextFromPath(PATH_COVERAGES),
       ) as Coverages;
     } catch {
       return GetCoverages_empty();
     }
   };
   putCoverages = async (coverages: Coverages) => {
-    await this.writeToPath(PATH_COVERAGES, JSON.stringify(coverages, null, 2));
+    await this._writeToPath(PATH_COVERAGES, JSON.stringify(coverages, null, 2));
   };
 
   getPdfNotes = async (path: string): Promise<ResultGetPdfNotes> => {
-    const { name, jsonPath } = this.parsePath(path);
+    const { name, jsonPath } = this._parsePath(path);
     try {
       return {
         name,
-        pdfNotes: JSON.parse(await this.getTextFromPath(jsonPath)) as PdfNotes,
+        pdfNotes: JSON.parse(await this._getTextFromPath(jsonPath)) as PdfNotes,
       };
     } catch {
       return { name };
     }
   };
   putPdfNotes = async (path: string, pdfNotes: PdfNotes) => {
-    const { jsonPath } = this.parsePath(path);
-    await this.writeToPath(jsonPath, JSON.stringify(pdfNotes));
+    const { jsonPath } = this._parsePath(path);
+    await this._writeToPath(jsonPath, JSON.stringify(pdfNotes));
   };
 
   getPageImageUrl = () => "";
@@ -138,14 +147,17 @@ export default class ModelWeb implements IModel {
   getAppSettings = async () => {
     try {
       return JSON.parse(
-        await this.getTextFromPath(PATH_SETTINGS),
+        await this._getTextFromPath(PATH_SETTINGS),
       ) as AppSettings;
     } catch {
       return GetAppSettings_default();
     }
   };
   putAppSettings = async (appSettings: AppSettings) => {
-    await this.writeToPath(PATH_SETTINGS, JSON.stringify(appSettings, null, 2));
+    await this._writeToPath(
+      PATH_SETTINGS,
+      JSON.stringify(appSettings, null, 2),
+    );
   };
 
   //|
@@ -155,7 +167,7 @@ export default class ModelWeb implements IModel {
   private fileTree: FileTree | undefined;
   private history: History;
 
-  private getFileHandleFromPath = async (
+  private _getFileHandleFromPath = async (
     path: string,
     create: boolean,
   ): Promise<FileSystemFileHandle> => {
@@ -169,8 +181,8 @@ export default class ModelWeb implements IModel {
     return await handle.getFileHandle(name, { create });
   };
 
-  private getTextFromPath = async (path: string): Promise<string> => {
-    const fileHandle = await this.getFileHandleFromPath(path, false);
+  private _getTextFromPath = async (path: string): Promise<string> => {
+    const fileHandle = await this._getFileHandleFromPath(path, false);
     const file = await fileHandle.getFile();
     const promise = new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
@@ -183,14 +195,14 @@ export default class ModelWeb implements IModel {
     return await promise;
   };
 
-  private writeToPath = async (path: string, text: string): Promise<void> => {
-    const fileHandle = await this.getFileHandleFromPath(path, true);
+  private _writeToPath = async (path: string, text: string): Promise<void> => {
+    const fileHandle = await this._getFileHandleFromPath(path, true);
     const file = await fileHandle.createWritable();
     await file.write(text);
     await file.close();
   };
 
-  private parsePath = (path: string) => {
+  private _parsePath = (path: string) => {
     const match = path.match(/([^/]+)\.[^.]*$/);
     const [name, jsonPath] = [match?.[1], `${path}.json`];
     if (!name) throw new Error();

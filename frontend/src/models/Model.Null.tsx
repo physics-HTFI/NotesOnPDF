@@ -15,7 +15,7 @@ export default class ModelNull implements IModel {
   deleteHistory = () => Promise.resolve();
   getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
-  getFileFromPath = () => Promise.reject();
+  getFileHandleFromPath = () => undefined;
 
   getCoverages = () => Promise.resolve(GetCoverages_empty());
   putCoverages = () => Promise.resolve();

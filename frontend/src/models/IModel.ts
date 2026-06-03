@@ -3,7 +3,6 @@ import type Coverages from "@/types/Coverages";
 import type PdfNotes from "@/types/PdfNotes";
 import type AppSettings from "@/types/AppSettings";
 import type { History } from "@/types/History";
-import { type PageSize } from "@/contexts/PdfNotesContext/PdfNotesContext";
 
 export default interface IModel {
   getFlags(): ModelFlags;
@@ -18,7 +17,7 @@ export default interface IModel {
 
   getIdFromExternalFile(): Promise<string>;
   getIdFromUrl(url: string): Promise<string>;
-  getFileFromPath(path: string): Promise<string | File>;
+  getFileHandleFromPath(path?: string): FileSystemFileHandle | undefined;
 
   getCoverages(): Promise<Coverages>;
   putCoverages(coverages: Coverages): Promise<void>;

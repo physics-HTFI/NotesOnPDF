@@ -8,15 +8,19 @@ let pdfDoc = null;
 let pageNum = 1;
 let pageRendering = false;
 let pageNumPending = null;
-let scale = 0.8;
+let scale = 1;
+let canvasId = null;
 let canvas = null;
 let ctx = null;
 
 function renderPage(pageNum) {
   pageRendering = true;
+  canvas ??= document.getElementById(canvasId);
+  ctx ??= canvas?.getContext("2d");
+
   // Using promise to fetch the page
   pdfDoc.getPage(pageNum).then(function (page) {
-    var viewport = page.getViewport({ scale: scale });
+    var viewport = page.getViewport({ scale });
     // Support HiDPI-screens.
     var outputScale = window.devicePixelRatio || 1;
 
@@ -53,48 +57,55 @@ window.pdf = {
    * レンダリング先の canvas を指定する
    */
   setCanvasId: (id) => {
-    canvas = document.getElementById(id);
-    ctx = canvas.getContext("2d");
+    canvasId = id;
+    canvas = null;
+    ctx = null;
+    // この段階だと id の要素が存在しないかもしれないので、描画時に要素を取得する
   },
 
   /**
    * PDFファイルを読み込む
    */
   setDataAsync: async (arrayBuffer) => {
-    const loadingTask = pdfjsLib.getDocument({
-      // https://mozilla.github.io/pdf.js/api/
-      data: arrayBuffer,
-      cMapUrl: "https://unpkg.com/pdfjs-dist/cmaps/",
-      standardFontDataUrl: "https://unpkg.com/pdfjs-dist/standard_fonts/",
-      wasmUrl: "https://unpkg.com/pdfjs-dist/wasm/", // 画像のでコードが速くなることを期待
-    });
-    pdfDoc = await loadingTask.promise;
-    console.log("PDF loaded: ", pdfDoc.numPages);
-    window.pdf.queueRenderPage(window.pdf.pageNum);
+    try {
+      const loadingTask = pdfjsLib.getDocument({
+        // https://mozilla.github.io/pdf.js/api/
+        data: arrayBuffer,
+        cMapUrl: "https://unpkg.com/pdfjs-dist/cmaps/",
+        standardFontDataUrl: "https://unpkg.com/pdfjs-dist/standard_fonts/",
+        wasmUrl: "https://unpkg.com/pdfjs-dist/wasm/", // 画像のデコードが速くなることを期待
+      });
+      pdfDoc = await loadingTask.promise;
+      return { totalPages: pdfDoc.numPages };
+    } catch (_) {
+      return undefined;
+    }
   },
 
   /**
    * ページのレンダリングをリクエストする。
    * 無駄なレンダリングを抑制する。
    */
-  queueRenderPage: (pageNum) => {
-    if (pageNum === undefined) return;
-    if (pageRendering) {
-      pageNumPending = pageNum + 1;
-    } else {
-      renderPage(pageNum + 1);
-    }
-  },
+  queueRenderPageAsync: async (pageNum, resizer) => {
+    try {
+      if (pageNum === undefined) return undefined;
 
-  /**
-   * ページのサイズを取得する。
-   */
-  getPageSizeAsync: async (pageNum) => {
-    const page = await pdfDoc.getPage(pageNum + 1);
-    const viewport = page.getViewport({ scale: 1 });
-    return {
-      width: viewport.width,
-      height: viewport.height,
-    };
+      // ページサイズを取得
+      const page = await pdfDoc.getPage(pageNum + 1);
+      const viewport = page.getViewport({ scale: 1 });
+      const pageRect = resizer(viewport);
+      scale = pageRect.rect.height / viewport.height;
+
+      // レンダリング
+      if (pageRendering) {
+        pageNumPending = pageNum + 1;
+      } else {
+        renderPage(pageNum + 1);
+      }
+
+      return { pageRect };
+    } catch (_) {
+      return undefined;
+    }
   },
 };

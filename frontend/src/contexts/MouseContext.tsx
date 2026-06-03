@@ -4,6 +4,10 @@ import { type ReactNode, createContext, useContext, useState } from "react";
 import PdfNotesContext, {
   type PageSize,
 } from "./PdfNotesContext/PdfNotesContext";
+import { usePdf } from "@/components/PdfView/usePdf/usePdf";
+import { ID_PDF_CANVAS, ID_PDF_CONTAINER } from "@/types/CONSTANTS";
+import ModelContext from "./ModelContext/ModelContext";
+import UiContext from "./UiContext";
 
 export interface Mouse {
   pageX: number;
@@ -28,72 +32,48 @@ export default MouseContext;
  * `MouseContext`のプロバイダー
  */
 export function MouseContextProvider({ children }: { children: ReactNode }) {
-  const { pdfNotes, pageSize } = useContext(PdfNotesContext);
+  const { model } = useContext(ModelContext);
+  const { id, pdfNotes, imageNum } = useContext(PdfNotesContext);
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const [refContainer, setRefContainer] = useState<HTMLDivElement>();
-  const containerRect = refContainer?.getBoundingClientRect();
-  const { pageRect, top, bottom } = getRect(pdfNotes, pageSize, containerRect);
+  const { setWaiting, setOpenFileTreeDrawer } = useContext(UiContext);
+
+  const offset = pdfNotes?.settings
+    ? {
+        top: pdfNotes?.settings.offsetTop,
+        bottom: pdfNotes?.settings.offsetBottom,
+      }
+    : undefined;
+  const handle = model.getFileHandleFromPath(id);
+  const onFinishRead = () => {
+    setWaiting(false);
+    setOpenFileTreeDrawer(false);
+  };
+  const pdf = usePdf(
+    ID_PDF_CANVAS,
+    handle,
+    onFinishRead,
+    imageNum,
+    ID_PDF_CONTAINER,
+    offset,
+  );
 
   const scale =
-    !pdfNotes || !pageRect
+    !pdfNotes || !pdf?.pageRect?.rect
       ? 100
-      : (pdfNotes.settings.fontSize * pageRect.width) / 600;
+      : (pdfNotes.settings.fontSize * pdf.pageRect.rect.width) / 600;
 
   return (
     <MouseContext.Provider
-      value={{ mouse, setMouse, pageRect, scale, top, bottom }}
+      value={{
+        mouse,
+        setMouse,
+        pageRect: pdf?.pageRect?.rect,
+        scale,
+        top: pdf?.pageRect?.top,
+        bottom: pdf?.pageRect?.bottom,
+      }}
     >
-      <Box ref={setRefContainer}>{children}</Box>
+      <Box id={ID_PDF_CONTAINER}>{children}</Box>
     </MouseContext.Provider>
   );
-}
-
-/**
- * ページのサイズと位置を返す
- */
-function getRect(
-  pdfNotes?: PdfNotes,
-  pageSize?: PageSize,
-  containerRect?: DOMRect,
-): { pageRect?: DOMRect; top?: number; bottom?: number } {
-  if (!pdfNotes || !pageSize || !containerRect) return {};
-  const size = pageSize;
-  if (!size) return {};
-  const pageRatio = size.width / size.height;
-  return preferredSize(
-    pdfNotes.settings.offsetTop,
-    pdfNotes.settings.offsetBottom,
-    pageRatio,
-    containerRect.width,
-    containerRect.height,
-    containerRect.x,
-  );
-
-  /**
-   * [width, height, deltaY（＝view中心とPdf中心の差）]
-   */
-  function preferredSize(
-    offsetTop: number,
-    offsetBottom: number,
-    pageRatio: number, // width / height
-    viewW: number,
-    viewH: number,
-    viewX: number,
-  ) {
-    const imgH = viewH / (1 - offsetTop - offsetBottom);
-    const imgW = pageRatio * imgH;
-    const top = imgH * offsetTop;
-    const bottom = imgH * offsetBottom;
-    const ratio = Math.min(1, viewW / imgW); // 画像が横にはみ出しそうな場合にこの係数をかけて縮小する
-    const ratioTB = // top, bottomにかける係数
-      ratio * imgH <= viewH
-        ? 0 // 画像の縦方向もページ内に収まる場合は中央に配置する
-        : (ratio * imgH - viewH) / (top + bottom); // 縦方向がはみ出す場合（分母が0の時はここには来ない）。ratio==1の時に 1, ratio*imgH==viewH の時に 0
-    const x = viewX + (viewW - ratio * imgW) / 2;
-    return {
-      pageRect: new DOMRect(x, -ratioTB * top, ratio * imgW, ratio * imgH),
-      top: -ratioTB * top,
-      bottom: -ratioTB * bottom,
-    };
-  }
 }
