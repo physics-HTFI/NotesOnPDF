@@ -2,13 +2,13 @@
 // https://github.com/mozilla/pdf.js/blob/master/examples/learning/
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://unpkg.com/pdfjs-dist/build/pdf.worker.min.mjs";
+  "https://unpkg.com/pdfjs-dist/build/pdf.worker.mjs";
 
 let pdfDoc = null;
 let pageNum = 1;
 let pageRendering = false;
 let pageNumPending = null;
-let scale = 1.8;
+let scale = 0.8;
 let canvas = null;
 let ctx = null;
 
@@ -61,7 +61,13 @@ window.pdf = {
    * PDFファイルを読み込む
    */
   setDataAsync: async (arrayBuffer) => {
-    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+    const loadingTask = pdfjsLib.getDocument({
+      // https://mozilla.github.io/pdf.js/api/
+      data: arrayBuffer,
+      cMapUrl: "https://unpkg.com/pdfjs-dist/cmaps/",
+      standardFontDataUrl: "https://unpkg.com/pdfjs-dist/standard_fonts/",
+      wasmUrl: "https://unpkg.com/pdfjs-dist/wasm/", // 画像のでコードが速くなることを期待
+    });
     pdfDoc = await loadingTask.promise;
     console.log("PDF loaded: ", pdfDoc.numPages);
     window.pdf.queueRenderPage(window.pdf.pageNum);
@@ -78,5 +84,17 @@ window.pdf = {
     } else {
       renderPage(pageNum + 1);
     }
+  },
+
+  /**
+   * ページのサイズを取得する。
+   */
+  getPageSizeAsync: async (pageNum) => {
+    const page = await pdfDoc.getPage(pageNum + 1);
+    const viewport = page.getViewport({ scale: 1 });
+    return {
+      width: viewport.width,
+      height: viewport.height,
+    };
   },
 };

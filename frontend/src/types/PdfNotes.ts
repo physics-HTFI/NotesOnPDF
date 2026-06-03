@@ -141,8 +141,7 @@ export interface Settings {
 export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
   if (
     result.pdfNotes &&
-    (!result.pageSizes ||
-      result.pageSizes.length <= result.pdfNotes.pages.length)
+    (!result.pages || result.pages <= result.pdfNotes.pages.length)
   ) {
     return result.pdfNotes;
   }
@@ -155,7 +154,7 @@ export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
     pages: [],
   };
   // ページ数を`result.sizes`に合わせる
-  for (let i = 0; result.pageSizes && i < result.pageSizes.length; i++) {
+  for (let i = 0; result.pages && i < result.pages; i++) {
     if (i < notes.pages.length) continue;
     notes.pages.push({ num: i + 1 });
   }

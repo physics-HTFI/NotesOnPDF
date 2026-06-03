@@ -15,17 +15,17 @@ const PdfNotesContext = createContext<{
   id?: string;
   pdfNotes?: PdfNotes;
   page?: Page;
-  pageSizes?: PageSize[];
+  pageSize?: PageSize;
   pageLabel: string;
   imageNum?: number;
   previousPageNum?: number;
   setId: (id?: string) => void;
-  setPageSizes: (pageSizes?: PageSize[]) => void;
+  setPageSize: (pageSize?: PageSize) => void;
   updaters: Updaters;
 }>({
   pageLabel: "",
   setId: () => undefined,
-  setPageSizes: () => undefined,
+  setPageSize: () => undefined,
   updaters: {
     assignPdfNotes: () => undefined,
     scrollPage: () => undefined,

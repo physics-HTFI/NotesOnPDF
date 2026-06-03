@@ -1,4 +1,4 @@
-import { lazy, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
 import SpeedDial, { type Mode } from "./SpeedDial";
@@ -10,16 +10,10 @@ import MouseContext from "@/contexts/MouseContext";
 import Editor from "./Editor/Editor";
 import { grey } from "@mui/material/colors";
 import Move from "./Move";
-import PdfImageDesktop from "./PdfImageDesktop";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import UiContext from "@/contexts/UiContext";
 import { PdfImage } from "./PdfImage";
-
-const PdfImageWeb =
-  import.meta.env.MODE === "web"
-    ? lazy(() => import("./PdfImageWeb"))
-    : undefined;
 
 /**
  * Pdfを表示するコンポーネント
@@ -96,7 +90,7 @@ export default function PdfView() {
       }}
       onMouseDown={(e) => {
         if (e.button !== 0) return;
-        //if (!pageRect) return; // todo
+        if (!pageRect) return;
         if (appSettings?.cancelModeWithVoidClick) setMode(undefined);
         if (mode ?? moveNote) return;
         setMouse({ pageX: e.pageX, pageY: e.pageY });
@@ -107,9 +101,9 @@ export default function PdfView() {
       {/* PDF画像がある要素 */}
       <Container
         sx={{
-          width: pageRect?.width ?? 500, // todo
-          height: pageRect?.height ?? 500, // todo
-          visibility: pageRect ? "visible" : "visible", // todo "collapse",
+          width: pageRect?.width,
+          height: pageRect?.height,
+          visibility: pageRect ? "visible" : "collapse",
           position: "absolute",
           top,
           bottom,

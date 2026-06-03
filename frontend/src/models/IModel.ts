@@ -39,7 +39,7 @@ export default interface IModel {
 
 export interface ResultGetPdfNotes {
   name: string;
-  pageSizes?: PageSize[];
+  pages?: number;
   pdfNotes?: PdfNotes;
 }
 

@@ -27,7 +27,7 @@ export default function PdfImageWeb() {
     imageNum,
     pageLabel,
     setId,
-    setPageSizes,
+    setPageSize: setPageSizes,
     updaters: { assignPdfNotes },
   } = useContext(PdfNotesContext);
   const { pageRect } = useContext(MouseContext);

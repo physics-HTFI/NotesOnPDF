@@ -11,6 +11,7 @@ import type AppSettings from "@/types/AppSettings";
 import { GetAppSettings_default } from "@/types/AppSettings";
 import { type History, updateHistory } from "@/types/History";
 import type PdfNotes from "@/types/PdfNotes";
+import { sortChildrenByName } from "./utils/sortChildrenByName";
 
 const PATH_SETTINGS = ".NotesOnPDF/settings.json";
 const PATH_COVERAGES = ".NotesOnPDF/coverages.json";
@@ -65,7 +66,7 @@ export default class ModelWeb implements IModel {
           fileTree.children.push(entry);
         }
       }
-      // ファイルを追加（フォルダの後ろに追加する）
+      // ファイルを追加
       for await (const [name, handle] of dHandle) {
         if (handle.kind === "file") {
           if (!name.toLowerCase().endsWith(".pdf")) continue;
@@ -74,6 +75,9 @@ export default class ModelWeb implements IModel {
           fileTree.children.push(entry);
         }
       }
+
+      // 👆のままだと名前順にならないのでソートする
+      fileTree.children.sort(sortChildrenByName);
     }
   };
 

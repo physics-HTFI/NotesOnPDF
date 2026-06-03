@@ -44,7 +44,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
   const { readOnly, setAlert, setReadOnly } = useContext(UiContext);
   const [id, setId] = useState<string>();
-  const [pageSizes, setPageSizes] = useState<PageSize[]>();
+  const [pageSize, setPageSize] = useState<PageSize>();
   const { getNewCoveragesOrUndefined } = useNewCoverages();
   const updaters = useUpdaters();
   const pdfNotes = updaters.pdfNotes;
@@ -97,9 +97,9 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
         pageLabel: updaters.pageLabel,
         previousPageNum: updaters.previousPageNum,
         imageNum: updaters.imageNum,
-        pageSizes,
+        pageSize,
         setId,
-        setPageSizes,
+        setPageSize,
         updaters,
       }}
     >

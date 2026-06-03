@@ -23,7 +23,7 @@ export default function OpenFileDrawer() {
   const {
     id,
     setId,
-    setPageSizes,
+    setPageSize,
     updaters: { assignPdfNotes },
   } = useContext(PdfNotesContext);
   // FileTreeViewの選択と折り畳み状態（FileTreeViewの内部で保持するとドロワーを閉じたときにアンマウントされて消えてしまう）
@@ -59,7 +59,7 @@ export default function OpenFileDrawer() {
       setWaiting(true);
       setId(undefined);
       assignPdfNotes(undefined);
-      setPageSizes(undefined);
+      setPageSize(undefined);
       document.title = "NotesOnPDF";
       model
         .getPdfNotes(_id)
@@ -77,7 +77,6 @@ export default function OpenFileDrawer() {
           }
           result.name = result.name.replace(/.pdf$/i, "");
           assignPdfNotes(createOrGetPdfNotes(result));
-          setPageSizes(result.pageSizes);
           setId(_id);
           document.title = result.name;
           if (import.meta.env.MODE !== "web") {
@@ -107,7 +106,7 @@ export default function OpenFileDrawer() {
       setId,
       setOpenFileTreeDrawer,
       assignPdfNotes,
-      setPageSizes,
+      setPageSize,
       setWaiting,
       setAlert,
     ],
