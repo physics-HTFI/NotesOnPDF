@@ -1,20 +1,10 @@
 import { useContext, useState } from "react";
 import { Box } from "@mui/material";
-import {
-  FolderOpen,
-  Language,
-  Lock,
-  LockOpen,
-  Restore,
-} from "@mui/icons-material";
-import InputStringDialog from "./InputStringDialog";
+import { Lock, LockOpen, Restore } from "@mui/icons-material";
 import HistoryDialog from "./HistoryDialog";
-import Waiting from "../../common/Waiting";
 import UiContext from "@/contexts/UiContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
-
-const IS_WEB = import.meta.env.MODE === "web";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -24,11 +14,9 @@ export default function Header({
 }: {
   onSelectPdfById?: (id: string) => void;
 }) {
-  const { model, modelFlags, initialized } = useContext(ModelContext);
-  const { readOnly, setReadOnly, setAlert } = useContext(UiContext);
-  const [openUrl, setOpenUrl] = useState(false);
+  const { initialized } = useContext(ModelContext);
+  const { readOnly, setReadOnly } = useContext(UiContext);
   const [openHistory, setOpenHistory] = useState(false);
-  const [downloading, setDownloading] = useState(false);
 
   const sxButton = { color: "slategray" };
 
@@ -90,81 +78,6 @@ export default function Header({
           onSelectPdfById?.(id);
         }}
       />
-
-      {/* PC内のPDFファイルを開く */}
-      <TooltipIconButton
-        disabled={!initialized || !modelFlags.canOpenFileDialog}
-        icon={<FolderOpen />}
-        onClick={() => {
-          setAlert(
-            "info",
-            <span>
-              ファイルを選択してください
-              <br />
-              選択ダイアログは、ブラウザの後ろに隠れていることがあります
-            </span>,
-          );
-          model
-            .getIdFromExternalFile()
-            .then((id) => {
-              setAlert();
-              if (id === "") return;
-              onSelectPdfById?.(id);
-            })
-            .catch(() => {
-              setAlert("error", "PDFファイルの取得に失敗しました");
-            });
-        }}
-        sx={sxButton}
-        tooltipTitle={
-          <span>
-            ファイルツリー外のPDFファイルを開きます
-            {IS_WEB && <br />}
-            {IS_WEB && "(ウェブ版では使用できません)"}
-          </span>
-        }
-      />
-
-      {/* URLから開く */}
-      <TooltipIconButton
-        disabled={!initialized || !modelFlags.canOpenFileDialog}
-        icon={<Language />}
-        onClick={() => {
-          setOpenUrl(true);
-        }}
-        sx={sxButton}
-        tooltipTitle={
-          <span>
-            URLからPDFファイルを開きます
-            {IS_WEB && <br />}
-            {IS_WEB && "(ウェブ版では使用できません)"}
-          </span>
-        }
-      />
-      {initialized && openUrl && modelFlags.canOpenFileDialog && (
-        <InputStringDialog
-          title="URLからPDFファイルを開く"
-          label="URL"
-          onClose={(url) => {
-            setOpenUrl(false);
-            if (!url) return;
-            setDownloading(true);
-            model
-              .getIdFromUrl(url)
-              .then((id) => {
-                onSelectPdfById?.(id);
-              })
-              .catch(() => {
-                setAlert("error", "PDFファイルのダウンロードに失敗しました");
-              })
-              .finally(() => {
-                setDownloading(false);
-              });
-          }}
-        />
-      )}
-
-      <Waiting isWaiting={downloading} />
     </Box>
   );
 }

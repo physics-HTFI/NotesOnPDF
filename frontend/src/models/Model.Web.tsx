@@ -104,7 +104,6 @@ export default class ModelWeb implements IModel {
     );
   };
 
-  getIdFromExternalFile = () => Promise.reject();
   getIdFromUrl = () => Promise.reject();
   getFileHandleFromPath = (path?: string) => {
     if (!this.fileTree || !path) return undefined;

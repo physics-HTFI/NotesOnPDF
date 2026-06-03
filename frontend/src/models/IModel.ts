@@ -15,7 +15,6 @@ export default interface IModel {
   deleteHistoryAll(): Promise<void>;
   deleteHistory(path: string): Promise<void>;
 
-  getIdFromExternalFile(): Promise<string>;
   getIdFromUrl(url: string): Promise<string>;
   getFileHandleFromPath(path?: string): FileSystemFileHandle | undefined;
 
