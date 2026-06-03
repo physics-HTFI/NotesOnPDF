@@ -24,6 +24,7 @@
     "better-react-mathjax": "^3.0.1",
     "dompurify": "^3.4.7",
     "idb": "^8.0.3",
+    "jotai": "^2.20.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-resizable-panels": "^4.11.2"

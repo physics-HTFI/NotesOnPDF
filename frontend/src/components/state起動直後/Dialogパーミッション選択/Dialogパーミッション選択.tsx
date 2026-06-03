@@ -1,10 +1,10 @@
 import { DialogContent, DialogTitle, Stack } from "@mui/material";
-import { ArrowBack, Lock, LockOpen } from "@mui/icons-material";
+import { Lock, LockOpen, Reply } from "@mui/icons-material";
 import { CardButton } from "./CardButton";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 
 /**
- * 「読み込み専用」か「書き込み可能」かを選択するダイアログ
+ * `folder` に対し、「読み込み専用」か「書き込み可能」かを選択するダイアログ
  */
 export default function Dialogパーミッション選択({
   folder,
@@ -26,7 +26,7 @@ export default function Dialogパーミッション選択({
         <Stack sx={{ flexDirection: "row", justifyContent: "space-between" }}>
           <span>モード選択： "{folder.name}"</span>
           <TooltipIconButton
-            icon={<ArrowBack />}
+            icon={<Reply />}
             onClick={onCancel}
             sx={{ color: "steelblue" }}
             tooltipTitle="前のダイアログに戻ります"

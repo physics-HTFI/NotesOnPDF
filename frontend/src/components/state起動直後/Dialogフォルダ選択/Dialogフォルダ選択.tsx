@@ -23,7 +23,7 @@ export function Dialogフォルダ選択({
 
   const handleSelect = (folder: FileSystemDirectoryHandle) => {
     onSelect(folder);
-    history.add(folder);
+    void history.addAsync(folder);
   };
 
   return (
@@ -44,7 +44,7 @@ export function Dialogフォルダ選択({
         <Table履歴
           folders={history.folders}
           onSelect={handleSelect}
-          onRemoveAt={history.removeAt}
+          onRemoveAt={history.removeAtAsync}
         />
       </DialogContent>
     </Box>

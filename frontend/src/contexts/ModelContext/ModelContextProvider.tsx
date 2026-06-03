@@ -1,6 +1,5 @@
 import type IModel from "@/models/IModel";
 import { type ModelFlags } from "@/models/IModel";
-import ModelDesktop from "@/models/Model.Desktop";
 import ModelNull from "@/models/Model.Null";
 import type AppSettings from "@/types/AppSettings";
 import { GetAppSettings_default } from "@/types/AppSettings";
@@ -17,9 +16,7 @@ import useServerSideEvents from "./useServerSideEvents";
  * `ModelContext`のプロバイダー
  */
 export function ModelContextProvider({ children }: { children: ReactNode }) {
-  const [model, setModel] = useState<IModel>(() =>
-    import.meta.env.MODE === "web" ? new ModelNull() : new ModelDesktop(),
-  );
+  const [model, setModel] = useState<IModel>(() => new ModelNull());
   const { setAlert } = useContext(UiContext);
   const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
   const [appSettings, setAppSettings] = useState<AppSettings>();

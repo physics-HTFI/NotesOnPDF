@@ -1,33 +1,53 @@
-import { useCallback, useEffect, useState } from "react";
-import { historyDB } from "./historyDB";
+import { useSyncExternalStore } from "react";
+import { historyDB } from "./history.db";
 
-/**
- * 履歴の取得、追加、削除を行うフック
- */
-export const useHistory = () => {
-  const [folders, setFolders] = useState<FileSystemDirectoryHandle[]>([]);
+//|
+//| export
+//|
 
-  // マウント時に、使用されたフォルダの履歴をIndexedDBから読み込む
-  useEffect(() => {
-    (async () => {
-      setFolders(await historyDB.loadAsync());
-    })().catch(() => undefined);
-  }, []);
-
-  const addAsync = useCallback(async (handle?: FileSystemDirectoryHandle) => {
-    if (!handle) return;
-    await historyDB.addAsync(handle);
-    setFolders(await historyDB.loadAsync());
-  }, []);
-
-  const removeAtAsync = useCallback(async (index: number) => {
-    await historyDB.removeAtAsync(index);
-    setFolders(await historyDB.loadAsync());
-  }, []);
+export function useHistory() {
+  const folders = useSyncExternalStore(subscribe, getSnapshot);
 
   return {
+    /** 履歴フォルダハンドル */
     folders,
-    add: (f: FileSystemDirectoryHandle) => void addAsync(f),
-    removeAt: (index: number) => void removeAtAsync(index),
+    /** フォルダハンドルを追加する */
+    addAsync,
+    /** 指定された位置のフォルダハンドルを削除する */
+    removeAtAsync,
   };
-};
+}
+
+//|
+//| local
+//|
+
+let folders: FileSystemDirectoryHandle[] = await historyDB.loadAsync();
+let callbacks: Callback[] = [];
+type Callback = () => void;
+
+async function emitChange() {
+  folders = await historyDB.loadAsync(); // folders を変更したうえで callback を呼ばないとリレンダーされない
+  for (let callback of callbacks) {
+    callback();
+  }
+}
+
+function subscribe(callback: Callback) {
+  callbacks.push(callback);
+  return () => (callbacks = callbacks.filter((c) => c != callback));
+}
+
+function getSnapshot() {
+  return folders;
+}
+
+async function addAsync(folder: FileSystemDirectoryHandle) {
+  await historyDB.addAsync(folder);
+  await emitChange();
+}
+
+async function removeAtAsync(index: number) {
+  await historyDB.removeAtAsync(index);
+  await emitChange();
+}

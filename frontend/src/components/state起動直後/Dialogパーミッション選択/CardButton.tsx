@@ -9,19 +9,19 @@ import {
 } from "@mui/material";
 
 /**
- * カードのテンプレート
+ * パーミッション選択カードのテンプレート
  */
 export function CardButton({
   color,
+  Icon,
   title,
   children,
-  Icon,
   onClick,
 }: {
   color: string;
+  Icon: typeof Lock;
   title: string;
   children: React.ReactNode;
-  Icon: typeof Lock;
   onClick: () => void;
 }) {
   return (
