@@ -12,14 +12,9 @@ export default function Dialogパーミッション選択({
   onCancel,
 }: {
   folder: FileSystemDirectoryHandle;
-  onPermissionSelected: (mode: "read" | "readwrite" | "denied") => void;
+  onPermissionSelected: (mode: "read" | "readwrite") => void;
   onCancel: () => void;
 }) {
-  const handlePermissionDenied = async (mode: "read" | "readwrite") => {
-    const result = await folder.requestPermission?.({ mode });
-    onPermissionSelected(result === "granted" ? mode : "denied");
-  };
-
   return (
     <>
       <DialogTitle>
@@ -41,7 +36,7 @@ export default function Dialogパーミッション選択({
             title="自動保存モード（読み取り＆書き込み）"
             Icon={LockOpen}
             onClick={() => {
-              void handlePermissionDenied("readwrite");
+              void onPermissionSelected("readwrite");
             }}
           >
             変更が加えられた際に、注釈ファイルを自動保存します。
@@ -58,7 +53,7 @@ export default function Dialogパーミッション選択({
             title="読み取り専用モード（読み取りのみ）"
             Icon={Lock}
             onClick={() => {
-              void handlePermissionDenied("read");
+              void onPermissionSelected("read");
             }}
           >
             閲覧や編集はできますが、保存は一切行われません。
