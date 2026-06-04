@@ -20,28 +20,23 @@ export default function Header({
   const [openHistory, setOpenHistory] = useState(false);
   const reset = model起動直後.useReset();
 
-  const sxButton = { color: "slategray" };
-
   return (
     <Box
       sx={{
         mb: 0.5,
         borderBottom: "solid 1px gainsboro",
         display: "flex",
-        justifyContent: "flex-end",
+        color: "slategray",
       }}
     >
       {/* 読み取り専用 */}
       <TooltipIconButton
         disabled={!initialized}
         icon={readOnly ? <Lock /> : <LockOpen />}
-        onClick={() => {
-          setReadOnly(!readOnly);
-        }}
+        onClick={() => setReadOnly(!readOnly)}
         sx={{
           mr: "auto",
-          ...sxButton,
-          ...(readOnly ? { color: "firebrick" } : {}),
+          color: readOnly ? "firebrick" : undefined,
         }}
         tooltipTitle={
           readOnly ? (
@@ -66,10 +61,7 @@ export default function Header({
       <TooltipIconButton
         disabled={!initialized}
         icon={<Restore />}
-        onClick={() => {
-          setOpenHistory(true);
-        }}
-        sx={sxButton}
+        onClick={() => setOpenHistory(true)}
         tooltipTitle="アクセス履歴からPDFファイルを開きます"
       />
       <HistoryDialog
@@ -81,12 +73,11 @@ export default function Header({
         }}
       />
 
-      {/* 基準フォルダ選択画面に戻る */}
+      {/* ルートフォルダ選択画面に戻る */}
       <TooltipIconButton
         disabled={!initialized}
         icon={<Reply />}
         onClick={reset}
-        sx={sxButton}
         tooltipTitle="初期画面に戻ります"
       />
     </Box>
