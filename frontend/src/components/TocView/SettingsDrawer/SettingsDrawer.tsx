@@ -14,7 +14,7 @@ import IconTogglePosition from "./IconTogglePosition";
 import Tabs from "./Tabs";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import { model起動直後 } from "@/components/state起動直後/model起動直後";
+import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 
 /**
  * 設定パネル
@@ -29,7 +29,7 @@ export default function SettingsDrawer() {
   const { model } = useContext(ModelContext);
   const { openSettingsDrawer, setOpenSettingsDrawer, setAlert } =
     useContext(UiContext);
-  const [readOnly, setReadOnly] = model起動直後.readOnly.use();
+  const [readOnly, setReadOnly] = modelフォルダ.readOnly.use();
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
   const [variant, setVariant] = useState<"persistent" | "temporary">(

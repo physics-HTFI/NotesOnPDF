@@ -65,7 +65,7 @@ const atomSetReadonlyWithMessage = atom(
   },
 );
 
-export const model起動直後 = {
+export const modelフォルダ = {
   /** ファイルの書き込みを許すかどうかのフラグ */
   readOnly: {
     atom: atomReadOnly,

@@ -7,7 +7,7 @@ import FileTreeView from "./FileTreeView/FileTreeView";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { findTreeItem } from "@/types/FileTree";
-import { model起動直後 } from "../state起動直後/model起動直後";
+import { modelフォルダ } from "../state起動直後/modelフォルダ";
 import { modelHistory } from "./DialogHistory/modelHistory";
 import { useSetAtom } from "jotai";
 import { atomSelectPath } from "./modelPDFファイル";
@@ -19,7 +19,7 @@ export default function OpenFileDrawer() {
   const { model, fileTree, coverages } = useContext(ModelContext);
   const { setAlert, setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiContext);
-  const readOnly = model起動直後.readOnly.useValue();
+  const readOnly = modelフォルダ.readOnly.useValue();
   const {
     id,
     setId,

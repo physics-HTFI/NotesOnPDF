@@ -9,14 +9,14 @@ import {
   atomFolder,
   atomSetModeWithPermission,
   atom設定完了value,
-  model起動直後,
-} from "./model起動直後";
+  modelフォルダ,
+} from "./modelフォルダ";
 
 export function Dialog起動直後() {
   const [folder, setFolder] = useAtom(atomFolder);
   const 設定完了 = useAtomValue(atom設定完了value);
   const setModeWithPermission = useSetAtom(atomSetModeWithPermission);
-  const reset = model起動直後.useReset();
+  const reset = modelフォルダ.useReset();
   const { setModel } = useContext(ModelContext);
 
   if (設定完了) return null;

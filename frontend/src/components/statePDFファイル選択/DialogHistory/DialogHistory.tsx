@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
-import { model起動直後 } from "@/components/state起動直後/model起動直後";
+import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { useAtomValue, useSetAtom } from "jotai";
 import { atomHistory, atomUpdateHistory } from "./modelHistory";
 
@@ -26,7 +26,7 @@ export default function DialogHistory({
   open: boolean;
   onClose: (path?: string) => void;
 }) {
-  const readOnly = model起動直後.readOnly.useValue();
+  const readOnly = modelフォルダ.readOnly.useValue();
   const history = useAtomValue(atomHistory);
   const updateHistory = useSetAtom(atomUpdateHistory);
 

@@ -4,7 +4,7 @@ import { Lock, LockOpen, Reply, Restore } from "@mui/icons-material";
 import DialogHistory from "./DialogHistory/DialogHistory";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
-import { model起動直後 } from "@/components/state起動直後/model起動直後";
+import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -15,9 +15,9 @@ export default function Header({
   onSelectPath?: (id: string) => void;
 }) {
   const { initialized } = useContext(ModelContext);
-  const [readOnly, setReadOnly] = model起動直後.readOnly.use();
+  const [readOnly, setReadOnly] = modelフォルダ.readOnly.use();
   const [openHistory, setOpenHistory] = useState(false);
-  const reset = model起動直後.useReset();
+  const reset = modelフォルダ.useReset();
 
   return (
     <Box

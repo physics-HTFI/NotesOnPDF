@@ -1,4 +1,4 @@
-import { model起動直後 } from "@/components/state起動直後/model起動直後";
+import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { PATH_HISTORY } from "@/types/CONSTANTS";
 import type { History, HistoryItem } from "@/types/History";
 import { fileUtils } from "@/global/utils/fileUtils";
@@ -24,14 +24,14 @@ export const atomUpdateHistory = atom(
     set(atomHistory, history);
 
     // 保存
-    const folder = get(model起動直後.folder.atomValue);
+    const folder = get(modelフォルダ.folder.atomValue);
     const ok = await fileUtils.writeJsonToPathAsync(
       history,
       PATH_HISTORY,
       folder,
     );
     if (!ok)
-      set(model起動直後.readOnly.atomSetWithMessage, `${PATH_HISTORY} の出力`);
+      set(modelフォルダ.readOnly.atomSetWithMessage, `${PATH_HISTORY} の出力`);
   },
 );
 
@@ -55,7 +55,7 @@ export const modelHistory = {
 function HistoryWatcher() {
   const [currentFolder, setCurrentFolder] = useState<typeof folder>();
   const [currentPdfInfo, setCurrentPdf] = useState<typeof pdfInfo>();
-  const folder = model起動直後.folder.useValue();
+  const folder = modelフォルダ.folder.useValue();
   const pdfInfo = modelPDFファイル.info.useValue();
   const setHistory = useSetAtom(atomHistory);
   const updateHistory = useSetAtom(atomUpdateHistory);

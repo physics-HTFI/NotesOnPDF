@@ -7,7 +7,7 @@ import UiContext from "../UiContext";
 import useNewCoverages from "./useNewCoverages";
 import PdfNotesContext, { type PageSize } from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
-import { model起動直後 } from "@/components/state起動直後/model起動直後";
+import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 
 /**
  * 間隔をあけて`pdfNotes`を保存する
@@ -44,7 +44,7 @@ const putPdfNotesDebounced = debounce(
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
   const { setAlert } = useContext(UiContext);
-  const [readOnly, setReadOnly] = model起動直後.readOnly.use();
+  const [readOnly, setReadOnly] = modelフォルダ.readOnly.use();
   const [id, setId] = useState<string>();
   const [pageSize, setPageSize] = useState<PageSize>();
   const { getNewCoveragesOrUndefined } = useNewCoverages();
