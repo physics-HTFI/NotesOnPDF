@@ -1,8 +1,10 @@
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import type { ReactNode } from "react";
 
-const atomAlert = atom<{ type: "error" | "info"; message: ReactNode }>();
+const atomAlert = atom<{ severity: "error" | "info"; message: ReactNode }>();
 const atomWaiting = atom<boolean>(false);
+
+const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
 
 //|
 //| このフォルダ外から利用されるもの
@@ -13,12 +15,13 @@ export const modelGlobal = {
   alert: {
     atom: atomAlert,
     useValue: () => useAtomValue(atomAlert),
+    useClear: () => useSetAtom(atomAlertClear),
 
     /** 例：`set("error", "失敗しました")` */
     useSet: () => {
       const set = useSetAtom(atomAlert);
       return (type: "error" | "info", message: ReactNode) =>
-        set({ type, message });
+        set({ severity: type, message });
     },
   },
 

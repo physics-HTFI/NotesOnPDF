@@ -57,49 +57,6 @@ export function UiContextProvider({ children }: { children: ReactNode }) {
     >
       {children}
       <Waiting isWaiting={waiting} />
-
-      {/* エラー・インフォ */}
-      <ErrorOrInfo
-        severity={severity}
-        onClose={() => {
-          setAlert(undefined);
-        }}
-        message={alert}
-      />
     </UiContext.Provider>
-  );
-}
-
-/**
- * エラー・情報をスナックバーで表示する
- */
-function ErrorOrInfo({
-  severity,
-  onClose,
-  message,
-}: {
-  severity?: "error" | "info";
-  onClose: () => void;
-  message?: ReactNode;
-}) {
-  // メッセージ（`flag && <></>`の形にしているのは非表示時に空白のメッセージが一瞬表示されるのを防ぐため）
-  if (!message) return undefined;
-  return (
-    <Snackbar
-      open={!!message}
-      onClose={() => {
-        onClose();
-      }}
-    >
-      <Alert
-        elevation={6}
-        variant="filled"
-        severity={severity}
-        onClose={onClose}
-        sx={{ width: "100%" }}
-      >
-        {message}
-      </Alert>
-    </Snackbar>
   );
 }

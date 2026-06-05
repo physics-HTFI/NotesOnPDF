@@ -21,7 +21,7 @@ function useRead() {
     readAsync: async <T,>(path: string, alert: boolean) => {
       const value = await fileUtils.readJsonFromPathAsync<T>(path, folder);
       if (alert && !value) {
-        setAlert("error", `${path} の読み込みに失敗しました。`);
+        setAlert("error", `"${path}" の読み込みに失敗しました。`);
       }
       return value;
     },

@@ -10,6 +10,7 @@ import { Panelドラッグドロップ } from "./Panelドラッグドロップ/P
 import { Buttonフォルダ選択 } from "./Buttonフォルダ選択";
 import { Table履歴 } from "./Table履歴";
 import { VERSION } from "@/types/CONSTANTS";
+import { useDirectoryExists } from "./useDirectoryExists/useDirectoryExists";
 
 /**
  * 基準フォルダを選択するダイアログ
@@ -19,11 +20,18 @@ export function Dialogフォルダ選択({
 }: {
   onSelect: (folder: FileSystemDirectoryHandle) => void;
 }) {
-  const history = useHistory();
+  const {
+    folders,
+    addAsync: addToHistoryAsync,
+    removeAtAsync: removeHistoryAtAsync,
+  } = useHistory();
+  const { ifExistsAsync } = useDirectoryExists();
 
-  const handleSelect = (folder: FileSystemDirectoryHandle) => {
-    onSelect(folder);
-    void history.addAsync(folder);
+  const handleSelect = async (folder: FileSystemDirectoryHandle) => {
+    await ifExistsAsync(folder, () => {
+      onSelect(folder);
+      void addToHistoryAsync(folder);
+    });
   };
 
   return (
@@ -42,9 +50,9 @@ export function Dialogフォルダ選択({
           履歴から開く
         </Typography>
         <Table履歴
-          folders={history.folders}
+          folders={folders}
           onSelect={handleSelect}
-          onRemoveAt={history.removeAtAsync}
+          onRemoveAt={removeHistoryAtAsync}
         />
       </DialogContent>
     </Box>

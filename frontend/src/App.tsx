@@ -11,6 +11,7 @@ import { MouseContextProvider } from "./contexts/MouseContext";
 import { ModelContextProvider } from "./contexts/ModelContext/ModelContextProvider";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesContextProvider";
 import { Dialog起動直後 } from "./components/state起動直後/Dialog起動直後";
+import { Alert } from "./components/global/Alert";
 
 /**
  * 数式表示のコンフィグ
@@ -121,6 +122,7 @@ export default function App() {
           </MathJaxContext>
         </ModelContextProvider>
       </UiContextProvider>
+      <Alert />
     </ThemeProvider>
   );
 }
