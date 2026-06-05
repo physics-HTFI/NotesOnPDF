@@ -1,5 +1,5 @@
-import { modelGlobal } from "@/global/modelGlobal";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useJson } from "./useJson/useJson";
 
 //|
 //| atom
@@ -48,35 +48,12 @@ const atomReset = atom(null, (_, set) => {
   set(atomMode, undefined);
 });
 
-const atomSetReadonlyWithMessage = atom(
-  null,
-  async (_, set, reason: string) => {
-    void set(atomReadOnly, true);
-    set(modelGlobal.alert.atom, {
-      type: "error",
-      message: (
-        <>
-          {reason}に失敗しました。
-          <br />
-          読み取り専用モードに切り替えました。
-        </>
-      ),
-    });
-  },
-);
-
 export const modelフォルダ = {
   /** ファイルの書き込みを許すかどうかのフラグ */
   readOnly: {
-    atom: atomReadOnly,
     use: () => useAtom(atomReadOnly),
+    useSet: () => useSetAtom(atomReadOnly),
     useValue: () => useAtomValue(atomReadOnly),
-
-    /** 例：`set(atom, "ファイルの出力")` */
-    atomSetWithMessage: atomSetReadonlyWithMessage,
-
-    /** 例：`set("ファイルの出力")` */
-    useSetWithMessage: () => useSetAtom(atomSetReadonlyWithMessage),
   },
 
   /** 選択されているルートフォルダ */
@@ -87,4 +64,9 @@ export const modelフォルダ = {
 
   /** ルートフォルダの選択を取り消す */
   useReset: () => useSetAtom(atomReset),
+
+  json: {
+    useRead: useJson.useRead,
+    useSave: useJson.useSave,
+  },
 };

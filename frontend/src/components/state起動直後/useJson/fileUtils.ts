@@ -95,8 +95,8 @@ async function readTextAsync(
 /**
  *  失敗時は `false` が返る
  */
-async function writeJsonToPathAsync<T>(
-  object: T | undefined,
+async function writeJsonToPathAsync(
+  object: unknown | undefined,
   path: string,
   dirHandle: FileSystemDirectoryHandle | undefined,
 ): Promise<boolean> {

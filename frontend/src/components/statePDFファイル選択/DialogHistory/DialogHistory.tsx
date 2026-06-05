@@ -13,8 +13,8 @@ import {
 import { Delete } from "@mui/icons-material";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
-import { useAtomValue, useSetAtom } from "jotai";
-import { atomHistory, atomUpdateHistory } from "./modelHistory";
+import { useAtomValue } from "jotai";
+import { atomHistory, useUpdateHistory } from "./modelHistory";
 
 /**
  * PDFを開いた履歴
@@ -28,7 +28,7 @@ export default function DialogHistory({
 }) {
   const readOnly = modelフォルダ.readOnly.useValue();
   const history = useAtomValue(atomHistory);
-  const updateHistory = useSetAtom(atomUpdateHistory);
+  const { updateAsync } = useUpdateHistory();
 
   return (
     <Backdrop
@@ -42,7 +42,7 @@ export default function DialogHistory({
           <TooltipIconButton
             disabled={readOnly}
             icon={<Delete />}
-            onClick={() => updateHistory({ type: "全削除" })}
+            onClick={() => updateAsync({ type: "全削除" })}
             sx={{ pt: 0, ml: "auto" }}
             tooltipTitle={
               readOnly
@@ -96,7 +96,7 @@ export default function DialogHistory({
                       disabled={readOnly}
                       icon={<Delete />}
                       onClick={() =>
-                        updateHistory({ type: "削除", path: row.path })
+                        updateAsync({ type: "削除", path: row.path })
                       }
                       sx={{ color: "#72a0db" }}
                       tooltipTitle={

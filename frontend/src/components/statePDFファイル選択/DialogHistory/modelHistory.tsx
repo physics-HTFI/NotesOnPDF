@@ -1,8 +1,7 @@
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { PATH_HISTORY } from "@/types/CONSTANTS";
 import type { History, HistoryItem } from "@/types/History";
-import { fileUtils } from "@/global/utils/fileUtils";
-import { atom, useSetAtom } from "jotai";
+import { atom, useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
 import { modelPDFファイル } from "../modelPDFファイル";
 import { createHistoryItem } from "./createHistoryItem";
@@ -12,28 +11,26 @@ export const atomHistory = atom<History>([]);
 /**
  *  履歴の更新を行う
  */
-export const atomUpdateHistory = atom(
-  null,
-  async (get, set, arg: TypeUpdateHistory) => {
-    let history = [...get(atomHistory)];
-    if (arg.type === "追加")
-      history = [arg.item, ...history.filter((e) => e.path !== arg.item.path)];
-    if (arg.type === "削除")
-      history = history.filter((e) => e.path != arg.path);
-    if (arg.type === "全削除") history = [];
-    set(atomHistory, history);
+export function useUpdateHistory() {
+  const { saveAsync } = modelフォルダ.json.useSave();
+  const [history, setHistory] = useAtom(atomHistory);
 
-    // 保存
-    const folder = get(modelフォルダ.folder.atomValue);
-    const ok = await fileUtils.writeJsonToPathAsync(
-      history,
-      PATH_HISTORY,
-      folder,
-    );
-    if (!ok)
-      set(modelフォルダ.readOnly.atomSetWithMessage, `${PATH_HISTORY} の出力`);
-  },
-);
+  return {
+    updateAsync: async (arg: TypeUpdateHistory) => {
+      if (arg.type === "追加")
+        setHistory([
+          arg.item,
+          ...history.filter((e) => e.path !== arg.item.path),
+        ]);
+      if (arg.type === "削除")
+        setHistory(history.filter((e) => e.path != arg.path));
+      if (arg.type === "全削除") setHistory([]);
+
+      // 保存
+      saveAsync(history, PATH_HISTORY);
+    },
+  };
+}
 
 type TypeUpdateHistory =
   | { type: "追加"; item: HistoryItem }
@@ -57,17 +54,16 @@ function HistoryWatcher() {
   const [currentPdfInfo, setCurrentPdf] = useState<typeof pdfInfo>();
   const folder = modelフォルダ.folder.useValue();
   const pdfInfo = modelPDFファイル.info.useValue();
+  const { readAsync } = modelフォルダ.json.useRead();
   const setHistory = useSetAtom(atomHistory);
-  const updateHistory = useSetAtom(atomUpdateHistory);
+  const { updateAsync } = useUpdateHistory();
 
   // 📁 が変更されたときに、履歴の初期値をファイルから読み込む
   if (currentFolder !== folder) {
     setCurrentFolder(folder);
-    fileUtils
-      .readJsonFromPathAsync<History>(PATH_HISTORY, folder)
-      .then((history) => {
-        setHistory(history ?? []);
-      });
+    readAsync<History>(PATH_HISTORY, false).then((history) => {
+      setHistory(history ?? []);
+    });
   }
 
   // PDF ファイルが選択されたときに、履歴を更新する
@@ -75,7 +71,7 @@ function HistoryWatcher() {
     setCurrentPdf(pdfInfo);
     if (!pdfInfo) return;
     const item = createHistoryItem(pdfInfo);
-    if (item) updateHistory({ type: "追加", item });
+    if (item) void updateAsync({ type: "追加", item });
   }
 
   return <></>;
