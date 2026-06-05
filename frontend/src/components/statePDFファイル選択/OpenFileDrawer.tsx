@@ -1,14 +1,16 @@
 import { useCallback, useContext, useState } from "react";
 import { Drawer } from "@mui/material";
-import Header from "@/components/statePDFファイル選択/Header/Header";
+import Header from "@/components/statePDFファイル選択/Header";
 import { FORMAT_VERSION, createOrGetPdfNotes } from "@/types/PdfNotes";
 import UiContext from "@/contexts/UiContext";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { findTreeItem } from "@/types/FileTree";
-import { useAtomValue } from "jotai";
 import { model起動直後 } from "../state起動直後/model起動直後";
+import { modelHistory } from "./DialogHistory/modelHistory";
+import { useSetAtom } from "jotai";
+import { atomSelectPath } from "./modelPDFファイル";
 
 /**
  * ファイル一覧を表示するドロワー
@@ -17,7 +19,7 @@ export default function OpenFileDrawer() {
   const { model, fileTree, coverages } = useContext(ModelContext);
   const { setAlert, setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiContext);
-  const readOnly = useAtomValue(model起動直後.atomReadOnly);
+  const readOnly = model起動直後.readOnly.useValue();
   const {
     id,
     setId,
@@ -27,6 +29,7 @@ export default function OpenFileDrawer() {
   // FileTreeViewの選択と折り畳み状態（FileTreeViewの内部で保持するとドロワーを閉じたときにアンマウントされて消えてしまう）
   const [selectedPath, setSelectedPath] = useState<string>();
   const [expanded, setExpanded] = useState<string[]>([]);
+  const selectPath = useSetAtom(atomSelectPath);
 
   // 前回のファイルを選択した状態にする
   if (
@@ -48,7 +51,7 @@ export default function OpenFileDrawer() {
   }
   // ファイルIDを選択したときの処理。
   // ファイルツリーのアップデートを抑えるためメモ化している。
-  const handleSelectPdfById = useCallback(
+  const handleSelectPath = useCallback(
     (_id: string) => {
       if (_id === id) {
         setOpenFileTreeDrawer(false);
@@ -58,6 +61,7 @@ export default function OpenFileDrawer() {
       setId(undefined);
       assignPdfNotes(undefined);
       setPageSize(undefined);
+      selectPath(_id);
       document.title = "NotesOnPDF";
       model
         .getPdfNotes(_id)
@@ -138,7 +142,7 @@ export default function OpenFileDrawer() {
       }}
     >
       {/* ヘッダーアイコン */}
-      <Header onSelectPdfById={handleSelectPdfById} />
+      <Header onSelectPath={handleSelectPath} />
 
       {/* ツリービュー */}
       <FileTreeView
@@ -146,8 +150,10 @@ export default function OpenFileDrawer() {
         expandedItemPaths={expanded}
         setSelectedItemPath={setSelectedPath}
         setExpandedItemPaths={setExpanded}
-        onSelectPdf={handleSelectPdfById}
+        onSelectPdf={handleSelectPath}
       />
+
+      <modelHistory.Watcher />
     </Drawer>
   );
 }

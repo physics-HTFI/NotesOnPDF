@@ -9,24 +9,15 @@ import type IModel from "./IModel";
 import type { ResultGetPdfNotes } from "./IModel";
 import type AppSettings from "@/types/AppSettings";
 import { GetAppSettings_default } from "@/types/AppSettings";
-import { type History, updateHistory } from "@/types/History";
 import type PdfNotes from "@/types/PdfNotes";
 import { sortChildrenByName } from "./utils/sortChildrenByName";
 
 const PATH_SETTINGS = ".NotesOnPDF/settings.json";
 const PATH_COVERAGES = ".NotesOnPDF/coverages.json";
-const PATH_HISTORY = ".NotesOnPDF/history.web.json";
 
 export default class ModelWeb implements IModel {
   constructor(private dirHandle: FileSystemDirectoryHandle) {
-    const getHistory = async () =>
-      JSON.parse(await this._getTextFromPath(PATH_HISTORY)) as History;
-
     this.fileTree = undefined;
-    this.history = [];
-    getHistory()
-      .then((h) => (this.history = h))
-      .catch(() => undefined);
   }
 
   getFlags = () => ({
@@ -79,29 +70,6 @@ export default class ModelWeb implements IModel {
       // 👆のままだと名前順にならないのでソートする
       fileTree.children.sort(sortChildrenByName);
     }
-  };
-
-  getHistory = async () => Promise.resolve(this.history);
-  updateHistory = async (path: string, pages: number) => {
-    this.history = updateHistory(this.history, path, pages);
-    await this._writeToPath(
-      PATH_HISTORY,
-      JSON.stringify(this.history, null, 2),
-    );
-  };
-  deleteHistoryAll = async () => {
-    this.history = [];
-    await this._writeToPath(
-      PATH_HISTORY,
-      JSON.stringify(this.history, null, 2),
-    );
-  };
-  deleteHistory = async (id: string) => {
-    this.history = this.history.filter((h) => h.path !== id);
-    await this._writeToPath(
-      PATH_HISTORY,
-      JSON.stringify(this.history, null, 2),
-    );
   };
 
   getIdFromUrl = () => Promise.reject();
@@ -164,7 +132,6 @@ export default class ModelWeb implements IModel {
   //|
 
   private fileTree: FileTree | undefined;
-  private history: History;
 
   private _getFileHandleFromPath = async (
     path: string,

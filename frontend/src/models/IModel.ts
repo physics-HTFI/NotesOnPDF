@@ -2,18 +2,12 @@ import type { FileTree } from "@/types/FileTree";
 import type Coverages from "@/types/Coverages";
 import type PdfNotes from "@/types/PdfNotes";
 import type AppSettings from "@/types/AppSettings";
-import type { History } from "@/types/History";
 
 export default interface IModel {
   getFlags(): ModelFlags;
   getEventSource(): EventSource | undefined;
 
   getFileTree(): Promise<FileTree | undefined>;
-
-  getHistory(): Promise<History>;
-  updateHistory(path: string, pages: number): Promise<void>;
-  deleteHistoryAll(): Promise<void>;
-  deleteHistory(path: string): Promise<void>;
 
   getIdFromUrl(url: string): Promise<string>;
   getFileHandleFromPath(path?: string): FileSystemFileHandle | undefined;

@@ -1,19 +1,11 @@
-import { Box, IconButton, type SxProps, Tooltip } from "@mui/material";
-import { type MouseEventHandler, type ReactNode, useState } from "react";
-
-type Placement =
-  | "bottom-end"
-  | "bottom-start"
-  | "bottom"
-  | "left-end"
-  | "left-start"
-  | "left"
-  | "right-end"
-  | "right-start"
-  | "right"
-  | "top-end"
-  | "top-start"
-  | "top";
+import {
+  Box,
+  IconButton,
+  type SxProps,
+  Tooltip,
+  type TooltipProps,
+} from "@mui/material";
+import { type ReactNode, useState } from "react";
 
 /**
  * ツールチップ付きアイコンボタン
@@ -28,12 +20,12 @@ export default function TooltipIconButton({
   tooltipPlacement,
 }: {
   icon: ReactNode;
-  onClick?: MouseEventHandler;
-  onMouseDown?: MouseEventHandler;
+  onClick?: () => void;
+  onMouseDown?: () => void;
   sx?: SxProps;
   disabled?: boolean;
   tooltipTitle: ReactNode;
-  tooltipPlacement?: Placement;
+  tooltipPlacement?: TooltipProps["placement"];
 }) {
   const [open, setOpen] = useState(false);
   return (
@@ -41,22 +33,21 @@ export default function TooltipIconButton({
       title={tooltipTitle}
       placement={tooltipPlacement}
       open={open}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
+      onOpen={() => setOpen(true)}
+      onClose={() => setOpen(false)}
       disableInteractive
     >
       <Box sx={sx}>
         <IconButton
           disabled={disabled ?? false}
           sx={{ color: "inherit" }}
-          onClick={onClick}
-          onMouseDown={(e) => {
+          onClick={(e) => {
+            e.stopPropagation(); // TableCell 内に置いたときにクリックが貫通するのを防ぐ
+            onClick?.();
+          }}
+          onMouseDown={() => {
             setOpen(false); // これがないと、設定パネル位置変更ボタンをクリックしたときにツールチップが消えない
-            onMouseDown?.(e);
+            onMouseDown?.();
           }}
           size="small"
         >

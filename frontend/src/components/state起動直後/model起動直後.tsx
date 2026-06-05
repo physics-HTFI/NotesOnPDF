@@ -1,4 +1,5 @@
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { modelGlobal } from "@/global/modelGlobal";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 
 //|
 //| atom
@@ -34,6 +35,8 @@ export const atomSetModeWithPermission = atom(
 //| このフォルダ外からアクセスするもの
 //|
 
+export const atomFolderValue = atom((get) => get(atomFolder));
+
 const atomReadOnly = atom(
   (get) => get(atomMode) === "read",
   async (_, set, readOnly: boolean) =>
@@ -45,12 +48,42 @@ const atomReset = atom(null, (_, set) => {
   set(atomMode, undefined);
 });
 
+const atomSetReadonlyWithMessage = atom(
+  null,
+  async (_, set, reason: string) => {
+    void set(atomReadOnly, true);
+    set(modelGlobal.alert.atom, {
+      type: "error",
+      message: (
+        <>
+          {reason}に失敗しました。
+          <br />
+          読み取り専用モードに切り替えました。
+        </>
+      ),
+    });
+  },
+);
+
 export const model起動直後 = {
-  /** `atomMode` を boolean で表したもの */
-  atomReadOnly,
+  /** ファイルの書き込みを許すかどうかのフラグ */
+  readOnly: {
+    atom: atomReadOnly,
+    use: () => useAtom(atomReadOnly),
+    useValue: () => useAtomValue(atomReadOnly),
+
+    /** 例：`set(atom, "ファイルの出力")` */
+    atomSetWithMessage: atomSetReadonlyWithMessage,
+
+    /** 例：`set("ファイルの出力")` */
+    useSetWithMessage: () => useSetAtom(atomSetReadonlyWithMessage),
+  },
 
   /** 選択されているルートフォルダ */
-  useFolder: () => useAtomValue(atomFolder),
+  folder: {
+    atomValue: atomFolderValue,
+    useValue: () => useAtomValue(atomFolder),
+  },
 
   /** ルートフォルダの選択を取り消す */
   useReset: () => useSetAtom(atomReset),

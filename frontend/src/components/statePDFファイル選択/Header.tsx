@@ -1,22 +1,21 @@
 import { useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { Lock, LockOpen, Reply, Restore } from "@mui/icons-material";
-import HistoryDialog from "./HistoryDialog";
+import DialogHistory from "./DialogHistory/DialogHistory";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { model起動直後 } from "@/components/state起動直後/model起動直後";
-import { useAtom } from "jotai";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
 export default function Header({
-  onSelectPdfById,
+  onSelectPath: onSelectPdfById,
 }: {
-  onSelectPdfById?: (id: string) => void;
+  onSelectPath?: (id: string) => void;
 }) {
   const { initialized } = useContext(ModelContext);
-  const [readOnly, setReadOnly] = useAtom(model起動直後.atomReadOnly);
+  const [readOnly, setReadOnly] = model起動直後.readOnly.use();
   const [openHistory, setOpenHistory] = useState(false);
   const reset = model起動直後.useReset();
 
@@ -64,7 +63,7 @@ export default function Header({
         onClick={() => setOpenHistory(true)}
         tooltipTitle="アクセス履歴からPDFファイルを開きます"
       />
-      <HistoryDialog
+      <DialogHistory
         open={initialized && openHistory}
         onClose={(id) => {
           setOpenHistory(false);
@@ -75,7 +74,6 @@ export default function Header({
 
       {/* ルートフォルダ選択画面に戻る */}
       <TooltipIconButton
-        disabled={!initialized}
         icon={<Reply />}
         onClick={reset}
         tooltipTitle="初期画面に戻ります"

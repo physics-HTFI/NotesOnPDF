@@ -15,6 +15,10 @@ export const historyDB = {
   removeAtAsync: removeHistoryAtAsync,
 };
 
+//|
+//| private
+//|
+
 interface HistoryDB extends DBSchema {
   [STORE_NAME]: {
     key: string;

@@ -28,10 +28,7 @@ export function Table履歴({
   return (
     <TableContainer
       component={Box}
-      sx={{
-        background: "white",
-        borderRadius: 2,
-      }}
+      sx={{ background: "white", borderRadius: 2 }}
     >
       <Table size="small">
         <TableBody>
@@ -40,9 +37,7 @@ export function Table履歴({
               hover
               key={folder.name}
               sx={{ cursor: "pointer" }}
-              onClick={() => {
-                onSelect(folder);
-              }}
+              onClick={() => onSelect(folder)}
             >
               <TableCell component="th" scope="row">
                 {folder.name}
@@ -50,10 +45,7 @@ export function Table履歴({
               <TableCell sx={{ width: 30 }}>
                 <TooltipIconButton
                   icon={<Delete />}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRemoveAt(folders.indexOf(folder));
-                  }}
+                  onClick={() => onRemoveAt(folders.indexOf(folder))}
                   sx={{ color: "steelblue" }}
                   tooltipTitle="この履歴を削除します"
                   tooltipPlacement="right"
