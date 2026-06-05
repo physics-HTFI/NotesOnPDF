@@ -1,29 +1,30 @@
 import { Box, DialogContent, Stack, Typography } from "@mui/material";
-import { useHistory } from "./useHistory/useHistory";
 import { Buttonフォルダ選択 } from "./ui/Buttonフォルダ選択";
 import { Table履歴 } from "./ui/Table履歴";
-import { useDirectoryExists } from "./useDirectoryExists/useDirectoryExists";
+import { useDirectoryExists } from "./use/useDirectoryExists/useDirectoryExists";
 import { Title } from "./ui/Title";
 import { Panelドラッグドロップ } from "./ui/Panelドラッグドロップ";
+import { useFolderHistory } from "./use/useFolderHistory/useFolderHistory";
+import { useAtomValue } from "jotai";
+import { modelフォルダ } from "../modelフォルダ";
 
 /**
  * 基準フォルダを選択するダイアログ
  */
-export function Dialogフォルダ選択({
-  onSelect,
-}: {
-  onSelect: (folder: FileSystemDirectoryHandle) => void;
-}) {
-  const historyUse = useHistory();
-  const { ifExistsAsync } = useDirectoryExists();
+export function Dialogフォルダ選択() {
+  const folder = useAtomValue(modelフォルダ.folder.atomValue);
+  const setFolder = modelフォルダ.folder.useSet();
+  const historyUse = useFolderHistory();
+  const { ifExists } = useDirectoryExists();
 
   const handleSelect = async (folder: FileSystemDirectoryHandle) => {
-    await ifExistsAsync(folder, () => {
-      onSelect(folder);
-      void historyUse.addAsync(folder);
+    await ifExists(folder, () => {
+      setFolder(folder);
+      void historyUse.add(folder);
     });
   };
 
+  if (folder) return null;
   return (
     <Box sx={{ width: 500 }}>
       <Title />
@@ -42,7 +43,7 @@ export function Dialogフォルダ選択({
         <Table履歴
           folders={historyUse.folders}
           onSelect={handleSelect}
-          onRemoveAt={historyUse.removeAtAsync}
+          onRemoveAt={historyUse.removeAt}
         />
       </DialogContent>
     </Box>

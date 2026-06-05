@@ -1,20 +1,29 @@
 import { DialogContent, DialogTitle, Stack } from "@mui/material";
 import { Lock, LockOpen, Reply } from "@mui/icons-material";
-import { CardButton } from "./CardButton";
+import { CardButton } from "./ui/CardButton";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
+import { modelフォルダ } from "../modelフォルダ";
+import { useAtomValue } from "jotai";
+import ModelWeb from "@/models/Model.Web";
+import ModelContext from "@/contexts/ModelContext/ModelContext";
+import { useContext } from "react";
 
 /**
  * `folder` に対し、「読み込み専用」か「書き込み可能」かを選択するダイアログ
  */
-export default function Dialogパーミッション選択({
-  folder,
-  onPermissionSelected,
-  onCancel,
-}: {
-  folder: FileSystemDirectoryHandle;
-  onPermissionSelected: (mode: "read" | "readwrite") => void;
-  onCancel: () => void;
-}) {
+export default function Dialogパーミッション選択() {
+  const folder = useAtomValue(modelフォルダ.folder.atomValue);
+  const reset = modelフォルダ.folder.useReset();
+  const setPermission = modelフォルダ.folder.useSetPermission();
+  const { setModel } = useContext(ModelContext);
+
+  if (!folder) return null;
+
+  const handlePermissionSelected = async (mode: "read" | "readwrite") => {
+    await setPermission(mode);
+    setModel(new ModelWeb(folder));
+  };
+
   return (
     <>
       <DialogTitle>
@@ -22,7 +31,7 @@ export default function Dialogパーミッション選択({
           <span>モード選択： "{folder.name}"</span>
           <TooltipIconButton
             icon={<Reply />}
-            onClick={onCancel}
+            onClick={reset}
             sx={{ color: "steelblue" }}
             tooltipTitle="前のダイアログに戻ります"
           />
@@ -35,9 +44,7 @@ export default function Dialogパーミッション選択({
             color="steelblue"
             title="自動保存モード（読み取り＆書き込み）"
             Icon={LockOpen}
-            onClick={() => {
-              void onPermissionSelected("readwrite");
-            }}
+            onClick={() => handlePermissionSelected("readwrite")}
           >
             変更が加えられた際に、注釈ファイルを自動保存します。
             <br />
@@ -52,9 +59,7 @@ export default function Dialogパーミッション選択({
             color="firebrick"
             title="読み取り専用モード（読み取りのみ）"
             Icon={Lock}
-            onClick={() => {
-              void onPermissionSelected("read");
-            }}
+            onClick={() => handlePermissionSelected("read")}
           >
             閲覧や編集はできますが、保存は一切行われません。
           </CardButton>

@@ -3,24 +3,22 @@ import { directoryExistsAsync } from "./directoryExistsAsync";
 import { useCallback } from "react";
 
 export function useDirectoryExists() {
-  const useSetAlert = modelGlobal.alert.useSet();
-  const ifExistsAsync = useCallback(
+  const setAlert = modelGlobal.alert.useSet();
+
+  const ifExists = useCallback(
     async (dirHandle: FileSystemDirectoryHandle, ifExists: () => void) => {
       const exists = await directoryExistsAsync(dirHandle);
       if (exists) {
         ifExists();
       } else {
-        useSetAlert(
-          "error",
-          `フォルダにアクセスできません："${dirHandle.name}"`,
-        );
+        setAlert("error", `フォルダにアクセスできません："${dirHandle.name}"`);
       }
     },
-    [],
+    [setAlert],
   );
 
   return {
     /** フォルダが存在するときにコールバックを実行する */
-    ifExistsAsync,
+    ifExists,
   };
 }

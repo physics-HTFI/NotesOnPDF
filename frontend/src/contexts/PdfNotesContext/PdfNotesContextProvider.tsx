@@ -8,6 +8,7 @@ import useNewCoverages from "./useNewCoverages";
 import PdfNotesContext, { type PageSize } from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
+import { useAtom } from "jotai";
 
 /**
  * 間隔をあけて`pdfNotes`を保存する
@@ -44,7 +45,7 @@ const putPdfNotesDebounced = debounce(
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
   const { setAlert } = useContext(UiContext);
-  const [readOnly, setReadOnly] = modelフォルダ.readOnly.use();
+  const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [id, setId] = useState<string>();
   const [pageSize, setPageSize] = useState<PageSize>();
   const { getNewCoveragesOrUndefined } = useNewCoverages();
@@ -65,7 +66,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       const newCoverages = getNewCoveragesOrUndefined(id, pdfNotes);
       if (newCoverages) {
         setCoverages(newCoverages);
-        model.putCoverages(newCoverages).catch(() => {
+        model.putCoverages(newCoverages).catch(async () => {
           setAlert(
             "error",
             <span>
@@ -74,7 +75,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
               読み取り専用モードに切り替えました。
             </span>,
           );
-          setReadOnly(true);
+          await setReadOnly(true);
         });
       }
     }
@@ -86,6 +87,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     readOnly,
     setAlert,
     setCoverages,
+    setReadOnly,
     updaters.imageNum,
   ]);
 

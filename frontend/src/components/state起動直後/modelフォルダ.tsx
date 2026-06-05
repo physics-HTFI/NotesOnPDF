@@ -1,4 +1,4 @@
-import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useSetAtom } from "jotai";
 import { useJson } from "./useJson/useJson";
 
 //|
@@ -6,7 +6,7 @@ import { useJson } from "./useJson/useJson";
 //|
 
 /** 選択されているルートフォルダ */
-export const atomFolder = atom<FileSystemDirectoryHandle>();
+const atomFolder = atom<FileSystemDirectoryHandle>();
 
 /** ルートフォルダに与えられているパーミッション */
 const atomMode = atom<"read" | "readwrite">();
@@ -15,12 +15,10 @@ const atomMode = atom<"read" | "readwrite">();
 //| 派生 atom
 //|
 
-export const atom設定完了value = atom(
-  (get) => !!get(atomFolder) && !!get(atomMode),
-);
+const atom設定完了value = atom((get) => !!get(atomFolder) && !!get(atomMode));
 
 /** ルートフォルダにパーミッションを設定する */
-export const atomSetModeWithPermission = atom(
+const atomSetPermission = atom(
   null,
   async (get, set, mode: "read" | "readwrite") => {
     const folder = get(atomFolder);
@@ -31,16 +29,12 @@ export const atomSetModeWithPermission = atom(
   },
 );
 
-//|
-//| このフォルダ外からアクセスするもの
-//|
-
-export const atomFolderValue = atom((get) => get(atomFolder));
+const atomFolderValue = atom((get) => get(atomFolder));
 
 const atomReadOnly = atom(
   (get) => get(atomMode) === "read",
   async (_, set, readOnly: boolean) =>
-    set(atomSetModeWithPermission, readOnly ? "read" : "readwrite"),
+    set(atomSetPermission, readOnly ? "read" : "readwrite"),
 );
 
 const atomReset = atom(null, (_, set) => {
@@ -48,25 +42,35 @@ const atomReset = atom(null, (_, set) => {
   set(atomMode, undefined);
 });
 
+//|
+//| export
+//|
+
 export const modelフォルダ = {
   /** ファイルの書き込みを許すかどうかのフラグ */
   readOnly: {
-    use: () => useAtom(atomReadOnly),
-    useSet: () => useSetAtom(atomReadOnly),
-    useValue: () => useAtomValue(atomReadOnly),
+    atom: atomReadOnly,
   },
 
   /** 選択されているルートフォルダ */
   folder: {
     atomValue: atomFolderValue,
-    useValue: () => useAtomValue(atomFolder),
+    useSet: () => useSetAtom(atomFolder),
+
+    /** ルートフォルダの選択を取り消す */
+    useReset: () => useSetAtom(atomReset),
+
+    /** ルートフォルダにパーミッションを設定する */
+    useSetPermission: () => useSetAtom(atomSetPermission),
   },
 
-  /** ルートフォルダの選択を取り消す */
-  useReset: () => useSetAtom(atomReset),
+  準備完了: {
+    atomValue: atom設定完了value,
+  },
 
   json: {
     useRead: useJson.useRead,
     useSave: useJson.useSave,
+    useFileHandle: useJson.useGetFileHandle,
   },
 };

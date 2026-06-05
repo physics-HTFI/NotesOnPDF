@@ -9,7 +9,7 @@ export interface CustomLabelProps {
 
 /**
  * `TreeItem`のラベル部分。
- * ファイル／フォルダ名　＋　プログレスバー
+ * ファイル／フォルダ名 ＋ プログレスバー
  */
 export function CustomLabel({ children, coverage }: CustomLabelProps) {
   return (

@@ -1,41 +1,18 @@
-import ModelContext from "@/contexts/ModelContext/ModelContext";
-import { useContext } from "react";
 import { Dialogフォルダ選択 } from "./Dialogフォルダ選択/Dialogフォルダ選択";
-import ModelWeb from "@/models/Model.Web";
 import Dialogパーミッション選択 from "./Dialogパーミッション選択/Dialogパーミッション選択";
 import { Dialog } from "@mui/material";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import {
-  atomFolder,
-  atomSetModeWithPermission,
-  atom設定完了value,
-  modelフォルダ,
-} from "./modelフォルダ";
+import { useAtomValue } from "jotai";
+import { modelフォルダ } from "./modelフォルダ";
 
 export function Dialog起動直後() {
-  const [folder, setFolder] = useAtom(atomFolder);
-  const 設定完了 = useAtomValue(atom設定完了value);
-  const setModeWithPermission = useSetAtom(atomSetModeWithPermission);
-  const reset = modelフォルダ.useReset();
-  const { setModel } = useContext(ModelContext);
-
+  const 設定完了 = useAtomValue(modelフォルダ.準備完了.atomValue);
   if (設定完了) return null;
 
   // <Dialog> を括り出しておかないと、切り替え時に画面が一瞬白くなる
   return (
     <Dialog open>
-      {!folder ? (
-        <Dialogフォルダ選択 onSelect={setFolder} />
-      ) : (
-        <Dialogパーミッション選択
-          folder={folder}
-          onPermissionSelected={(mode) => {
-            setModeWithPermission(mode);
-            setModel(new ModelWeb(folder));
-          }}
-          onCancel={reset}
-        />
-      )}
+      <Dialogフォルダ選択 />
+      <Dialogパーミッション選択 />
     </Dialog>
   );
 }

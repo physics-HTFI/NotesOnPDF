@@ -10,9 +10,9 @@ const MAX_HISTORY = 10;
  * 履歴の取得、追加、削除を行う
  */
 export const historyDB = {
-  addAsync: addFolderToHistoryAsync,
-  loadAsync: loadHistoryAsync,
-  removeAtAsync: removeHistoryAtAsync,
+  add: addFolderToHistory,
+  load: loadHistory,
+  removeAt: removeHistoryAt,
 };
 
 //|
@@ -27,12 +27,9 @@ interface HistoryDB extends DBSchema {
 }
 
 async function getDB() {
-  // eslint-disable-next-line
   return await openDB<HistoryDB>(DB_NAME, DB_VERSION, {
     upgrade(db) {
-      // eslint-disable-next-line
       if (!db.objectStoreNames.contains(STORE_NAME)) {
-        // eslint-disable-next-line
         db.createObjectStore(STORE_NAME);
       }
     },
@@ -42,39 +39,39 @@ async function getDB() {
 /**
  * `handle` をヒストリーに追加して保存する。
  */
-async function addFolderToHistoryAsync(
+async function addFolderToHistory(
   handle: FileSystemDirectoryHandle,
 ): Promise<void> {
   // 保存されているハンドルを読み込む
-  const handles = await loadHistoryAsync();
+  const handles = await loadHistory();
   // すでに同じハンドルがあれば削除
   const dups = await Promise.all(handles.map((h) => h.isSameEntry(handle)));
   const filteredHandles = handles.filter((_, i) => !dups[i]);
   // 先頭に新しいハンドルを追加し、最大数を超える場合は古いものを削除
   const newHandles = [handle, ...filteredHandles].slice(0, MAX_HISTORY);
 
-  await saveHistoryAsync(newHandles);
+  await saveHistory(newHandles);
 }
 
 /**
  * ヒストリーを削除する。
  */
-async function removeHistoryAtAsync(index: number): Promise<void> {
-  const handles = await loadHistoryAsync();
+async function removeHistoryAt(index: number): Promise<void> {
+  const handles = await loadHistory();
   handles.splice(index, 1);
-  await saveHistoryAsync(handles);
+  await saveHistory(handles);
 }
 
 /**
  * ヒストリーを保存する。
  */
-async function saveHistoryAsync(
+async function saveHistory(
   history: FileSystemDirectoryHandle[],
 ): Promise<void> {
   if (!("indexedDB" in window)) return;
   try {
-    const db = await getDB(); // eslint-disable-line
-    await db.put(STORE_NAME, history, KEY_NAME); // eslint-disable-line
+    const db = await getDB();
+    await db.put(STORE_NAME, history, KEY_NAME);
   } catch (err) {
     console.error("saveFolder: failed to store handle", err);
   }
@@ -84,12 +81,12 @@ async function saveHistoryAsync(
  * ヒストリーを返す。
  * 失敗した場合は空の配列を返す。
  */
-async function loadHistoryAsync(): Promise<FileSystemDirectoryHandle[]> {
+async function loadHistory(): Promise<FileSystemDirectoryHandle[]> {
   if (!("indexedDB" in window)) return [];
   try {
-    const db = await getDB(); // eslint-disable-line
-    const handle = await db.get(STORE_NAME, KEY_NAME); // eslint-disable-line
-    return handle || []; // eslint-disable-line
+    const db = await getDB();
+    const handle = await db.get(STORE_NAME, KEY_NAME);
+    return handle || [];
   } catch (err) {
     console.error("loadHistory: failed to read handle", err);
     return [];

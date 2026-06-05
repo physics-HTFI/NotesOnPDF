@@ -15,6 +15,7 @@ import Tabs from "./Tabs";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
+import { useAtom } from "jotai";
 
 /**
  * 設定パネル
@@ -29,7 +30,7 @@ export default function SettingsDrawer() {
   const { model } = useContext(ModelContext);
   const { openSettingsDrawer, setOpenSettingsDrawer, setAlert } =
     useContext(UiContext);
-  const [readOnly, setReadOnly] = modelフォルダ.readOnly.use();
+  const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
   const [variant, setVariant] = useState<"persistent" | "temporary">(
@@ -50,7 +51,7 @@ export default function SettingsDrawer() {
     };
     setAppSettings(newSettings);
     if (readOnly) return;
-    model.putAppSettings(newSettings).catch(() => {
+    model.putAppSettings(newSettings).catch(async () => {
       setAlert(
         "error",
         <span>
@@ -59,7 +60,7 @@ export default function SettingsDrawer() {
           読み取り専用モードに切り替えました。
         </span>,
       );
-      setReadOnly(true);
+      await setReadOnly(true);
     });
   };
 

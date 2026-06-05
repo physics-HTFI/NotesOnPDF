@@ -5,6 +5,7 @@ import DialogHistory from "./DialogHistory/DialogHistory";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
+import { useAtom } from "jotai";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -15,9 +16,9 @@ export default function Header({
   onSelectPath?: (id: string) => void;
 }) {
   const { initialized } = useContext(ModelContext);
-  const [readOnly, setReadOnly] = modelフォルダ.readOnly.use();
+  const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [openHistory, setOpenHistory] = useState(false);
-  const reset = modelフォルダ.useReset();
+  const reset = modelフォルダ.folder.useReset();
 
   return (
     <Box

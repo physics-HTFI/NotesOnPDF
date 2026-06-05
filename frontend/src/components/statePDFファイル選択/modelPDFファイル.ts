@@ -1,21 +1,31 @@
 import type { PdfInfo } from "@/types/PdfInfo";
-import { atom, useAtomValue } from "jotai";
+import { atom, useSetAtom } from "jotai";
 
 const atomFile = atom<FileSystemFileHandle>();
 const atomInfo = atom<PdfInfo>();
 
-export const atomSelectPath = atom(null, (_, set, path: string | undefined) => {
+//|
+//| 派生 atom
+//|
+
+const atomFileValue = atom((get) => get(atomFile));
+
+const atomSelectPath = atom(null, (_, set, path: string | undefined) => {
   //    set(atomFile, file);
   set(atomInfo, path === undefined ? undefined : { path });
 });
 
+//|
+//| export
+//|
+
 export const modelPDFファイル = {
   file: {
-    useValue: () => useAtomValue(atomFile),
+    atomValue: atomFileValue,
+    useSelectPath: () => useSetAtom(atomSelectPath),
   },
 
   info: {
     atom: atomInfo,
-    useValue: () => useAtomValue(atomInfo),
   },
 };

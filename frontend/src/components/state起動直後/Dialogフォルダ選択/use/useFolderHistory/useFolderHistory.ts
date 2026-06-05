@@ -1,34 +1,30 @@
 import { useSyncExternalStore } from "react";
 import { historyDB } from "./history.db";
 
-//|
-//| export
-//|
-
-export function useHistory() {
+export function useFolderHistory() {
   const folders = useSyncExternalStore(subscribe, getSnapshot);
 
   return {
     /** 履歴フォルダハンドル */
     folders,
     /** フォルダハンドルを追加する */
-    addAsync,
+    add,
     /** 指定された位置のフォルダハンドルを削除する */
-    removeAtAsync,
+    removeAt,
   };
 }
 
 //|
-//| local
+//| private
 //|
 
-let folders: FileSystemDirectoryHandle[] = await historyDB.loadAsync();
+let folders: FileSystemDirectoryHandle[] = await historyDB.load();
 let callbacks: Callback[] = [];
 type Callback = () => void;
 
 async function emitChange() {
-  folders = await historyDB.loadAsync(); // folders を変更したうえで callback を呼ばないとリレンダーされない
-  for (let callback of callbacks) {
+  folders = await historyDB.load(); // folders を変更したうえで callback を呼ばないとリレンダーされない
+  for (const callback of callbacks) {
     callback();
   }
 }
@@ -42,12 +38,12 @@ function getSnapshot() {
   return folders;
 }
 
-async function addAsync(folder: FileSystemDirectoryHandle) {
-  await historyDB.addAsync(folder);
+async function add(folder: FileSystemDirectoryHandle) {
+  await historyDB.add(folder);
   await emitChange();
 }
 
-async function removeAtAsync(index: number) {
-  await historyDB.removeAtAsync(index);
+async function removeAt(index: number) {
+  await historyDB.removeAt(index);
   await emitChange();
 }

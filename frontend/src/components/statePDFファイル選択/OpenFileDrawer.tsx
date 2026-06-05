@@ -8,9 +8,8 @@ import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { findTreeItem } from "@/types/FileTree";
 import { modelフォルダ } from "../state起動直後/modelフォルダ";
-import { modelHistory } from "./DialogHistory/modelHistory";
-import { useSetAtom } from "jotai";
-import { atomSelectPath } from "./modelPDFファイル";
+import { useAtomValue } from "jotai";
+import { modelPDFファイル } from "./modelPDFファイル";
 
 /**
  * ファイル一覧を表示するドロワー
@@ -19,7 +18,7 @@ export default function OpenFileDrawer() {
   const { model, fileTree, coverages } = useContext(ModelContext);
   const { setAlert, setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
     useContext(UiContext);
-  const readOnly = modelフォルダ.readOnly.useValue();
+  const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
   const {
     id,
     setId,
@@ -29,7 +28,7 @@ export default function OpenFileDrawer() {
   // FileTreeViewの選択と折り畳み状態（FileTreeViewの内部で保持するとドロワーを閉じたときにアンマウントされて消えてしまう）
   const [selectedPath, setSelectedPath] = useState<string>();
   const [expanded, setExpanded] = useState<string[]>([]);
-  const selectPath = useSetAtom(atomSelectPath);
+  const selectPath = modelPDFファイル.file.useSelectPath();
 
   // 前回のファイルを選択した状態にする
   if (
@@ -103,14 +102,15 @@ export default function OpenFileDrawer() {
         });
     },
     [
+      assignPdfNotes,
       id,
       model,
+      selectPath,
+      setAlert,
       setId,
       setOpenFileTreeDrawer,
-      assignPdfNotes,
       setPageSize,
       setWaiting,
-      setAlert,
     ],
   );
 
@@ -152,8 +152,6 @@ export default function OpenFileDrawer() {
         setExpandedItemPaths={setExpanded}
         onSelectPdf={handleSelectPath}
       />
-
-      <modelHistory.Watcher />
     </Drawer>
   );
 }
