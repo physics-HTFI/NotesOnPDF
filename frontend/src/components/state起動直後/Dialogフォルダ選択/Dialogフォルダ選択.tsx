@@ -1,16 +1,10 @@
-import {
-  Box,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, DialogContent, Stack, Typography } from "@mui/material";
 import { useHistory } from "./useHistory/useHistory";
-import { Panelドラッグドロップ } from "./Panelドラッグドロップ/Panelドラッグドロップ";
-import { Buttonフォルダ選択 } from "./Buttonフォルダ選択";
-import { Table履歴 } from "./Table履歴";
-import { VERSION } from "@/types/CONSTANTS";
+import { Buttonフォルダ選択 } from "./ui/Buttonフォルダ選択";
+import { Table履歴 } from "./ui/Table履歴";
 import { useDirectoryExists } from "./useDirectoryExists/useDirectoryExists";
+import { Title } from "./ui/Title";
+import { Panelドラッグドロップ } from "./ui/Panelドラッグドロップ";
 
 /**
  * 基準フォルダを選択するダイアログ
@@ -20,17 +14,13 @@ export function Dialogフォルダ選択({
 }: {
   onSelect: (folder: FileSystemDirectoryHandle) => void;
 }) {
-  const {
-    folders,
-    addAsync: addToHistoryAsync,
-    removeAtAsync: removeHistoryAtAsync,
-  } = useHistory();
+  const historyUse = useHistory();
   const { ifExistsAsync } = useDirectoryExists();
 
   const handleSelect = async (folder: FileSystemDirectoryHandle) => {
     await ifExistsAsync(folder, () => {
       onSelect(folder);
-      void addToHistoryAsync(folder);
+      void historyUse.addAsync(folder);
     });
   };
 
@@ -50,30 +40,11 @@ export function Dialogフォルダ選択({
           履歴から開く
         </Typography>
         <Table履歴
-          folders={folders}
+          folders={historyUse.folders}
           onSelect={handleSelect}
-          onRemoveAt={removeHistoryAtAsync}
+          onRemoveAt={historyUse.removeAtAsync}
         />
       </DialogContent>
     </Box>
-  );
-}
-
-function Title() {
-  return (
-    <DialogTitle
-      sx={{
-        display: "flex",
-        gap: 1,
-        alignItems: "center",
-        marginBottom: 1,
-      }}
-    >
-      <img src="favicon.svg" style={{ height: 24 }} />
-      NotesOnPDF
-      <span style={{ color: "darkgray", fontSize: "75%", marginTop: 5 }}>
-        {VERSION}
-      </span>
-    </DialogTitle>
   );
 }
