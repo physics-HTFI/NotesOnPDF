@@ -2,7 +2,9 @@ import { modelフォルダ } from "@/components/state起動直後/modelフォル
 import { PATH_HISTORY } from "@/types/CONSTANTS";
 import type { PdfHistory, PdfHistoryItem } from "@/types/History";
 import { atom, useSetAtom } from "jotai";
-import { HistoryWatcher } from "./modelPdfHistory.ui";
+import { modelPDFファイル } from "../modelPDFファイル";
+import { createPdfHistoryItem } from "./createPdfHistoryItem";
+import type { PdfInfo } from "@/types/PdfInfo";
 
 const atomHistory = atom<PdfHistory>([]);
 
@@ -40,11 +42,34 @@ type TypeUpdateHistory =
   | { type: "全削除" };
 
 //|
-//| このフォルダ外から利用されるもの
+//| export
 //|
 
 export const modelPdfHistory = {
   atom: atomHistory,
   useUpdate: useUpdateHistory,
-  Watcher: HistoryWatcher,
 };
+
+//|
+//| Watch
+//|
+
+// ルート📁が変更されたときに、履歴を読み直す
+modelフォルダ.folder.useOnChange.push(() => {
+  const read = modelフォルダ.json.useRead();
+  const setHistory = useSetAtom(modelPdfHistory.atom);
+  return async () => {
+    const history = await read<PdfHistory>(PATH_HISTORY, false);
+    setHistory(history ?? []);
+  };
+});
+
+// PDF ファイルが選択されたときに、履歴を更新する
+modelPDFファイル.info.useOnChange.push(() => {
+  const update = modelPdfHistory.useUpdate();
+  return (info?: PdfInfo) => {
+    const item = createPdfHistoryItem(info);
+    if (!item) return;
+    void update({ type: "追加", item });
+  };
+});

@@ -11,7 +11,6 @@ import { ModelContextProvider } from "./contexts/ModelContext/ModelContextProvid
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesContextProvider";
 import { Dialog起動直後 } from "./components/state起動直後/Dialog起動直後";
 import { Alert } from "./components/global/Alert";
-import { modelPdfHistory } from "./components/statePDFファイル選択/DialogPdfHistory/modelPdfHistory";
 import { Waiting } from "./components/global/Waiting";
 
 /**
@@ -122,7 +121,6 @@ export default function App() {
         </MathJaxContext>
       </ModelContextProvider>
       <Alert />
-      <modelPdfHistory.Watcher />
       <Waiting />
     </ThemeProvider>
   );

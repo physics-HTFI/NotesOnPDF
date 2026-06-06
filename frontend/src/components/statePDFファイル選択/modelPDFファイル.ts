@@ -27,5 +27,8 @@ export const modelPDFファイル = {
 
   info: {
     atom: atomInfo,
+
+    /** info の変更時の処理を行うカスタムフックをここに追加する */
+    useOnChange: [] as (() => (info?: PdfInfo) => void)[],
   },
 };

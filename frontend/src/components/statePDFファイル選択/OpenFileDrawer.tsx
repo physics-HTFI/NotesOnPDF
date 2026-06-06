@@ -10,6 +10,7 @@ import { modelフォルダ } from "../state起動直後/modelフォルダ";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { modelPDFファイル } from "./modelPDFファイル";
 import { modelUi } from "@/global/modelUi";
+import { WatchPdfInfo } from "./WatchPdfInfo/WatchPdfInfo";
 
 /**
  * ファイル一覧を表示するドロワー
@@ -107,41 +108,44 @@ export default function OpenFileDrawer() {
   );
 
   return (
-    <Drawer
-      anchor="left"
-      open={openDrawer}
-      onClose={() => {
-        if (!id) return;
-        setOpenDrawer(false);
-      }}
-      slotProps={{
-        paper: {
-          square: false,
-          sx: {
-            borderRadius: "0 5px 5px 0",
-            color: "dimgray",
-            maxWidth: 500,
-            minWidth: 280,
-            overflowX: "hidden",
-            background: readOnly
-              ? `repeating-linear-gradient(-60deg, #fffcfc, #fffcfc 5px, white 5px, white 10px)`
-              : undefined,
+    <>
+      <Drawer
+        anchor="left"
+        open={openDrawer}
+        onClose={() => {
+          if (!id) return;
+          setOpenDrawer(false);
+        }}
+        slotProps={{
+          paper: {
+            square: false,
+            sx: {
+              borderRadius: "0 5px 5px 0",
+              color: "dimgray",
+              maxWidth: 500,
+              minWidth: 280,
+              overflowX: "hidden",
+              background: readOnly
+                ? `repeating-linear-gradient(-60deg, #fffcfc, #fffcfc 5px, white 5px, white 10px)`
+                : undefined,
+            },
           },
-        },
-      }}
-      onWheel={(e) => e.stopPropagation()}
-    >
-      {/* ヘッダーアイコン */}
-      <Header onSelectPath={handleSelectPath} />
+        }}
+        onWheel={(e) => e.stopPropagation()}
+      >
+        {/* ヘッダーアイコン */}
+        <Header onSelectPath={handleSelectPath} />
 
-      {/* ツリービュー */}
-      <FileTreeView
-        selectedItemPath={selectedPath}
-        expandedItemPaths={expanded}
-        setSelectedItemPath={setSelectedPath}
-        setExpandedItemPaths={setExpanded}
-        onSelectPdf={handleSelectPath}
-      />
-    </Drawer>
+        {/* ツリービュー */}
+        <FileTreeView
+          selectedItemPath={selectedPath}
+          expandedItemPaths={expanded}
+          setSelectedItemPath={setSelectedPath}
+          setExpandedItemPaths={setExpanded}
+          onSelectPdf={handleSelectPath}
+        />
+      </Drawer>
+      <WatchPdfInfo />
+    </>
   );
 }
