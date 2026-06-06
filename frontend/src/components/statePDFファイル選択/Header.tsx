@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
 import { Box } from "@mui/material";
-import { Lock, LockOpen, Reply, Restore } from "@mui/icons-material";
+import { Reply, Restore } from "@mui/icons-material";
 import DialogPdfHistory from "./DialogPdfHistory/DialogPdfHistory";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
-import { useAtom } from "jotai";
+import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -16,7 +16,6 @@ export default function Header({
   onSelectPath?: (id: string) => void;
 }) {
   const { initialized } = useContext(ModelContext);
-  const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [openHistory, setOpenHistory] = useState(false);
   const reset = modelフォルダ.folder.useReset();
 
@@ -29,33 +28,8 @@ export default function Header({
         color: "slategray",
       }}
     >
-      {/* 読み取り専用 */}
-      <TooltipIconButton
-        disabled={!initialized}
-        icon={readOnly ? <Lock /> : <LockOpen />}
-        onClick={() => setReadOnly(!readOnly)}
-        sx={{
-          mr: "auto",
-          color: readOnly ? "firebrick" : undefined,
-        }}
-        tooltipTitle={
-          readOnly ? (
-            <span>
-              【読み取り専用モード】
-              <br />
-              閲覧・編集はできますが、保存は一切されません
-            </span>
-          ) : (
-            <span>
-              【自動保存モード】
-              <br />
-              変更が加えられた際に、注釈ファイルを自動保存します
-              <br />
-              注釈ファイル名は &quot;(PDFファイルパス).json&quot; です
-            </span>
-          )
-        }
-      />
+      {/* パーミッション切替ボタン */}
+      <ButtonToggleReadOnly disabled={!initialized} />
 
       {/* アクセス履歴からPDFファイルを開く */}
       <TooltipIconButton
@@ -73,7 +47,7 @@ export default function Header({
         }}
       />
 
-      {/* ルートフォルダ選択画面に戻る */}
+      {/* 初期画面に戻るボタン */}
       <TooltipIconButton
         icon={<Reply />}
         onClick={reset}
