@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   SpeedDial as MUISpeedDial,
@@ -12,7 +12,8 @@ import {
   OpenWith,
 } from "@mui/icons-material";
 import { blue, green, grey, red } from "@mui/material/colors";
-import { UiContext } from "@/contexts/UiContext";
+import { useSetAtom } from "jotai";
+import { modelUi } from "@/global/modelUi";
 
 export type Mode = undefined | "edit" | "move" | "delete";
 
@@ -28,7 +29,7 @@ export default function SpeedDial({
   setMode: (mode: Mode) => void;
   hidden: boolean;
 }) {
-  const { setOpenFileTreeDrawer } = useContext(UiContext);
+  const setOpenDrawer = useSetAtom(modelUi.openDrawer.pdfFileTree.atom);
   const [open, setOpen] = useState(true);
 
   return (
@@ -82,7 +83,7 @@ export default function SpeedDial({
           icon={<KeyboardArrowRight />}
           disableInteractive
           onClick={() => {
-            setOpenFileTreeDrawer(true);
+            setOpenDrawer(true);
             setMode(undefined);
           }}
           slotProps={{

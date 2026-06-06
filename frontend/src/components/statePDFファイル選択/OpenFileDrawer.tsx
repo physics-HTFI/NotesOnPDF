@@ -2,13 +2,12 @@ import { useCallback, useContext, useState } from "react";
 import { Drawer } from "@mui/material";
 import Header from "@/components/statePDFファイル選択/Header";
 import { FORMAT_VERSION, createOrGetPdfNotes } from "@/types/PdfNotes";
-import UiContext from "@/contexts/UiContext";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { findTreeItem } from "@/types/FileTree";
 import { modelフォルダ } from "../state起動直後/modelフォルダ";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { modelPDFファイル } from "./modelPDFファイル";
 import { modelUi } from "@/global/modelUi";
 
@@ -17,7 +16,10 @@ import { modelUi } from "@/global/modelUi";
  */
 export default function OpenFileDrawer() {
   const { model, fileTree, coverages } = useContext(ModelContext);
-  const { openFileTreeDrawer, setOpenFileTreeDrawer } = useContext(UiContext);
+  const [openDrawer, setOpenDrawer] = useAtom(
+    modelUi.openDrawer.pdfFileTree.atom,
+  );
+
   const setAlert = modelUi.alert.useSet();
   const setWaiting = useSetAtom(modelUi.waiting.atom);
   const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
@@ -55,7 +57,7 @@ export default function OpenFileDrawer() {
   const handleSelectPath = useCallback(
     (_id: string) => {
       if (_id === id) {
-        setOpenFileTreeDrawer(false);
+        setOpenDrawer(false);
         return;
       }
       setWaiting(true);
@@ -98,7 +100,7 @@ export default function OpenFileDrawer() {
       selectPath,
       setAlert,
       setId,
-      setOpenFileTreeDrawer,
+      setOpenDrawer,
       setPageSize,
       setWaiting,
     ],
@@ -107,10 +109,10 @@ export default function OpenFileDrawer() {
   return (
     <Drawer
       anchor="left"
-      open={openFileTreeDrawer}
+      open={openDrawer}
       onClose={() => {
         if (!id) return;
-        setOpenFileTreeDrawer(false);
+        setOpenDrawer(false);
       }}
       slotProps={{
         paper: {

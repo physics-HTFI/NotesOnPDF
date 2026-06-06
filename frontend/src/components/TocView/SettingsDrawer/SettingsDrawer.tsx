@@ -8,7 +8,6 @@ import LabelSlider from "./LabelSlider";
 import Checkbox from "./Checkbox";
 import ClickOptionSelect from "./ClickOptionSelect";
 import type AppSettings from "@/types/AppSettings";
-import { UiContext } from "@/contexts/UiContext";
 import IconClose from "./IconClose";
 import IconTogglePosition from "./IconTogglePosition";
 import Tabs from "./Tabs";
@@ -29,7 +28,10 @@ export default function SettingsDrawer() {
     updaters: { updatePageSettings, getPreferredLabels, updateFileSettings },
   } = useContext(PdfNotesContext);
   const { model } = useContext(ModelContext);
-  const { openSettingsDrawer, setOpenSettingsDrawer } = useContext(UiContext);
+  const [openDrawer, setOpenDrawer] = useAtom(
+    modelUi.openDrawer.pdfFileTree.atom,
+  );
+
   const setAlert = modelUi.alert.useSet();
   const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [tab, setTab] = useState(0);
@@ -66,9 +68,9 @@ export default function SettingsDrawer() {
   };
 
   // 閉じているときは`variant`を`temporary`にすることで、内部コンポーネントの再レンダーを防ぐ
-  const newVariant = openSettingsDrawer ? "persistent" : "temporary";
+  const newVariant = openDrawer ? "persistent" : "temporary";
   if (newVariant !== variant) {
-    if (openSettingsDrawer) {
+    if (openDrawer) {
       setVariant(newVariant);
     } else {
       setTimeout(() => {
@@ -81,7 +83,7 @@ export default function SettingsDrawer() {
     <Drawer
       variant={variant}
       anchor={isBottom ? "bottom" : "top"}
-      open={openSettingsDrawer}
+      open={openDrawer}
       onWheel={(e) => {
         e.stopPropagation();
       }}
@@ -101,7 +103,7 @@ export default function SettingsDrawer() {
         <IconClose
           isBottom={isBottom}
           onClose={() => {
-            setOpenSettingsDrawer(false);
+            setOpenDrawer(false);
           }}
         />
 

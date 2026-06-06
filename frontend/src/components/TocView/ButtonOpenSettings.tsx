@@ -1,23 +1,23 @@
 import { Settings } from "@mui/icons-material";
 import TooltipIconButton from "../common/TooltipIconButton";
 import { grey } from "@mui/material/colors";
-import UiContext from "@/contexts/UiContext";
-import { useContext } from "react";
+import { useAtom } from "jotai";
+import { modelUi } from "@/global/modelUi";
 
 export function ButtonOpenSettings() {
-  const { openSettingsDrawer, setOpenSettingsDrawer } = useContext(UiContext);
+  const [openDrawer, setOpenDrawer] = useAtom(
+    modelUi.openDrawer.pdfFileTree.atom,
+  );
   return (
     <TooltipIconButton
       icon={<Settings />}
-      onClick={() => {
-        setOpenSettingsDrawer(!openSettingsDrawer);
-      }}
+      onClick={() => setOpenDrawer(!openDrawer)}
       sx={{
         position: "sticky",
         bottom: 0,
         ml: "auto",
         width: "fit-content",
-        visibility: openSettingsDrawer ? "hidden" : "visible",
+        visibility: openDrawer ? "hidden" : "visible",
         color: "green",
         background: "#f5f5f5c0",
         borderRadius: "100%",

@@ -1,13 +1,9 @@
-import type PdfNotes from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import { type ReactNode, createContext, useContext, useState } from "react";
-import PdfNotesContext, {
-  type PageSize,
-} from "./PdfNotesContext/PdfNotesContext";
+import PdfNotesContext from "./PdfNotesContext/PdfNotesContext";
 import { usePdf } from "@/components/PdfView/usePdf/usePdf";
 import { ID_PDF_CANVAS, ID_PDF_CONTAINER } from "@/types/CONSTANTS";
 import ModelContext from "./ModelContext/ModelContext";
-import UiContext from "./UiContext";
 import { useSetAtom } from "jotai";
 import { modelUi } from "@/global/modelUi";
 
@@ -38,7 +34,7 @@ export function MouseContextProvider({ children }: { children: ReactNode }) {
   const { id, pdfNotes, imageNum } = useContext(PdfNotesContext);
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
   const setWaiting = useSetAtom(modelUi.waiting.atom);
-  const { setOpenFileTreeDrawer } = useContext(UiContext);
+  const setOpenDrawer = useSetAtom(modelUi.openDrawer.pdfFileTree.atom);
 
   const offset = pdfNotes?.settings
     ? {
@@ -49,7 +45,7 @@ export function MouseContextProvider({ children }: { children: ReactNode }) {
   const handle = model.getFileHandleFromPath(id);
   const onFinishRead = () => {
     setWaiting(false);
-    setOpenFileTreeDrawer(false);
+    setOpenDrawer(false);
   };
   const pdf = usePdf(
     ID_PDF_CANVAS,
