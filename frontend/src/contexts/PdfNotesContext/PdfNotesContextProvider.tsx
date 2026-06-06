@@ -3,12 +3,12 @@ import { type ReactNode, useContext, useEffect, useState } from "react";
 import { debounce } from "@mui/material";
 import type IModel from "@/models/IModel";
 import ModelContext from "../ModelContext/ModelContext";
-import UiContext from "../UiContext";
 import useNewCoverages from "./useNewCoverages";
 import PdfNotesContext, { type PageSize } from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { useAtom } from "jotai";
+import { modelGlobal } from "@/global/modelGlobal";
 
 /**
  * 間隔をあけて`pdfNotes`を保存する
@@ -18,10 +18,7 @@ const putPdfNotesDebounced = debounce(
     id: string,
     pdfNotes: PdfNotes,
     model: IModel,
-    setAlert: (
-      severity?: "error" | "info" | undefined,
-      message?: ReactNode,
-    ) => void,
+    setAlert: (severity: "error" | "info", message: ReactNode) => void,
     setReadOnly: (readOnly: boolean) => void,
   ) => {
     model.putPdfNotes(id, pdfNotes).catch(() => {
@@ -44,7 +41,7 @@ const putPdfNotesDebounced = debounce(
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
-  const { setAlert } = useContext(UiContext);
+  const setAlert = modelGlobal.alert.useSet();
   const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [id, setId] = useState<string>();
   const [pageSize, setPageSize] = useState<PageSize>();

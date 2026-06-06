@@ -3,21 +3,21 @@ import { type ModelFlags } from "@/models/IModel";
 import ModelNull from "@/models/Model.Null";
 import type AppSettings from "@/types/AppSettings";
 import { GetAppSettings_default } from "@/types/AppSettings";
-import { type ReactNode, useContext, useEffect, useState } from "react";
-import UiContext from "../UiContext";
+import { type ReactNode, useEffect, useState } from "react";
 import type Coverages from "@/types/Coverages";
 import type { Coverage } from "@/types/Coverages";
 import { findTreeItem, type FileTree } from "@/types/FileTree";
 import CriticalError from "./CriticalError";
 import ModelContext from "./ModelContext";
 import useServerSideEvents from "./useServerSideEvents";
+import { modelGlobal } from "@/global/modelGlobal";
 
 /**
  * `ModelContext`のプロバイダー
  */
 export function ModelContextProvider({ children }: { children: ReactNode }) {
   const [model, setModel] = useState<IModel>(() => new ModelNull());
-  const { setAlert } = useContext(UiContext);
+  const setAlert = modelGlobal.alert.useSet();
   const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const [fileTree, setFileTree] = useState<FileTree>();

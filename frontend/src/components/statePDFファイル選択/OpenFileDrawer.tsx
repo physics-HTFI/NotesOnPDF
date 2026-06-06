@@ -8,16 +8,18 @@ import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { findTreeItem } from "@/types/FileTree";
 import { modelフォルダ } from "../state起動直後/modelフォルダ";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { modelPDFファイル } from "./modelPDFファイル";
+import { modelGlobal } from "@/global/modelGlobal";
 
 /**
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
   const { model, fileTree, coverages } = useContext(ModelContext);
-  const { setAlert, setWaiting, openFileTreeDrawer, setOpenFileTreeDrawer } =
-    useContext(UiContext);
+  const { openFileTreeDrawer, setOpenFileTreeDrawer } = useContext(UiContext);
+  const setAlert = modelGlobal.alert.useSet();
+  const setWaiting = useSetAtom(modelGlobal.waiting.atom);
   const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
   const {
     id,
@@ -80,10 +82,6 @@ export default function OpenFileDrawer() {
           assignPdfNotes(createOrGetPdfNotes(result));
           setId(_id);
           document.title = result.name;
-          if (import.meta.env.MODE !== "web") {
-            setOpenFileTreeDrawer(false);
-            // ウェブ版では、ここではなく<PdfImageWeb>で行う
-          }
         })
         .catch(() => {
           setAlert(
@@ -91,14 +89,6 @@ export default function OpenFileDrawer() {
             "PDFファイル (または注釈ファイル) の読み込みに失敗しました",
           );
           setWaiting(false);
-        })
-        .finally(() => {
-          if (import.meta.env.MODE !== "web") {
-            setWaiting(false);
-            // ウェブ版の場合はPDFの初期表示でもプログレスインジケータが出るので、
-            // ここで消すとちらついてしまう。
-            // そのため、ここではなく<PdfImageWeb>の読み込みが終わった時にsetWaiting(false)する
-          }
         });
     },
     [
@@ -137,9 +127,7 @@ export default function OpenFileDrawer() {
           },
         },
       }}
-      onWheel={(e) => {
-        e.stopPropagation();
-      }}
+      onWheel={(e) => e.stopPropagation()}
     >
       {/* ヘッダーアイコン */}
       <Header onSelectPath={handleSelectPath} />

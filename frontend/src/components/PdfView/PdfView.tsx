@@ -12,14 +12,14 @@ import { grey } from "@mui/material/colors";
 import Move from "./Move";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import UiContext from "@/contexts/UiContext";
 import { PdfImage } from "./PdfImage";
+import { modelGlobal } from "@/global/modelGlobal";
 
 /**
  * Pdfを表示するコンポーネント
  */
 export default function PdfView() {
-  const { setAlert } = useContext(UiContext);
+  const clearAlert = modelGlobal.alert.useClear();
   const { appSettings } = useContext(ModelContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
   const {
@@ -95,7 +95,7 @@ export default function PdfView() {
         if (mode ?? moveNote) return;
         setMouse({ pageX: e.pageX, pageY: e.pageY });
         setPaletteOpen(true);
-        setAlert();
+        clearAlert();
       }}
     >
       {/* PDF画像がある要素 */}

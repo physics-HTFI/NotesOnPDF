@@ -8,6 +8,8 @@ import { usePdf } from "@/components/PdfView/usePdf/usePdf";
 import { ID_PDF_CANVAS, ID_PDF_CONTAINER } from "@/types/CONSTANTS";
 import ModelContext from "./ModelContext/ModelContext";
 import UiContext from "./UiContext";
+import { useSetAtom } from "jotai";
+import { modelGlobal } from "@/global/modelGlobal";
 
 export interface Mouse {
   pageX: number;
@@ -35,7 +37,8 @@ export function MouseContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
   const { id, pdfNotes, imageNum } = useContext(PdfNotesContext);
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const { setWaiting, setOpenFileTreeDrawer } = useContext(UiContext);
+  const setWaiting = useSetAtom(modelGlobal.waiting.atom);
+  const { setOpenFileTreeDrawer } = useContext(UiContext);
 
   const offset = pdfNotes?.settings
     ? {

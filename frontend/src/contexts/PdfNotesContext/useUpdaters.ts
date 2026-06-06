@@ -1,5 +1,6 @@
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import UiContext from "@/contexts/UiContext";
+import { modelGlobal } from "@/global/modelGlobal";
 import type PdfNotes from "@/types/PdfNotes";
 import {
   type NoteType,
@@ -8,6 +9,7 @@ import {
   editPageStyle,
   updatePageNum,
 } from "@/types/PdfNotes";
+import { useAtomValue } from "jotai";
 import { useCallback, useContext, useRef, useState } from "react";
 
 /**
@@ -91,7 +93,10 @@ export interface Updaters {
  */
 export default function useUpdaters() {
   const { inert } = useContext(ModelContext);
-  const { openFileTreeDrawer, waiting, setAlert } = useContext(UiContext);
+  const { openFileTreeDrawer } = useContext(UiContext);
+  const waiting = useAtomValue(modelGlobal.waiting.atom);
+  const setAlert = modelGlobal.alert.useSet();
+  const clearAlert = modelGlobal.alert.useClear();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [imageNum, setImageNum] = useState<number>();
   const pdfNotesSnapshot = useRef<PdfNotes>(undefined);
@@ -137,7 +142,7 @@ export default function useUpdaters() {
   const jumpPageStart = useCallback(
     (num: number) => {
       if (invalid) return;
-      setAlert();
+      clearAlert();
       if (imageNum === num) return;
       if (num < 0 || pdfNotes.pages.length <= num) return;
       if (import.meta.env.MODE === "web") {
@@ -148,7 +153,7 @@ export default function useUpdaters() {
         // デスクトップ版では、画像読み込み後にjumpPageEndを呼ぶ
       }
     },
-    [invalid, imageNum, pdfNotes?.pages.length, setAlert, jumpPageEnd],
+    [invalid, imageNum, pdfNotes?.pages.length, clearAlert, jumpPageEnd],
   );
 
   /**

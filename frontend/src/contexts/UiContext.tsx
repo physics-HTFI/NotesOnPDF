@@ -1,6 +1,4 @@
-import { type ReactNode, createContext, useCallback, useState } from "react";
-import Waiting from "@/components/common/Waiting";
-import { Alert, Snackbar } from "@mui/material";
+import { type ReactNode, createContext, useState } from "react";
 
 /**
  * UIの状態コンテクスト（待機中、ドロワーの開閉状態）
@@ -8,19 +6,13 @@ import { Alert, Snackbar } from "@mui/material";
 export const UiContext = createContext<{
   openFileTreeDrawer: boolean;
   openSettingsDrawer: boolean;
-  waiting: boolean;
   setOpenFileTreeDrawer: (openFileTreeDrawer: boolean) => void;
   setOpenSettingsDrawer: (openSettingsDrawer: boolean) => void;
-  setWaiting: (waiting: boolean) => void;
-  setAlert: (severity?: "error" | "info", message?: ReactNode) => void;
 }>({
   openFileTreeDrawer: true,
   openSettingsDrawer: false,
-  waiting: false,
   setOpenFileTreeDrawer: () => undefined,
   setOpenSettingsDrawer: () => undefined,
-  setWaiting: () => undefined,
-  setAlert: () => undefined,
 });
 
 export default UiContext;
@@ -31,32 +23,17 @@ export default UiContext;
 export function UiContextProvider({ children }: { children: ReactNode }) {
   const [openFileTreeDrawer, setOpenFileTreeDrawer] = useState(true);
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
-  const [waiting, setWaiting] = useState(false);
-  const [alert, setAlert] = useState<ReactNode>();
-  const [severity, setSeverity] = useState<"error" | "info">();
-  // この関数はコンテクストに渡すのでuseCallbackしておく
-  const setAlertAndSeverity = useCallback(
-    (severity?: "error" | "info", alert?: ReactNode) => {
-      setAlert(alert);
-      setSeverity(alert === undefined ? undefined : severity);
-    },
-    [],
-  );
 
   return (
     <UiContext.Provider
       value={{
         openFileTreeDrawer,
         openSettingsDrawer,
-        waiting,
         setOpenFileTreeDrawer,
         setOpenSettingsDrawer,
-        setWaiting,
-        setAlert: setAlertAndSeverity,
       }}
     >
       {children}
-      <Waiting isWaiting={waiting} />
     </UiContext.Provider>
   );
 }
