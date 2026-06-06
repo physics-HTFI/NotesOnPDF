@@ -1,4 +1,4 @@
-import { modelGlobal } from "@/global/modelGlobal";
+import { modelUi } from "@/global/modelUi";
 import { Alert as MuiAlert, Snackbar } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
@@ -7,8 +7,8 @@ import { useState } from "react";
  * エラー・情報をスナックバーで表示する
  */
 export function Alert() {
-  const alert = useAtomValue(modelGlobal.alert.atomValue);
-  const clear = modelGlobal.alert.useClear();
+  const alert = useAtomValue(modelUi.alert.atomValue);
+  const clear = modelUi.alert.useClear();
 
   // `alert === undefined` になった瞬間に（スナックバーが消える前に）空白表示されないように、メッセージを残しておく
   const [currentAlert, setCurrentAlert] = useState<typeof alert>();

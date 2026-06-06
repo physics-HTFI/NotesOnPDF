@@ -10,14 +10,14 @@ import { findTreeItem, type FileTree } from "@/types/FileTree";
 import CriticalError from "./CriticalError";
 import ModelContext from "./ModelContext";
 import useServerSideEvents from "./useServerSideEvents";
-import { modelGlobal } from "@/global/modelGlobal";
+import { modelUi } from "@/global/modelUi";
 
 /**
  * `ModelContext`のプロバイダー
  */
 export function ModelContextProvider({ children }: { children: ReactNode }) {
   const [model, setModel] = useState<IModel>(() => new ModelNull());
-  const setAlert = modelGlobal.alert.useSet();
+  const setAlert = modelUi.alert.useSet();
   const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const [fileTree, setFileTree] = useState<FileTree>();

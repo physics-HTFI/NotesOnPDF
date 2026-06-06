@@ -3,6 +3,8 @@ import { type ReactNode } from "react";
 
 const atomAlert = atom<{ severity: "error" | "info"; message: ReactNode }>();
 const atomWaiting = atom<boolean>(false);
+const atomOpenSettingsDrawer = atom<boolean>(false);
+const atomOpenPdfFileTreeDrawer = atom<boolean>(false);
 
 const atomAlertValue = atom((get) => get(atomAlert));
 const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
@@ -11,7 +13,7 @@ const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
 //| このフォルダ外から利用されるもの
 //|
 
-export const modelGlobal = {
+export const modelUi = {
   /** メッセージトーストを表示する */
   alert: {
     atomValue: atomAlertValue,
@@ -28,5 +30,10 @@ export const modelGlobal = {
   /** 処理待ちインジケーターを表示する */
   waiting: {
     atom: atomWaiting,
+  },
+
+  openDrawer: {
+    settings: { atom: atomOpenSettingsDrawer },
+    pdfFileTree: { atom: atomOpenPdfFileTreeDrawer },
   },
 };

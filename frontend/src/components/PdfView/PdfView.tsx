@@ -13,13 +13,13 @@ import Move from "./Move";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { PdfImage } from "./PdfImage";
-import { modelGlobal } from "@/global/modelGlobal";
+import { modelUi } from "@/global/modelUi";
 
 /**
  * Pdfを表示するコンポーネント
  */
 export default function PdfView() {
-  const clearAlert = modelGlobal.alert.useClear();
+  const clearAlert = modelUi.alert.useClear();
   const { appSettings } = useContext(ModelContext);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
   const {

@@ -1,12 +1,12 @@
 import type IModel from "@/models/IModel";
 import { useEffect, useRef, useState } from "react";
-import { modelGlobal } from "@/global/modelGlobal";
+import { modelUi } from "@/global/modelUi";
 
 /**
  * サーバーからのメッセージを受け取るカスタムフック
  */
 export default function useServerSideEvents(model: IModel) {
-  const clearAlert = modelGlobal.alert.useClear();
+  const clearAlert = modelUi.alert.useClear();
   const [serverFailed, setServerFailed] = useState(false);
   const [rootDirectoryChanged, setRootDirectoryChanged] = useState(false);
   const eventSource = useRef<EventSource>(undefined);

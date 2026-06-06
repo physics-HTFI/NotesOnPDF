@@ -8,7 +8,7 @@ import PdfNotesContext, { type PageSize } from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { useAtom } from "jotai";
-import { modelGlobal } from "@/global/modelGlobal";
+import { modelUi } from "@/global/modelUi";
 
 /**
  * 間隔をあけて`pdfNotes`を保存する
@@ -41,7 +41,7 @@ const putPdfNotesDebounced = debounce(
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model, setCoverages } = useContext(ModelContext);
-  const setAlert = modelGlobal.alert.useSet();
+  const setAlert = modelUi.alert.useSet();
   const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [id, setId] = useState<string>();
   const [pageSize, setPageSize] = useState<PageSize>();

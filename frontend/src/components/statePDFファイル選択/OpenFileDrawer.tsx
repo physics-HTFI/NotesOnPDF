@@ -10,7 +10,7 @@ import { findTreeItem } from "@/types/FileTree";
 import { modelフォルダ } from "../state起動直後/modelフォルダ";
 import { useAtomValue, useSetAtom } from "jotai";
 import { modelPDFファイル } from "./modelPDFファイル";
-import { modelGlobal } from "@/global/modelGlobal";
+import { modelUi } from "@/global/modelUi";
 
 /**
  * ファイル一覧を表示するドロワー
@@ -18,8 +18,8 @@ import { modelGlobal } from "@/global/modelGlobal";
 export default function OpenFileDrawer() {
   const { model, fileTree, coverages } = useContext(ModelContext);
   const { openFileTreeDrawer, setOpenFileTreeDrawer } = useContext(UiContext);
-  const setAlert = modelGlobal.alert.useSet();
-  const setWaiting = useSetAtom(modelGlobal.waiting.atom);
+  const setAlert = modelUi.alert.useSet();
+  const setWaiting = useSetAtom(modelUi.waiting.atom);
   const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
   const {
     id,

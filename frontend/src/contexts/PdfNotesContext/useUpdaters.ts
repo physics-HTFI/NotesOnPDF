@@ -1,6 +1,6 @@
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import UiContext from "@/contexts/UiContext";
-import { modelGlobal } from "@/global/modelGlobal";
+import { modelUi } from "@/global/modelUi";
 import type PdfNotes from "@/types/PdfNotes";
 import {
   type NoteType,
@@ -94,9 +94,9 @@ export interface Updaters {
 export default function useUpdaters() {
   const { inert } = useContext(ModelContext);
   const { openFileTreeDrawer } = useContext(UiContext);
-  const waiting = useAtomValue(modelGlobal.waiting.atom);
-  const setAlert = modelGlobal.alert.useSet();
-  const clearAlert = modelGlobal.alert.useClear();
+  const waiting = useAtomValue(modelUi.waiting.atom);
+  const setAlert = modelUi.alert.useSet();
+  const clearAlert = modelUi.alert.useClear();
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [imageNum, setImageNum] = useState<number>();
   const pdfNotesSnapshot = useRef<PdfNotes>(undefined);

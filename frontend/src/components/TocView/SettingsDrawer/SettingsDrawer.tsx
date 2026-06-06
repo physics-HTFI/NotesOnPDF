@@ -16,7 +16,7 @@ import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { useAtom } from "jotai";
-import { modelGlobal } from "@/global/modelGlobal";
+import { modelUi } from "@/global/modelUi";
 
 /**
  * 設定パネル
@@ -30,7 +30,7 @@ export default function SettingsDrawer() {
   } = useContext(PdfNotesContext);
   const { model } = useContext(ModelContext);
   const { openSettingsDrawer, setOpenSettingsDrawer } = useContext(UiContext);
-  const setAlert = modelGlobal.alert.useSet();
+  const setAlert = modelUi.alert.useSet();
   const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);

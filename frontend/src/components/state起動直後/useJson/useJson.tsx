@@ -1,4 +1,4 @@
-import { modelGlobal } from "@/global/modelGlobal";
+import { modelUi } from "@/global/modelUi";
 import { modelフォルダ } from "../modelフォルダ";
 import { jsonUtils } from "./jsonUtils";
 import { useAtom, useAtomValue } from "jotai";
@@ -26,7 +26,7 @@ function useGetFileHandle() {
 
 function useReadJson() {
   const folder = useAtomValue(modelフォルダ.folder.atomValue);
-  const setAlert = modelGlobal.alert.useSet();
+  const setAlert = modelUi.alert.useSet();
 
   return async <T,>(path: string, alert: boolean) => {
     const file = await getFileHandleFromPath(path, folder, false);
@@ -40,7 +40,7 @@ function useReadJson() {
 
 function useSaveJson() {
   const folder = useAtomValue(modelフォルダ.folder.atomValue);
-  const setAlert = modelGlobal.alert.useSet();
+  const setAlert = modelUi.alert.useSet();
   const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
 
   return async (object: unknown, path: string) => {
