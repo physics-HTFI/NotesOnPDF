@@ -1,8 +1,8 @@
-export interface HistoryItem {
+export interface PdfHistoryItem {
   path: string;
   name: string;
   pages: string;
   accessDate: string;
 }
 
-export type History = HistoryItem[];
+export type PdfHistory = PdfHistoryItem[];

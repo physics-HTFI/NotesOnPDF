@@ -1,7 +1,9 @@
 import type { PdfInfo } from "@/types/PdfInfo";
-import type { HistoryItem } from "@/types/History";
+import type { PdfHistoryItem } from "@/types/History";
 
-export function createHistoryItem(pdfInfo: PdfInfo): HistoryItem | undefined {
+export function createPdfHistoryItem(
+  pdfInfo: PdfInfo,
+): PdfHistoryItem | undefined {
   if (!pdfInfo.path) return undefined;
   return {
     path: pdfInfo.path,

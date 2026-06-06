@@ -12,7 +12,7 @@ import { ModelContextProvider } from "./contexts/ModelContext/ModelContextProvid
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesContextProvider";
 import { Dialog起動直後 } from "./components/state起動直後/Dialog起動直後";
 import { Alert } from "./components/global/Alert";
-import { modelHistory } from "./components/statePDFファイル選択/DialogHistory/modelHistory";
+import { modelPdfHistory } from "./components/statePDFファイル選択/DialogPdfHistory/modelPdfHistory";
 
 /**
  * 数式表示のコンフィグ
@@ -124,7 +124,7 @@ export default function App() {
         </ModelContextProvider>
       </UiContextProvider>
       <Alert />
-      <modelHistory.Watcher />
+      <modelPdfHistory.Watcher />
     </ThemeProvider>
   );
 }

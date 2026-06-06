@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Box } from "@mui/material";
 import { Lock, LockOpen, Reply, Restore } from "@mui/icons-material";
-import DialogHistory from "./DialogHistory/DialogHistory";
+import DialogPdfHistory from "./DialogPdfHistory/DialogPdfHistory";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
@@ -64,7 +64,7 @@ export default function Header({
         onClick={() => setOpenHistory(true)}
         tooltipTitle="アクセス履歴からPDFファイルを開きます"
       />
-      <DialogHistory
+      <DialogPdfHistory
         open={initialized && openHistory}
         onClose={(id) => {
           setOpenHistory(false);

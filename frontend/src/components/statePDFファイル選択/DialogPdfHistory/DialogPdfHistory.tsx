@@ -14,12 +14,12 @@ import { Delete } from "@mui/icons-material";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { useAtomValue } from "jotai";
-import { modelHistory } from "./modelHistory";
+import { modelPdfHistory } from "./modelPdfHistory";
 
 /**
  * PDFを開いた履歴
  */
-export default function DialogHistory({
+export default function DialogPdfHistory({
   open,
   onClose,
 }: {
@@ -27,8 +27,8 @@ export default function DialogHistory({
   onClose: (path?: string) => void;
 }) {
   const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
-  const history = useAtomValue(modelHistory.atomHistory);
-  const update = modelHistory.useUpdateHistory();
+  const history = useAtomValue(modelPdfHistory.atom);
+  const update = modelPdfHistory.useUpdate();
 
   return (
     <Backdrop
