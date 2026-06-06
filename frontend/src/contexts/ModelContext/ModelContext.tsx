@@ -1,5 +1,4 @@
 import type IModel from "@/models/IModel";
-import type { ModelFlags } from "@/models/IModel";
 import ModelNull from "@/models/Model.Null";
 import type AppSettings from "@/types/AppSettings";
 import { createContext } from "react";
@@ -11,7 +10,6 @@ import type { FileTree } from "@/types/FileTree";
  */
 const ModelContext = createContext<{
   model: IModel;
-  modelFlags: ModelFlags;
   appSettings?: AppSettings;
   fileTree?: FileTree;
   coverages?: Coverages;
@@ -24,7 +22,6 @@ const ModelContext = createContext<{
   setCoverages: (coverages: Coverages) => void;
 }>({
   model: new ModelNull(),
-  modelFlags: new ModelNull().getFlags(),
   initialized: false,
   inert: false,
   setModel: () => undefined,

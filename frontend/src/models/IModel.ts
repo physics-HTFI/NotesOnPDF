@@ -4,12 +4,8 @@ import type PdfNotes from "@/types/PdfNotes";
 import type AppSettings from "@/types/AppSettings";
 
 export default interface IModel {
-  getFlags(): ModelFlags;
-  getEventSource(): EventSource | undefined;
-
   getFileTree(): Promise<FileTree | undefined>;
 
-  getIdFromUrl(url: string): Promise<string>;
   getFileHandleFromPath(path?: string): FileSystemFileHandle | undefined;
 
   getCoverages(): Promise<Coverages>;
@@ -33,8 +29,4 @@ export interface ResultGetPdfNotes {
   name: string;
   pages?: number;
   pdfNotes?: PdfNotes;
-}
-
-export interface ModelFlags {
-  canOpenFileDialog: boolean;
 }

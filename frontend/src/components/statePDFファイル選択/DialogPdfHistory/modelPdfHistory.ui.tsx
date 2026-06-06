@@ -42,9 +42,9 @@ export function HistoryWatcher() {
   if (currentPdfInfo !== pdfInfo) {
     setTimeout(async () => {
       setCurrentPdf(pdfInfo);
-      if (!pdfInfo) return;
       const item = createPdfHistoryItem(pdfInfo);
-      if (item) void update({ type: "追加", item });
+      if (!item) return;
+      void update({ type: "追加", item });
     }, 0);
   }
 

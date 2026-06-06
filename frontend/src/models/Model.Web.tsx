@@ -20,11 +20,6 @@ export default class ModelWeb implements IModel {
     this.fileTree = undefined;
   }
 
-  getFlags = () => ({
-    canOpenFileDialog: false,
-  });
-  getEventSource = () => undefined;
-
   getFileTree = async () => {
     const fileTree: FileTree = {
       type: "folder",
@@ -72,7 +67,6 @@ export default class ModelWeb implements IModel {
     }
   };
 
-  getIdFromUrl = () => Promise.reject();
   getFileHandleFromPath = (path?: string) => {
     if (!this.fileTree || !path) return undefined;
     const item = findTreeItem(this.fileTree, path);

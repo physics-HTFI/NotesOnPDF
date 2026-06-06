@@ -1,5 +1,4 @@
 import type IModel from "@/models/IModel";
-import { type ModelFlags } from "@/models/IModel";
 import ModelNull from "@/models/Model.Null";
 import type AppSettings from "@/types/AppSettings";
 import { GetAppSettings_default } from "@/types/AppSettings";
@@ -7,9 +6,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import type Coverages from "@/types/Coverages";
 import type { Coverage } from "@/types/Coverages";
 import { findTreeItem, type FileTree } from "@/types/FileTree";
-import CriticalError from "./CriticalError";
 import ModelContext from "./ModelContext";
-import useServerSideEvents from "./useServerSideEvents";
 import { modelUi } from "@/global/modelUi";
 
 /**
@@ -18,20 +15,14 @@ import { modelUi } from "@/global/modelUi";
 export function ModelContextProvider({ children }: { children: ReactNode }) {
   const [model, setModel] = useState<IModel>(() => new ModelNull());
   const setAlert = modelUi.alert.useSet();
-  const { serverFailed, rootDirectoryChanged } = useServerSideEvents(model);
   const [appSettings, setAppSettings] = useState<AppSettings>();
   const [fileTree, setFileTree] = useState<FileTree>();
   const [coverages, setCoverages] = useState<Coverages>();
   const [initialized, setInitialized] = useState(false);
-  const [modelFlags, setModelFlags] = useState<ModelFlags>(model.getFlags());
-
-  useEffect(() => {
-    setModelFlags(model.getFlags());
-  }, [model]);
 
   // `appSettings, FileTree, Coverages`を取得する
   useEffect(() => {
-    if (serverFailed) return;
+    return;
     loadAll(model)
       .then(({ appSettings, fileTree, coverages }) => {
         setAppSettings(appSettings);
@@ -43,45 +34,23 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
         if (!e?.message) return;
         setAlert("error", e.message);
       });
-  }, [model, setAlert, serverFailed]);
+  }, [model, setAlert]);
 
   return (
     <ModelContext.Provider
       value={{
         model,
-        modelFlags,
         appSettings,
         fileTree,
         coverages,
         initialized,
-        inert: serverFailed || rootDirectoryChanged,
+        inert: false, // Desuktop 用
         setModel,
         setAppSettings,
         setCoverages,
       }}
     >
       {children}
-
-      {/* 起動待ち */}
-      <CriticalError
-        open={serverFailed && !rootDirectoryChanged}
-        needsReload={false}
-      >
-        <>
-          NotesOnPdf を起動してください
-          <br />
-          起動するのを待っています...
-        </>
-      </CriticalError>
-
-      {/* 基準フォルダ変更によるリロード */}
-      <CriticalError open={rootDirectoryChanged} needsReload={true}>
-        <>
-          設定が変更されました
-          <br />
-          リロードしてください
-        </>
-      </CriticalError>
     </ModelContext.Provider>
   );
 }

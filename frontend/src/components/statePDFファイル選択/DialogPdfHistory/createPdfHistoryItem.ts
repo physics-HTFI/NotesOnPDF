@@ -2,9 +2,9 @@ import type { PdfInfo } from "@/types/PdfInfo";
 import type { PdfHistoryItem } from "@/types/History";
 
 export function createPdfHistoryItem(
-  pdfInfo: PdfInfo,
+  pdfInfo?: PdfInfo,
 ): PdfHistoryItem | undefined {
-  if (!pdfInfo.path) return undefined;
+  if (!pdfInfo?.path) return undefined;
   return {
     path: pdfInfo.path,
     name: pdfInfo.path.split("/").pop() ?? "",

@@ -85,7 +85,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <ModelContextProvider>
         {/* フォルダ選択ダイアログ */}
-        {import.meta.env.MODE === "web" && <Dialog起動直後 />}
+        <Dialog起動直後 />
 
         <MathJaxContext version={4} config={mathjaxConfig}>
           <PdfNotesContextProvider>

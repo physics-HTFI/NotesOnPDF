@@ -144,13 +144,8 @@ export default function useUpdaters() {
       clearAlert();
       if (imageNum === num) return;
       if (num < 0 || pdfNotes.pages.length <= num) return;
-      if (import.meta.env.MODE === "web") {
-        setImageNum(num);
-        jumpPageEnd(num); // ウェブ版ではすぐに更新する
-      } else {
-        setImageNum(num);
-        // デスクトップ版では、画像読み込み後にjumpPageEndを呼ぶ
-      }
+      setImageNum(num);
+      jumpPageEnd(num);
     },
     [invalid, imageNum, pdfNotes?.pages.length, clearAlert, jumpPageEnd],
   );
