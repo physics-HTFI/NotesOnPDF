@@ -5,7 +5,7 @@ import DialogPdfHistory from "./DialogPdfHistory/DialogPdfHistory";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
-import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly";
+import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly/ButtonToggleReadOnly";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール

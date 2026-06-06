@@ -26,6 +26,6 @@ export function Watch<T>({
 
 // setTimeout せずに直接 setState すると以下のエラーが出る：
 // Cannot update a component (A) while rendering a different component (B)
-// atom が変化したときのリレンダー中に setState/setAtom をしないほうが良い。
-// useEffect を使うという手もあるが、カスタムフック由来の関数があると
-// useCallback 化しておくする必要があるのと、更新タイミングが読みづらくなるので避ける。。
+// そのため、atom が変化したときのリレンダー中に setState/setAtom するのは避けるべき。
+// useEffect を使うという手もあるが、カスタムフック由来の関数があると、その関数については
+// useCallback 化しておくする必要があるのと、更新タイミングが読みづらくなるので避ける。
