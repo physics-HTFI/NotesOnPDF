@@ -1,9 +1,10 @@
-import { atom, useAtomValue, useSetAtom } from "jotai";
-import { useCallback, type ReactNode } from "react";
+import { atom, useSetAtom } from "jotai";
+import { type ReactNode } from "react";
 
 const atomAlert = atom<{ severity: "error" | "info"; message: ReactNode }>();
 const atomWaiting = atom<boolean>(false);
 
+const atomAlertValue = atom((get) => get(atomAlert));
 const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
 
 //|
@@ -13,19 +14,14 @@ const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
 export const modelGlobal = {
   /** メッセージトーストを表示する */
   alert: {
-    atom: atomAlert,
-    useValue: () => useAtomValue(atomAlert),
+    atomValue: atomAlertValue,
     useClear: () => useSetAtom(atomAlertClear),
 
     /** 例：`set("error", "失敗しました")` */
     useSet: () => {
       const set = useSetAtom(atomAlert);
-      const setAlert = useCallback(
-        (type: "error" | "info", message: ReactNode) =>
-          set({ severity: type, message }),
-        [set],
-      );
-      return setAlert;
+      return (type: "error" | "info", message: ReactNode) =>
+        set({ severity: type, message });
     },
   },
 

@@ -1,7 +1,6 @@
 import { modelGlobal } from "@/global/modelGlobal";
 import { modelフォルダ } from "../modelフォルダ";
 import { jsonUtils } from "./jsonUtils";
-import { useCallback } from "react";
 import { useAtom, useAtomValue } from "jotai";
 
 export const useJson = {
@@ -21,14 +20,8 @@ export const useJson = {
 
 function useGetFileHandle() {
   const folder = useAtomValue(modelフォルダ.folder.atomValue);
-
-  const getFile = useCallback(
-    (path: string, create: boolean) =>
-      getFileHandleFromPath(path, folder, create),
-    [folder],
-  );
-
-  return getFile;
+  return (path: string, create: boolean) =>
+    getFileHandleFromPath(path, folder, create);
 }
 
 function useReadJson() {
