@@ -1,9 +1,9 @@
 import { Watch } from "@/components/share/Watch";
 import { useAtomValue } from "jotai";
 import { modelフォルダ } from "../modelフォルダ";
+import { mapUseOnChangeWatchFolder } from "./mapUseOnChangeWatchFolder";
 
 export function WatchFolder() {
   const folder = useAtomValue(modelフォルダ.folder.atomValue);
-  const useOnChange = modelフォルダ.folder.useOnChange;
-  return <Watch target={folder} useOnChange={useOnChange} />;
+  return <Watch target={folder} useOnChange={mapUseOnChangeWatchFolder} />;
 }

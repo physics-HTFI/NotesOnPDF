@@ -14,7 +14,6 @@ export function useGetCoverages() {
     const pdfs: Coverages["pdfs"] = {};
     if (fileTree) {
       for (const [path, coverage] of Object.entries(coverages.pdfs)) {
-        console.log(path);
         if (findTreeItem(fileTree, path)?.type !== "file") continue;
         pdfs[path] = coverage;
       }

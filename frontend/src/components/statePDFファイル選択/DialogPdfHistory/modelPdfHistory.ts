@@ -2,9 +2,10 @@ import { modelフォルダ } from "@/components/state起動直後/modelフォル
 import { PATH_HISTORY } from "@/types/CONSTANTS";
 import type { PdfHistory, PdfHistoryItem } from "@/types/History";
 import { atom, useSetAtom } from "jotai";
-import { modelPDFファイル } from "../modelPDFファイル";
 import { createPdfHistoryItem } from "./utils/createPdfHistoryItem";
 import type { PdfInfo } from "@/types/PdfInfo";
+import { mapUseOnChangeWatchFolder } from "@/components/state起動直後/WatchFolder/mapUseOnChangeWatchFolder";
+import { mapUseOnChangeWatchPdfInfo } from "../Watch/WatchPdfInfo/mapUseOnChangeWatchPdfInfo";
 
 const atomHistory = atom<PdfHistory>([]);
 
@@ -54,8 +55,10 @@ export const modelPdfHistory = {
 //| Watch
 //|
 
+const modelName = "modlPdfHistory";
+
 // ルート📁が変更されたときに、履歴を読み直す
-modelフォルダ.folder.useOnChange.push(() => {
+mapUseOnChangeWatchFolder.set(modelName, () => {
   const read = modelフォルダ.json.useRead();
   const setHistory = useSetAtom(modelPdfHistory.atom);
   return async () => {
@@ -65,7 +68,7 @@ modelフォルダ.folder.useOnChange.push(() => {
 });
 
 // PDF ファイルが選択されたときに、履歴を更新する
-modelPDFファイル.info.useOnChange.push(() => {
+mapUseOnChangeWatchPdfInfo.set(modelName, () => {
   const update = modelPdfHistory.useUpdate();
   return (info?: PdfInfo) => {
     const item = createPdfHistoryItem(info);

@@ -8,10 +8,10 @@ export function Watch<T>({
   useOnChange,
 }: {
   target: T;
-  useOnChange: (() => (t: T) => void)[];
+  useOnChange: Map<string, () => (t: T) => void>;
 }) {
   const [currentTarget, setCurrentTarget] = useState<T>();
-  const onChange = useOnChange.map((use) => use());
+  const onChange = Array.from(useOnChange).map(([, use]) => use());
 
   if (currentTarget !== target) {
     setTimeout(() => {
@@ -23,6 +23,9 @@ export function Watch<T>({
   }
   return <></>;
 }
+
+// useOnChange の型を Map にしているのは、ホットリロードの時に、
+// モジュールが再度実行されてカスタムフックの数が変わって、エラーになるのを防ぐため。
 
 // setTimeout せずに直接 setState すると以下のエラーが出る：
 // Cannot update a component (A) while rendering a different component (B)

@@ -62,9 +62,6 @@ export const modelフォルダ = {
 
     /** ルートフォルダにパーミッションを設定する */
     useSetPermission: () => useSetAtom(atomSetPermission),
-
-    /** folder の変更時の処理を行うカスタムフックをここに追加する */
-    useOnChange: [] as (() => (folder?: FileSystemDirectoryHandle) => void)[],
   },
 
   準備完了: {

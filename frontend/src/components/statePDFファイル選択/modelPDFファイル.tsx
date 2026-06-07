@@ -10,6 +10,8 @@ import { useContext } from "react";
 import { modelフォルダ } from "../state起動直後/modelフォルダ";
 import { getFileTree } from "./utils/getFileTree/getFileTree";
 import { useGetCoverages } from "./utils/useGetCoverages.ts/useGetCoverages";
+import { mapUseOnChangeWatchPdfPath } from "./Watch/WatchPdfPath/mapUseOnChangeWatchPdfInfo";
+import { mapUseOnChangeWatchFolder } from "../state起動直後/WatchFolder/mapUseOnChangeWatchFolder";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
@@ -32,16 +34,10 @@ export const modelPDFファイル = {
 
   path: {
     atom: atomPath,
-
-    /** path 変更時の処理を行うカスタムフックをここに追加する */
-    useOnChange: [] as (() => (path?: string) => void)[],
   },
 
   info: {
     atom: atomInfo,
-
-    /** info 変更時の処理を行うカスタムフックをここに追加する */
-    useOnChange: [] as (() => (info?: PdfInfo) => void)[],
   },
 };
 
@@ -49,8 +45,10 @@ export const modelPDFファイル = {
 //| Watch
 //|
 
+const modelName = "modelPDFファイル";
+
 // path 変更時の処理
-modelPDFファイル.path.useOnChange.push(() => {
+mapUseOnChangeWatchPdfPath.set(modelName, () => {
   const setWaiting = useSetAtom(modelUi.waiting.atom);
   const setInfo = useSetAtom(modelPDFファイル.info.atom);
   const { model } = useContext(ModelContext);
@@ -101,7 +99,7 @@ modelPDFファイル.path.useOnChange.push(() => {
 });
 
 // folder 変更時の処理
-modelフォルダ.folder.useOnChange.push(() => {
+mapUseOnChangeWatchFolder.set(modelName, () => {
   const folder = useAtomValue(modelフォルダ.folder.atomValue);
   const setFileTree = useSetAtom(atomFileTree);
   const getCoverages = useGetCoverages();

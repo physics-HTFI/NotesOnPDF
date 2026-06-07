@@ -7,8 +7,8 @@ import { findTreeItem } from "@/types/FileTree";
 import { modelフォルダ } from "../state起動直後/modelフォルダ";
 import { useAtom, useAtomValue } from "jotai";
 import { modelUi } from "@/components/global/modelUi";
-import { WatchPdfInfo } from "./Watch/WatchPdfInfo";
-import { WatchPdfPath } from "./Watch/WatchPdfPath";
+import { WatchPdfInfo } from "./Watch/WatchPdfInfo/WatchPdfInfo";
+import { WatchPdfPath } from "./Watch/WatchPdfPath/WatchPdfPath";
 import { modelPDFファイル } from "./modelPDFファイル";
 
 /**
