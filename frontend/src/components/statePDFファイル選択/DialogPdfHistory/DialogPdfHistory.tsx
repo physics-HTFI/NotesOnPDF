@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import TooltipIconButton from "@/components/common/TooltipIconButton";
+import TooltipIconButton from "@/components/share/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { useAtomValue, useSetAtom } from "jotai";
 import { modelPdfHistory } from "./modelPdfHistory";

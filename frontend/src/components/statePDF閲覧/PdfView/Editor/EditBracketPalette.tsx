@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { type Bracket } from "@/types/PdfNotes";
-import Svg from "../../common/Svg";
 import BracketItem from "../Items/Bracket";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import Palette from "@/components/common/Palette/Palette";
+import Palette from "@/components/share/Palette/Palette";
 import getVector from "./getVector";
+import Svg from "@/components/share/Svg";
 
 /**
  * Bracketの編集パレット

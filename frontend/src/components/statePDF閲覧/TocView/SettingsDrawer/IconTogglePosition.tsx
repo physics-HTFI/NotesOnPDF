@@ -1,25 +1,28 @@
-import TooltipIconButton from "@/components/common/TooltipIconButton";
-import { Close } from "@mui/icons-material";
+import TooltipIconButton from "@/components/share/TooltipIconButton";
+import {
+  KeyboardDoubleArrowDown,
+  KeyboardDoubleArrowUp,
+} from "@mui/icons-material";
 import { grey } from "@mui/material/colors";
 import { type ReactNode } from "react";
 
 /**
- * 閉じるボタン
+ * 設定パネル位置変更ボタン
  */
-export default function IconClose({
+export default function IconTogglePosition({
   isBottom,
-  onClose,
+  onToggleSettingsPosition,
 }: {
   isBottom: boolean;
-  onClose: () => void;
+  onToggleSettingsPosition: () => void;
 }): ReactNode {
   return (
     <TooltipIconButton
-      icon={<Close />}
-      onClick={onClose}
+      icon={isBottom ? <KeyboardDoubleArrowUp /> : <KeyboardDoubleArrowDown />}
+      onClick={onToggleSettingsPosition}
       sx={{
         position: "absolute",
-        right: 2,
+        right: 39,
         bottom: isBottom ? undefined : -37,
         top: isBottom ? -37 : undefined,
         color: grey[600],
@@ -29,7 +32,7 @@ export default function IconClose({
           background: grey[300],
         },
       }}
-      tooltipTitle="設定パネルを閉じます"
+      tooltipTitle="設定パネルを移動します"
       tooltipPlacement={isBottom ? "top" : "bottom"}
     />
   );

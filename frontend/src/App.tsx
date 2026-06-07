@@ -3,8 +3,6 @@ import { Group, Panel, Separator } from "react-resizable-panels";
 import { Box, ThemeProvider, createTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import OpenFileDrawer from "@/components/statePDFファイル選択/OpenFileDrawer";
-import PdfView from "@/components/PdfView/PdfView";
-import TocView from "@/components/TocView/TocView";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
 import { ModelContextProvider } from "./contexts/ModelContext/ModelContextProvider";
@@ -12,6 +10,8 @@ import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesCont
 import { Dialog起動直後 } from "./components/state起動直後/Dialog起動直後";
 import { Alert } from "./components/global/Alert";
 import { Waiting } from "./components/global/Waiting";
+import TocView from "./components/statePDF閲覧/TocView/TocView";
+import PdfView from "./components/statePDF閲覧/PdfView/PdfView";
 
 /**
  * 数式表示のコンフィグ

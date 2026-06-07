@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Box } from "@mui/material";
 import { Reply, Restore } from "@mui/icons-material";
 import DialogPdfHistory from "./DialogPdfHistory/DialogPdfHistory";
-import TooltipIconButton from "@/components/common/TooltipIconButton";
+import TooltipIconButton from "@/components/share/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly/ButtonToggleReadOnly";
 import { useAtomValue } from "jotai";

@@ -1,12 +1,12 @@
 import { Box, Chip } from "@mui/material";
 import Arrow from "../Items/Arrow";
-import Svg from "../../common/Svg";
 import Bracket from "../Items/Bracket";
 import Marker from "../Items/Marker";
 import Rect from "../Items/Rect";
 import Polygon from "../Items/Polygon";
 import { Shortcut } from "@mui/icons-material";
 import { type PaletteIconType } from "@/types/AppSettings";
+import Svg from "@/components/share/Svg";
 
 /**
  *  `type`に応じたアイコンを返す

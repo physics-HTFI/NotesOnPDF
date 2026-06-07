@@ -6,13 +6,13 @@ import Memo from "./Items/Memo";
 import PageLink from "./Items/PageLink";
 import Rect from "./Items/Rect";
 import Polygon from "./Items/Polygon";
-import Svg from "../common/Svg";
 import Chip from "./Items/Chip";
 import type { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import MouseContext from "@/contexts/MouseContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import Svg from "@/components/share/Svg";
 
 /**
  * 移動中の注釈を表示するコンポーネント

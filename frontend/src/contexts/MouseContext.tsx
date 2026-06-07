@@ -1,11 +1,11 @@
 import { Box } from "@mui/material";
 import { type ReactNode, createContext, useContext, useState } from "react";
 import PdfNotesContext from "./PdfNotesContext/PdfNotesContext";
-import { usePdf } from "@/components/PdfView/usePdf/usePdf";
 import { ID_PDF_CANVAS, ID_PDF_CONTAINER } from "@/types/CONSTANTS";
 import ModelContext from "./ModelContext/ModelContext";
 import { useSetAtom } from "jotai";
 import { modelUi } from "@/components/global/modelUi";
+import { usePdf } from "@/components/statePDF閲覧/PdfView/usePdf/usePdf";
 
 export interface Mouse {
   pageX: number;

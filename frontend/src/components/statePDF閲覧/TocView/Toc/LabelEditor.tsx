@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { Modal, Paper } from "@mui/material";
-import TextareaAutosize from "@/components/common/TextAreaAutosize";
+import TextareaAutosize from "@/components/share/TextAreaAutosize";
 
 /**
  * ラベルクリック時にポップアップする編集ダイアログ

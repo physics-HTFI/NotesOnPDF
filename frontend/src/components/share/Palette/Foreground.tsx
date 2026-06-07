@@ -83,7 +83,7 @@ function getPolygonPoints(i: number, divisions: number, L: number) {
     getPoint(i + 1, divisions, O, R),
     getPoint(i + 1, divisions, O, r),
     ...[...Array(N).keys()].map((j) =>
-      getPoint(i + 1 - j / N, divisions, O, r)
+      getPoint(i + 1 - j / N, divisions, O, r),
     ),
   ];
 
@@ -97,7 +97,7 @@ function getPoint(
   i: number,
   divisions: number,
   O: number,
-  R: number
+  R: number,
 ): [number, number] {
   const Θ = (2 * Math.PI * (i - 0.5)) / divisions;
   return [O + R * Math.cos(Θ), O + R * Math.sin(Θ)];

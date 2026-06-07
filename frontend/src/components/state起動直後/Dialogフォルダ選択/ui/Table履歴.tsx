@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import TooltipIconButton from "@/components/common/TooltipIconButton";
+import TooltipIconButton from "@/components/share/TooltipIconButton";
 
 /**
  * 履歴を表示するコンポーネント

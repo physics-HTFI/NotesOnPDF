@@ -5,7 +5,7 @@ import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import getInitialNote from "./getInitialNote";
 import Icon from "./Icon";
-import Palette from "@/components/common/Palette/Palette";
+import Palette from "@/components/share/Palette/Palette";
 
 /**
  * PDFビュークリック時に表示されるパレット型コントロール

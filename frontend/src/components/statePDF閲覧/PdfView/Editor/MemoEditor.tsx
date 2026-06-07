@@ -4,7 +4,7 @@ import { type Memo } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import TextareaAutosize from "@/components/common/TextAreaAutosize";
+import TextareaAutosize from "@/components/share/TextAreaAutosize";
 
 /**
  * 注釈メモの編集ダイアログ

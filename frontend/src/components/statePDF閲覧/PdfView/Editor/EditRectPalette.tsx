@@ -1,10 +1,10 @@
 import type { Rect, Polygon } from "@/types/PdfNotes";
-import Svg from "../../common/Svg";
 import RectSvg from "../Items/Rect";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useContext } from "react";
 import MouseContext from "@/contexts/MouseContext";
-import Palette from "@/components/common/Palette/Palette";
+import Palette from "@/components/share/Palette/Palette";
+import Svg from "@/components/share/Svg";
 
 /**
  * 直方体、ポリゴンの編集パレット

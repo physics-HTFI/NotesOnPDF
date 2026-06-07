@@ -1,5 +1,5 @@
 import { Lock, LockOpen } from "@mui/icons-material";
-import TooltipIconButton from "../../common/TooltipIconButton";
+import TooltipIconButton from "../../share/TooltipIconButton";
 import { modelフォルダ } from "../../state起動直後/modelフォルダ";
 import { useAtom } from "jotai";
 

@@ -7,13 +7,13 @@ import PageLink from "./PageLink";
 import Rect from "./Rect";
 import Polygon from "./Polygon";
 import Chip from "./Chip";
-import Svg from "../../common/Svg";
 import type { Mode } from "../SpeedDial";
 import type { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./utils/SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import Svg from "@/components/share/Svg";
 
 /**
  * 注釈を表示するコントロール
