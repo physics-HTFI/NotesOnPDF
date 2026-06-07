@@ -11,29 +11,26 @@ import type AppSettings from "@/types/AppSettings";
 import IconClose from "./IconClose";
 import IconTogglePosition from "./IconTogglePosition";
 import Tabs from "./Tabs";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { modelUi } from "@/components/global/modelUi";
+import { modelPDF閲覧 } from "../../modelPDF閲覧";
 
 /**
  * 設定パネル
  */
 export default function SettingsDrawer() {
-  const { appSettings, setAppSettings } = useContext(ModelContext);
+  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
+  const setAppSettings = modelPDF閲覧.appSettings.useSet();
   const {
     pdfNotes,
     page,
     updaters: { updatePageSettings, getPreferredLabels, updateFileSettings },
   } = useContext(PdfNotesContext);
-  const { model } = useContext(ModelContext);
   const [openDrawer, setOpenDrawer] = useAtom(
     modelUi.openDrawer.pdfFileTree.atom,
   );
 
-  const setAlert = modelUi.alert.useSet();
-  const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
   const [variant, setVariant] = useState<"persistent" | "temporary">(
@@ -52,19 +49,7 @@ export default function SettingsDrawer() {
       ...appSettings,
       ...changed,
     };
-    setAppSettings(newSettings);
-    if (readOnly) return;
-    model.putAppSettings(newSettings).catch(async () => {
-      setAlert(
-        "error",
-        <span>
-          設定ファイルの保存に失敗しました。
-          <br />
-          読み取り専用モードに切り替えました。
-        </span>,
-      );
-      await setReadOnly(true);
-    });
+    void setAppSettings(newSettings);
   };
 
   // 閉じているときは`variant`を`temporary`にすることで、内部コンポーネントの再レンダーを防ぐ

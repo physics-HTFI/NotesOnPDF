@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import MouseContext from "@/contexts/MouseContext";
 import type { Node, NoteType } from "@/types/PdfNotes";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import getInitialNote from "./getInitialNote";
 import Icon from "./Icon";
 import Palette from "@/components/share/Palette/Palette";
+import { modelPDF閲覧 } from "../../modelPDF閲覧";
+import { useAtomValue } from "jotai";
 
 /**
  * PDFビュークリック時に表示されるパレット型コントロール
@@ -18,7 +19,7 @@ export default function AddNotePalette({
   onClose: (note?: NoteType | Node) => void;
 }) {
   const { mouse, pageRect } = useContext(MouseContext);
-  const { appSettings } = useContext(ModelContext);
+  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
   const { pdfNotes } = useContext(PdfNotesContext);
   if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
 

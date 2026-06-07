@@ -7,7 +7,7 @@ import useNewCoverages from "./useNewCoverages";
 import PdfNotesContext from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { modelUi } from "@/components/global/modelUi";
 import { modelPDFファイル } from "@/components/statePDFファイル選択/modelPDFファイル";
 
@@ -42,7 +42,7 @@ const putPdfNotesDebounced = debounce(
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const { model } = useContext(ModelContext);
-  const setCoverages = useSetAtom(modelPDFファイル.coverages.atom);
+  const setCoverages = modelPDFファイル.coverages.useSet();
   const setAlert = modelUi.alert.useSet();
   const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const [id, setId] = useState<string>();
@@ -63,18 +63,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       // 必要であれば`coverages`を更新する
       const newCoverages = getNewCoveragesOrUndefined(id, pdfNotes);
       if (newCoverages) {
-        setCoverages(newCoverages);
-        model.putCoverages(newCoverages).catch(async () => {
-          setAlert(
-            "error",
-            <span>
-              進捗率ファイルの保存に失敗しました。
-              <br />
-              読み取り専用モードに切り替えました。
-            </span>,
-          );
-          await setReadOnly(true);
-        });
+        void setCoverages(newCoverages);
       }
     }
   }, [

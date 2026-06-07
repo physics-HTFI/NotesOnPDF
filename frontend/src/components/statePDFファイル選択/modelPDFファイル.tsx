@@ -12,6 +12,7 @@ import { getFileTree } from "./utils/getFileTree/getFileTree";
 import { useGetCoverages } from "./utils/useGetCoverages.ts/useGetCoverages";
 import { mapUseOnChangeWatchPdfPath } from "./Watch/WatchPdfPath/mapUseOnChangeWatchPdfInfo";
 import { mapUseOnChangeWatchFolder } from "../state起動直後/WatchFolder/mapUseOnChangeWatchFolder";
+import { PATH_COVERAGES } from "@/types/CONSTANTS";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
@@ -23,6 +24,18 @@ const atomInfo = atom<PdfInfo>();
 //|
 
 const atomFileTreeValue = atom((get) => get(atomFileTree));
+const atomCoveragesValue = atom((get) => get(atomCoverages));
+
+function useSetCoverages() {
+  const setCoverages = useSetAtom(atomCoverages);
+  const write = modelフォルダ.json.useSave();
+
+  return async (coverages?: Coverages) => {
+    if (!coverages) return;
+    setCoverages(coverages);
+    await write(coverages, PATH_COVERAGES);
+  };
+}
 
 //|
 //| export
@@ -30,7 +43,7 @@ const atomFileTreeValue = atom((get) => get(atomFileTree));
 
 export const modelPDFファイル = {
   fileTree: { atomValue: atomFileTreeValue },
-  coverages: { atom: atomCoverages },
+  coverages: { atom: atomCoveragesValue, useSet: useSetCoverages },
 
   path: {
     atom: atomPath,

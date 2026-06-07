@@ -1,4 +1,4 @@
-import { type MouseEvent, useContext, useState } from "react";
+import { type MouseEvent, useState } from "react";
 import type {
   Arrow,
   Bracket,
@@ -10,7 +10,8 @@ import type {
 } from "@/types/PdfNotes";
 import { green } from "@mui/material/colors";
 import { type Mode } from "../SpeedDial";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
+import { useAtomValue } from "jotai";
+import { modelPDF閲覧 } from "../../modelPDF閲覧";
 
 /**
  * 注釈形状編集用ノード
@@ -28,7 +29,7 @@ export default function Nodes({
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
 }) {
-  const { appSettings } = useContext(ModelContext);
+  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
 
   // 編集ノードの位置
   const points: [number, number][] =

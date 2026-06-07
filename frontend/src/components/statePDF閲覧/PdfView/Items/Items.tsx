@@ -11,9 +11,10 @@ import type { Mode } from "../SpeedDial";
 import type { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./utils/SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Svg from "@/components/share/Svg";
+import { modelPDF閲覧 } from "../../modelPDF閲覧";
+import { useAtomValue } from "jotai";
 
 /**
  * 注釈を表示するコントロール
@@ -30,7 +31,7 @@ export default function Items({
   onMove: (note: NoteType | NodeType) => void;
 }) {
   const { pageRect, setMouse } = useContext(MouseContext);
-  const { appSettings } = useContext(ModelContext);
+  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
   const {
     page,
     updaters: { popNote },

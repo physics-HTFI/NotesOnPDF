@@ -1,9 +1,10 @@
-import { useCallback, useContext, useState } from "react";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
+import { useCallback, useState } from "react";
 import { type Mode } from "../../SpeedDial";
+import { modelPDF閲覧 } from "@/components/statePDF閲覧/modelPDF閲覧";
+import { useAtomValue } from "jotai";
 
 export default function useCursor(mode?: Mode, disableEditable?: boolean) {
-  const { appSettings } = useContext(ModelContext);
+  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
   const [hover, setHover] = useState(false);
 
   const isAlias = disableEditable
