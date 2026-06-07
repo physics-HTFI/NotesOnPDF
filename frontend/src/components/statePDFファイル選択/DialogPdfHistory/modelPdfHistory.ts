@@ -3,7 +3,7 @@ import { PATH_HISTORY } from "@/types/CONSTANTS";
 import type { PdfHistory, PdfHistoryItem } from "@/types/History";
 import { atom, useSetAtom } from "jotai";
 import { modelPDFファイル } from "../modelPDFファイル";
-import { createPdfHistoryItem } from "./createPdfHistoryItem";
+import { createPdfHistoryItem } from "./utils/createPdfHistoryItem";
 import type { PdfInfo } from "@/types/PdfInfo";
 
 const atomHistory = atom<PdfHistory>([]);

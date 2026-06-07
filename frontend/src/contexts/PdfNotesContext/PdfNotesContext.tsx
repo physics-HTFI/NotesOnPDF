@@ -3,11 +3,6 @@ import type { Page } from "@/types/PdfNotes";
 import { createContext } from "react";
 import { type Updaters } from "./useUpdaters";
 
-export interface PageSize {
-  width: number;
-  height: number;
-}
-
 /**
  * 注釈のコンテクスト
  */
@@ -15,17 +10,14 @@ const PdfNotesContext = createContext<{
   id?: string;
   pdfNotes?: PdfNotes;
   page?: Page;
-  pageSize?: PageSize;
   pageLabel: string;
   imageNum?: number;
   previousPageNum?: number;
   setId: (id?: string) => void;
-  setPageSize: (pageSize?: PageSize) => void;
   updaters: Updaters;
 }>({
   pageLabel: "",
   setId: () => undefined,
-  setPageSize: () => undefined,
   updaters: {
     assignPdfNotes: () => undefined,
     scrollPage: () => undefined,

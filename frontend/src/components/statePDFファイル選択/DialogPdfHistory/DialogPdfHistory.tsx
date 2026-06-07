@@ -13,8 +13,9 @@ import {
 import { Delete } from "@mui/icons-material";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { modelPdfHistory } from "./modelPdfHistory";
+import { modelPDFファイル } from "../modelPDFファイル";
 
 /**
  * PDFを開いた履歴
@@ -24,11 +25,12 @@ export default function DialogPdfHistory({
   onClose,
 }: {
   open: boolean;
-  onClose: (path?: string) => void;
+  onClose: () => void;
 }) {
   const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
   const history = useAtomValue(modelPdfHistory.atom);
   const update = modelPdfHistory.useUpdate();
+  const setPath = useSetAtom(modelPDFファイル.path.atom);
 
   return (
     <Backdrop
@@ -84,7 +86,10 @@ export default function DialogPdfHistory({
                   hover
                   key={row.path}
                   sx={{ cursor: "pointer" }}
-                  onClick={() => onClose(row.path)}
+                  onClick={() => {
+                    setPath(row.path);
+                    onClose();
+                  }}
                 >
                   <TableCell component="th" scope="row" sx={{ height: 30 }}>
                     {row.name}

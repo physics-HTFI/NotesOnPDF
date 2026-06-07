@@ -15,7 +15,7 @@ import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { useAtom } from "jotai";
-import { modelUi } from "@/global/modelUi";
+import { modelUi } from "@/components/global/modelUi";
 
 /**
  * 設定パネル

@@ -1,11 +1,8 @@
-import type { FileTree } from "@/types/FileTree";
 import type Coverages from "@/types/Coverages";
 import type PdfNotes from "@/types/PdfNotes";
 import type AppSettings from "@/types/AppSettings";
 
 export default interface IModel {
-  getFileTree(): Promise<FileTree | undefined>;
-
   getFileHandleFromPath(path?: string): FileSystemFileHandle | undefined;
 
   getCoverages(): Promise<Coverages>;

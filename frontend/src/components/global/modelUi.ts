@@ -3,8 +3,8 @@ import { type ReactNode } from "react";
 
 const atomAlert = atom<{ severity: "error" | "info"; message: ReactNode }>();
 const atomWaiting = atom<boolean>(false);
+const atomOpenPdfFileTreeDrawer = atom<boolean>(true);
 const atomOpenSettingsDrawer = atom<boolean>(false);
-const atomOpenPdfFileTreeDrawer = atom<boolean>(false);
 
 const atomAlertValue = atom((get) => get(atomAlert));
 const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));

@@ -1,5 +1,5 @@
 import ModelContext from "@/contexts/ModelContext/ModelContext";
-import { modelUi } from "@/global/modelUi";
+import { modelUi } from "@/components/global/modelUi";
 import type PdfNotes from "@/types/PdfNotes";
 import {
   type NoteType,

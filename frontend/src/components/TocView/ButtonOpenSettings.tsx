@@ -2,7 +2,7 @@ import { Settings } from "@mui/icons-material";
 import TooltipIconButton from "../common/TooltipIconButton";
 import { grey } from "@mui/material/colors";
 import { useAtom } from "jotai";
-import { modelUi } from "@/global/modelUi";
+import { modelUi } from "@/components/global/modelUi";
 
 export function ButtonOpenSettings() {
   const [openDrawer, setOpenDrawer] = useAtom(

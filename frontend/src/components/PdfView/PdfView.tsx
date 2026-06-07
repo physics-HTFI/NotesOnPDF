@@ -13,7 +13,7 @@ import Move from "./Move";
 import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { PdfImage } from "./PdfImage";
-import { modelUi } from "@/global/modelUi";
+import { modelUi } from "@/components/global/modelUi";
 
 /**
  * Pdfを表示するコンポーネント

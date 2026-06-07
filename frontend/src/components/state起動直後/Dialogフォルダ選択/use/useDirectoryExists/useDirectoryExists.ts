@@ -1,4 +1,4 @@
-import { modelUi } from "@/global/modelUi";
+import { modelUi } from "@/components/global/modelUi";
 import { directoryExistsAsync } from "./directoryExistsAsync";
 
 export function useDirectoryExists() {

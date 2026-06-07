@@ -1,12 +1,14 @@
 import type PdfNotes from "@/types/PdfNotes";
-import { useCallback, useContext } from "react";
-import ModelContext from "../ModelContext/ModelContext";
+import { useCallback } from "react";
 import type Coverages from "@/types/Coverages";
 import { GetCoverage } from "@/types/Coverages";
 import { findTreeItem } from "@/types/FileTree";
+import { useAtomValue } from "jotai";
+import { modelPDFファイル } from "@/components/statePDFファイル選択/modelPDFファイル";
 
 export default function useNewCoverages() {
-  const { fileTree, coverages } = useContext(ModelContext);
+  const fileTree = useAtomValue(modelPDFファイル.fileTree.atomValue);
+  const coverages = useAtomValue(modelPDFファイル.coverages.atom);
 
   /**
    * 更新済みの`coverages`を返す。更新不要の場合は`undefined`。

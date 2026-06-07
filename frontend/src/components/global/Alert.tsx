@@ -1,4 +1,4 @@
-import { modelUi } from "@/global/modelUi";
+import { modelUi } from "@/components/global/modelUi";
 import { Alert as MuiAlert, Snackbar } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { useState } from "react";

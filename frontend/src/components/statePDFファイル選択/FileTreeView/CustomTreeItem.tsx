@@ -6,9 +6,10 @@ import {
   useTreeItemModel,
   type TreeItemProps,
 } from "@mui/x-tree-view";
-import React, { useContext } from "react";
+import React from "react";
 import { CustomLabel, type CustomLabelProps } from "./CustomLabel";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
+import { useAtomValue } from "jotai";
+import { modelPDFファイル } from "../modelPDFファイル";
 
 /**
  * 「開閉アイコンの下に鉛直線が入る」ようにしたもの
@@ -28,7 +29,7 @@ export const CustomTreeItem = React.forwardRef(function CustomTreeItem(
   props: TreeItemProps,
   ref: React.Ref<HTMLLIElement>,
 ) {
-  const { coverages } = useContext(ModelContext);
+  const coverages = useAtomValue(modelPDFファイル.coverages.atom);
 
   const path = useTreeItemModel<FileTree | FileTreeItemPdf>(props.itemId)?.path;
   if (!path) return null;

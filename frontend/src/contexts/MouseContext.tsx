@@ -5,7 +5,7 @@ import { usePdf } from "@/components/PdfView/usePdf/usePdf";
 import { ID_PDF_CANVAS, ID_PDF_CONTAINER } from "@/types/CONSTANTS";
 import ModelContext from "./ModelContext/ModelContext";
 import { useSetAtom } from "jotai";
-import { modelUi } from "@/global/modelUi";
+import { modelUi } from "@/components/global/modelUi";
 
 export interface Mouse {
   pageX: number;

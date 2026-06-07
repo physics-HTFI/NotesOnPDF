@@ -1,7 +1,7 @@
-import { modelUi } from "@/global/modelUi";
+import { modelUi } from "@/components/global/modelUi";
+import { useAtom, useAtomValue } from "jotai";
 import { modelフォルダ } from "../modelフォルダ";
 import { jsonUtils } from "./jsonUtils";
-import { useAtom, useAtomValue } from "jotai";
 
 export const useJson = {
   /** パスからファイルハンドルを取得する */

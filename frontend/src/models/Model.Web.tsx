@@ -1,8 +1,4 @@
-import {
-  findTreeItem,
-  type FileTree,
-  type FileTreeItemPdf,
-} from "@/types/FileTree";
+import { findTreeItem, type FileTree } from "@/types/FileTree";
 import type Coverages from "@/types/Coverages";
 import { GetCoverages_empty } from "@/types/Coverages";
 import type IModel from "./IModel";
@@ -10,7 +6,6 @@ import type { ResultGetPdfNotes } from "./IModel";
 import type AppSettings from "@/types/AppSettings";
 import { GetAppSettings_default } from "@/types/AppSettings";
 import type PdfNotes from "@/types/PdfNotes";
-import { sortChildrenByName } from "./utils/sortChildrenByName";
 
 const PATH_SETTINGS = ".NotesOnPDF/settings.json";
 const PATH_COVERAGES = ".NotesOnPDF/coverages.json";
@@ -19,53 +14,6 @@ export default class ModelWeb implements IModel {
   constructor(private dirHandle: FileSystemDirectoryHandle) {
     this.fileTree = undefined;
   }
-
-  getFileTree = async () => {
-    const fileTree: FileTree = {
-      type: "folder",
-      path: "",
-      name: "root",
-      handle: this.dirHandle,
-      children: [],
-    };
-    await addEntries(fileTree, this.dirHandle);
-    this.fileTree = fileTree;
-    return fileTree;
-
-    async function addEntries(
-      fileTree: FileTree,
-      dHandle: FileSystemDirectoryHandle,
-    ) {
-      // フォルダを追加
-      for await (const [name, handle] of dHandle) {
-        if (handle.kind === "directory") {
-          const path = fileTree.path ? `${fileTree.path}/${name}` : name;
-          const entry: FileTree = {
-            type: "folder",
-            path,
-            name,
-            handle,
-            children: [],
-          };
-          await addEntries(entry, handle);
-          if (entry.children.length === 0) continue; // 空ディレクトリは、ファイルツリー上でPDFファイルとして表示されてしまうので取り除く
-          fileTree.children.push(entry);
-        }
-      }
-      // ファイルを追加
-      for await (const [name, handle] of dHandle) {
-        if (handle.kind === "file") {
-          if (!name.toLowerCase().endsWith(".pdf")) continue;
-          const path = fileTree.path ? `${fileTree.path}/${name}` : name;
-          const entry: FileTreeItemPdf = { type: "file", path, name, handle };
-          fileTree.children.push(entry);
-        }
-      }
-
-      // 👆のままだと名前順にならないのでソートする
-      fileTree.children.sort(sortChildrenByName);
-    }
-  };
 
   getFileHandleFromPath = (path?: string) => {
     if (!this.fileTree || !path) return undefined;

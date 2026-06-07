@@ -1,9 +1,9 @@
-import { useContext } from "react";
 import { RichTreeView } from "@mui/x-tree-view";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
 import { CustomTreeItem } from "./CustomTreeItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
+import { useAtomValue, useSetAtom } from "jotai";
+import { modelPDFファイル } from "../modelPDFファイル";
 
 /**
  * ファイル一覧を表示するコンポーネント
@@ -13,15 +13,14 @@ export default function FileTreeView({
   expandedItemPaths: expandedItemPaths,
   setSelectedItemPath,
   setExpandedItemPaths,
-  onSelectPdf,
 }: {
   selectedItemPath?: string;
   expandedItemPaths: string[];
   setSelectedItemPath: (path: string) => void;
   setExpandedItemPaths: (expanded: string[]) => void;
-  onSelectPdf: (path: string) => void;
 }) {
-  const { fileTree } = useContext(ModelContext);
+  const fileTree = useAtomValue(modelPDFファイル.fileTree.atomValue);
+  const setPath = useSetAtom(modelPDFファイル.path.atom);
 
   if (!fileTree) return null;
   return (
@@ -36,7 +35,7 @@ export default function FileTreeView({
       onSelectedItemsChange={(_, path) => {
         if (!path) return;
         setSelectedItemPath(path);
-        onSelectPdf(path);
+        setPath(path);
       }}
       onExpandedItemsChange={(_, paths) => setExpandedItemPaths(paths)}
       slots={{

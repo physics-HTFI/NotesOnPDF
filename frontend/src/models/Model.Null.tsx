@@ -3,7 +3,6 @@ import type IModel from "./IModel";
 import { GetAppSettings_default } from "@/types/AppSettings";
 
 export default class ModelNull implements IModel {
-  getFileTree = () => Promise.resolve(undefined);
   getFileHandleFromPath = () => undefined;
 
   getCoverages = () => Promise.resolve(GetCoverages_empty());

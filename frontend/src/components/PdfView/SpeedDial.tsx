@@ -13,7 +13,7 @@ import {
 } from "@mui/icons-material";
 import { blue, green, grey, red } from "@mui/material/colors";
 import { useSetAtom } from "jotai";
-import { modelUi } from "@/global/modelUi";
+import { modelUi } from "@/components/global/modelUi";
 
 export type Mode = undefined | "edit" | "move" | "delete";
 

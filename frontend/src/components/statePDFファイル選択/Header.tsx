@@ -10,11 +10,7 @@ import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly/ButtonToggleReadOnl
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
-export default function Header({
-  onSelectPath: onSelectPdfById,
-}: {
-  onSelectPath?: (id: string) => void;
-}) {
+export default function Header() {
   const { initialized } = useContext(ModelContext);
   const [openHistory, setOpenHistory] = useState(false);
   const reset = modelフォルダ.folder.useReset();
@@ -40,11 +36,7 @@ export default function Header({
       />
       <DialogPdfHistory
         open={initialized && openHistory}
-        onClose={(id) => {
-          setOpenHistory(false);
-          if (!id) return;
-          onSelectPdfById?.(id);
-        }}
+        onClose={() => setOpenHistory(false)}
       />
 
       {/* 初期画面に戻るボタン */}
