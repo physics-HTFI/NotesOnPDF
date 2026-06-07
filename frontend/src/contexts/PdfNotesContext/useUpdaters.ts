@@ -1,4 +1,3 @@
-import ModelContext from "@/contexts/ModelContext/ModelContext";
 import { modelUi } from "@/components/global/modelUi";
 import type PdfNotes from "@/types/PdfNotes";
 import {
@@ -9,7 +8,7 @@ import {
   updatePageNum,
 } from "@/types/PdfNotes";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 /**
  * `pdfNotes`の更新用関数群
@@ -91,7 +90,6 @@ export interface Updaters {
  * `pdfNotes`の更新用関数群を返す
  */
 export default function useUpdaters() {
-  const { inert } = useContext(ModelContext);
   const openDrawer = useSetAtom(modelUi.openDrawer.pdfFileTree.atom);
   const waiting = useAtomValue(modelUi.waiting.atom);
   const setAlert = modelUi.alert.useSet();
@@ -102,8 +100,7 @@ export default function useUpdaters() {
   const notesSnapshot = useRef<NoteType[]>(undefined);
   const previousPageNum = useRef<number | undefined>(undefined);
   const page = pdfNotes?.pages[pdfNotes.currentPage];
-  const invalid =
-    !page || openDrawer || waiting || inert || imageNum === undefined;
+  const invalid = !page || openDrawer || waiting || imageNum === undefined;
   const pageLabel = `p. ${page?.num ?? "???"}`;
 
   const updateNotesSnapshot = useCallback(() => {

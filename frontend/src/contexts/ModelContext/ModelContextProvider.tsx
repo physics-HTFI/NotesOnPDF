@@ -33,7 +33,6 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
         model,
         appSettings,
         initialized,
-        inert: false, // Desktop 用
         setModel,
         setAppSettings,
       }}

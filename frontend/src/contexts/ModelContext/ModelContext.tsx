@@ -11,14 +11,11 @@ const ModelContext = createContext<{
   appSettings?: AppSettings;
   /** `appSettings`, `fileTree`, `coverages`の読み込みが終わったら`true` */
   initialized: boolean;
-  /** `true`の時は、注釈などの変更ができてはならない */
-  inert: boolean;
   setModel: (model: IModel) => void;
   setAppSettings: (appSettings: AppSettings) => void;
 }>({
   model: new ModelNull(),
   initialized: false,
-  inert: false,
   setModel: () => undefined,
   setAppSettings: () => undefined,
 });
