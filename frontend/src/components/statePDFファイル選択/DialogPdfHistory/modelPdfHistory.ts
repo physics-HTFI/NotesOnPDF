@@ -13,7 +13,7 @@ const atomHistory = atom<PdfHistory>([]);
  *  履歴の更新を行う
  */
 function useUpdateHistory() {
-  const save = modelフォルダ.json.useSave();
+  const save = modelフォルダ.file.useSaveJson();
   const setHistory = useSetAtom(atomHistory);
 
   return async (arg: TypeUpdateHistory) => {
@@ -59,7 +59,7 @@ const modelName = "modlPdfHistory";
 
 // ルート📁が変更されたときに、履歴を読み直す
 mapUseOnChangeWatchFolder.set(modelName, () => {
-  const read = modelフォルダ.json.useRead();
+  const read = modelフォルダ.file.useReadJson();
   const setHistory = useSetAtom(modelPdfHistory.atom);
   return async () => {
     const history = await read<PdfHistory>(PATH_HISTORY, false);

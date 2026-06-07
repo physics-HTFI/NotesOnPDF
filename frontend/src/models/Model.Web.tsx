@@ -1,4 +1,4 @@
-import { findTreeItem, type FileTree } from "@/types/FileTree";
+import { type FileTree } from "@/types/FileTree";
 import type IModel from "./IModel";
 import type { ResultGetPdfNotes } from "./IModel";
 import type PdfNotes from "@/types/PdfNotes";
@@ -7,13 +7,6 @@ export default class ModelWeb implements IModel {
   constructor(private dirHandle: FileSystemDirectoryHandle) {
     this.fileTree = undefined;
   }
-
-  getFileHandleFromPath = (path?: string) => {
-    if (!this.fileTree || !path) return undefined;
-    const item = findTreeItem(this.fileTree, path);
-    if (!item || item.type !== "file") return undefined;
-    return item.handle;
-  };
 
   getPdfNotes = async (path: string): Promise<ResultGetPdfNotes> => {
     const { name, jsonPath } = this._parsePath(path);

@@ -27,7 +27,7 @@ export default function FileTreeView({
     <RichTreeView
       items={fileTree?.children ?? []}
       itemChildrenIndentation={0}
-      selectedItems={selectedItemPath}
+      selectedItems={selectedItemPath ?? null}
       expandedItems={expandedItemPaths}
       getItemId={(item) => item.path}
       isItemSelectionDisabled={(item) => item.type === "folder"}

@@ -2,7 +2,7 @@ import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { modelUi } from "@/components/global/modelUi";
 import type Coverages from "@/types/Coverages";
-import { type FileTree } from "@/types/FileTree";
+import { findTreeItem, type FileTree } from "@/types/FileTree";
 import type { PdfInfo } from "@/types/PdfInfo";
 import { createOrGetPdfNotes, FORMAT_VERSION } from "@/types/PdfNotes";
 import { atom, useAtomValue, useSetAtom } from "jotai";
@@ -25,10 +25,18 @@ const atomInfo = atom<PdfInfo>();
 
 const atomFileTreeValue = atom((get) => get(atomFileTree));
 const atomCoveragesValue = atom((get) => get(atomCoverages));
+const atomHandleValue = atom((get) => {
+  const fileTree = get(atomFileTree);
+  const path = get(atomPath);
+  if (!fileTree || !path) return undefined;
+  const item = findTreeItem(fileTree, path);
+  if (!item || item.type !== "file") return undefined;
+  return item.handle;
+});
 
 function useSetCoverages() {
   const setCoverages = useSetAtom(atomCoverages);
-  const write = modelフォルダ.json.useSave();
+  const write = modelフォルダ.file.useSaveJson();
 
   return async (coverages?: Coverages) => {
     if (!coverages) return;
@@ -47,6 +55,10 @@ export const modelPDFファイル = {
 
   path: {
     atom: atomPath,
+  },
+
+  handle: {
+    atomValue: atomHandleValue,
   },
 
   info: {
@@ -127,4 +139,6 @@ mapUseOnChangeWatchFolder.set(modelName, () => {
     const coverages = await getCoverages(fileTree);
     setCoverages(coverages);
   };
+  // fileTree は folder から一意的に決まるので、派生 atom にしてもよい。
+  // ただ、coverages の初期値の計算に必要になるので、ここで合わせて設定するようにしている。
 });

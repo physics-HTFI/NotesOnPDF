@@ -1,5 +1,6 @@
 import { atom, useSetAtom } from "jotai";
 import { useJson } from "./useJson/useJson";
+import { useGetFileFromPath } from "./useGetFileFromPath/useGetFileFromPath";
 
 //|
 //| atom
@@ -68,9 +69,9 @@ export const modelフォルダ = {
     atomValue: atom設定完了value,
   },
 
-  json: {
-    useRead: useJson.useRead,
-    useSave: useJson.useSave,
-    useFileHandle: useJson.useGetFileHandle,
+  file: {
+    useReadJson: useJson.useRead,
+    useSaveJson: useJson.useSave,
+    useGetFileFromPath: useGetFileFromPath,
   },
 };

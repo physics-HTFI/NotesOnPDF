@@ -15,7 +15,7 @@ const atomAppSettingsValue = atom((get) => get(atomAppSettings));
 
 function useSetAppSettings() {
   const setAppSettings = useSetAtom(atomAppSettings);
-  const write = modelフォルダ.json.useSave();
+  const write = modelフォルダ.file.useSaveJson();
 
   return async (appSettings?: AppSettings) => {
     if (!appSettings) return;
@@ -41,7 +41,7 @@ const modelName = "modelPDF閲覧";
 // folder 変更時の処理
 mapUseOnChangeWatchFolder.set(modelName, () => {
   const setSettings = useSetAtom(atomAppSettings);
-  const read = modelフォルダ.json.useRead();
+  const read = modelフォルダ.file.useReadJson();
 
   return async () => {
     // settings の取得
