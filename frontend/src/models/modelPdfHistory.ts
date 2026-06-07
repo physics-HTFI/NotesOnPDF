@@ -4,8 +4,7 @@ import type { PdfHistory, PdfHistoryItem } from "@/types/History";
 import { atom, useSetAtom } from "jotai";
 import { createPdfHistoryItem } from "./utils/createPdfHistoryItem";
 import type { PdfInfo } from "@/types/PdfInfo";
-import { mapUseOnChangeWatchFolder } from "@/models/Watch/WatchFolder/mapUseOnChangeWatchFolder";
-import { mapUseOnChangeWatchPdfInfo } from "./Watch/WatchPdfInfo/mapUseOnChangeWatchPdfInfo";
+import { watchMaps } from "./Watch/watchMaps";
 
 const atomHistory = atom<PdfHistory>([]);
 
@@ -58,7 +57,7 @@ export const modelPdfHistory = {
 const modelName = "modlPdfHistory";
 
 // ルート📁が変更されたときに、履歴を読み直す
-mapUseOnChangeWatchFolder.set(modelName, () => {
+watchMaps.folder.set(modelName, () => {
   const read = modelフォルダ.file.useReadJson();
   const setHistory = useSetAtom(modelPdfHistory.atom);
   return async () => {
@@ -68,7 +67,7 @@ mapUseOnChangeWatchFolder.set(modelName, () => {
 });
 
 // PDF ファイルが選択されたときに、履歴を更新する
-mapUseOnChangeWatchPdfInfo.set(modelName, () => {
+watchMaps.pdfInfo.set(modelName, () => {
   const update = modelPdfHistory.useUpdate();
   return (info?: PdfInfo) => {
     const item = createPdfHistoryItem(info);

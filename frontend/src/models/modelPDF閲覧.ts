@@ -1,10 +1,10 @@
 import { atom, useSetAtom } from "jotai";
-import { mapUseOnChangeWatchFolder } from "./Watch/WatchFolder/mapUseOnChangeWatchFolder";
 import { modelフォルダ } from "./modelフォルダ";
 import { PATH_SETTINGS } from "@/types/CONSTANTS";
 import { GetAppSettings_default } from "@/types/AppSettings";
 import type AppSettings from "@/types/AppSettings";
 import type PdfNotes from "@/types/PdfNotes";
+import { watchMaps } from "./Watch/watchMaps";
 
 const atomAppSettings = atom<AppSettings>();
 const atomPdfNotes = atom<PdfNotes>();
@@ -42,7 +42,7 @@ export const modelPDF閲覧 = {
 const modelName = "modelPDF閲覧";
 
 // folder 変更時の処理
-mapUseOnChangeWatchFolder.set(modelName, () => {
+watchMaps.folder.set(modelName, () => {
   const setSettings = useSetAtom(atomAppSettings);
   const read = modelフォルダ.file.useReadJson();
 

@@ -8,13 +8,12 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useContext } from "react";
 import { modelフォルダ } from "./modelフォルダ";
 import { useGetCoverages } from "./utils/useGetCoverages.ts/useGetCoverages";
-import { mapUseOnChangeWatchFolder } from "./Watch/WatchFolder/mapUseOnChangeWatchFolder";
 import { PATH_COVERAGES } from "@/types/CONSTANTS";
 import type PdfNotes from "@/types/PdfNotes";
 import { modelPDF閲覧 } from "./modelPDF閲覧";
 import { parsePath } from "./utils/parsePath";
-import { mapUseOnChangeWatchPdfPath } from "./Watch/WatchPdfPath/mapUseOnChangeWatchPdfInfo";
 import { getFileTree } from "./utils/getFileTree/getFileTree";
+import { watchMaps } from "./Watch/watchMaps";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
@@ -75,7 +74,7 @@ export const modelPDFファイル = {
 const modelName = "modelPDFファイル";
 
 // path 変更時の処理
-mapUseOnChangeWatchPdfPath.set(modelName, () => {
+watchMaps.pdfPath.set(modelName, () => {
   const setWaiting = useSetAtom(modelUi.waiting.atom);
   const setInfo = useSetAtom(modelPDFファイル.info.atom);
   const read = modelフォルダ.file.useReadJson();
@@ -114,7 +113,7 @@ mapUseOnChangeWatchPdfPath.set(modelName, () => {
 });
 
 // folder 変更時の処理
-mapUseOnChangeWatchFolder.set(modelName, () => {
+watchMaps.folder.set(modelName, () => {
   const folder = useAtomValue(modelフォルダ.folder.atomValue);
   const setFileTree = useSetAtom(atomFileTree);
   const getCoverages = useGetCoverages();

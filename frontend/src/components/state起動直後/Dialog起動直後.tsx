@@ -3,7 +3,6 @@ import Dialogパーミッション選択 from "./Dialogパーミッション選�
 import { Dialog } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { modelフォルダ } from "../../models/modelフォルダ";
-import { WatchFolder } from "../../models/Watch/WatchFolder/WatchFolder";
 
 export function Dialog起動直後() {
   const 設定完了 = useAtomValue(modelフォルダ.準備完了.atomValue);
@@ -17,7 +16,6 @@ export function Dialog起動直後() {
           <Dialogパーミッション選択 />
         </Dialog>
       )}
-      <WatchFolder />
     </>
   );
 }

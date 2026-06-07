@@ -11,6 +11,7 @@ import { Alert } from "./components/global/Alert";
 import { Waiting } from "./components/global/Waiting";
 import TocView from "./components/statePDF閲覧/TocView/TocView";
 import PdfView from "./components/statePDF閲覧/PdfView/PdfView";
+import { Watch } from "./models/Watch/Watch";
 
 /**
  * 数式表示のコンフィグ
@@ -119,6 +120,7 @@ export default function App() {
       </MathJaxContext>
       <Alert />
       <Waiting />
+      <Watch />
     </ThemeProvider>
   );
 }

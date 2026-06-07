@@ -7,8 +7,6 @@ import { modelフォルダ } from "../../models/modelフォルダ";
 import { useAtom, useAtomValue } from "jotai";
 import { modelUi } from "@/components/global/modelUi";
 import { modelPDFファイル } from "../../models/modelPDFファイル";
-import { WatchPdfInfo } from "@/models/Watch/WatchPdfInfo/WatchPdfInfo";
-import { WatchPdfPath } from "@/models/Watch/WatchPdfPath/WatchPdfPath";
 
 /**
  * ファイル一覧を表示するドロワー
@@ -73,8 +71,6 @@ export default function OpenFileDrawer() {
           setExpandedItemPaths={setExpanded}
         />
       </Drawer>
-      <WatchPdfInfo />
-      <WatchPdfPath />
     </>
   );
 }

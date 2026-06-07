@@ -1,9 +1,45 @@
+import { useAtomValue } from "jotai";
 import { useState } from "react";
+import { modelPDFファイル } from "../modelPDFファイル";
+import { modelフォルダ } from "../modelフォルダ";
+import { watchMaps } from "./watchMaps";
+
+/**
+ * 変更を監視したい変数を定義する
+ */
+export function Watch() {
+  return (
+    <>
+      <WatchFolder />
+      <WatchPdfPath />
+      <WatchPdfInfo />
+    </>
+  );
+}
+
+//|
+//| private
+//|
+
+function WatchFolder() {
+  const folder = useAtomValue(modelフォルダ.folder.atomValue);
+  return <WatchBase target={folder} useOnChange={watchMaps.folder} />;
+}
+
+function WatchPdfInfo() {
+  const info = useAtomValue(modelPDFファイル.info.atom);
+  return <WatchBase target={info} useOnChange={watchMaps.pdfInfo} />;
+}
+
+function WatchPdfPath() {
+  const path = useAtomValue(modelPDFファイル.path.atom);
+  return <WatchBase target={path} useOnChange={watchMaps.pdfPath} />;
+}
 
 /**
  * `target` が変更されたときに、`onChange`（＝ `useOnChange` の戻り値）を実行する
  */
-export function WatchBase<T>({
+function WatchBase<T>({
   target,
   useOnChange,
 }: {
