@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { type Mode } from "../../SpeedDial";
-import { modelPDF閲覧 } from "@/components/statePDF閲覧/modelPDF閲覧";
+import { modelPDF閲覧 } from "@/models/modelPDF閲覧";
 import { useAtomValue } from "jotai";
 
 export default function useCursor(mode?: Mode, disableEditable?: boolean) {

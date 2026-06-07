@@ -6,7 +6,7 @@ import { Title } from "./ui/Title";
 import { Panelドラッグドロップ } from "./ui/Panelドラッグドロップ";
 import { useFolderHistory } from "./use/useFolderHistory/useFolderHistory";
 import { useAtomValue } from "jotai";
-import { modelフォルダ } from "../modelフォルダ";
+import { modelフォルダ } from "../../../models/modelフォルダ";
 
 /**
  * 基準フォルダを選択するダイアログ

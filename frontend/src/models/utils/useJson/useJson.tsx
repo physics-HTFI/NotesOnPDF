@@ -1,6 +1,6 @@
 import { modelUi } from "@/components/global/modelUi";
 import { useAtom, useAtomValue } from "jotai";
-import { modelフォルダ } from "../modelフォルダ";
+import { modelフォルダ } from "../../modelフォルダ";
 import { jsonUtils } from "./jsonUtils";
 import { useGetFileFromPath } from "../useGetFileFromPath/useGetFileFromPath";
 

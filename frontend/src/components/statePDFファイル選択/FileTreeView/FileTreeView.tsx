@@ -3,7 +3,7 @@ import { CustomTreeItem } from "./CustomTreeItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { useAtomValue, useSetAtom } from "jotai";
-import { modelPDFファイル } from "../modelPDFファイル";
+import { modelPDFファイル } from "../../../models/modelPDFファイル";
 
 /**
  * ファイル一覧を表示するコンポーネント

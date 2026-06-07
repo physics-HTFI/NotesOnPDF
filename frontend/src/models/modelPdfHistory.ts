@@ -1,11 +1,11 @@
-import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
+import { modelフォルダ } from "@/models/modelフォルダ";
 import { PATH_HISTORY } from "@/types/CONSTANTS";
 import type { PdfHistory, PdfHistoryItem } from "@/types/History";
 import { atom, useSetAtom } from "jotai";
 import { createPdfHistoryItem } from "./utils/createPdfHistoryItem";
 import type { PdfInfo } from "@/types/PdfInfo";
-import { mapUseOnChangeWatchFolder } from "@/components/state起動直後/WatchFolder/mapUseOnChangeWatchFolder";
-import { mapUseOnChangeWatchPdfInfo } from "../Watch/WatchPdfInfo/mapUseOnChangeWatchPdfInfo";
+import { mapUseOnChangeWatchFolder } from "@/models/Watch/WatchFolder/mapUseOnChangeWatchFolder";
+import { mapUseOnChangeWatchPdfInfo } from "./Watch/WatchPdfInfo/mapUseOnChangeWatchPdfInfo";
 
 const atomHistory = atom<PdfHistory>([]);
 

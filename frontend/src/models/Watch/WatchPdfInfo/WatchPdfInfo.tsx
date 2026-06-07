@@ -1,9 +1,9 @@
-import { Watch } from "@/components/share/Watch";
+import { WatchBase } from "@/models/Watch/Watch";
 import { useAtomValue } from "jotai";
-import { modelPDFファイル } from "../../modelPDFファイル";
 import { mapUseOnChangeWatchPdfInfo } from "./mapUseOnChangeWatchPdfInfo";
+import { modelPDFファイル } from "@/models/modelPDFファイル";
 
 export function WatchPdfInfo() {
   const info = useAtomValue(modelPDFファイル.info.atom);
-  return <Watch target={info} useOnChange={mapUseOnChangeWatchPdfInfo} />;
+  return <WatchBase target={info} useOnChange={mapUseOnChangeWatchPdfInfo} />;
 }

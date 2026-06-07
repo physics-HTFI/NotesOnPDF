@@ -1,4 +1,4 @@
-import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
+import { modelフォルダ } from "@/models/modelフォルダ";
 import { PATH_COVERAGES } from "@/types/CONSTANTS";
 import type Coverages from "@/types/Coverages";
 import { GetCoverages_empty } from "@/types/Coverages";

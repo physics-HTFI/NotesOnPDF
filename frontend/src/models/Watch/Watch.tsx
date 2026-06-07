@@ -3,7 +3,7 @@ import { useState } from "react";
 /**
  * `target` が変更されたときに、`onChange`（＝ `useOnChange` の戻り値）を実行する
  */
-export function Watch<T>({
+export function WatchBase<T>({
   target,
   useOnChange,
 }: {

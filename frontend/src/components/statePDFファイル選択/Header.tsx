@@ -3,10 +3,10 @@ import { Box } from "@mui/material";
 import { Reply, Restore } from "@mui/icons-material";
 import DialogPdfHistory from "./DialogPdfHistory/DialogPdfHistory";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
-import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
+import { modelフォルダ } from "@/models/modelフォルダ";
 import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly/ButtonToggleReadOnly";
 import { useAtomValue } from "jotai";
-import { modelPDFファイル } from "./modelPDFファイル";
+import { modelPDFファイル } from "../../models/modelPDFファイル";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
@@ -37,7 +37,7 @@ export default function Header() {
         tooltipTitle="アクセス履歴からPDFファイルを開きます"
       />
       <DialogPdfHistory
-        open={disabled && openHistory}
+        open={!disabled && openHistory}
         onClose={() => setOpenHistory(false)}
       />
 

@@ -5,7 +5,7 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import getInitialNote from "./getInitialNote";
 import Icon from "./Icon";
 import Palette from "@/components/share/Palette/Palette";
-import { modelPDF閲覧 } from "../../modelPDF閲覧";
+import { modelPDF閲覧 } from "../../../../models/modelPDF閲覧";
 import { useAtomValue } from "jotai";
 
 /**

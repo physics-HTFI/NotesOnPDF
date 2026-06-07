@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { CustomLabel, type CustomLabelProps } from "./CustomLabel";
 import { useAtomValue } from "jotai";
-import { modelPDFファイル } from "../modelPDFファイル";
+import { modelPDFファイル } from "../../../models/modelPDFファイル";
 
 /**
  * 「開閉アイコンの下に鉛直線が入る」ようにしたもの

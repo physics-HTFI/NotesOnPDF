@@ -4,7 +4,7 @@ import type Coverages from "@/types/Coverages";
 import { GetCoverage } from "@/types/Coverages";
 import { findTreeItem } from "@/types/FileTree";
 import { useAtomValue } from "jotai";
-import { modelPDFファイル } from "@/components/statePDFファイル選択/modelPDFファイル";
+import { modelPDFファイル } from "@/models/modelPDFファイル";
 
 export default function useNewCoverages() {
   const fileTree = useAtomValue(modelPDFファイル.fileTree.atomValue);

@@ -1,6 +1,6 @@
 import { atom, useSetAtom } from "jotai";
-import { useJson } from "./useJson/useJson";
-import { useGetFileFromPath } from "./useGetFileFromPath/useGetFileFromPath";
+import { useJson } from "./utils/useJson/useJson";
+import { useGetFileFromPath } from "./utils/useGetFileFromPath/useGetFileFromPath";
 
 //|
 //| atom

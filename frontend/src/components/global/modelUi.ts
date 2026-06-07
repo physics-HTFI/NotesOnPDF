@@ -10,7 +10,7 @@ const atomAlertValue = atom((get) => get(atomAlert));
 const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
 
 //|
-//| このフォルダ外から利用されるもの
+//| export
 //|
 
 export const modelUi = {

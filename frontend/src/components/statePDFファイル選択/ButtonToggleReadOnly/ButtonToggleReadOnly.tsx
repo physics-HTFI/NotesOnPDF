@@ -1,6 +1,6 @@
 import { Lock, LockOpen } from "@mui/icons-material";
 import TooltipIconButton from "../../share/TooltipIconButton";
-import { modelフォルダ } from "../../state起動直後/modelフォルダ";
+import { modelフォルダ } from "../../../models/modelフォルダ";
 import { useAtom } from "jotai";
 
 export function ButtonToggleReadOnly({ disabled }: { disabled: boolean }) {

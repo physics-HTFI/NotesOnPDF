@@ -13,7 +13,7 @@ import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Svg from "@/components/share/Svg";
 import { useAtomValue } from "jotai";
-import { modelPDF閲覧 } from "../modelPDF閲覧";
+import { modelPDF閲覧 } from "../../../models/modelPDF閲覧";
 
 /**
  * 移動中の注釈を表示するコンポーネント

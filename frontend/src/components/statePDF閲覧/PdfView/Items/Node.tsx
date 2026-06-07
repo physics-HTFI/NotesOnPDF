@@ -11,7 +11,7 @@ import type {
 import { green } from "@mui/material/colors";
 import { type Mode } from "../SpeedDial";
 import { useAtomValue } from "jotai";
-import { modelPDF閲覧 } from "../../modelPDF閲覧";
+import { modelPDF閲覧 } from "../../../../models/modelPDF閲覧";
 
 /**
  * 注釈形状編集用ノード

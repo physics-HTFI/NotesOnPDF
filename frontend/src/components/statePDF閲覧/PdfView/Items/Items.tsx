@@ -13,7 +13,7 @@ import SvgDefs from "./utils/SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Svg from "@/components/share/Svg";
-import { modelPDF閲覧 } from "../../modelPDF閲覧";
+import { modelPDF閲覧 } from "../../../../models/modelPDF閲覧";
 import { useAtomValue } from "jotai";
 
 /**

@@ -12,10 +12,10 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
-import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
+import { modelフォルダ } from "@/models/modelフォルダ";
 import { useAtomValue, useSetAtom } from "jotai";
-import { modelPdfHistory } from "./modelPdfHistory";
-import { modelPDFファイル } from "../modelPDFファイル";
+import { modelPdfHistory } from "../../../models/modelPdfHistory";
+import { modelPDFファイル } from "../../../models/modelPDFファイル";
 
 /**
  * PDFを開いた履歴

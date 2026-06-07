@@ -2,7 +2,7 @@ import { DialogContent, DialogTitle, Stack } from "@mui/material";
 import { Lock, LockOpen, Reply } from "@mui/icons-material";
 import { CardButton } from "./ui/CardButton";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
-import { modelフォルダ } from "../modelフォルダ";
+import { modelフォルダ } from "../../../models/modelフォルダ";
 import { useAtomValue } from "jotai";
 
 /**

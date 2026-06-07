@@ -14,7 +14,7 @@ import Tabs from "./Tabs";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useAtom, useAtomValue } from "jotai";
 import { modelUi } from "@/components/global/modelUi";
-import { modelPDF閲覧 } from "../../modelPDF閲覧";
+import { modelPDF閲覧 } from "../../../../models/modelPDF閲覧";
 
 /**
  * 設定パネル

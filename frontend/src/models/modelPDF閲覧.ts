@@ -1,6 +1,6 @@
 import { atom, useSetAtom } from "jotai";
-import { mapUseOnChangeWatchFolder } from "../state起動直後/WatchFolder/mapUseOnChangeWatchFolder";
-import { modelフォルダ } from "../state起動直後/modelフォルダ";
+import { mapUseOnChangeWatchFolder } from "./Watch/WatchFolder/mapUseOnChangeWatchFolder";
+import { modelフォルダ } from "./modelフォルダ";
 import { PATH_SETTINGS } from "@/types/CONSTANTS";
 import { GetAppSettings_default } from "@/types/AppSettings";
 import type AppSettings from "@/types/AppSettings";

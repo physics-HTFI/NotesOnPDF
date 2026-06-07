@@ -13,7 +13,7 @@ import Move from "./Move";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { PdfImage } from "./PdfImage";
 import { modelUi } from "@/components/global/modelUi";
-import { modelPDF閲覧 } from "../modelPDF閲覧";
+import { modelPDF閲覧 } from "../../../models/modelPDF閲覧";
 import { useAtomValue } from "jotai";
 
 /**

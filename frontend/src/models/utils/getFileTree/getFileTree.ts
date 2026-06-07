@@ -1,5 +1,5 @@
-import { sortChildrenByName } from "@/components/statePDFファイル選択/utils/getFileTree/sortChildrenByName";
 import type { FileTree, FileTreeItemPdf } from "@/types/FileTree";
+import { sortChildrenByName } from "./sortChildrenByName";
 
 export async function getFileTree(folder?: FileSystemDirectoryHandle) {
   if (!folder) return undefined;

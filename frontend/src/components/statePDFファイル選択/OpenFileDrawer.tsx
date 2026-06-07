@@ -3,12 +3,12 @@ import { Drawer } from "@mui/material";
 import Header from "@/components/statePDFファイル選択/Header";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import { findTreeItem } from "@/types/FileTree";
-import { modelフォルダ } from "../state起動直後/modelフォルダ";
+import { modelフォルダ } from "../../models/modelフォルダ";
 import { useAtom, useAtomValue } from "jotai";
 import { modelUi } from "@/components/global/modelUi";
-import { WatchPdfInfo } from "./Watch/WatchPdfInfo/WatchPdfInfo";
-import { WatchPdfPath } from "./Watch/WatchPdfPath/WatchPdfPath";
-import { modelPDFファイル } from "./modelPDFファイル";
+import { modelPDFファイル } from "../../models/modelPDFファイル";
+import { WatchPdfInfo } from "@/models/Watch/WatchPdfInfo/WatchPdfInfo";
+import { WatchPdfPath } from "@/models/Watch/WatchPdfPath/WatchPdfPath";
 
 /**
  * ファイル一覧を表示するドロワー

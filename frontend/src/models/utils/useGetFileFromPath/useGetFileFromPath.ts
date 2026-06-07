@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { modelフォルダ } from "../modelフォルダ";
+import { modelフォルダ } from "../../modelフォルダ";
 
 export function useGetFileFromPath() {
   const folder = useAtomValue(modelフォルダ.folder.atomValue);

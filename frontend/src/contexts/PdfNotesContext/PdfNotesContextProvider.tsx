@@ -3,8 +3,8 @@ import { debounce } from "@mui/material";
 import useNewCoverages from "./useNewCoverages";
 import PdfNotesContext from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
-import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
-import { modelPDFファイル } from "@/components/statePDFファイル選択/modelPDFファイル";
+import { modelフォルダ } from "@/models/modelフォルダ";
+import { modelPDFファイル } from "@/models/modelPDFファイル";
 
 /**
  * 間隔をあけて`pdfNotes`を保存する
