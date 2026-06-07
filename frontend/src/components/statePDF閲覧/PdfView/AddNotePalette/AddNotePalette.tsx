@@ -5,7 +5,7 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import getInitialNote from "./getInitialNote";
 import Icon from "./Icon";
 import Palette from "@/components/share/Palette/Palette";
-import { modelPDF閲覧 } from "../../../../models/modelPDF閲覧";
+import { modelファイル } from "../../../../models/modelファイル";
 import { useAtomValue } from "jotai";
 
 /**
@@ -19,7 +19,7 @@ export default function AddNotePalette({
   onClose: (note?: NoteType | Node) => void;
 }) {
   const { mouse, pageRect } = useContext(MouseContext);
-  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
+  const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const { pdfNotes } = useContext(PdfNotesContext);
   if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
 

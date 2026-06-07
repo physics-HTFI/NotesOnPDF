@@ -1,8 +1,8 @@
-import { modelUi } from "@/components/global/modelUi";
+import { modelUI } from "@/models/modelUI";
 import { useAtom, useAtomValue } from "jotai";
 import { modelフォルダ } from "../../modelフォルダ";
 import { jsonUtils } from "./jsonUtils";
-import { useGetFileFromPath } from "../useGetFileFromPath/useGetFileFromPath";
+import { getFileFromPath } from "./getFileFromPath";
 
 export const useJson = {
   /** 失敗時は undefined が返る */
@@ -17,11 +17,11 @@ export const useJson = {
 //|
 
 function useReadJson() {
-  const getFileFromPath = useGetFileFromPath();
-  const setAlert = modelUi.alert.useSet();
+  const folder = useAtomValue(modelフォルダ.folder.atom);
+  const setAlert = modelUI.alert.useSet();
 
   return async <T,>(path: string, alert: boolean) => {
-    const file = await getFileFromPath(path, false);
+    const file = await getFileFromPath(path, folder, false);
     const value = await jsonUtils.read<T>(file);
     if (alert && !value) {
       setAlert("error", `読み込みに失敗しました："${path}"`);
@@ -32,13 +32,12 @@ function useReadJson() {
 
 function useSaveJson() {
   const folder = useAtomValue(modelフォルダ.folder.atom);
-  const setAlert = modelUi.alert.useSet();
+  const setAlert = modelUI.alert.useSet();
   const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
-  const getFileFromPath = useGetFileFromPath();
 
   return async (object: unknown, path: string) => {
     if (readOnly || !folder || !object) return;
-    const file = await getFileFromPath(path, true);
+    const file = await getFileFromPath(path, folder, true);
     const ok = await jsonUtils.write(object, file);
     if (!ok) {
       await setReadOnly(true);

@@ -4,11 +4,11 @@ import type Coverages from "@/types/Coverages";
 import { GetCoverage } from "@/types/Coverages";
 import { findTreeItem } from "@/types/FileTree";
 import { useAtomValue } from "jotai";
-import { modelPDFファイル } from "@/models/modelPDFファイル";
+import { modelファイル } from "@/models/modelファイル";
 
 export default function useNewCoverages() {
-  const fileTree = useAtomValue(modelPDFファイル.fileTree.atomValue);
-  const coverages = useAtomValue(modelPDFファイル.coverages.atom);
+  const fileTree = useAtomValue(modelファイル.fileTree.atomValue);
+  const coverages = useAtomValue(modelファイル.coverages.atom);
 
   /**
    * 更新済みの`coverages`を返す。更新不要の場合は`undefined`。

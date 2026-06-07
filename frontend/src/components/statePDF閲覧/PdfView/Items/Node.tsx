@@ -11,7 +11,7 @@ import type {
 import { green } from "@mui/material/colors";
 import { type Mode } from "../SpeedDial";
 import { useAtomValue } from "jotai";
-import { modelPDF閲覧 } from "../../../../models/modelPDF閲覧";
+import { modelファイル } from "../../../../models/modelファイル";
 
 /**
  * 注釈形状編集用ノード
@@ -29,7 +29,7 @@ export default function Nodes({
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
 }) {
-  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
+  const appSettings = useAtomValue(modelファイル.appSettings.atom);
 
   // 編集ノードの位置
   const points: [number, number][] =

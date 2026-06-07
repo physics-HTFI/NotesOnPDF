@@ -3,7 +3,7 @@ import { CustomTreeItem } from "./CustomTreeItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { useAtomValue, useSetAtom } from "jotai";
-import { modelPDFファイル } from "../../../models/modelPDFファイル";
+import { modelファイル } from "../../../models/modelファイル";
 
 /**
  * ファイル一覧を表示するコンポーネント
@@ -19,8 +19,8 @@ export default function FileTreeView({
   setSelectedItemPath: (path: string) => void;
   setExpandedItemPaths: (expanded: string[]) => void;
 }) {
-  const fileTree = useAtomValue(modelPDFファイル.fileTree.atomValue);
-  const setPath = useSetAtom(modelPDFファイル.path.atom);
+  const fileTree = useAtomValue(modelファイル.fileTree.atomValue);
+  const setPath = useSetAtom(modelファイル.pdf.atomPath);
 
   if (!fileTree) return null;
   return (

@@ -5,7 +5,7 @@ import { GetCoverages_empty } from "@/types/Coverages";
 import { findTreeItem, type FileTree } from "@/types/FileTree";
 
 export function useGetCoverages() {
-  const read = modelフォルダ.file.useReadJson();
+  const read = modelフォルダ.json.useRead();
 
   return async (fileTree?: FileTree): Promise<Coverages> => {
     const coverages = await read<Coverages>(PATH_COVERAGES, false);

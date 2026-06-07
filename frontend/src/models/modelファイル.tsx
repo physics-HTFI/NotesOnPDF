@@ -1,5 +1,5 @@
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import { modelUi } from "@/components/global/modelUi";
+import { modelUI } from "@/models/modelUI";
 import type Coverages from "@/types/Coverages";
 import { findTreeItem, type FileTree } from "@/types/FileTree";
 import type { PdfInfo } from "@/types/PdfInfo";
@@ -7,18 +7,21 @@ import { createOrGetPdfNotes, FORMAT_VERSION } from "@/types/PdfNotes";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useContext } from "react";
 import { modelフォルダ } from "./modelフォルダ";
-import { useGetCoverages } from "./utils/useGetCoverages.ts/useGetCoverages";
-import { PATH_COVERAGES } from "@/types/CONSTANTS";
+import { useGetCoverages } from "./utils/useGetCoverages";
+import { PATH_COVERAGES, PATH_SETTINGS } from "@/types/CONSTANTS";
 import type PdfNotes from "@/types/PdfNotes";
-import { modelPDF閲覧 } from "./modelPDF閲覧";
 import { parsePath } from "./utils/parsePath";
 import { getFileTree } from "./utils/getFileTree/getFileTree";
 import { watchMaps } from "./Watch/watchMaps";
+import type AppSettings from "@/types/AppSettings";
+import { GetAppSettings_default } from "@/types/AppSettings";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
 const atomPath = atom<string>();
 const atomInfo = atom<PdfInfo>();
+const atomAppSettings = atom<AppSettings>();
+const atomPdfNotes = atom<PdfNotes>();
 
 //|
 //| 派生 atom
@@ -35,9 +38,22 @@ const atomHandleValue = atom((get) => {
   return item.handle;
 });
 
+const atomAppSettingsValue = atom((get) => get(atomAppSettings));
+
+function useSetAppSettings() {
+  const setAppSettings = useSetAtom(atomAppSettings);
+  const write = modelフォルダ.json.useSave();
+
+  return async (appSettings?: AppSettings) => {
+    if (!appSettings) return;
+    setAppSettings(appSettings);
+    await write(appSettings, PATH_SETTINGS);
+  };
+}
+
 function useSetCoverages() {
   const setCoverages = useSetAtom(atomCoverages);
-  const write = modelフォルダ.file.useSaveJson();
+  const write = modelフォルダ.json.useSave();
 
   return async (coverages?: Coverages) => {
     if (!coverages) return;
@@ -50,20 +66,17 @@ function useSetCoverages() {
 //| export
 //|
 
-export const modelPDFファイル = {
+export const modelファイル = {
   fileTree: { atomValue: atomFileTreeValue },
+
   coverages: { atom: atomCoveragesValue, useSet: useSetCoverages },
+  appSettings: { atom: atomAppSettingsValue, useSet: useSetAppSettings },
+  pdfNotes: { atom: atomPdfNotes },
 
-  path: {
-    atom: atomPath,
-  },
-
-  handle: {
-    atomValue: atomHandleValue,
-  },
-
-  info: {
-    atom: atomInfo,
+  pdf: {
+    atomPath: atomPath,
+    atomInfo: atomInfo,
+    atomHandleValue: atomHandleValue,
   },
 };
 
@@ -75,10 +88,12 @@ const id = "modelPDFファイル";
 
 // path 変更時の処理
 watchMaps.pdfPath.set(id, () => {
-  const setWaiting = useSetAtom(modelUi.waiting.atom);
-  const setInfo = useSetAtom(modelPDFファイル.info.atom);
-  const read = modelフォルダ.file.useReadJson();
-  const setPdfNotes = useSetAtom(modelPDF閲覧.pdfNotes.atom);
+  const setWaiting = useSetAtom(modelUI.waiting.atom);
+  const setInfo = useSetAtom(modelファイル.pdf.atomInfo);
+  const read = modelフォルダ.json.useRead();
+  const setPdfNotes = useSetAtom(modelファイル.pdfNotes.atom);
+  const setAlert = modelUI.alert.useSet();
+  const setReadOnly = useSetAtom(modelフォルダ.readOnly.atom);
 
   const {
     setId,
@@ -101,7 +116,15 @@ watchMaps.pdfPath.set(id, () => {
       setPdfNotes(pdfNotes);
       if (pdfNotes && pdfNotes.version !== FORMAT_VERSION) {
         // TODO マイグレーション
-        console.log("バージョンが異なります");
+        setAlert(
+          "error",
+          <>
+            注釈ファイルのバージョンが異なります。 <br />
+            編集するとファイルの内容が失われる可能性があります。 <br />
+            読み取り専用モードに切り替えました。 <br />
+          </>,
+        );
+        await setReadOnly(true);
       }
       assignPdfNotes(createOrGetPdfNotes(jsonPath));
       setId(path);
@@ -118,8 +141,13 @@ watchMaps.folder.set(id, () => {
   const setFileTree = useSetAtom(atomFileTree);
   const getCoverages = useGetCoverages();
   const setCoverages = useSetAtom(atomCoverages);
+  const setSettings = useSetAtom(atomAppSettings);
+  const setPath = useSetAtom(atomPath);
+  const read = modelフォルダ.json.useRead();
 
   return async () => {
+    setPath(undefined);
+
     // fileTree の更新
     const fileTree = await getFileTree(folder);
     setFileTree(fileTree);
@@ -127,6 +155,13 @@ watchMaps.folder.set(id, () => {
     // coverages の更新
     const coverages = await getCoverages(fileTree);
     setCoverages(coverages);
+
+    // settings の取得
+    const settings = {
+      ...GetAppSettings_default(),
+      ...((await read<AppSettings>(PATH_SETTINGS, false)) ?? {}),
+    };
+    setSettings(settings);
   };
   // fileTree は folder から一意的に決まるので、派生 atom にしてもよい。
   // ただ、coverages の初期値の計算に必要になるので、ここで合わせて設定するようにしている。

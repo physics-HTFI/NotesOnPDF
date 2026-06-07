@@ -3,9 +3,9 @@ import { type ReactNode, createContext, useContext, useState } from "react";
 import PdfNotesContext from "./PdfNotesContext/PdfNotesContext";
 import { ID_PDF_CANVAS, ID_PDF_CONTAINER } from "@/types/CONSTANTS";
 import { useAtomValue, useSetAtom } from "jotai";
-import { modelUi } from "@/components/global/modelUi";
+import { modelUI } from "@/models/modelUI";
 import { usePdf } from "@/components/statePDF閲覧/PdfView/usePdf/usePdf";
-import { modelPDFファイル } from "@/models/modelPDFファイル";
+import { modelファイル } from "@/models/modelファイル";
 
 export interface Mouse {
   pageX: number;
@@ -32,8 +32,8 @@ export default MouseContext;
 export function MouseContextProvider({ children }: { children: ReactNode }) {
   const { pdfNotes, imageNum } = useContext(PdfNotesContext);
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const setWaiting = useSetAtom(modelUi.waiting.atom);
-  const setOpenDrawer = useSetAtom(modelUi.openDrawer.pdfFileTree.atom);
+  const setWaiting = useSetAtom(modelUI.waiting.atom);
+  const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
 
   const offset = pdfNotes?.settings
     ? {
@@ -41,7 +41,7 @@ export function MouseContextProvider({ children }: { children: ReactNode }) {
         bottom: pdfNotes?.settings.offsetBottom,
       }
     : undefined;
-  const handle = useAtomValue(modelPDFファイル.handle.atomValue);
+  const handle = useAtomValue(modelファイル.pdf.atomHandleValue);
   const onFinishRead = () => {
     setWaiting(false);
     setOpenDrawer(false);

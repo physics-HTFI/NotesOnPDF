@@ -6,13 +6,13 @@ import TooltipIconButton from "@/components/share/TooltipIconButton";
 import { modelフォルダ } from "@/models/modelフォルダ";
 import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly/ButtonToggleReadOnly";
 import { useAtomValue, useSetAtom } from "jotai";
-import { modelPDFファイル } from "../../models/modelPDFファイル";
+import { modelファイル } from "../../models/modelファイル";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
 export default function Header() {
-  const fileTree = useAtomValue(modelPDFファイル.fileTree.atomValue);
+  const fileTree = useAtomValue(modelファイル.fileTree.atomValue);
   const [openHistory, setOpenHistory] = useState(false);
   const reset = useSetAtom(modelフォルダ.folder.atomReset);
 

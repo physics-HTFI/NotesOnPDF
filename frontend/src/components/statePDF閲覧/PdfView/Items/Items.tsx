@@ -13,7 +13,7 @@ import SvgDefs from "./utils/SvgDefs";
 import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Svg from "@/components/share/Svg";
-import { modelPDF閲覧 } from "../../../../models/modelPDF閲覧";
+import { modelファイル } from "../../../../models/modelファイル";
 import { useAtomValue } from "jotai";
 
 /**
@@ -31,7 +31,7 @@ export default function Items({
   onMove: (note: NoteType | NodeType) => void;
 }) {
   const { pageRect, setMouse } = useContext(MouseContext);
-  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
+  const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const {
     page,
     updaters: { popNote },

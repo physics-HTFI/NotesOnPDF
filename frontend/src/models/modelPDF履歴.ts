@@ -12,7 +12,7 @@ const atomHistory = atom<PdfHistory>([]);
  *  履歴の更新を行う
  */
 function useUpdateHistory() {
-  const save = modelフォルダ.file.useSaveJson();
+  const save = modelフォルダ.json.useSave();
   const setHistory = useSetAtom(atomHistory);
 
   return async (arg: TypeUpdateHistory) => {
@@ -45,7 +45,7 @@ type TypeUpdateHistory =
 //| export
 //|
 
-export const modelPdfHistory = {
+export const modelPDF履歴 = {
   atom: atomHistory,
   useUpdate: useUpdateHistory,
 };
@@ -54,12 +54,12 @@ export const modelPdfHistory = {
 //| watch
 //|
 
-const id = "modlPdfHistory";
+const id = "modelPDF履歴";
 
 // ルート📁が変更されたときに、履歴を読み直す
 watchMaps.folder.set(id, () => {
-  const read = modelフォルダ.file.useReadJson();
-  const setHistory = useSetAtom(modelPdfHistory.atom);
+  const read = modelフォルダ.json.useRead();
+  const setHistory = useSetAtom(modelPDF履歴.atom);
   return async () => {
     const history = await read<PdfHistory>(PATH_HISTORY, false);
     setHistory(history ?? []);
@@ -68,7 +68,7 @@ watchMaps.folder.set(id, () => {
 
 // PDF ファイルが選択されたときに、履歴を更新する
 watchMaps.pdfInfo.set(id, () => {
-  const update = modelPdfHistory.useUpdate();
+  const update = modelPDF履歴.useUpdate();
   return (info?: PdfInfo) => {
     const item = createPdfHistoryItem(info);
     if (!item) return;

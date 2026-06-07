@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
 import { useState } from "react";
-import { modelPDFファイル } from "../modelPDFファイル";
+import { modelファイル } from "../modelファイル";
 import { modelフォルダ } from "../modelフォルダ";
 import { watchMaps } from "./watchMaps";
 
@@ -27,12 +27,12 @@ function WatchFolder() {
 }
 
 function WatchPdfInfo() {
-  const info = useAtomValue(modelPDFファイル.info.atom);
+  const info = useAtomValue(modelファイル.pdf.atomInfo);
   return <WatchBase target={info} useOnChange={watchMaps.pdfInfo} />;
 }
 
 function WatchPdfPath() {
-  const path = useAtomValue(modelPDFファイル.path.atom);
+  const path = useAtomValue(modelファイル.pdf.atomPath);
   return <WatchBase target={path} useOnChange={watchMaps.pdfPath} />;
 }
 

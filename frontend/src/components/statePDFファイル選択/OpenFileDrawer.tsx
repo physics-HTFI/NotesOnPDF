@@ -5,17 +5,17 @@ import FileTreeView from "./FileTreeView/FileTreeView";
 import { findTreeItem } from "@/types/FileTree";
 import { modelフォルダ } from "../../models/modelフォルダ";
 import { useAtom, useAtomValue } from "jotai";
-import { modelUi } from "@/components/global/modelUi";
-import { modelPDFファイル } from "../../models/modelPDFファイル";
+import { modelUI } from "@/models/modelUI";
+import { modelファイル } from "../../models/modelファイル";
 
 /**
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
-  const fileTree = useAtomValue(modelPDFファイル.fileTree.atomValue);
-  const recentPath = useAtomValue(modelPDFファイル.coverages.atom)?.recentPath;
+  const fileTree = useAtomValue(modelファイル.fileTree.atomValue);
+  const recentPath = useAtomValue(modelファイル.coverages.atom)?.recentPath;
   const [openDrawer, setOpenDrawer] = useAtom(
-    modelUi.openDrawer.pdfFileTree.atom,
+    modelUI.openDrawer.pdfFileTree.atom,
   );
 
   const readOnly = useAtomValue(modelフォルダ.readOnly.atom);

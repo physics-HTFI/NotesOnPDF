@@ -1,4 +1,4 @@
-import { modelUi } from "@/components/global/modelUi";
+import { modelUI } from "@/models/modelUI";
 import type PdfNotes from "@/types/PdfNotes";
 import {
   type NoteType,
@@ -90,10 +90,10 @@ export interface Updaters {
  * `pdfNotes`の更新用関数群を返す
  */
 export default function useUpdaters() {
-  const openDrawer = useSetAtom(modelUi.openDrawer.pdfFileTree.atom);
-  const waiting = useAtomValue(modelUi.waiting.atom);
-  const setAlert = modelUi.alert.useSet();
-  const clearAlert = modelUi.alert.useClear();
+  const openDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
+  const waiting = useAtomValue(modelUI.waiting.atom);
+  const setAlert = modelUI.alert.useSet();
+  const clearAlert = useSetAtom(modelUI.alert.atomClear);
   const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
   const [imageNum, setImageNum] = useState<number>();
   const pdfNotesSnapshot = useRef<PdfNotes>(undefined);

@@ -12,16 +12,16 @@ import { grey } from "@mui/material/colors";
 import Move from "./Move";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { PdfImage } from "./PdfImage";
-import { modelUi } from "@/components/global/modelUi";
-import { modelPDF閲覧 } from "../../../models/modelPDF閲覧";
-import { useAtomValue } from "jotai";
+import { modelUI } from "@/models/modelUI";
+import { modelファイル } from "../../../models/modelファイル";
+import { useAtomValue, useSetAtom } from "jotai";
 
 /**
  * Pdfを表示するコンポーネント
  */
 export default function PdfView() {
-  const clearAlert = modelUi.alert.useClear();
-  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
+  const clearAlert = useSetAtom(modelUI.alert.atomClear);
+  const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
   const {
     page,

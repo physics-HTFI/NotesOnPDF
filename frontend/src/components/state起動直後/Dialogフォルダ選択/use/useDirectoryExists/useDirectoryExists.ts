@@ -1,8 +1,8 @@
-import { modelUi } from "@/components/global/modelUi";
+import { modelUI } from "@/models/modelUI";
 import { directoryExistsAsync } from "./directoryExistsAsync";
 
 export function useDirectoryExists() {
-  const setAlert = modelUi.alert.useSet();
+  const setAlert = modelUI.alert.useSet();
 
   const ifExists = async (
     dirHandle: FileSystemDirectoryHandle,

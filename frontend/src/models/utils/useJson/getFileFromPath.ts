@@ -1,20 +1,9 @@
-import { useAtomValue } from "jotai";
-import { modelフォルダ } from "../../modelフォルダ";
-
-export function useGetFileFromPath() {
-  const folder = useAtomValue(modelフォルダ.folder.atom);
-
-  return async (path: string | undefined, create: boolean) => {
-    return getFileHandleFromPath(path, folder, create);
-  };
-}
-
 /**
  * `dirHandle` からの相対パス `path` を用いてファイルハンドルを取得する。
  * 例：`path = "path/to/file.txt"`。
  * 失敗時は `undefined` が返る。
  */
-async function getFileHandleFromPath(
+export async function getFileFromPath(
   path: string | undefined,
   dirHandle: FileSystemDirectoryHandle | undefined,
   create: boolean,

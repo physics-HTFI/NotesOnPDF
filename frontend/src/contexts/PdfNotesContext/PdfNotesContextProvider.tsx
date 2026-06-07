@@ -4,7 +4,7 @@ import useNewCoverages from "./useNewCoverages";
 import PdfNotesContext from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
 import { modelフォルダ } from "@/models/modelフォルダ";
-import { modelPDFファイル } from "@/models/modelPDFファイル";
+import { modelファイル } from "@/models/modelファイル";
 
 /**
  * 間隔をあけて`pdfNotes`を保存する
@@ -18,12 +18,12 @@ const putPdfNotesDebounced = debounce(
  * `AppSettingsContext`のプロバイダー
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
-  const setCoverages = modelPDFファイル.coverages.useSet();
+  const setCoverages = modelファイル.coverages.useSet();
   const [id, setId] = useState<string>();
   const { getNewCoveragesOrUndefined } = useNewCoverages();
   const updaters = useUpdaters();
   const pdfNotes = updaters.pdfNotes;
-  const save = modelフォルダ.file.useSaveJson();
+  const save = modelフォルダ.json.useSave();
 
   // `pdfNotes`が変更されたときの処理
   useEffect(() => {

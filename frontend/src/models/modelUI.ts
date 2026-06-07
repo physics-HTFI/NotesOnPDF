@@ -6,6 +6,10 @@ const atomWaiting = atom<boolean>(false);
 const atomOpenPdfFileTreeDrawer = atom<boolean>(true);
 const atomOpenSettingsDrawer = atom<boolean>(false);
 
+//|
+//| 派生 atom
+//|
+
 const atomAlertValue = atom((get) => get(atomAlert));
 const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
 
@@ -13,17 +17,17 @@ const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
 //| export
 //|
 
-export const modelUi = {
+export const modelUI = {
   /** メッセージトーストを表示する */
   alert: {
     atomValue: atomAlertValue,
-    useClear: () => useSetAtom(atomAlertClear),
+    atomClear: atomAlertClear,
 
-    /** 例：`set("error", "失敗しました")` */
+    /** アラートを簡潔に設定できるようにしたもの。例：`set("error", "失敗しました")` */
     useSet: () => {
       const set = useSetAtom(atomAlert);
-      return (type: "error" | "info", message: ReactNode) =>
-        set({ severity: type, message });
+      return (severity: "error" | "info", message: ReactNode) =>
+        set({ severity, message });
     },
   },
 

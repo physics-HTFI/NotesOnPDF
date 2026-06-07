@@ -13,22 +13,22 @@ import IconTogglePosition from "./IconTogglePosition";
 import Tabs from "./Tabs";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useAtom, useAtomValue } from "jotai";
-import { modelUi } from "@/components/global/modelUi";
-import { modelPDF閲覧 } from "../../../../models/modelPDF閲覧";
+import { modelUI } from "@/models/modelUI";
+import { modelファイル } from "../../../../models/modelファイル";
 
 /**
  * 設定パネル
  */
 export default function SettingsDrawer() {
-  const appSettings = useAtomValue(modelPDF閲覧.appSettings.atom);
-  const setAppSettings = modelPDF閲覧.appSettings.useSet();
+  const appSettings = useAtomValue(modelファイル.appSettings.atom);
+  const setAppSettings = modelファイル.appSettings.useSet();
   const {
     pdfNotes,
     page,
     updaters: { updatePageSettings, getPreferredLabels, updateFileSettings },
   } = useContext(PdfNotesContext);
   const [openDrawer, setOpenDrawer] = useAtom(
-    modelUi.openDrawer.pdfFileTree.atom,
+    modelUI.openDrawer.pdfFileTree.atom,
   );
 
   const [tab, setTab] = useState(0);

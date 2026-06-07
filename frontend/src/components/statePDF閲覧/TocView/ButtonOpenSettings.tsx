@@ -1,12 +1,12 @@
 import { Settings } from "@mui/icons-material";
 import { grey } from "@mui/material/colors";
 import { useAtom } from "jotai";
-import { modelUi } from "@/components/global/modelUi";
+import { modelUI } from "@/models/modelUI";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
 
 export function ButtonOpenSettings() {
   const [openDrawer, setOpenDrawer] = useAtom(
-    modelUi.openDrawer.pdfFileTree.atom,
+    modelUI.openDrawer.pdfFileTree.atom,
   );
   return (
     <TooltipIconButton
