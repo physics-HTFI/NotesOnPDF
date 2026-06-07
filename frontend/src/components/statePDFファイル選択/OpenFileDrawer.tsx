@@ -1,8 +1,7 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Drawer } from "@mui/material";
 import Header from "@/components/statePDFファイル選択/Header";
 import FileTreeView from "./FileTreeView/FileTreeView";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { findTreeItem } from "@/types/FileTree";
 import { modelフォルダ } from "../state起動直後/modelフォルダ";
 import { useAtom, useAtomValue } from "jotai";
@@ -16,24 +15,18 @@ import { modelPDFファイル } from "./modelPDFファイル";
  */
 export default function OpenFileDrawer() {
   const fileTree = useAtomValue(modelPDFファイル.fileTree.atomValue);
-  const coverages = useAtomValue(modelPDFファイル.coverages.atom);
+  const recentPath = useAtomValue(modelPDFファイル.coverages.atom)?.recentPath;
   const [openDrawer, setOpenDrawer] = useAtom(
     modelUi.openDrawer.pdfFileTree.atom,
   );
 
   const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
-  const { id } = useContext(PdfNotesContext);
-  // FileTreeViewの選択と折り畳み状態（FileTreeViewの内部で保持するとドロワーを閉じたときにアンマウントされて消えてしまう）
   const [selectedPath, setSelectedPath] = useState<string>();
   const [expanded, setExpanded] = useState<string[]>([]);
 
   // 前回のファイルを選択した状態にする
-  if (
-    selectedPath === undefined &&
-    fileTree &&
-    coverages?.recentPath !== undefined
-  ) {
-    const path = findTreeItem(fileTree, coverages.recentPath)?.path;
+  if (selectedPath === undefined && fileTree && recentPath) {
+    const path = findTreeItem(fileTree, recentPath)?.path;
     if (path) {
       setSelectedPath(path);
       setExpanded(
@@ -42,7 +35,7 @@ export default function OpenFileDrawer() {
         ),
       );
     } else {
-      setSelectedPath("");
+      setSelectedPath(undefined);
     }
   }
 
@@ -51,10 +44,7 @@ export default function OpenFileDrawer() {
       <Drawer
         anchor="left"
         open={openDrawer}
-        onClose={() => {
-          if (!id) return;
-          setOpenDrawer(false);
-        }}
+        onClose={() => setOpenDrawer(false)}
         slotProps={{
           paper: {
             square: false,

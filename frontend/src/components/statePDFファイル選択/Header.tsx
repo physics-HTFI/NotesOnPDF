@@ -1,20 +1,22 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Box } from "@mui/material";
 import { Reply, Restore } from "@mui/icons-material";
 import DialogPdfHistory from "./DialogPdfHistory/DialogPdfHistory";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
 import TooltipIconButton from "@/components/common/TooltipIconButton";
 import { modelフォルダ } from "@/components/state起動直後/modelフォルダ";
 import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly/ButtonToggleReadOnly";
+import { useAtomValue } from "jotai";
+import { modelPDFファイル } from "./modelPDFファイル";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
 export default function Header() {
-  const { initialized } = useContext(ModelContext);
+  const fileTree = useAtomValue(modelPDFファイル.fileTree.atomValue);
   const [openHistory, setOpenHistory] = useState(false);
   const reset = modelフォルダ.folder.useReset();
 
+  const disabled = !fileTree;
   return (
     <Box
       sx={{
@@ -25,17 +27,17 @@ export default function Header() {
       }}
     >
       {/* パーミッション切替ボタン */}
-      <ButtonToggleReadOnly disabled={!initialized} />
+      <ButtonToggleReadOnly disabled={disabled} />
 
       {/* アクセス履歴からPDFファイルを開く */}
       <TooltipIconButton
-        disabled={!initialized}
+        disabled={disabled}
         icon={<Restore />}
         onClick={() => setOpenHistory(true)}
         tooltipTitle="アクセス履歴からPDFファイルを開きます"
       />
       <DialogPdfHistory
-        open={initialized && openHistory}
+        open={disabled && openHistory}
         onClose={() => setOpenHistory(false)}
       />
 

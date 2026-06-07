@@ -12,14 +12,12 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
   const [model, setModel] = useState<IModel>(() => new ModelNull());
   //const setAlert = modelUi.alert.useSet();
   const [appSettings, setAppSettings] = useState<AppSettings>();
-  const [initialized, setInitialized] = useState(false);
 
   // `appSettings, FileTree, Coverages`を取得する
   useEffect(() => {
     loadAll(model)
       .then(({ appSettings }) => {
         setAppSettings(appSettings);
-        setInitialized(true);
       })
       .catch((e?: Error) => {
         if (!e?.message) return;
@@ -32,7 +30,6 @@ export function ModelContextProvider({ children }: { children: ReactNode }) {
       value={{
         model,
         appSettings,
-        initialized,
         setModel,
         setAppSettings,
       }}

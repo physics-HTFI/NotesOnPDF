@@ -9,13 +9,10 @@ import { createContext } from "react";
 const ModelContext = createContext<{
   model: IModel;
   appSettings?: AppSettings;
-  /** `appSettings`, `fileTree`, `coverages`の読み込みが終わったら`true` */
-  initialized: boolean;
   setModel: (model: IModel) => void;
   setAppSettings: (appSettings: AppSettings) => void;
 }>({
   model: new ModelNull(),
-  initialized: false,
   setModel: () => undefined,
   setAppSettings: () => undefined,
 });
