@@ -1,4 +1,3 @@
-import ModelContext from "@/contexts/ModelContext/ModelContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { modelUi } from "@/components/global/modelUi";
 import type Coverages from "@/types/Coverages";
@@ -13,6 +12,9 @@ import { useGetCoverages } from "./utils/useGetCoverages.ts/useGetCoverages";
 import { mapUseOnChangeWatchPdfPath } from "./Watch/WatchPdfPath/mapUseOnChangeWatchPdfInfo";
 import { mapUseOnChangeWatchFolder } from "../state起動直後/WatchFolder/mapUseOnChangeWatchFolder";
 import { PATH_COVERAGES } from "@/types/CONSTANTS";
+import type PdfNotes from "@/types/PdfNotes";
+import { modelPDF閲覧 } from "../statePDF閲覧/modelPDF閲覧";
+import { parsePath } from "../statePDF閲覧/utils/parsePath";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
@@ -76,15 +78,15 @@ const modelName = "modelPDFファイル";
 mapUseOnChangeWatchPdfPath.set(modelName, () => {
   const setWaiting = useSetAtom(modelUi.waiting.atom);
   const setInfo = useSetAtom(modelPDFファイル.info.atom);
-  const { model } = useContext(ModelContext);
+  const read = modelフォルダ.file.useReadJson();
+  const setPdfNotes = useSetAtom(modelPDF閲覧.pdfNotes.atom);
 
-  const setAlert = modelUi.alert.useSet();
   const {
     setId,
     updaters: { assignPdfNotes },
   } = useContext(PdfNotesContext);
 
-  return (path) => {
+  return async (path) => {
     document.title = "NotesOnPDF";
     if (!path) {
       setInfo(undefined);
@@ -94,32 +96,20 @@ mapUseOnChangeWatchPdfPath.set(modelName, () => {
     setInfo({ path });
 
     assignPdfNotes(undefined);
-    model
-      .getPdfNotes(path)
-      .then((result) => {
-        if (result.pdfNotes && result.pdfNotes.version > FORMAT_VERSION) {
-          setAlert(
-            "error",
-            <span>
-              NotesOnPDFのバージョンが古すぎます。
-              <br />
-              新しいNotesOnPDFを使用してください。
-            </span>,
-          );
-          return;
-        }
-        result.name = result.name.replace(/.pdf$/i, "");
-        assignPdfNotes(createOrGetPdfNotes(result));
-        setId(path);
-        document.title = result.name;
-      })
-      .catch(() => {
-        setAlert(
-          "error",
-          "PDFファイル (または注釈ファイル) の読み込みに失敗しました",
-        );
-        setWaiting(false);
-      });
+    const jsonPath = parsePath(path);
+    if (jsonPath) {
+      const pdfNotes = await read<PdfNotes>(jsonPath.jsonPath, false);
+      setPdfNotes(pdfNotes);
+      if (pdfNotes && pdfNotes.version !== FORMAT_VERSION) {
+        // TODO マイグレーション
+        console.log("バージョンが異なります");
+      }
+      assignPdfNotes(createOrGetPdfNotes(jsonPath));
+      setId(path);
+      document.title = jsonPath.name;
+    } else {
+      setWaiting(false);
+    }
   };
 });
 

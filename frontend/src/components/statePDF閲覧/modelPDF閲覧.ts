@@ -4,8 +4,10 @@ import { modelフォルダ } from "../state起動直後/modelフォルダ";
 import { PATH_SETTINGS } from "@/types/CONSTANTS";
 import { GetAppSettings_default } from "@/types/AppSettings";
 import type AppSettings from "@/types/AppSettings";
+import type PdfNotes from "@/types/PdfNotes";
 
 const atomAppSettings = atom<AppSettings>();
+const atomPdfNotes = atom<PdfNotes>();
 
 //|
 //| 派生 atom
@@ -30,6 +32,7 @@ function useSetAppSettings() {
 
 export const modelPDF閲覧 = {
   appSettings: { atom: atomAppSettingsValue, useSet: useSetAppSettings },
+  pdfNotes: { atom: atomPdfNotes },
 };
 
 //|

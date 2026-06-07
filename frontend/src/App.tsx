@@ -5,7 +5,6 @@ import { grey } from "@mui/material/colors";
 import OpenFileDrawer from "@/components/statePDFファイル選択/OpenFileDrawer";
 import { MathJaxContext } from "better-react-mathjax";
 import { MouseContextProvider } from "./contexts/MouseContext";
-import { ModelContextProvider } from "./contexts/ModelContext/ModelContextProvider";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesContextProvider";
 import { Dialog起動直後 } from "./components/state起動直後/Dialog起動直後";
 import { Alert } from "./components/global/Alert";
@@ -82,44 +81,42 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <ModelContextProvider>
-        {/* フォルダ選択ダイアログ */}
-        <Dialog起動直後 />
+      {/* フォルダ選択ダイアログ */}
+      <Dialog起動直後 />
 
-        <MathJaxContext version={4} config={mathjaxConfig}>
-          <PdfNotesContextProvider>
-            <Box sx={{ userSelect: "none" }}>
-              {/* ファイルツリー */}
-              <OpenFileDrawer />
+      <MathJaxContext version={4} config={mathjaxConfig}>
+        <PdfNotesContextProvider>
+          <Box sx={{ userSelect: "none" }}>
+            {/* ファイルツリー */}
+            <OpenFileDrawer />
 
-              <Group>
-                {/* 目次 */}
-                <Panel defaultSize={270} minSize={40}>
-                  <TocView />
-                </Panel>
+            <Group>
+              {/* 目次 */}
+              <Panel defaultSize={270} minSize={40}>
+                <TocView />
+              </Panel>
 
-                {/* リサイズハンドル */}
-                <Separator>
-                  <Box
-                    sx={{
-                      width: 5,
-                      height: "100vh",
-                      background: grey[400],
-                    }}
-                  />
-                </Separator>
+              {/* リサイズハンドル */}
+              <Separator>
+                <Box
+                  sx={{
+                    width: 5,
+                    height: "100vh",
+                    background: grey[400],
+                  }}
+                />
+              </Separator>
 
-                {/* PDFビュー */}
-                <Panel minSize={200}>
-                  <MouseContextProvider>
-                    <PdfView />
-                  </MouseContextProvider>
-                </Panel>
-              </Group>
-            </Box>
-          </PdfNotesContextProvider>
-        </MathJaxContext>
-      </ModelContextProvider>
+              {/* PDFビュー */}
+              <Panel minSize={200}>
+                <MouseContextProvider>
+                  <PdfView />
+                </MouseContextProvider>
+              </Panel>
+            </Group>
+          </Box>
+        </PdfNotesContextProvider>
+      </MathJaxContext>
       <Alert />
       <Waiting />
     </ThemeProvider>

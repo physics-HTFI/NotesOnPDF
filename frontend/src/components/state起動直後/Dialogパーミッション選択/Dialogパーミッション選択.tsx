@@ -4,9 +4,6 @@ import { CardButton } from "./ui/CardButton";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
 import { modelフォルダ } from "../modelフォルダ";
 import { useAtomValue } from "jotai";
-import ModelWeb from "@/models/Model.Web";
-import ModelContext from "@/contexts/ModelContext/ModelContext";
-import { useContext } from "react";
 
 /**
  * `folder` に対し、「読み込み専用」か「書き込み可能」かを選択するダイアログ
@@ -15,13 +12,11 @@ export default function Dialogパーミッション選択() {
   const folder = useAtomValue(modelフォルダ.folder.atomValue);
   const reset = modelフォルダ.folder.useReset();
   const setPermission = modelフォルダ.folder.useSetPermission();
-  const { setModel } = useContext(ModelContext);
 
   if (!folder) return null;
 
   const handlePermissionSelected = async (mode: "read" | "readwrite") => {
     await setPermission(mode);
-    setModel(new ModelWeb(folder));
   };
 
   return (
