@@ -5,7 +5,7 @@ import { useAtomValue } from "jotai";
 import { modelフォルダ } from "../../models/modelフォルダ";
 
 export function Dialog起動直後() {
-  const 設定完了 = useAtomValue(modelフォルダ.準備完了.atomValue);
+  const 設定完了 = useAtomValue(modelフォルダ.folder.atom選択完了Value);
 
   // <Dialog> を括り出しておかないと、切り替え時に画面が一瞬白くなる
   return (

@@ -22,7 +22,7 @@ export function Watch() {
 //|
 
 function WatchFolder() {
-  const folder = useAtomValue(modelフォルダ.folder.atomValue);
+  const folder = useAtomValue(modelフォルダ.folder.atom);
   return <WatchBase target={folder} useOnChange={watchMaps.folder} />;
 }
 

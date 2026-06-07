@@ -51,13 +51,13 @@ export const modelPdfHistory = {
 };
 
 //|
-//| Watch
+//| watch
 //|
 
-const modelName = "modlPdfHistory";
+const id = "modlPdfHistory";
 
 // ルート📁が変更されたときに、履歴を読み直す
-watchMaps.folder.set(modelName, () => {
+watchMaps.folder.set(id, () => {
   const read = modelフォルダ.file.useReadJson();
   const setHistory = useSetAtom(modelPdfHistory.atom);
   return async () => {
@@ -67,7 +67,7 @@ watchMaps.folder.set(modelName, () => {
 });
 
 // PDF ファイルが選択されたときに、履歴を更新する
-watchMaps.pdfInfo.set(modelName, () => {
+watchMaps.pdfInfo.set(id, () => {
   const update = modelPdfHistory.useUpdate();
   return (info?: PdfInfo) => {
     const item = createPdfHistoryItem(info);

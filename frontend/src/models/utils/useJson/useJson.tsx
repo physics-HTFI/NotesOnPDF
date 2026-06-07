@@ -31,7 +31,7 @@ function useReadJson() {
 }
 
 function useSaveJson() {
-  const folder = useAtomValue(modelフォルダ.folder.atomValue);
+  const folder = useAtomValue(modelフォルダ.folder.atom);
   const setAlert = modelUi.alert.useSet();
   const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
   const getFileFromPath = useGetFileFromPath();

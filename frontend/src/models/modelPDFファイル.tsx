@@ -68,13 +68,13 @@ export const modelPDFファイル = {
 };
 
 //|
-//| Watch
+//| watch
 //|
 
-const modelName = "modelPDFファイル";
+const id = "modelPDFファイル";
 
 // path 変更時の処理
-watchMaps.pdfPath.set(modelName, () => {
+watchMaps.pdfPath.set(id, () => {
   const setWaiting = useSetAtom(modelUi.waiting.atom);
   const setInfo = useSetAtom(modelPDFファイル.info.atom);
   const read = modelフォルダ.file.useReadJson();
@@ -113,8 +113,8 @@ watchMaps.pdfPath.set(modelName, () => {
 });
 
 // folder 変更時の処理
-watchMaps.folder.set(modelName, () => {
-  const folder = useAtomValue(modelフォルダ.folder.atomValue);
+watchMaps.folder.set(id, () => {
+  const folder = useAtomValue(modelフォルダ.folder.atom);
   const setFileTree = useSetAtom(atomFileTree);
   const getCoverages = useGetCoverages();
   const setCoverages = useSetAtom(atomCoverages);

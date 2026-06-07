@@ -2,7 +2,7 @@ import { useAtomValue } from "jotai";
 import { modelフォルダ } from "../../modelフォルダ";
 
 export function useGetFileFromPath() {
-  const folder = useAtomValue(modelフォルダ.folder.atomValue);
+  const folder = useAtomValue(modelフォルダ.folder.atom);
 
   return async (path: string | undefined, create: boolean) => {
     return getFileHandleFromPath(path, folder, create);

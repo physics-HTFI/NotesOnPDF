@@ -1,4 +1,4 @@
-import { atom, useSetAtom } from "jotai";
+import { atom } from "jotai";
 import { useJson } from "./utils/useJson/useJson";
 import { useGetFileFromPath } from "./utils/useGetFileFromPath/useGetFileFromPath";
 
@@ -16,8 +16,6 @@ const atomMode = atom<"read" | "readwrite">();
 //| 派生 atom
 //|
 
-const atom設定完了value = atom((get) => !!get(atomFolder) && !!get(atomMode));
-
 /** ルートフォルダにパーミッションを設定する */
 const atomSetPermission = atom(
   null,
@@ -30,8 +28,6 @@ const atomSetPermission = atom(
   },
 );
 
-const atomFolderValue = atom((get) => get(atomFolder));
-
 const atomReadOnly = atom(
   (get) => get(atomMode) === "read",
   async (_, set, readOnly: boolean) =>
@@ -43,30 +39,30 @@ const atomReset = atom(null, (_, set) => {
   set(atomMode, undefined);
 });
 
+const atom選択完了Value = atom((get) => !!get(atomFolder) && !!get(atomMode));
+
 //|
 //| export
 //|
 
 export const modelフォルダ = {
+  /** ルートフォルダの選択・取得 */
+  folder: {
+    atom: atomFolder,
+
+    /** ルートフォルダの選択を取り消す */
+    atomReset,
+
+    /** ルートフォルダにパーミッションを設定する（選択されていれば） */
+    atomSetPermission,
+
+    /** ルートフォルダとパーミッションが設定されていれば `true` */
+    atom選択完了Value,
+  },
+
   /** ファイルの書き込みを許すかどうかのフラグ */
   readOnly: {
     atom: atomReadOnly,
-  },
-
-  /** 選択されているルートフォルダ */
-  folder: {
-    atomValue: atomFolderValue,
-    useSet: () => useSetAtom(atomFolder),
-
-    /** ルートフォルダの選択を取り消す */
-    useReset: () => useSetAtom(atomReset),
-
-    /** ルートフォルダにパーミッションを設定する */
-    useSetPermission: () => useSetAtom(atomSetPermission),
-  },
-
-  準備完了: {
-    atomValue: atom設定完了value,
   },
 
   file: {

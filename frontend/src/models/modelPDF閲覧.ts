@@ -36,13 +36,13 @@ export const modelPDF閲覧 = {
 };
 
 //|
-//| Watch
+//| watch
 //|
 
-const modelName = "modelPDF閲覧";
+const id = "modelPDF閲覧";
 
 // folder 変更時の処理
-watchMaps.folder.set(modelName, () => {
+watchMaps.folder.set(id, () => {
   const setSettings = useSetAtom(atomAppSettings);
   const read = modelフォルダ.file.useReadJson();
 
