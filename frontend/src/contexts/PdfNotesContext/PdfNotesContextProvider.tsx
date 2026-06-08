@@ -34,7 +34,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
       .getElementById(String(updaters.imageNum))
       ?.scrollIntoView({ block: "nearest" });
     // 注釈ファイル保存
-    void putPdfNotesDebounced(() => save(pdfNotes, path));
+    void putPdfNotesDebounced(() => save(pdfNotes, path + ".json"));
     // 必要であれば`coverages`を更新する
     const newCoverages = getNewCoveragesOrUndefined(path, pdfNotes);
     if (newCoverages) {
