@@ -25,16 +25,17 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const updaters = useUpdaters();
   const pdfNotes = updaters.pdfNotes;
   const save = modelフォルダ.json.useSave();
+  const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
 
   // `pdfNotes`が変更されたときの処理
   useEffect(() => {
-    if (!pdfNotes || !path) return;
+    if (!pdfNotes || !path || !jsonPath) return;
     // 目次パネル中の選択されたページが隠れないようにスクロールする
     document
       .getElementById(String(updaters.imageNum))
       ?.scrollIntoView({ block: "nearest" });
     // 注釈ファイル保存
-    void putPdfNotesDebounced(() => save(pdfNotes, path + ".json"));
+    void putPdfNotesDebounced(() => save(pdfNotes, jsonPath));
     // 必要であれば`coverages`を更新する
     const newCoverages = getNewCoveragesOrUndefined(path, pdfNotes);
     if (newCoverages) {
@@ -42,6 +43,7 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
     }
   }, [
     getNewCoveragesOrUndefined,
+    jsonPath,
     path,
     pdfNotes,
     save,

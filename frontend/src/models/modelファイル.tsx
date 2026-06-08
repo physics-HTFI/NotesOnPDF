@@ -26,6 +26,11 @@ const atomPdfLoaded = atom(false);
 const atomFileTreeValue = atom((get) => get(atomFileTree));
 const atomCoveragesValue = atom((get) => get(atomCoverages));
 const atomPdfLoadedValue = atom((get) => get(atomPdfLoaded));
+const atomAppSettingsValue = atom((get) => get(atomAppSettings));
+const atomJsonPathValue = atom((get) =>
+  get(atomPath) ? get(atomPath) + ".json" : undefined,
+);
+
 const atomHandleValue = atom((get) => {
   const fileTree = get(atomFileTree);
   const path = get(atomPath);
@@ -34,8 +39,6 @@ const atomHandleValue = atom((get) => {
   if (!item || item.type !== "file") return undefined;
   return item.handle;
 });
-
-const atomAppSettingsValue = atom((get) => get(atomAppSettings));
 
 function useSetAppSettings() {
   const setAppSettings = useSetAtom(atomAppSettings);
@@ -85,6 +88,7 @@ export const modelファイル = {
 
   pdf: {
     atomPath: atomPath,
+    atomJsonPathValue: atomJsonPathValue,
     atomLoadedValue: atomPdfLoadedValue,
     useRenderPage,
   },

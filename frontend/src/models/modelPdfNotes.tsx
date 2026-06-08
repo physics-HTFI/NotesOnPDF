@@ -6,7 +6,6 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useContext } from "react";
 import { modelフォルダ } from "./modelフォルダ";
 import { modelUI } from "./modelUI";
-import { parsePath } from "./utils/parsePath";
 import { createOrGetPdfNotes, FORMAT_VERSION } from "@/types/PdfNotes";
 import { usePdf } from "./utils/usePdf/usePdf";
 
@@ -43,6 +42,7 @@ watchMaps.pdfPath.set(id, () => {
   const read = modelフォルダ.json.useRead();
   const setAlert = modelUI.alert.useSet();
   const setReadOnly = useSetAtom(modelフォルダ.readOnly.atom);
+  const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
   const {
     updaters: { assignPdfNotes },
   } = useContext(PdfNotesContext);
@@ -52,9 +52,8 @@ watchMaps.pdfPath.set(id, () => {
     if (!path) return;
 
     assignPdfNotes(undefined);
-    const jsonPath = parsePath(path);
     if (!jsonPath) return;
-    const pdfNotes = await read<PdfNotes>(jsonPath.jsonPath, false);
+    const pdfNotes = await read<PdfNotes>(jsonPath, false);
     setPdfNotes(pdfNotes);
     if (pdfNotes && pdfNotes.version !== FORMAT_VERSION) {
       // TODO マイグレーション
