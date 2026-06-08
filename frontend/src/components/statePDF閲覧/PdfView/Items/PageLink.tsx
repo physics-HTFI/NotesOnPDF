@@ -7,9 +7,9 @@ import type {
   PageLink as PageLinkType,
 } from "@/types/PdfNotes";
 import type { Mode } from "../SpeedDial";
-import MouseContext from "@/contexts/MouseContext";
 import useCursor from "./utils/useCursor";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * ページへのリンク
@@ -29,7 +29,7 @@ export default function PageLink({
     pdfNotes,
     updaters: { jumpPageStart: jumpPage },
   } = useContext(PdfNotesContext);
-  const { scale } = useContext(MouseContext);
+  const scale = modelPdfNotes.fontScale.use();
   if (!pdfNotes) return <></>;
   return (
     <>

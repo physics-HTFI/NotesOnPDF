@@ -1,27 +1,22 @@
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { modelUI } from "@/models/modelUI";
 import type Coverages from "@/types/Coverages";
 import { findTreeItem, type FileTree } from "@/types/FileTree";
-import { createOrGetPdfNotes, FORMAT_VERSION } from "@/types/PdfNotes";
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { useContext } from "react";
 import { modelフォルダ } from "./modelフォルダ";
 import { useGetCoverages } from "./utils/useGetCoverages";
 import { PATH_COVERAGES, PATH_SETTINGS } from "@/types/CONSTANTS";
-import type PdfNotes from "@/types/PdfNotes";
-import { parsePath } from "./utils/parsePath";
 import { getFileTree } from "./utils/getFileTree/getFileTree";
 import { watchMaps } from "./Watch/watchMaps";
 import type AppSettings from "@/types/AppSettings";
 import { GetAppSettings_default } from "@/types/AppSettings";
-import { usePdf } from "./utils/usePdf/PdfJs.store";
+import { usePdf } from "./utils/usePdf/usePdf";
 import { modelPDF履歴 } from "./modelPDF履歴";
+import { modelPdfNotes } from "./modelPdfNotes";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
 const atomPath = atom<string>();
 const atomAppSettings = atom<AppSettings>();
-const atomPdfNotes = atom<PdfNotes>();
 const atomPdfLoaded = atom(false);
 
 //|
@@ -30,6 +25,7 @@ const atomPdfLoaded = atom(false);
 
 const atomFileTreeValue = atom((get) => get(atomFileTree));
 const atomCoveragesValue = atom((get) => get(atomCoverages));
+const atomPdfLoadedValue = atom((get) => get(atomPdfLoaded));
 const atomHandleValue = atom((get) => {
   const fileTree = get(atomFileTree);
   const path = get(atomPath);
@@ -63,6 +59,20 @@ function useSetCoverages() {
   };
 }
 
+function useRenderPage() {
+  const { queueRenderPage } = usePdf();
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
+  return async () => {
+    if (!pdfNotes) return;
+    const pageNum = pdfNotes.currentPage;
+    const offset = {
+      top: pdfNotes.settings.offsetTop,
+      bottom: pdfNotes.settings.offsetBottom,
+    };
+    await queueRenderPage(pageNum, offset);
+  };
+}
+
 //|
 //| export
 //|
@@ -72,10 +82,11 @@ export const modelファイル = {
 
   coverages: { atom: atomCoveragesValue, useSet: useSetCoverages },
   appSettings: { atom: atomAppSettingsValue, useSet: useSetAppSettings },
-  pdfNotes: { atom: atomPdfNotes },
 
   pdf: {
     atomPath: atomPath,
+    atomLoadedValue: atomPdfLoadedValue,
+    useRenderPage,
   },
 };
 
@@ -88,19 +99,11 @@ const id = "modelPDFファイル";
 // pdfPath 変更時の処理
 watchMaps.pdfPath.set(id, () => {
   const setWaiting = useSetAtom(modelUI.waiting.atom);
-  const read = modelフォルダ.json.useRead();
-  const setPdfNotes = useSetAtom(modelファイル.pdfNotes.atom);
-  const setAlert = modelUI.alert.useSet();
-  const setReadOnly = useSetAtom(modelフォルダ.readOnly.atom);
   const { setPdfHandle } = usePdf();
   const handle = useAtomValue(atomHandleValue);
   const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
   const setPdfLoaded = useSetAtom(atomPdfLoaded);
   const addPathToPdfHistory = modelPDF履歴.update.useAdd();
-
-  const {
-    updaters: { assignPdfNotes },
-  } = useContext(PdfNotesContext);
 
   return async (path) => {
     document.title = "NotesOnPDF";
@@ -113,29 +116,8 @@ watchMaps.pdfPath.set(id, () => {
       if (path && totalPages) void addPathToPdfHistory(path, totalPages);
       setWaiting(false);
       setPdfLoaded(true);
+      if (handle) document.title = handle.name;
     });
-
-    if (!path) return;
-
-    assignPdfNotes(undefined);
-    const jsonPath = parsePath(path);
-    if (!jsonPath) return;
-    const pdfNotes = await read<PdfNotes>(jsonPath.jsonPath, false);
-    setPdfNotes(pdfNotes);
-    if (pdfNotes && pdfNotes.version !== FORMAT_VERSION) {
-      // TODO マイグレーション
-      setAlert(
-        "error",
-        <>
-          注釈ファイルのバージョンが異なります。 <br />
-          編集するとファイルの内容が失われる可能性があります。 <br />
-          読み取り専用モードに切り替えました。 <br />
-        </>,
-      );
-      await setReadOnly(true);
-    }
-    assignPdfNotes(createOrGetPdfNotes(jsonPath));
-    document.title = jsonPath.name;
   };
 });
 

@@ -1,7 +1,7 @@
 import { Box, Paper, type SxProps } from "@mui/material";
-import { type Mouse } from "@/contexts/MouseContext";
 import { type ReactNode } from "react";
 import Foreground from "./Foreground";
+import type { MousePosition } from "@/types/MousePosition";
 
 /**
  * パレット型の選択ダイアログ
@@ -24,7 +24,7 @@ export default function Palette({
   /** アイコンの一辺の長さ（＝パレットの直径の1/3） */
   L: number;
   /** パレットの中心位置 */
-  xy: Mouse;
+  xy: MousePosition;
   open: boolean;
   onClose: (i?: number) => void;
 }) {

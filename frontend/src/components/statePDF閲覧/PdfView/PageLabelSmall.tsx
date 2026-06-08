@@ -1,15 +1,15 @@
 import { useContext, useState } from "react";
 import { Chip, Stack, Tooltip } from "@mui/material";
 import { Reply } from "@mui/icons-material";
-import MouseContext from "@/contexts/MouseContext";
 import type PdfNotes from "@/types/PdfNotes";
 import { GetCoverage } from "@/types/Coverages";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import PageInput from "./Editor/PageInput";
 import Progress from "@/components/statePDFファイル選択/FileTreeView/Progress";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { modelファイル } from "@/models/modelファイル";
+import { modelUI } from "@/models/modelUI";
 
 /**
  * 画面隅のページ数表示コンポーネント
@@ -24,7 +24,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   } = useContext(PdfNotesContext);
   const path = useAtomValue(modelファイル.pdf.atomPath);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
-  const { setMouse } = useContext(MouseContext);
+  const setMouse = useSetAtom(modelUI.mouse.atom);
   if (!path || !pdfNotes || imageNum === undefined) return <></>;
   const coverage = GetCoverage(pdfNotes);
   const color = "#2e7d32";

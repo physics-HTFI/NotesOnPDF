@@ -2,9 +2,9 @@ import { type MouseEvent, useContext, useState } from "react";
 import { Chip as MuiChip } from "@mui/material";
 import { type Mode } from "../SpeedDial";
 import type { Chip as ChipType, Node, NoteType } from "@/types/PdfNotes";
-import MouseContext from "@/contexts/MouseContext";
 import useCursor from "./utils/useCursor";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * チップ
@@ -20,7 +20,7 @@ export default function Chip({
 }) {
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
-  const { scale } = useContext(MouseContext);
+  const scale = modelPdfNotes.fontScale.use();
   const { pdfNotes } = useContext(PdfNotesContext);
   if (!pdfNotes || !scale) return <></>;
 

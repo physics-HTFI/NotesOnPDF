@@ -2,9 +2,10 @@ import type { Rect, Polygon } from "@/types/PdfNotes";
 import RectSvg from "../Items/Rect";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useContext } from "react";
-import MouseContext from "@/contexts/MouseContext";
 import Palette from "@/components/share/Palette/Palette";
 import Svg from "@/components/share/Svg";
+import { useAtomValue } from "jotai";
+import { modelUI } from "@/models/modelUI";
 
 /**
  * 直方体、ポリゴンの編集パレット
@@ -19,7 +20,7 @@ export default function EditRectPalette({
   const {
     updaters: { updateNote },
   } = useContext(PdfNotesContext);
-  const { mouse } = useContext(MouseContext);
+  const mouse = useAtomValue(modelUI.mouse.atom);
   if (!mouse) return undefined;
 
   const L = 40;

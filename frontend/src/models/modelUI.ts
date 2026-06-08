@@ -1,3 +1,4 @@
+import type { MousePosition } from "@/types/MousePosition";
 import { atom, useSetAtom } from "jotai";
 import { type ReactNode } from "react";
 
@@ -5,6 +6,7 @@ const atomAlert = atom<{ severity: "error" | "info"; message: ReactNode }>();
 const atomWaiting = atom<boolean>(false);
 const atomOpenPdfFileTreeDrawer = atom<boolean>(true);
 const atomOpenSettingsDrawer = atom<boolean>(false);
+const atomMouse = atom<MousePosition>();
 
 //|
 //| 派生 atom
@@ -40,4 +42,6 @@ export const modelUI = {
     settings: { atom: atomOpenSettingsDrawer },
     pdfFileTree: { atom: atomOpenPdfFileTreeDrawer },
   },
+
+  mouse: { atom: atomMouse },
 };

@@ -4,7 +4,6 @@ import { Box, ThemeProvider, createTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import OpenFileDrawer from "@/components/statePDFファイル選択/OpenFileDrawer";
 import { MathJaxContext } from "better-react-mathjax";
-import { MouseContextProvider } from "./contexts/MouseContext";
 import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesContextProvider";
 import { Dialog起動直後 } from "./components/state起動直後/Dialog起動直後";
 import { Alert } from "./components/global/Alert";
@@ -12,6 +11,7 @@ import { Waiting } from "./components/global/Waiting";
 import TocView from "./components/statePDF閲覧/TocView/TocView";
 import PdfView from "./components/statePDF閲覧/PdfView/PdfView";
 import { Watch } from "./models/Watch/Watch";
+import { ID_PDF_CONTAINER } from "./types/CONSTANTS";
 
 /**
  * 数式表示のコンフィグ
@@ -110,9 +110,9 @@ export default function App() {
 
               {/* PDFビュー */}
               <Panel minSize={200}>
-                <MouseContextProvider>
+                <Box id={ID_PDF_CONTAINER}>
                   <PdfView />
-                </MouseContextProvider>
+                </Box>
               </Panel>
             </Group>
           </Box>

@@ -1,7 +1,8 @@
 import { type ReactNode, useContext } from "react";
 import { Modal, Paper } from "@mui/material";
-import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { useAtomValue } from "jotai";
+import { modelUI } from "@/models/modelUI";
 
 /**
  * 画面クリック時にポップアップする編集ダイアログ
@@ -14,7 +15,7 @@ export default function EditorBase({
   onClose: () => void;
 }) {
   const { pdfNotes } = useContext(PdfNotesContext);
-  const { mouse } = useContext(MouseContext);
+  const mouse = useAtomValue(modelUI.mouse.atom);
   if (!pdfNotes || !mouse) return <></>;
 
   return (

@@ -9,11 +9,12 @@ import Polygon from "./Items/Polygon";
 import Chip from "./Items/Chip";
 import type { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
-import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Svg from "@/components/share/Svg";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { modelファイル } from "../../../models/modelファイル";
+import { usePdf } from "@/models/utils/usePdf/usePdf";
+import { modelUI } from "@/models/modelUI";
 
 /**
  * 移動中の注釈を表示するコンポーネント
@@ -31,7 +32,8 @@ export default function Move({
 }) {
   const [dXY, setDXY] = useState<[number, number]>();
   const ref = useRef<HTMLElement>(undefined);
-  const { mouse, setMouse, pageRect } = useContext(MouseContext);
+  const [mouse, setMouse] = useAtom(modelUI.mouse.atom);
+  const pageRect = usePdf()?.pageRect?.rect;
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const { page } = useContext(PdfNotesContext);
   if (!params || !mouse || !pageRect || !appSettings) {

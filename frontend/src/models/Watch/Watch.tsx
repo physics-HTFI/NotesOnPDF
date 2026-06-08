@@ -3,6 +3,7 @@ import { useState } from "react";
 import { modelファイル } from "../modelファイル";
 import { modelフォルダ } from "../modelフォルダ";
 import { watchMaps } from "./watchMaps";
+import { modelPdfNotes } from "../modelPdfNotes";
 
 /**
  * 変更を監視したい変数を定義する
@@ -12,6 +13,8 @@ export function Watch() {
     <>
       <WatchFolder />
       <WatchPdfPath />
+      <WatchPdfNotes />
+      <WatchPdfLoaded />
     </>
   );
 }
@@ -28,6 +31,18 @@ function WatchFolder() {
 function WatchPdfPath() {
   const path = useAtomValue(modelファイル.pdf.atomPath);
   return <WatchBase target={path} useOnChange={watchMaps.pdfPath} />;
+}
+
+function WatchPdfNotes() {
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
+  return <WatchBase target={pdfNotes} useOnChange={watchMaps.pdfNotes} />;
+}
+
+function WatchPdfLoaded() {
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
+  const pdfLoaded = useAtomValue(modelファイル.pdf.atomLoadedValue);
+  const loaded = pdfNotes && pdfLoaded;
+  return <WatchBase target={loaded} useOnChange={watchMaps.pdfLoaded} />;
 }
 
 /**

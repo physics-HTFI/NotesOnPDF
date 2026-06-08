@@ -1,11 +1,11 @@
-import { type MouseEvent, useContext, useState } from "react";
+import { type MouseEvent, useState } from "react";
 import { Box } from "@mui/material";
 import { MathJax } from "better-react-mathjax";
 import { type Mode } from "../SpeedDial";
-import MouseContext from "@/contexts/MouseContext";
 import type { Node, Memo as NoteParams, NoteType } from "@/types/PdfNotes";
 import useCursor from "./utils/useCursor";
 import DOMPurify from "dompurify";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * テキストや数式
@@ -21,7 +21,7 @@ export default function Memo({
 }) {
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
-  const { scale } = useContext(MouseContext);
+  const scale = modelPdfNotes.fontScale.use();
   const htmlFolded = params.html.match(
     params.style === "fold" && !hover ? /^.*/ : /[\s\S]*/,
   )?.[0];

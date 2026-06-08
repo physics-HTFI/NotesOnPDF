@@ -10,11 +10,12 @@ import Chip from "./Chip";
 import type { Mode } from "../SpeedDial";
 import type { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./utils/SvgDefs";
-import MouseContext from "@/contexts/MouseContext";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Svg from "@/components/share/Svg";
 import { modelファイル } from "../../../../models/modelファイル";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
+import { usePdf } from "@/models/utils/usePdf/usePdf";
+import { modelUI } from "@/models/modelUI";
 
 /**
  * 注釈を表示するコントロール
@@ -30,7 +31,8 @@ export default function Items({
   onEdit: (note: NoteType) => void;
   onMove: (note: NoteType | NodeType) => void;
 }) {
-  const { pageRect, setMouse } = useContext(MouseContext);
+  const setMouse = useSetAtom(modelUI.mouse.atom);
+  const pageRect = usePdf()?.pageRect?.rect;
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const {
     page,

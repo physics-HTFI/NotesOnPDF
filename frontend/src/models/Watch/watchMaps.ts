@@ -1,9 +1,13 @@
+import type PdfNotes from "@/types/PdfNotes";
+
 /**
  * 変数が変更されたときの処理をここに追加する
  */
 export const watchMaps = {
   folder: new Map() as CallbackMap<FileSystemDirectoryHandle>,
   pdfPath: new Map() as CallbackMap<string>,
+  pdfNotes: new Map() as CallbackMap<PdfNotes>,
+  pdfLoaded: new Map() as CallbackMap<boolean>,
 };
 
 type CallbackMap<T> = Map<

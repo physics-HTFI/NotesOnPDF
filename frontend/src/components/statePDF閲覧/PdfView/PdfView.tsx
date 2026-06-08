@@ -6,7 +6,6 @@ import type { Node, NoteType } from "@/types/PdfNotes";
 import AddNotePalette from "./AddNotePalette/AddNotePalette";
 import Excluded from "./Excluded";
 import Items from "./Items/Items";
-import MouseContext from "@/contexts/MouseContext";
 import Editor from "./Editor/Editor";
 import { grey } from "@mui/material/colors";
 import Move from "./Move";
@@ -15,6 +14,7 @@ import { PdfImage } from "./PdfImage";
 import { modelUI } from "@/models/modelUI";
 import { modelファイル } from "../../../models/modelファイル";
 import { useAtomValue, useSetAtom } from "jotai";
+import { usePdf } from "@/models/utils/usePdf/usePdf";
 
 /**
  * Pdfを表示するコンポーネント
@@ -22,7 +22,8 @@ import { useAtomValue, useSetAtom } from "jotai";
 export default function PdfView() {
   const clearAlert = useSetAtom(modelUI.alert.atomClear);
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
-  const { setMouse, pageRect, top, bottom } = useContext(MouseContext);
+  const setMouse = useSetAtom(modelUI.mouse.atom);
+  const { pageRect } = usePdf();
   const {
     page,
     updaters: { updateNote, scrollPage, handleKeyDown },
@@ -102,12 +103,12 @@ export default function PdfView() {
       {/* PDF画像がある要素 */}
       <Container
         sx={{
-          width: pageRect?.width,
-          height: pageRect?.height,
+          width: pageRect?.rect?.width,
+          height: pageRect?.rect?.height,
           visibility: pageRect ? "visible" : "collapse",
           position: "absolute",
-          top,
-          bottom,
+          top: pageRect?.top,
+          bottom: pageRect?.bottom,
           left: 0,
           right: 0,
           margin: "auto",
