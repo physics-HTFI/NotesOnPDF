@@ -1,10 +1,11 @@
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect } from "react";
 import { debounce } from "@mui/material";
 import useNewCoverages from "./useNewCoverages";
 import PdfNotesContext from "./PdfNotesContext";
 import useUpdaters from "./useUpdaters";
 import { modelフォルダ } from "@/models/modelフォルダ";
 import { modelファイル } from "@/models/modelファイル";
+import { useAtomValue } from "jotai";
 
 /**
  * 間隔をあけて`pdfNotes`を保存する
@@ -19,7 +20,7 @@ const putPdfNotesDebounced = debounce(
  */
 export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   const setCoverages = modelファイル.coverages.useSet();
-  const [id, setId] = useState<string>();
+  const path = useAtomValue(modelファイル.pdf.atomPath);
   const { getNewCoveragesOrUndefined } = useNewCoverages();
   const updaters = useUpdaters();
   const pdfNotes = updaters.pdfNotes;
@@ -27,21 +28,21 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
 
   // `pdfNotes`が変更されたときの処理
   useEffect(() => {
-    if (!pdfNotes || !id) return;
+    if (!pdfNotes || !path) return;
     // 目次パネル中の選択されたページが隠れないようにスクロールする
     document
       .getElementById(String(updaters.imageNum))
       ?.scrollIntoView({ block: "nearest" });
     // 注釈ファイル保存
-    void putPdfNotesDebounced(() => save(pdfNotes, id));
+    void putPdfNotesDebounced(() => save(pdfNotes, path));
     // 必要であれば`coverages`を更新する
-    const newCoverages = getNewCoveragesOrUndefined(id, pdfNotes);
+    const newCoverages = getNewCoveragesOrUndefined(path, pdfNotes);
     if (newCoverages) {
       void setCoverages(newCoverages);
     }
   }, [
     getNewCoveragesOrUndefined,
-    id,
+    path,
     pdfNotes,
     save,
     setCoverages,
@@ -51,13 +52,11 @@ export function PdfNotesContextProvider({ children }: { children: ReactNode }) {
   return (
     <PdfNotesContext.Provider
       value={{
-        id,
         pdfNotes,
         page: updaters.page,
         pageLabel: updaters.pageLabel,
         previousPageNum: updaters.previousPageNum,
         imageNum: updaters.imageNum,
-        setId,
         updaters,
       }}
     >

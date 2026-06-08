@@ -7,17 +7,14 @@ import { type Updaters } from "./useUpdaters";
  * 注釈のコンテクスト
  */
 const PdfNotesContext = createContext<{
-  id?: string;
   pdfNotes?: PdfNotes;
   page?: Page;
   pageLabel: string;
   imageNum?: number;
   previousPageNum?: number;
-  setId: (id?: string) => void;
   updaters: Updaters;
 }>({
   pageLabel: "",
-  setId: () => undefined,
   updaters: {
     assignPdfNotes: () => undefined,
     scrollPage: () => undefined,

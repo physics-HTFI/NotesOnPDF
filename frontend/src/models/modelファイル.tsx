@@ -86,7 +86,7 @@ export const modelファイル = {
 
 const id = "modelPDFファイル";
 
-// path 変更時の処理
+// pdfPath 変更時の処理
 watchMaps.pdfPath.set(id, () => {
   const setWaiting = useSetAtom(modelUI.waiting.atom);
   const setInfo = useSetAtom(modelファイル.pdf.atomInfo);
@@ -96,7 +96,6 @@ watchMaps.pdfPath.set(id, () => {
   const setReadOnly = useSetAtom(modelフォルダ.readOnly.atom);
 
   const {
-    setId,
     updaters: { assignPdfNotes },
   } = useContext(PdfNotesContext);
 
@@ -127,7 +126,6 @@ watchMaps.pdfPath.set(id, () => {
         await setReadOnly(true);
       }
       assignPdfNotes(createOrGetPdfNotes(jsonPath));
-      setId(path);
       document.title = jsonPath.name;
     } else {
       setWaiting(false);

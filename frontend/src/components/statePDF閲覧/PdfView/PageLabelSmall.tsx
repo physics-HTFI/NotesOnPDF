@@ -8,22 +8,24 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import PageInput from "./Editor/PageInput";
 import Progress from "@/components/statePDFファイル選択/FileTreeView/Progress";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
+import { useAtomValue } from "jotai";
+import { modelファイル } from "@/models/modelファイル";
 
 /**
  * 画面隅のページ数表示コンポーネント
  */
 export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const {
-    id,
     pdfNotes,
     imageNum,
     previousPageNum,
     pageLabel,
     updaters: { jumpPageStart: jumpPage },
   } = useContext(PdfNotesContext);
+  const path = useAtomValue(modelファイル.pdf.atomPath);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const { setMouse } = useContext(MouseContext);
-  if (!pdfNotes || !id || imageNum === undefined) return <></>;
+  if (!path || !pdfNotes || imageNum === undefined) return <></>;
   const coverage = GetCoverage(pdfNotes);
   const color = "#2e7d32";
 
