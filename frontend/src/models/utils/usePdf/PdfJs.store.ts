@@ -1,29 +1,45 @@
 import type { PageRect, Resizer } from "@/types/PageRect";
 import { readBinaryAsync } from "./readBinary";
+import { ID_PDF_CANVAS } from "@/types/CONSTANTS";
+import { useSyncExternalStore } from "react";
+
+export function usePdf() {
+  return useSyncExternalStore(subscribePdf, getSnapshotPdf);
+}
+
+//|
+//| private
+//|
 
 let snapshot = {
   totalPages: undefined as undefined | number,
   pageRect: undefined as undefined | PageRect,
-  setCanvasId: window.pdf.setCanvasId, // main.tsx よりも先に PdfJs.script.js を実行すること（window.pdf が undefined になる）
   setPdfHandle,
   queueRenderPage,
 };
 
 /**
- * _callback の設定。
- * この _callback が呼ばれると、再描画が走る。
+ * callback の設定。
+ * 引数で与えられた callback を実行すると、
+ * `useSyncExternalStore` しているコンポーネントでリレンダーが走る。
  */
-//|
-export function subscribePdf(callback: typeof _callback) {
-  _callback = callback;
-  return () => (_callback = undefined);
+function subscribePdf(callback: (typeof callbacks)[number]) {
+  callbacks.push(callback); // callback を保存しておいて、リレンダーしたいときに呼び出す。
+  return () => (callbacks = callbacks.filter((cb) => cb !== callback));
 }
-let _callback: (() => void) | undefined;
+
+let callbacks: (() => void)[] = [];
+
+function emitChange() {
+  for (const callback of callbacks) {
+    callback();
+  }
+}
 
 /**
- * _callback が呼ばれたときに更新される値
+ * callback が呼ばれたときに更新される値
  */
-export function getSnapshotPdf() {
+function getSnapshotPdf() {
   return snapshot;
 }
 
@@ -31,13 +47,17 @@ export function getSnapshotPdf() {
  * PDF ファイルを読み込む。
  * ページ数を取得。
  */
-function setPdfHandle(pdfHandle: FileSystemFileHandle, onFinish: () => void) {
+function setPdfHandle(
+  pdfHandle: FileSystemFileHandle | undefined,
+  onFinish: (totalPages?: number) => void,
+) {
   const read = async () => {
     const arrayBuffer = await readBinaryAsync(pdfHandle);
     const result = await window.pdf.setDataAsync(arrayBuffer);
-    onFinish();
-    snapshot = { ...snapshot, totalPages: result?.totalPages };
-    _callback?.();
+    const totalPages = result?.totalPages;
+    onFinish(totalPages);
+    snapshot = { ...snapshot, totalPages };
+    emitChange();
   };
   void read();
 }
@@ -47,9 +67,10 @@ function setPdfHandle(pdfHandle: FileSystemFileHandle, onFinish: () => void) {
  * 要素のサイズを取得。
  */
 function queueRenderPage(pageNum: number, resizer: Resizer) {
-  window.pdf.queueRenderPageAsync(pageNum, resizer).then((result) => {
+  window.pdf.setCanvasId(ID_PDF_CANVAS); // main.tsx よりも先に PdfJs.script.js を実行すること（window.pdf が undefined になる）
+  void window.pdf.queueRenderPageAsync(pageNum, resizer).then((result) => {
     snapshot = { ...snapshot, pageRect: result?.pageRect };
-    _callback?.();
+    emitChange();
   });
 }
 
@@ -69,7 +90,7 @@ declare global {
        * PDFファイルを読み込む
        */
       setDataAsync: (
-        arrayBuffer: ArrayBuffer,
+        arrayBuffer?: ArrayBuffer,
       ) => Promise<{ totalPages: number } | undefined>;
 
       /**

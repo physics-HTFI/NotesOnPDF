@@ -12,7 +12,6 @@ export function Watch() {
     <>
       <WatchFolder />
       <WatchPdfPath />
-      <WatchPdfInfo />
     </>
   );
 }
@@ -24,11 +23,6 @@ export function Watch() {
 function WatchFolder() {
   const folder = useAtomValue(modelフォルダ.folder.atom);
   return <WatchBase target={folder} useOnChange={watchMaps.folder} />;
-}
-
-function WatchPdfInfo() {
-  const info = useAtomValue(modelファイル.pdf.atomInfo);
-  return <WatchBase target={info} useOnChange={watchMaps.pdfInfo} />;
 }
 
 function WatchPdfPath() {

@@ -3,7 +3,6 @@ import { PATH_HISTORY } from "@/types/CONSTANTS";
 import type { PdfHistory, PdfHistoryItem } from "@/types/History";
 import { atom, useSetAtom } from "jotai";
 import { createPdfHistoryItem } from "./utils/createPdfHistoryItem";
-import type { PdfInfo } from "@/types/PdfInfo";
 import { watchMaps } from "./Watch/watchMaps";
 
 const atomHistory = atom<PdfHistory>([]);
@@ -41,13 +40,31 @@ type TypeUpdateHistory =
   | { type: "削除"; path: string }
   | { type: "全削除" };
 
+function useAdd() {
+  const update = useUpdateHistory();
+  return (path: string, totalPages: number) =>
+    update({ type: "追加", item: createPdfHistoryItem(path, totalPages) });
+}
+function useDeleteByPath() {
+  const update = useUpdateHistory();
+  return (path: string) => update({ type: "削除", path });
+}
+function useDeleteAll() {
+  const update = useUpdateHistory();
+  return () => update({ type: "全削除" });
+}
+
 //|
 //| export
 //|
 
 export const modelPDF履歴 = {
   atom: atomHistory,
-  useUpdate: useUpdateHistory,
+  update: {
+    useAdd,
+    useDeleteByPath,
+    useDeleteAll,
+  },
 };
 
 //|
@@ -63,15 +80,5 @@ watchMaps.folder.set(id, () => {
   return async () => {
     const history = await read<PdfHistory>(PATH_HISTORY, false);
     setHistory(history ?? []);
-  };
-});
-
-// PDF ファイルが選択されたときに、履歴を更新する
-watchMaps.pdfInfo.set(id, () => {
-  const update = modelPDF履歴.useUpdate();
-  return (info?: PdfInfo) => {
-    const item = createPdfHistoryItem(info);
-    if (!item) return;
-    void update({ type: "追加", item });
   };
 });

@@ -1,6 +1,7 @@
 export async function readBinaryAsync(
-  handle: FileSystemFileHandle,
-): Promise<ArrayBuffer> {
+  handle?: FileSystemFileHandle,
+): Promise<ArrayBuffer | undefined> {
+  if (!handle) return undefined;
   const file = await handle.getFile();
   return readBinaryFromFileAsync(file);
 }

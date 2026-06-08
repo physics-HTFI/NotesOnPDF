@@ -1,12 +1,9 @@
-import type { PdfInfo } from "@/types/PdfInfo";
-
 /**
  * 変数が変更されたときの処理をここに追加する
  */
 export const watchMaps = {
   folder: new Map() as CallbackMap<FileSystemDirectoryHandle>,
   pdfPath: new Map() as CallbackMap<string>,
-  pdfInfo: new Map() as CallbackMap<PdfInfo>,
 };
 
 type CallbackMap<T> = Map<

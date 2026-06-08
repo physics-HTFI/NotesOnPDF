@@ -1,14 +1,13 @@
-import type { PdfInfo } from "@/types/PdfInfo";
 import type { PdfHistoryItem } from "@/types/History";
 
 export function createPdfHistoryItem(
-  pdfInfo?: PdfInfo,
-): PdfHistoryItem | undefined {
-  if (!pdfInfo?.path) return undefined;
+  path: string,
+  totalPages: number,
+): PdfHistoryItem {
   return {
-    path: pdfInfo.path,
-    name: pdfInfo.path.split("/").pop() ?? "",
-    pages: String(pdfInfo.totalPages ?? "??"),
+    path,
+    name: path.split("/").pop() ?? "",
+    pages: String(totalPages ?? "??"),
     accessDate: nowToString(),
   };
 }

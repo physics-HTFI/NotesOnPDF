@@ -1,11 +1,11 @@
 import { Box } from "@mui/material";
 import { type ReactNode, createContext, useContext, useState } from "react";
 import PdfNotesContext from "./PdfNotesContext/PdfNotesContext";
-import { ID_PDF_CANVAS, ID_PDF_CONTAINER } from "@/types/CONSTANTS";
+import { ID_PDF_CONTAINER } from "@/types/CONSTANTS";
 import { useAtomValue, useSetAtom } from "jotai";
 import { modelUI } from "@/models/modelUI";
-import { usePdf } from "@/components/statePDF閲覧/PdfView/usePdf/usePdf";
 import { modelファイル } from "@/models/modelファイル";
+import { usePdf } from "@/models/utils/usePdf/PdfJs.store";
 
 export interface Mouse {
   pageX: number;
@@ -30,10 +30,9 @@ export default MouseContext;
  * `MouseContext`のプロバイダー
  */
 export function MouseContextProvider({ children }: { children: ReactNode }) {
-  const { pdfNotes, imageNum } = useContext(PdfNotesContext);
+  const { pdfNotes } = useContext(PdfNotesContext);
   const [mouse, setMouse] = useState({ pageX: 0, pageY: 0 });
-  const setWaiting = useSetAtom(modelUI.waiting.atom);
-  const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
+  const { pageRect } = usePdf();
 
   const offset = pdfNotes?.settings
     ? {
@@ -41,34 +40,21 @@ export function MouseContextProvider({ children }: { children: ReactNode }) {
         bottom: pdfNotes?.settings.offsetBottom,
       }
     : undefined;
-  const handle = useAtomValue(modelファイル.pdf.atomHandleValue);
-  const onFinishRead = () => {
-    setWaiting(false);
-    setOpenDrawer(false);
-  };
-  const pdf = usePdf(
-    ID_PDF_CANVAS,
-    handle,
-    onFinishRead,
-    imageNum,
-    ID_PDF_CONTAINER,
-    offset,
-  );
 
   const scale =
-    !pdfNotes || !pdf?.pageRect?.rect
+    !pdfNotes || !pageRect?.rect
       ? 100
-      : (pdfNotes.settings.fontSize * pdf.pageRect.rect.width) / 600;
+      : (pdfNotes.settings.fontSize * pageRect.rect.width) / 600;
 
   return (
     <MouseContext.Provider
       value={{
         mouse,
         setMouse,
-        pageRect: pdf?.pageRect?.rect,
+        pageRect: pageRect?.rect,
         scale,
-        top: pdf?.pageRect?.top,
-        bottom: pdf?.pageRect?.bottom,
+        top: pageRect?.top,
+        bottom: pageRect?.bottom,
       }}
     >
       <Box id={ID_PDF_CONTAINER}>{children}</Box>

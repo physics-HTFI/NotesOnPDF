@@ -56,18 +56,17 @@ window.pdf = {
   /**
    * レンダリング先の canvas を指定する
    */
-  setCanvasId: (id) => {
-    canvasId = id;
-    canvas = null;
-    ctx = null;
-    // この段階だと id の要素が存在しないかもしれないので、描画時に要素を取得する
-  },
+  setCanvasId: (id) => (canvasId = id),
 
   /**
    * PDFファイルを読み込む
    */
   setDataAsync: async (arrayBuffer) => {
     try {
+      if (!arrayBuffer) {
+        pdfDoc = undefined; // PDF の選択を解除したときにガベージコレクションの対象になることを期待
+        return undefined;
+      }
       const loadingTask = pdfjsLib.getDocument({
         // https://mozilla.github.io/pdf.js/api/
         data: arrayBuffer,
@@ -88,7 +87,7 @@ window.pdf = {
    */
   queueRenderPageAsync: async (pageNum, resizer) => {
     try {
-      if (pageNum === undefined) return undefined;
+      if (!pdfDoc || pageNum === undefined) return undefined;
 
       // ページサイズを取得
       const page = await pdfDoc.getPage(pageNum + 1);
