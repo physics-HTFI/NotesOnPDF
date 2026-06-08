@@ -28,7 +28,7 @@ export default function DialogPdfHistory({
   onClose: () => void;
 }) {
   const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
-  const history = useAtomValue(modelPDF履歴.atom);
+  const history = useAtomValue(modelPDF履歴.atomValue);
   const { deleteAll, deleteByPath } = modelPDF履歴.update.use();
   const setPath = useSetAtom(modelファイル.pdf.atomPath);
 
