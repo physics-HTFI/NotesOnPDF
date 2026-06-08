@@ -33,7 +33,8 @@ export default function OpenFileDrawer() {
         ),
       );
     } else {
-      setSelectedPath(undefined);
+      // if がないと無限ループになる
+      if (selectedPath) setSelectedPath(undefined);
     }
   }
 

@@ -45,6 +45,7 @@ export default function FileTreeView({
       sx={{
         p: 1,
         minWidth: 200,
+        width: "stretch",
         position: "sticky", // (1) スクロールしても常に表示する
         top: 0, // (1)
         alignSelf: "flex-start", // (1)

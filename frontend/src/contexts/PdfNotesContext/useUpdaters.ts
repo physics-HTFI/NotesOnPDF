@@ -1,3 +1,4 @@
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 import { modelUI } from "@/models/modelUI";
 import type PdfNotes from "@/types/PdfNotes";
 import {
@@ -7,7 +8,7 @@ import {
   editPageStyle,
   updatePageNum,
 } from "@/types/PdfNotes";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useRef, useState } from "react";
 
 /**
@@ -94,7 +95,7 @@ export default function useUpdaters() {
   const waiting = useAtomValue(modelUI.waiting.atom);
   const setAlert = modelUI.alert.useSet();
   const clearAlert = useSetAtom(modelUI.alert.atomClear);
-  const [pdfNotes, setPdfNotes] = useState<PdfNotes>();
+  const [pdfNotes, setPdfNotes] = useAtom(modelPdfNotes.pdfNotes.atom);
   const [imageNum, setImageNum] = useState<number>();
   const pdfNotesSnapshot = useRef<PdfNotes>(undefined);
   const notesSnapshot = useRef<NoteType[]>(undefined);
@@ -111,13 +112,16 @@ export default function useUpdaters() {
   /**
    * 読み込み時の`PdfNotes`設定処理を行う
    */
-  const assignPdfNotes = useCallback((pdfNotes?: PdfNotes) => {
-    setPdfNotes(pdfNotes);
-    setImageNum(pdfNotes?.currentPage);
-    pdfNotesSnapshot.current = structuredClone(pdfNotes);
-    notesSnapshot.current = undefined;
-    previousPageNum.current = undefined;
-  }, []);
+  const assignPdfNotes = useCallback(
+    (pdfNotes?: PdfNotes) => {
+      setPdfNotes(pdfNotes);
+      setImageNum(pdfNotes?.currentPage);
+      pdfNotesSnapshot.current = structuredClone(pdfNotes);
+      notesSnapshot.current = undefined;
+      previousPageNum.current = undefined;
+    },
+    [setPdfNotes],
+  );
 
   /**
    * 実際の移動処理
@@ -129,7 +133,7 @@ export default function useUpdaters() {
       previousPageNum.current = pdfNotes.currentPage;
       notesSnapshot.current = undefined;
     },
-    [invalid, pdfNotes],
+    [invalid, pdfNotes, setPdfNotes],
   );
 
   /**

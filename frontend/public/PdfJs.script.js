@@ -77,6 +77,7 @@ window.pdf = {
       pdfDoc = await loadingTask.promise;
       return { totalPages: pdfDoc.numPages };
     } catch (_) {
+      pdfDoc = undefined;
       return undefined;
     }
   },
