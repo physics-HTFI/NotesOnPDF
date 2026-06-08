@@ -1,6 +1,6 @@
 import { modelフォルダ } from "@/models/modelフォルダ";
 import { PATH_HISTORY } from "@/types/CONSTANTS";
-import type { PdfHistory, PdfHistoryItem } from "@/types/History";
+import type { PdfHistory } from "@/types/History";
 import { atom, useSetAtom } from "jotai";
 import { createPdfHistoryItem } from "./utils/createPdfHistoryItem";
 import { watchMaps } from "./Watch/watchMaps";
@@ -14,11 +14,14 @@ function useUpdateHistory() {
   const save = modelフォルダ.json.useSave();
   const setHistory = useSetAtom(atomHistory);
 
-  return async (arg: TypeUpdateHistory) => {
+  const update = async (arg: TypeUpdateHistory) => {
     let get: (h: PdfHistory) => PdfHistory;
     switch (arg.type) {
       case "追加":
-        get = (h) => [arg.item, ...h.filter((e) => e.path !== arg.item.path)];
+        get = (h) => [
+          createPdfHistoryItem(arg.path, arg.pages),
+          ...h.filter((e) => e.path !== arg.path),
+        ];
         break;
       case "削除":
         get = (h) => h.filter((e) => e.path != arg.path);
@@ -33,26 +36,18 @@ function useUpdateHistory() {
       return history;
     });
   };
+
+  return {
+    add: (path: string, pages: number) => update({ type: "追加", path, pages }),
+    deleteByPath: (path: string) => update({ type: "削除", path }),
+    deleteAll: () => update({ type: "全削除" }),
+  };
 }
 
 type TypeUpdateHistory =
-  | { type: "追加"; item: PdfHistoryItem }
+  | { type: "追加"; path: string; pages: number }
   | { type: "削除"; path: string }
   | { type: "全削除" };
-
-function useAdd() {
-  const update = useUpdateHistory();
-  return (path: string, totalPages: number) =>
-    update({ type: "追加", item: createPdfHistoryItem(path, totalPages) });
-}
-function useDeleteByPath() {
-  const update = useUpdateHistory();
-  return (path: string) => update({ type: "削除", path });
-}
-function useDeleteAll() {
-  const update = useUpdateHistory();
-  return () => update({ type: "全削除" });
-}
 
 //|
 //| export
@@ -60,11 +55,7 @@ function useDeleteAll() {
 
 export const modelPDF履歴 = {
   atom: atomHistory,
-  update: {
-    useAdd,
-    useDeleteByPath,
-    useDeleteAll,
-  },
+  update: { use: useUpdateHistory },
 };
 
 //|

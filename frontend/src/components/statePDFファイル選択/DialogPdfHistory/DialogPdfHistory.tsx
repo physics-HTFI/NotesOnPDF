@@ -29,7 +29,7 @@ export default function DialogPdfHistory({
 }) {
   const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
   const history = useAtomValue(modelPDF履歴.atom);
-  const update = modelPDF履歴.useUpdate();
+  const { deleteAll, deleteByPath } = modelPDF履歴.update.use();
   const setPath = useSetAtom(modelファイル.pdf.atomPath);
 
   return (
@@ -44,7 +44,7 @@ export default function DialogPdfHistory({
           <TooltipIconButton
             disabled={readOnly}
             icon={<Delete />}
-            onClick={() => update({ type: "全削除" })}
+            onClick={() => deleteAll()}
             sx={{ pt: 0, ml: "auto" }}
             tooltipTitle={
               readOnly
@@ -100,7 +100,7 @@ export default function DialogPdfHistory({
                     <TooltipIconButton
                       disabled={readOnly}
                       icon={<Delete />}
-                      onClick={() => update({ type: "削除", path: row.path })}
+                      onClick={() => deleteByPath(row.path)}
                       sx={{ color: "#72a0db" }}
                       tooltipTitle={
                         readOnly

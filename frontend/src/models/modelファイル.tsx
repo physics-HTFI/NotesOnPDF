@@ -103,7 +103,7 @@ watchMaps.pdfPath.set(id, () => {
   const handle = useAtomValue(atomHandleValue);
   const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
   const setPdfLoaded = useSetAtom(atomPdfLoaded);
-  const addPathToPdfHistory = modelPDF履歴.update.useAdd();
+  const { add: addPdfHistory } = modelPDF履歴.update.use();
 
   return async (path) => {
     document.title = "NotesOnPDF";
@@ -113,7 +113,7 @@ watchMaps.pdfPath.set(id, () => {
     setPdfLoaded(false);
     setPdfHandle(handle, (totalPages) => {
       setOpenDrawer(false);
-      if (path && totalPages) void addPathToPdfHistory(path, totalPages);
+      if (path && totalPages) void addPdfHistory(path, totalPages);
       setWaiting(false);
       setPdfLoaded(true);
       if (handle) document.title = handle.name;
