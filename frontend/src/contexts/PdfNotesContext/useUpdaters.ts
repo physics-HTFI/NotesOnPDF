@@ -9,7 +9,7 @@ import {
   updatePageNum,
 } from "@/types/PdfNotes";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 
 /**
  * `pdfNotes`の更新用関数群
@@ -89,20 +89,24 @@ export default function useUpdaters() {
   const setAlert = modelUI.alert.useSet();
   const clearAlert = useSetAtom(modelUI.alert.atomClear);
   const [pdfNotes, setPdfNotes] = useAtom(modelPdfNotes.pdfNotes.atom);
-  const pdfNotesSnapshot = useRef<PdfNotes>(undefined);
-  const notesSnapshot = useRef<NoteType[]>(undefined);
   const page = useAtomValue(modelPdfNotes.page.atomValue);
   const pageNum = useAtomValue(modelPdfNotes.pageNum.atomValue);
   const [previousPageNum, setPreviousPageNum] = useAtom(
-    modelPdfNotes.previousPageNum.atom,
+    modelPdfNotes.previous.pageNum.atom,
+  );
+  const [previousPdfNotes, setPreviousPdfNotes] = useAtom(
+    modelPdfNotes.previous.pdfNotes.atom,
+  );
+  const [previousNotes, setPreviousNotes] = useAtom(
+    modelPdfNotes.previous.notes.atom,
   );
   const invalid =
     !pdfNotes || !page || openDrawer || waiting || pageNum === undefined;
 
   const updateNotesSnapshot = useCallback(() => {
-    if (notesSnapshot.current) return;
-    notesSnapshot.current = structuredClone(page?.notes ?? []);
-  }, [page?.notes]);
+    if (previousNotes) return;
+    setPreviousNotes(structuredClone(page?.notes ?? []));
+  }, [page?.notes, previousNotes, setPreviousNotes]);
 
   /**
    * 読み込み時の`PdfNotes`設定処理を行う
@@ -110,11 +114,11 @@ export default function useUpdaters() {
   const assignPdfNotes = useCallback(
     (pdfNotes?: PdfNotes) => {
       setPdfNotes(pdfNotes);
-      pdfNotesSnapshot.current = structuredClone(pdfNotes);
-      notesSnapshot.current = undefined;
+      setPreviousPdfNotes(structuredClone(pdfNotes));
+      setPreviousNotes(undefined);
       setPreviousPageNum(undefined);
     },
-    [setPdfNotes, setPreviousPageNum],
+    [setPdfNotes, setPreviousNotes, setPreviousPageNum, setPreviousPdfNotes],
   );
 
   /**
@@ -127,9 +131,16 @@ export default function useUpdaters() {
       if (num < 0 || pdfNotes.pages.length <= num) return;
       setPdfNotes({ ...pdfNotes, currentPage: num });
       setPreviousPageNum(pdfNotes.currentPage);
-      notesSnapshot.current = undefined;
+      setPreviousNotes(undefined);
     },
-    [clearAlert, invalid, pdfNotes, setPdfNotes, setPreviousPageNum],
+    [
+      clearAlert,
+      invalid,
+      pdfNotes,
+      setPdfNotes,
+      setPreviousNotes,
+      setPreviousPageNum,
+    ],
   );
 
   /**
@@ -365,13 +376,10 @@ export default function useUpdaters() {
           }
         } else if (e.ctrlKey) {
           // ページ内注釈のリセット
-          if (notesSnapshot.current) {
-            page.notes =
-              notesSnapshot.current.length === 0
-                ? undefined
-                : notesSnapshot.current;
+          if (previousNotes) {
+            page.notes = previousNotes.length === 0 ? undefined : previousNotes;
             setPdfNotes({ ...pdfNotes });
-            notesSnapshot.current = undefined;
+            setPreviousNotes(undefined);
             setAlert(
               "info",
               "このページの注釈を、ページ表示直後の状態にリセットしました",
@@ -381,13 +389,13 @@ export default function useUpdaters() {
           }
         } else if (e.altKey) {
           // 注釈・設定の全リセット
-          if (pdfNotesSnapshot.current) {
+          if (previousPdfNotes) {
             if (
               window.confirm(
                 "このPDF中の全ての注釈・設定を、PDF読み込み直後の状態にリセットします",
               )
             ) {
-              assignPdfNotes(pdfNotesSnapshot.current);
+              assignPdfNotes(previousPdfNotes);
               setAlert(
                 "info",
                 "全ての注釈・設定を、PDF読み込み直後の状態にリセットしました",
@@ -412,10 +420,13 @@ export default function useUpdaters() {
       jumpPage,
       page,
       pdfNotes,
+      previousNotes,
       previousPageNum,
+      previousPdfNotes,
       scrollPage,
       setAlert,
       setPdfNotes,
+      setPreviousNotes,
       updateNotesSnapshot,
     ],
   );

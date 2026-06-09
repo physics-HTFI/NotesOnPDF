@@ -20,7 +20,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const {
     updaters: { jumpPage: jumpPage },
   } = useContext(PdfNotesContext);
-  const previousPageNum = useAtomValue(modelPdfNotes.previousPageNum.atom);
+  const previousPageNum = useAtomValue(modelPdfNotes.previous.pageNum.atom);
   const pageNum = useAtomValue(modelPdfNotes.pageNum.atomValue);
   const pageLabel = useAtomValue(modelPdfNotes.pageLabel.atomValue);
   const path = useAtomValue(modelファイル.pdf.atomPath);

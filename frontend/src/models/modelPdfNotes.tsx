@@ -6,12 +6,18 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useContext } from "react";
 import { modelフォルダ } from "./modelフォルダ";
 import { modelUI } from "./modelUI";
-import { createOrGetPdfNotes, FORMAT_VERSION } from "@/types/PdfNotes";
+import {
+  createOrGetPdfNotes,
+  FORMAT_VERSION,
+  type NoteType,
+} from "@/types/PdfNotes";
 import { usePdf } from "./utils/usePdf/usePdf";
 import { debounce } from "@mui/material";
 
 const atomPdfNotes = atom<PdfNotes>();
 const atomPreviousPageNum = atom<number>();
+const atomPreviousPdfNotes = atom<PdfNotes>();
+const atomPreviousNotes = atom<NoteType[]>();
 
 //|
 //| 派生 atom
@@ -45,7 +51,11 @@ export const modelPdfNotes = {
   pageNum: { atomValue: atomPageNumValue },
   pageLabel: { atomValue: atomPageLabelValue },
 
-  previousPageNum: { atom: atomPreviousPageNum },
+  previous: {
+    pageNum: { atom: atomPreviousPageNum },
+    pdfNotes: { atom: atomPreviousPdfNotes },
+    notes: { atom: atomPreviousNotes },
+  },
 };
 
 //|
