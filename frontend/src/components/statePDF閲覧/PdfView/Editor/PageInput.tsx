@@ -3,6 +3,8 @@ import { TextField } from "@mui/material";
 import { fromDisplayedPage } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { useAtomValue } from "jotai";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * ページ番号入力ダイアログ
@@ -16,13 +18,13 @@ export default function PageInput({
   open: boolean;
   onClose: (newPage?: number) => void;
 }) {
-  const { pdfNotes } = useContext(PdfNotesContext);
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const displayedPageNumInit =
     pdfNotes?.pages[pageNumInit ?? pdfNotes.currentPage]?.num ??
     pdfNotes?.pages[pdfNotes.currentPage]?.num ??
     1;
   const [displayedPageNum, setDisplayedPageNum] = useState<number | "">(
-    displayedPageNumInit
+    displayedPageNumInit,
   );
 
   const handleRef = useCallback((ref?: HTMLInputElement) => {
@@ -63,10 +65,10 @@ export default function PageInput({
           }
           const num = Number(e.target.value);
           const numMin = pdfNotes.pages.reduce((a, b) =>
-            a.num < b.num ? a : b
+            a.num < b.num ? a : b,
           ).num;
           const numMax = pdfNotes.pages.reduce((a, b) =>
-            a.num < b.num ? b : a
+            a.num < b.num ? b : a,
           ).num;
           if (num < numMin || numMax < num) return;
           setDisplayedPageNum(num);

@@ -16,6 +16,7 @@ import { modelファイル } from "../../../../models/modelファイル";
 import { useAtomValue, useSetAtom } from "jotai";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
 import { modelUI } from "@/models/modelUI";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * 注釈を表示するコントロール
@@ -34,8 +35,8 @@ export default function Items({
   const setMouse = useSetAtom(modelUI.mouse.atom);
   const pageRect = usePdf()?.pageRect?.rect;
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
+  const page = useAtomValue(modelPdfNotes.page.atomValue);
   const {
-    page,
     updaters: { popNote },
   } = useContext(PdfNotesContext);
   if (!page?.notes || !pageRect) return <SvgDefs />;

@@ -19,7 +19,7 @@ export default function Label({
   highlight?: boolean;
 }) {
   const {
-    updaters: { jumpPageStart: jumpPage, updatePageSettings },
+    updaters: { jumpPage: jumpPage, updatePageSettings },
   } = useContext(PdfNotesContext);
   const [xy, setXy] = useState<{ x: number; y: number }>();
 

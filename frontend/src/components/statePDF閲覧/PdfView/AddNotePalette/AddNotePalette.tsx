@@ -8,6 +8,7 @@ import { modelファイル } from "../../../../models/modelファイル";
 import { useAtomValue } from "jotai";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
 import { modelUI } from "@/models/modelUI";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * PDFビュークリック時に表示されるパレット型コントロール
@@ -22,7 +23,7 @@ export default function AddNotePalette({
   const mouse = useAtomValue(modelUI.mouse.atom);
   const pageRect = usePdf()?.pageRect?.rect;
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
-  const { pdfNotes } = useContext(PdfNotesContext);
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   if (!mouse || !pageRect || !pdfNotes || !open) return <></>;
 
   const L = 50;

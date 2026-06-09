@@ -10,28 +10,29 @@ import TooltipIconButton from "@/components/share/TooltipIconButton";
 import { useAtomValue, useSetAtom } from "jotai";
 import { modelファイル } from "@/models/modelファイル";
 import { modelUI } from "@/models/modelUI";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * 画面隅のページ数表示コンポーネント
  */
 export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const {
-    pdfNotes,
-    imageNum,
-    previousPageNum,
-    pageLabel,
-    updaters: { jumpPageStart: jumpPage },
+    updaters: { jumpPage: jumpPage },
   } = useContext(PdfNotesContext);
+  const previousPageNum = useAtomValue(modelPdfNotes.previousPageNum.atom);
+  const pageNum = useAtomValue(modelPdfNotes.pageNum.atomValue);
+  const pageLabel = useAtomValue(modelPdfNotes.pageLabel.atomValue);
   const path = useAtomValue(modelファイル.pdf.atomPath);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const setMouse = useSetAtom(modelUI.mouse.atom);
-  if (!path || !pdfNotes || imageNum === undefined) return <></>;
+  if (!path || !pdfNotes || pageNum === undefined) return <></>;
   const coverage = GetCoverage(pdfNotes);
   const color = "#2e7d32";
 
   const { curTotal, total, curChapter, chapter } = getPageNums(
     pdfNotes,
-    imageNum,
+    pageNum,
   );
 
   return (
@@ -93,7 +94,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
       {openJumpDialog && (
         <PageInput
           open
-          pageNumInit={imageNum}
+          pageNumInit={pageNum}
           onClose={(page) => {
             setOpenJumpDialog(false);
             if (page === undefined) return;
@@ -131,13 +132,13 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
 /**
  * 現在ページのページ番号を取得
  */
-function getPageNums(pdfNotes: PdfNotes, imageNum: number) {
+function getPageNums(pdfNotes: PdfNotes, pageNum: number) {
   const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
   let found = false;
   for (let i = 0; i < pdfNotes.pages.length; i++) {
     const p = pdfNotes.pages[i];
     if (!p) continue;
-    const before = i <= imageNum;
+    const before = i <= pageNum;
     const isChapterStart =
       p.volume !== undefined || p.part !== undefined || p.chapter !== undefined;
     if (isChapterStart) {

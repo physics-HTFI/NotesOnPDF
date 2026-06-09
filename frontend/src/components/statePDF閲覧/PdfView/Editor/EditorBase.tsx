@@ -3,6 +3,7 @@ import { Modal, Paper } from "@mui/material";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useAtomValue } from "jotai";
 import { modelUI } from "@/models/modelUI";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * 画面クリック時にポップアップする編集ダイアログ
@@ -14,7 +15,7 @@ export default function EditorBase({
   children: ReactNode;
   onClose: () => void;
 }) {
-  const { pdfNotes } = useContext(PdfNotesContext);
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const mouse = useAtomValue(modelUI.mouse.atom);
   if (!pdfNotes || !mouse) return <></>;
 

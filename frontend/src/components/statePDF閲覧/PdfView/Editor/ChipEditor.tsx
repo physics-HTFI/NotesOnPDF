@@ -11,6 +11,8 @@ import type { Chip } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { blue } from "@mui/material/colors";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { useAtomValue } from "jotai";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * `pdfNotes`に含まれているチップ注釈のうち、出現回数が多い順に並べ替えて返す。
@@ -40,8 +42,8 @@ export default function ChipEditor({
   params: Chip;
   onClose: () => void;
 }) {
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const {
-    pdfNotes,
     updaters: { updateNote },
   } = useContext(PdfNotesContext);
   const [style, setStyle] = useState(params.style);

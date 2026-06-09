@@ -12,6 +12,7 @@ import { GetAppSettings_default } from "@/types/AppSettings";
 import { usePdf } from "./utils/usePdf/usePdf";
 import { modelPDF履歴 } from "./modelPDF履歴";
 import { modelPdfNotes } from "./modelPdfNotes";
+import useNewCoverages from "@/models/utils/useNewCoverages";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
@@ -100,31 +101,6 @@ export const modelファイル = {
 
 const id = "modelPDFファイル";
 
-// pdfPath 変更時の処理
-watchMaps.pdfPath.set(id, () => {
-  const setWaiting = useSetAtom(modelUI.waiting.atom);
-  const { setPdfHandle } = usePdf();
-  const handle = useAtomValue(atomHandleValue);
-  const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
-  const setPdfLoaded = useSetAtom(atomPdfLoaded);
-  const { add: addPdfHistory } = modelPDF履歴.update.use();
-
-  return async (path) => {
-    document.title = "NotesOnPDF";
-
-    // PDF ファイル読み込み／アンロード
-    setWaiting(true);
-    setPdfLoaded(false);
-    setPdfHandle(handle, (totalPages) => {
-      setOpenDrawer(false);
-      if (path && totalPages) void addPdfHistory(path, totalPages);
-      setWaiting(false);
-      setPdfLoaded(true);
-      if (handle) document.title = handle.name;
-    });
-  };
-});
-
 // folder 変更時の処理
 watchMaps.folder.set(id, () => {
   const folder = useAtomValue(modelフォルダ.folder.atom);
@@ -155,4 +131,44 @@ watchMaps.folder.set(id, () => {
   };
   // fileTree は folder から一意的に決まるので、派生 atom にしてもよい。
   // ただ、coverages の初期値の計算に必要になるので、ここで合わせて設定するようにしている。
+});
+
+// pdfPath 変更時の処理
+watchMaps.pdfPath.set(id, () => {
+  const setWaiting = useSetAtom(modelUI.waiting.atom);
+  const { setPdfHandle } = usePdf();
+  const handle = useAtomValue(atomHandleValue);
+  const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
+  const setPdfLoaded = useSetAtom(atomPdfLoaded);
+  const { add: addPdfHistory } = modelPDF履歴.update.use();
+
+  return async (path) => {
+    document.title = "NotesOnPDF";
+
+    // PDF ファイル読み込み／アンロード
+    setWaiting(true);
+    setPdfLoaded(false);
+    setPdfHandle(handle, (totalPages) => {
+      setOpenDrawer(false);
+      if (path && totalPages) void addPdfHistory(path, totalPages);
+      setWaiting(false);
+      setPdfLoaded(true);
+      if (handle) document.title = handle.name;
+    });
+  };
+});
+
+// pdfNotes 変更時の処理
+watchMaps.pdfNotes.set(id, () => {
+  const setCoverages = modelファイル.coverages.useSet();
+  const { getNewCoveragesOrUndefined } = useNewCoverages();
+  const path = useAtomValue(atomPath);
+
+  return (pdfNotes) => {
+    // coverages の更新
+    const newCoverages = getNewCoveragesOrUndefined(path, pdfNotes);
+    if (newCoverages) {
+      void setCoverages(newCoverages);
+    }
+  };
 });

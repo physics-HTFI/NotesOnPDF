@@ -15,6 +15,7 @@ import { modelUI } from "@/models/modelUI";
 import { modelファイル } from "../../../models/modelファイル";
 import { useAtomValue, useSetAtom } from "jotai";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * Pdfを表示するコンポーネント
@@ -24,8 +25,8 @@ export default function PdfView() {
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const setMouse = useSetAtom(modelUI.mouse.atom);
   const { pageRect } = usePdf();
+  const page = useAtomValue(modelPdfNotes.page.atomValue);
   const {
-    page,
     updaters: { updateNote, scrollPage, handleKeyDown },
   } = useContext(PdfNotesContext);
 

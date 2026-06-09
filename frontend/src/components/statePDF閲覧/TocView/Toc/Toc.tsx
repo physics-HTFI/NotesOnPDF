@@ -5,15 +5,17 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { MathJax } from "better-react-mathjax";
 import Label from "./Label";
 import "./style.css";
+import { useAtomValue } from "jotai";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * @returns 目次の内容
  */
 const ToC = () => {
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
+  const imageNum = useAtomValue(modelPdfNotes.pageNum.atomValue);
   const {
-    pdfNotes,
-    imageNum,
-    updaters: { jumpPageStart: jumpPage, getChpapterStartPageNum },
+    updaters: { jumpPage: jumpPage, getChpapterStartPageNum },
   } = useContext(PdfNotesContext);
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
 

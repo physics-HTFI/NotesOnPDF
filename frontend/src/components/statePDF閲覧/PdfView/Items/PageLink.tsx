@@ -10,6 +10,7 @@ import type { Mode } from "../SpeedDial";
 import useCursor from "./utils/useCursor";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { useAtomValue } from "jotai";
 
 /**
  * ページへのリンク
@@ -25,9 +26,9 @@ export default function PageLink({
 }) {
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const {
-    pdfNotes,
-    updaters: { jumpPageStart: jumpPage },
+    updaters: { jumpPage: jumpPage },
   } = useContext(PdfNotesContext);
   const scale = modelPdfNotes.fontScale.use();
   if (!pdfNotes) return <></>;

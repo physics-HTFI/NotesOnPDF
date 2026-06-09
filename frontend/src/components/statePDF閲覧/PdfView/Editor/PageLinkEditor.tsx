@@ -2,6 +2,8 @@ import { useContext } from "react";
 import { type PageLink } from "@/types/PdfNotes";
 import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import PageInput from "./PageInput";
+import { useAtomValue } from "jotai";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * ページリンクの編集ダイアログ
@@ -13,8 +15,8 @@ export default function PageLinkEditor({
   params: PageLink;
   onClose: () => void;
 }) {
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const {
-    pdfNotes,
     updaters: { updateNote },
   } = useContext(PdfNotesContext);
   if (!pdfNotes) return <></>;

@@ -15,6 +15,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { modelファイル } from "../../../models/modelファイル";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
 import { modelUI } from "@/models/modelUI";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * 移動中の注釈を表示するコンポーネント
@@ -35,7 +36,7 @@ export default function Move({
   const [mouse, setMouse] = useAtom(modelUI.mouse.atom);
   const pageRect = usePdf()?.pageRect?.rect;
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
-  const { page } = useContext(PdfNotesContext);
+  const page = useAtomValue(modelPdfNotes.page.atomValue);
   if (!params || !mouse || !pageRect || !appSettings) {
     if (dXY) setDXY(undefined); // 頂点編集中に`Esc`を押してキャンセル後に値が残るのを防ぐ
     return <></>;

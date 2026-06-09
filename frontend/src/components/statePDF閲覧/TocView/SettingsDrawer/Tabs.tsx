@@ -1,6 +1,7 @@
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 import { Box, Tab, Tabs as MaterialTabs, Tooltip } from "@mui/material";
-import { type ReactNode, useContext } from "react";
+import { useAtomValue } from "jotai";
+import { type ReactNode } from "react";
 
 /**
  * タブ
@@ -12,7 +13,7 @@ export default function Tabs({
   tab: number;
   setTab: (i: number) => void;
 }): ReactNode {
-  const { pageLabel } = useContext(PdfNotesContext);
+  const pageLabel = useAtomValue(modelPdfNotes.pageLabel.atomValue);
   return (
     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
       <MaterialTabs

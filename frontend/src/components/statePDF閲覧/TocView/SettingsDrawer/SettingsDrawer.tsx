@@ -15,6 +15,7 @@ import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useAtom, useAtomValue } from "jotai";
 import { modelUI } from "@/models/modelUI";
 import { modelファイル } from "../../../../models/modelファイル";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * 設定パネル
@@ -22,9 +23,9 @@ import { modelファイル } from "../../../../models/modelファイル";
 export default function SettingsDrawer() {
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const setAppSettings = modelファイル.appSettings.useSet();
+  const page = useAtomValue(modelPdfNotes.page.atomValue);
+  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const {
-    pdfNotes,
-    page,
     updaters: { updatePageSettings, getPreferredLabels, updateFileSettings },
   } = useContext(PdfNotesContext);
   const [openDrawer, setOpenDrawer] = useAtom(
