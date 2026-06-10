@@ -1,13 +1,12 @@
-import { useContext } from "react";
 import { type Bracket } from "@/types/PdfNotes";
 import BracketItem from "../Items/Bracket";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Palette from "@/components/share/Palette/Palette";
 import getVector from "./getVector";
 import Svg from "@/components/share/Svg";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { modelUI } from "@/models/modelUI";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * Bracketの編集パレット
@@ -19,9 +18,7 @@ export default function EditBracketPalette({
   params: Bracket;
   onClose: () => void;
 }) {
-  const {
-    updaters: { updateNote },
-  } = useContext(PdfNotesContext);
+  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
   const mouse = useAtomValue(modelUI.mouse.atom);
   const pageRect = usePdf()?.pageRect?.rect;
   if (!pageRect || !mouse) return undefined;

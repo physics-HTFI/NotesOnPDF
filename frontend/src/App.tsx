@@ -4,7 +4,6 @@ import { Box, ThemeProvider, createTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import OpenFileDrawer from "@/components/statePDFファイル選択/OpenFileDrawer";
 import { MathJaxContext } from "better-react-mathjax";
-import { PdfNotesContextProvider } from "./contexts/PdfNotesContext/PdfNotesContextProvider";
 import { Dialog起動直後 } from "./components/state起動直後/Dialog起動直後";
 import { Alert } from "./components/global/Alert";
 import { Waiting } from "./components/global/Waiting";
@@ -86,37 +85,35 @@ export default function App() {
       <Dialog起動直後 />
 
       <MathJaxContext version={4} config={mathjaxConfig}>
-        <PdfNotesContextProvider>
-          <Box sx={{ userSelect: "none" }}>
-            {/* ファイルツリー */}
-            <OpenFileDrawer />
+        <Box sx={{ userSelect: "none" }}>
+          {/* ファイルツリー */}
+          <OpenFileDrawer />
 
-            <Group>
-              {/* 目次 */}
-              <Panel defaultSize={270} minSize={40}>
-                <TocView />
-              </Panel>
+          <Group>
+            {/* 目次 */}
+            <Panel defaultSize={270} minSize={40}>
+              <TocView />
+            </Panel>
 
-              {/* リサイズハンドル */}
-              <Separator>
-                <Box
-                  sx={{
-                    width: 5,
-                    height: "100vh",
-                    background: grey[400],
-                  }}
-                />
-              </Separator>
+            {/* リサイズハンドル */}
+            <Separator>
+              <Box
+                sx={{
+                  width: 5,
+                  height: "100vh",
+                  background: grey[400],
+                }}
+              />
+            </Separator>
 
-              {/* PDFビュー */}
-              <Panel minSize={200}>
-                <Box id={ID_PDF_CONTAINER}>
-                  <PdfView />
-                </Box>
-              </Panel>
-            </Group>
-          </Box>
-        </PdfNotesContextProvider>
+            {/* PDFビュー */}
+            <Panel minSize={200}>
+              <Box id={ID_PDF_CONTAINER}>
+                <PdfView />
+              </Box>
+            </Panel>
+          </Group>
+        </Box>
       </MathJaxContext>
       <Alert />
       <Waiting />

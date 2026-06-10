@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Box, Drawer } from "@mui/material";
 import { editPageStyle } from "@/types/PdfNotes";
 import CheckboxText from "./CheckboxText";
@@ -11,8 +11,7 @@ import type AppSettings from "@/types/AppSettings";
 import IconClose from "./IconClose";
 import IconTogglePosition from "./IconTogglePosition";
 import Tabs from "./Tabs";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { modelUI } from "@/models/modelUI";
 import { modelファイル } from "../../../../models/modelファイル";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
@@ -25,9 +24,13 @@ export default function SettingsDrawer() {
   const setAppSettings = modelファイル.appSettings.useSet();
   const page = useAtomValue(modelPdfNotes.page.atomValue);
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  const {
-    updaters: { updatePageSettings, getPreferredLabels, updateFileSettings },
-  } = useContext(PdfNotesContext);
+  const updatePageSettings = useSetAtom(
+    modelPdfNotes.update.atomUpdatePageSettings,
+  );
+  const preferredLabels = useAtomValue(modelPdfNotes.preferredLabels.atomValue);
+  const updateFileSettings = useSetAtom(
+    modelPdfNotes.update.atomUpdateFileSettings,
+  );
   const [openDrawer, setOpenDrawer] = useAtom(
     modelUI.openDrawer.pdfFileTree.atom,
   );
@@ -41,8 +44,7 @@ export default function SettingsDrawer() {
   if (!appSettings || !pdfNotes) return <></>;
 
   // 部名・章名・ページ番号の候補など
-  const { volumeLabel, partLabel, chapterLabel, pageNum } =
-    getPreferredLabels();
+  const { volumeLabel, partLabel, chapterLabel, pageNum } = preferredLabels;
 
   // アプリ設定変更
   const handleChangeAppSettings = (changed: Partial<AppSettings>) => {

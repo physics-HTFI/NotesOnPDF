@@ -1,8 +1,9 @@
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { type Page } from "@/types/PdfNotes";
 import { Typography } from "@mui/material";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import LabelEditor from "./LabelEditor";
+import { useSetAtom } from "jotai";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * 巻名、部名、章名要素
@@ -18,9 +19,10 @@ export default function Label({
   pageNum: number;
   highlight?: boolean;
 }) {
-  const {
-    updaters: { jumpPage: jumpPage, updatePageSettings },
-  } = useContext(PdfNotesContext);
+  const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
+  const updatePageSettings = useSetAtom(
+    modelPdfNotes.update.atomUpdatePageSettings,
+  );
   const [xy, setXy] = useState<{ x: number; y: number }>();
 
   const label =

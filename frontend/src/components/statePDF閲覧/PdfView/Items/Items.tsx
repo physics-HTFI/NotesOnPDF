@@ -1,4 +1,4 @@
-import { type MouseEvent, useContext } from "react";
+import { type MouseEvent } from "react";
 import Arrow from "./Arrow";
 import Bracket from "./Bracket";
 import Marker from "./Marker";
@@ -10,7 +10,6 @@ import Chip from "./Chip";
 import type { Mode } from "../SpeedDial";
 import type { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./utils/SvgDefs";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Svg from "@/components/share/Svg";
 import { modelファイル } from "../../../../models/modelファイル";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -36,9 +35,7 @@ export default function Items({
   const pageRect = usePdf()?.pageRect?.rect;
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const page = useAtomValue(modelPdfNotes.page.atomValue);
-  const {
-    updaters: { popNote },
-  } = useContext(PdfNotesContext);
+  const popNote = useSetAtom(modelPdfNotes.update.atomPopNote);
   if (!page?.notes || !pageRect) return <SvgDefs />;
 
   const props = <T extends NoteType | NodeType>(params: T) => ({

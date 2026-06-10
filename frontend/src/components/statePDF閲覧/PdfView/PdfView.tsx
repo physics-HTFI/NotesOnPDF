@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Container } from "@mui/material";
 import PageLabelSmall from "./PageLabelSmall";
 import SpeedDial, { type Mode } from "./SpeedDial";
@@ -9,7 +9,6 @@ import Items from "./Items/Items";
 import Editor from "./Editor/Editor";
 import { grey } from "@mui/material/colors";
 import Move from "./Move";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { PdfImage } from "./PdfImage";
 import { modelUI } from "@/models/modelUI";
 import { modelファイル } from "../../../models/modelファイル";
@@ -26,9 +25,9 @@ export default function PdfView() {
   const setMouse = useSetAtom(modelUI.mouse.atom);
   const { pageRect } = usePdf();
   const page = useAtomValue(modelPdfNotes.page.atomValue);
-  const {
-    updaters: { updateNote, scrollPage, handleKeyDown },
-  } = useContext(PdfNotesContext);
+  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
+  const scrollPage = useSetAtom(modelPdfNotes.update.atomScrollPage);
+  const handleKeyDown = useSetAtom(modelPdfNotes.update.atomKeyDown);
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mode, setMode] = useState<Mode>(undefined);

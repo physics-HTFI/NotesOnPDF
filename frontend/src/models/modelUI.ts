@@ -12,7 +12,6 @@ const atomMouse = atom<MousePosition>();
 //| 派生 atom
 //|
 
-const atomAlertValue = atom((get) => get(atomAlert));
 const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
 
 //|
@@ -22,7 +21,7 @@ const atomAlertClear = atom(null, (_, set) => set(atomAlert, undefined));
 export const modelUI = {
   /** メッセージトーストを表示する */
   alert: {
-    atomValue: atomAlertValue,
+    atom: atomAlert,
     atomClear: atomAlertClear,
 
     /** アラートを簡潔に設定できるようにしたもの。例：`set("error", "失敗しました")` */

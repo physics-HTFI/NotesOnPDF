@@ -1,10 +1,11 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useState } from "react";
 import { FormControlLabel, Switch, Tooltip, Typography } from "@mui/material";
 import { type Memo } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import TextareaAutosize from "@/components/share/TextAreaAutosize";
+import { useSetAtom } from "jotai";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * 注釈メモの編集ダイアログ
@@ -16,9 +17,7 @@ export default function MemoEditor({
   params: Memo;
   onClose: () => void;
 }) {
-  const {
-    updaters: { updateNote },
-  } = useContext(PdfNotesContext);
+  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
   const [text, setText] = useState(params.html);
   const [fold, setFold] = useState(params.style === "fold");
   const handleRef = useCallback((ref: HTMLTextAreaElement | null) => {

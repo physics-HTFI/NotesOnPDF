@@ -1,6 +1,5 @@
-import { type ReactNode, useContext } from "react";
+import { type ReactNode } from "react";
 import { Modal, Paper } from "@mui/material";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useAtomValue } from "jotai";
 import { modelUI } from "@/models/modelUI";
 import { modelPdfNotes } from "@/models/modelPdfNotes";

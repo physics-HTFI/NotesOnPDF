@@ -1,6 +1,4 @@
-import { useContext } from "react";
 import type { Node, NoteType } from "@/types/PdfNotes";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import getInitialNote from "./getInitialNote";
 import Icon from "./Icon";
 import Palette from "@/components/share/Palette/Palette";

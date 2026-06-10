@@ -7,7 +7,7 @@ import { useState } from "react";
  * エラー・情報をスナックバーで表示する
  */
 export function Alert() {
-  const alert = useAtomValue(modelUI.alert.atomValue);
+  const alert = useAtomValue(modelUI.alert.atom);
   const clear = useSetAtom(modelUI.alert.atomClear);
 
   // `alert === undefined` になった瞬間に（スナックバーが消える前に）空白表示されないように、メッセージを残しておく

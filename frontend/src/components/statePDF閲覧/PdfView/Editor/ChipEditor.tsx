@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Autocomplete,
   Chip as MuiChip,
@@ -10,8 +10,7 @@ import type PdfNotes from "@/types/PdfNotes";
 import type { Chip } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { blue } from "@mui/material/colors";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
@@ -43,9 +42,7 @@ export default function ChipEditor({
   onClose: () => void;
 }) {
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  const {
-    updaters: { updateNote },
-  } = useContext(PdfNotesContext);
+  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
   const [style, setStyle] = useState(params.style);
   const [rawText, setRawText] = useState(params.text);
   const [open, setOpen] = useState(params.text === "");

@@ -1,11 +1,10 @@
-import { type ReactNode, useContext, useState } from "react";
+import { type ReactNode, useState } from "react";
 import Separator from "./Separator";
 import Page from "./Page";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { MathJax } from "better-react-mathjax";
 import Label from "./Label";
 import "./style.css";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
@@ -14,9 +13,10 @@ import { modelPdfNotes } from "@/models/modelPdfNotes";
 const ToC = () => {
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const imageNum = useAtomValue(modelPdfNotes.pageNum.atomValue);
-  const {
-    updaters: { jumpPage: jumpPage, getChpapterStartPageNum },
-  } = useContext(PdfNotesContext);
+  const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
+  const chapterStart = useAtomValue(
+    modelPdfNotes.chapterStartPageNum.atomValue,
+  );
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
 
   if (!pdfNotes) return [];
@@ -24,7 +24,6 @@ const ToC = () => {
     setOpenTooltips(new Array(pdfNotes.pages.length).fill(false));
     return undefined;
   }
-  const chapterStart = getChpapterStartPageNum();
 
   const toc: ReactNode[] = [];
   let pageNum = 1;

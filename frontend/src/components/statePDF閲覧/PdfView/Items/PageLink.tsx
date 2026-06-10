@@ -1,4 +1,4 @@
-import { type MouseEvent, useContext, useState } from "react";
+import { type MouseEvent, useState } from "react";
 import { Chip } from "@mui/material";
 import { Shortcut } from "@mui/icons-material";
 import type {
@@ -8,9 +8,8 @@ import type {
 } from "@/types/PdfNotes";
 import type { Mode } from "../SpeedDial";
 import useCursor from "./utils/useCursor";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
 /**
  * ページへのリンク
@@ -27,9 +26,7 @@ export default function PageLink({
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  const {
-    updaters: { jumpPage: jumpPage },
-  } = useContext(PdfNotesContext);
+  const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
   const scale = modelPdfNotes.fontScale.use();
   if (!pdfNotes) return <></>;
   return (

@@ -1,9 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Chip, Stack, Tooltip } from "@mui/material";
 import { Reply } from "@mui/icons-material";
 import type PdfNotes from "@/types/PdfNotes";
 import { GetCoverage } from "@/types/Coverages";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import PageInput from "./Editor/PageInput";
 import Progress from "@/components/statePDFファイル選択/FileTreeView/Progress";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
@@ -17,10 +16,8 @@ import { modelPdfNotes } from "@/models/modelPdfNotes";
  */
 export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  const {
-    updaters: { jumpPage: jumpPage },
-  } = useContext(PdfNotesContext);
-  const previousPageNum = useAtomValue(modelPdfNotes.previous.pageNum.atom);
+  const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
+  const previousPageNum = useAtomValue(modelPdfNotes.previousPageNum.atomValue);
   const pageNum = useAtomValue(modelPdfNotes.pageNum.atomValue);
   const pageLabel = useAtomValue(modelPdfNotes.pageLabel.atomValue);
   const path = useAtomValue(modelファイル.pdf.atomPath);

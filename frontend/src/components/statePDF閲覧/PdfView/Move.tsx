@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Arrow from "./Items/Arrow";
 import Bracket from "./Items/Bracket";
 import Marker from "./Items/Marker";
@@ -9,7 +9,6 @@ import Polygon from "./Items/Polygon";
 import Chip from "./Items/Chip";
 import type { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import Svg from "@/components/share/Svg";
 import { useAtom, useAtomValue } from "jotai";
 import { modelファイル } from "../../../models/modelファイル";
@@ -51,7 +50,7 @@ export default function Move({
         ];
 
   const newParams =
-    params.type === "Node" ? getTransformed(params, dXY) : params;
+    params.type === "Node" ? getTransformed(params, dXY) : { ...params };
   const addingPolygon =
     params.type === "Node" &&
     newParams.type === "Polygon" &&

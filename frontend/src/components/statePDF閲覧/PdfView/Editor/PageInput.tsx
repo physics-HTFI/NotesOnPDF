@@ -1,8 +1,7 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useState } from "react";
 import { TextField } from "@mui/material";
 import { fromDisplayedPage } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
-import PdfNotesContext from "@/contexts/PdfNotesContext/PdfNotesContext";
 import { useAtomValue } from "jotai";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
