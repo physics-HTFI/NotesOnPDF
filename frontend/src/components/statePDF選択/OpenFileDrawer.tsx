@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Drawer } from "@mui/material";
-import Header from "@/components/statePDFファイル選択/Header";
+import Header from "@/components/statePDF選択/Header";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import { findTreeItem } from "@/types/FileTree";
 import { modelフォルダ } from "../../models/modelフォルダ";

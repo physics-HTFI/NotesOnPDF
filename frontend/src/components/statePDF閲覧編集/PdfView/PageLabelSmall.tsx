@@ -4,7 +4,7 @@ import { Reply } from "@mui/icons-material";
 import type PdfNotes from "@/types/PdfNotes";
 import { GetCoverage } from "@/types/Coverages";
 import PageInput from "./Editor/PageInput";
-import Progress from "@/components/statePDFファイル選択/FileTreeView/Progress";
+import Progress from "@/components/statePDF選択/FileTreeView/Progress";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
 import { useAtomValue, useSetAtom } from "jotai";
 import { modelファイル } from "@/models/modelファイル";

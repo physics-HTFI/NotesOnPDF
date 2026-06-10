@@ -8,6 +8,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
@@ -91,9 +92,15 @@ export default function DialogPdfHistory({
                     onClose();
                   }}
                 >
-                  <TableCell component="th" scope="row" sx={{ height: 30 }}>
-                    {row.name}
-                  </TableCell>
+                  <Tooltip
+                    title={row.path}
+                    placement="right"
+                    disableInteractive
+                  >
+                    <TableCell component="th" scope="row" sx={{ height: 30 }}>
+                      {row.name}
+                    </TableCell>
+                  </Tooltip>
                   <TableCell align="center">{row.pages}</TableCell>
                   <TableCell align="center">{row.accessDate}</TableCell>
                   <TableCell align="center">
