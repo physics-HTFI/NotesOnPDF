@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Box } from "@mui/material";
 import SettingsDrawer from "./SettingsDrawer/SettingsDrawer";
 import { grey } from "@mui/material/colors";
@@ -37,15 +36,9 @@ export default function TocView() {
           if (isScrollBarVisible) e.stopPropagation();
         }}
       >
-        {/* レンダリングコストが高いのでメモ化する */}
-        {useMemo(
-          () => (
-            <Box>
-              <ToC />
-            </Box>
-          ),
-          [],
-        )}
+        <Box>
+          <ToC />
+        </Box>
         <ButtonOpenSettings />
       </Box>
       <SettingsDrawer />
