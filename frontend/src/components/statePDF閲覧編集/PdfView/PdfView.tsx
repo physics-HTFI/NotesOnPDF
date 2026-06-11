@@ -15,6 +15,7 @@ import { modelファイル } from "../../../models/modelファイル";
 import { useAtomValue, useSetAtom } from "jotai";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { ID_PDF_PAGE } from "@/types/CONSTANTS";
 
 /**
  * Pdfを表示するコンポーネント
@@ -103,13 +104,9 @@ export default function PdfView() {
     >
       {/* PDF画像がある要素 */}
       <Container
+        id={ID_PDF_PAGE}
         sx={{
-          width: pageRect?.rect?.width,
-          height: pageRect?.rect?.height,
-          visibility: pageRect ? "visible" : "collapse",
           position: "absolute",
-          top: pageRect?.top,
-          bottom: pageRect?.bottom,
           left: 0,
           right: 0,
           margin: "auto",

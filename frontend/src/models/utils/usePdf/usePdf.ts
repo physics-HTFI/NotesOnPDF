@@ -4,6 +4,7 @@ import {
   ID_PDF_CANVAS_1,
   ID_PDF_CANVAS_2,
   ID_PDF_CONTAINER,
+  ID_PDF_PAGE,
 } from "@/types/CONSTANTS";
 import { useSyncExternalStore } from "react";
 import { calPageRect } from "./calPageRect";
@@ -90,10 +91,19 @@ async function queueRenderPage(
 ) {
   window.pdf.setCanvasId(ID_PDF_CANVAS_1, ID_PDF_CANVAS_2); // main.tsx よりも先に PdfJs.script.js を実行すること（window.pdf が undefined になる）
   const resizer: Resizer = (size) => {
-    const elem = document.getElementById(ID_PDF_CONTAINER);
-    if (!elem) return;
-    const rect = elem.getBoundingClientRect();
-    return calPageRect(rect, size, offset);
+    const container = document.getElementById(ID_PDF_CONTAINER);
+    const page = document.getElementById(ID_PDF_PAGE);
+    if (!container || !page) return;
+    const rect = container.getBoundingClientRect();
+    const pageRect = calPageRect(rect, size, offset);
+    if (pageRect?.rect) {
+      page.style.width = `${pageRect?.rect?.width}px`;
+      page.style.height = `${pageRect?.rect?.height}px`;
+      page.style.top = `${pageRect?.top}px`;
+      page.style.bottom = `${pageRect?.bottom}px`;
+    }
+    page.style.visibility = pageRect ? "visible" : "collapse";
+    return pageRect;
   };
   const pageRect = await window.pdf.queueRenderPageAsync(pageNum, resizer);
   if (!pageRect) return;
