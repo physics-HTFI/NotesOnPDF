@@ -1,5 +1,3 @@
-import type { ResultGetPdfNotes } from "@/models/IModel";
-
 /**
  * 1つのPDFファイルに追加された全ての情報
  */
@@ -138,29 +136,31 @@ export interface Settings {
  * `PdfNotes`がまだ生成されていないファイルの場合、新規作成して返す。
  * 既存の場合はそのまま返す。
  */
-export const createOrGetPdfNotes = (result: ResultGetPdfNotes) => {
-  if (
-    result.pdfNotes &&
-    (!result.pages || result.pages <= result.pdfNotes.pages.length)
-  ) {
-    return result.pdfNotes;
+export const createOrGetPdfNotes = (
+  name: string,
+  totalPages: number,
+  pdfNotes?: PdfNotes,
+) => {
+  if (pdfNotes && totalPages <= pdfNotes.pages.length) {
+    pdfNotes.pages = pdfNotes.pages.slice(0, totalPages);
+    return pdfNotes;
   }
-  const addsTitle = !result.pdfNotes || result.pdfNotes.pages.length === 0; // pages===0は、ウェブ版で始めて開くPDFのタイトルを追加するために必要
-  const notes: PdfNotes = result.pdfNotes ?? {
-    title: result.name,
+  const addsTitle = !pdfNotes || pdfNotes.pages.length === 0; // pages===0は、ウェブ版で始めて開くPDFのタイトルを追加するために必要
+  const notes: PdfNotes = pdfNotes ?? {
+    title: name,
     version: FORMAT_VERSION,
     currentPage: 0,
     settings: { fontSize: 100, offsetTop: 0, offsetBottom: 0 },
     pages: [],
   };
-  // ページ数を`result.sizes`に合わせる
-  for (let i = 0; result.pages && i < result.pages; i++) {
+  // ページ数を `totalPages` に合わせる
+  for (let i = 0; totalPages && i < totalPages; i++) {
     if (i < notes.pages.length) continue;
     notes.pages.push({ num: i + 1 });
   }
   updatePageNum(notes);
   if (addsTitle && notes.pages[0]) {
-    notes.pages[0].volume = result.name;
+    notes.pages[0].volume = name;
   }
   return notes;
 };

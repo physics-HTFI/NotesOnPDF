@@ -5,9 +5,7 @@ import { modelUI } from "@/models/modelUI";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
 
 export function ButtonOpenSettings() {
-  const [openDrawer, setOpenDrawer] = useAtom(
-    modelUI.openDrawer.pdfFileTree.atom,
-  );
+  const [openDrawer, setOpenDrawer] = useAtom(modelUI.openDrawer.settings.atom);
   return (
     <TooltipIconButton
       icon={<Settings />}

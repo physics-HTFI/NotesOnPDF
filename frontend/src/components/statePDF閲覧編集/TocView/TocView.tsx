@@ -34,9 +34,7 @@ export default function TocView() {
         onWheel={(e) => {
           const target = e.currentTarget;
           const isScrollBarVisible = target.scrollHeight > target.clientHeight;
-          if (isScrollBarVisible) {
-            e.stopPropagation();
-          }
+          if (isScrollBarVisible) e.stopPropagation();
         }}
       >
         {/* レンダリングコストが高いのでメモ化する */}

@@ -31,9 +31,8 @@ export default function SettingsDrawer() {
   const updateFileSettings = useSetAtom(
     modelPdfNotes.update.atomUpdateFileSettings,
   );
-  const [openDrawer, setOpenDrawer] = useAtom(
-    modelUI.openDrawer.pdfFileTree.atom,
-  );
+  const [openDrawer, setOpenDrawer] = useAtom(modelUI.openDrawer.settings.atom);
+  const render = modelファイル.pdf.useRenderPage();
 
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
@@ -215,6 +214,7 @@ export default function SettingsDrawer() {
               tooltipTitle="ページ上部の余白をカットします"
               onChange={(offsetTop) => {
                 updateFileSettings({ offsetTop });
+                void render();
               }}
             />
             <LabelSlider
@@ -226,6 +226,7 @@ export default function SettingsDrawer() {
               tooltipTitle="ページ下部の余白をカットします"
               onChange={(offsetBottom) => {
                 updateFileSettings({ offsetBottom });
+                void render();
               }}
             />
           </Box>

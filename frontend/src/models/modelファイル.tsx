@@ -19,6 +19,7 @@ const atomCoverages = atom<Coverages>();
 const atomPath = atom<string>();
 const atomAppSettings = atom<AppSettings>();
 const atomPdfLoaded = atom(false);
+const atomTotalPages = atom<number>();
 
 //|
 //| 派生 atom
@@ -27,9 +28,13 @@ const atomPdfLoaded = atom(false);
 const atomFileTreeValue = atom((get) => get(atomFileTree));
 const atomCoveragesValue = atom((get) => get(atomCoverages));
 const atomPdfLoadedValue = atom((get) => get(atomPdfLoaded));
+const atomTotalPagesValue = atom((get) => get(atomTotalPages));
 const atomAppSettingsValue = atom((get) => get(atomAppSettings));
 const atomJsonPathValue = atom((get) =>
   get(atomPath) ? get(atomPath) + ".json" : undefined,
+);
+const atomTitleValue = atom(
+  (get) => get(atomPath)?.match(/([^/\\]*)\.[^.]*$/)?.[1],
 );
 
 const atomHandleValue = atom((get) => {
@@ -89,8 +94,10 @@ export const modelファイル = {
 
   pdf: {
     atomPath: atomPath,
-    atomJsonPathValue: atomJsonPathValue,
+    atomTitleValue,
+    atomJsonPathValue,
     atomLoadedValue: atomPdfLoadedValue,
+    atomTotalPagesValue,
     useRenderPage,
   },
 };
@@ -141,6 +148,7 @@ watchMaps.pdfPath.set(id, () => {
   const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
   const setPdfLoaded = useSetAtom(atomPdfLoaded);
   const { add: addPdfHistory } = modelPDF履歴.update.use();
+  const setTotalPages = useSetAtom(atomTotalPages);
 
   return async (path) => {
     document.title = "NotesOnPDF";
@@ -148,9 +156,11 @@ watchMaps.pdfPath.set(id, () => {
     // PDF ファイル読み込み／アンロード
     setWaiting(true);
     setPdfLoaded(false);
+    setTotalPages(undefined);
     setPdfHandle(handle, (totalPages) => {
       setOpenDrawer(false);
       if (path && totalPages) void addPdfHistory(path, totalPages);
+      setTotalPages(totalPages);
       setWaiting(false);
       setPdfLoaded(true);
       if (handle) document.title = handle.name;
@@ -170,5 +180,14 @@ watchMaps.pdfNotes.set(id, () => {
     if (newCoverages) {
       void setCoverages(newCoverages);
     }
+  };
+});
+
+// ページ変更時の処理
+watchMaps.currentPage.set(id, () => {
+  const render = modelファイル.pdf.useRenderPage();
+
+  return async () => {
+    await render();
   };
 });

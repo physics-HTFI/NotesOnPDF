@@ -15,6 +15,8 @@ export function Watch() {
       <WatchPdfPath />
       <WatchPdfNotes />
       <WatchPdfLoaded />
+      <WatchPdfFullLoaded />
+      <WatchCurrentPage />
     </>
   );
 }
@@ -39,10 +41,20 @@ function WatchPdfNotes() {
 }
 
 function WatchPdfLoaded() {
+  const loaded = useAtomValue(modelファイル.pdf.atomLoadedValue);
+  return <WatchBase target={loaded} useOnChange={watchMaps.pdfLoaded} />;
+}
+
+function WatchPdfFullLoaded() {
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const pdfLoaded = useAtomValue(modelファイル.pdf.atomLoadedValue);
   const loaded = pdfNotes && pdfLoaded;
-  return <WatchBase target={loaded} useOnChange={watchMaps.pdfLoaded} />;
+  return <WatchBase target={loaded} useOnChange={watchMaps.pdfFullLoaded} />;
+}
+
+function WatchCurrentPage() {
+  const currentPage = useAtomValue(modelPdfNotes.pdfNotes.atom)?.currentPage;
+  return <WatchBase target={currentPage} useOnChange={watchMaps.currentPage} />;
 }
 
 /**

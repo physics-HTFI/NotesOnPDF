@@ -404,36 +404,44 @@ watchMaps.pdfNotes.set(id, () => {
 // pdfPath 変更時の処理
 watchMaps.pdfPath.set(id, () => {
   const assignPdfNotes = useSetAtom(atomAssignPdfNotes);
-  const read = modelフォルダ.json.useRead();
-  const setAlert = modelUI.alert.useSet();
-  const setReadOnly = useSetAtom(modelフォルダ.readOnly.atom);
-  const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
 
-  return async (path) => {
+  return async () => {
     assignPdfNotes(undefined);
-    if (!path) return;
-
-    if (!jsonPath) return;
-    const pdfNotes = await read<PdfNotes>(jsonPath, false);
-    assignPdfNotes(pdfNotes);
-    if (pdfNotes && pdfNotes.version !== FORMAT_VERSION) {
-      // TODO マイグレーション
-      setAlert(
-        "error",
-        <>
-          注釈ファイルのバージョンが異なります。 <br />
-          編集するとファイルの内容が失われる可能性があります。 <br />
-          読み取り専用モードに切り替えました。 <br />
-        </>,
-      );
-      await setReadOnly(true);
-    }
-    assignPdfNotes(createOrGetPdfNotes(jsonPath));
   };
 });
 
 // PDF のロードが終わった時の処理
 watchMaps.pdfLoaded.set(id, () => {
+  const assignPdfNotes = useSetAtom(atomAssignPdfNotes);
+  const read = modelフォルダ.json.useRead();
+  const setAlert = modelUI.alert.useSet();
+  const setReadOnly = useSetAtom(modelフォルダ.readOnly.atom);
+  const title = useAtomValue(modelファイル.pdf.atomTitleValue);
+  const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
+  const totalPages = useAtomValue(modelファイル.pdf.atomTotalPagesValue);
+
+  return async (loaded) => {
+    if (!loaded || !jsonPath || !title || totalPages === undefined) return;
+    // pdfNotes を読み込む
+    const pdfNotes = await read<PdfNotes>(jsonPath, false);
+    if (pdfNotes && pdfNotes.version !== FORMAT_VERSION) {
+      // TODO マイグレーション
+      setAlert(
+        "error",
+        <>
+          注釈ファイルのバージョンが異なるため開けません。 <br />
+          読み取り専用モードに切り替えました。 <br />
+        </>,
+      );
+      await setReadOnly(true);
+      return;
+    }
+    assignPdfNotes(createOrGetPdfNotes(title, totalPages, pdfNotes));
+  };
+});
+
+// PDF と pdfNotes のロードが終わった時の処理
+watchMaps.pdfFullLoaded.set(id, () => {
   const render = modelファイル.pdf.useRenderPage();
 
   return async (loaded) => {

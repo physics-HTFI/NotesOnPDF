@@ -8,6 +8,8 @@ export const watchMaps = {
   pdfPath: new Map() as CallbackMap<string>,
   pdfNotes: new Map() as CallbackMap<PdfNotes>,
   pdfLoaded: new Map() as CallbackMap<boolean>,
+  pdfFullLoaded: new Map() as CallbackMap<boolean>,
+  currentPage: new Map() as CallbackMap<number>,
 };
 
 type CallbackMap<T> = Map<

@@ -49,14 +49,14 @@ export const modelフォルダ = {
   folder: {
     atom: atomFolder,
 
-    /** ルートフォルダの選択を取り消す */
-    atomReset,
-
     /** ルートフォルダにパーミッションを設定する（選択されていれば） */
     atomSetPermission,
 
     /** ルートフォルダとパーミッションが設定されていれば `true` */
     atom選択完了Value,
+
+    /** ルートフォルダの選択を取り消す */
+    atomReset,
   },
 
   /** ファイルの書き込みを許すかどうかのフラグ */
