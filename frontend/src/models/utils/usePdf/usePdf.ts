@@ -1,6 +1,10 @@
 import type { PageRect, Resizer } from "@/types/PageRect";
 import { readBinaryAsync } from "./readBinary";
-import { ID_PDF_CANVAS, ID_PDF_CONTAINER } from "@/types/CONSTANTS";
+import {
+  ID_PDF_CANVAS_1,
+  ID_PDF_CANVAS_2,
+  ID_PDF_CONTAINER,
+} from "@/types/CONSTANTS";
 import { useSyncExternalStore } from "react";
 import { calPageRect } from "./calPageRect";
 
@@ -67,8 +71,12 @@ function setPdfHandle(
     snapshot = { ...snapshot, totalPages };
     emitChange();
   };
-  const canvas = document.getElementById(ID_PDF_CANVAS) as HTMLCanvasElement;
-  if (canvas && !pdfHandle) canvas.width = 0;
+  if (!pdfHandle) {
+    const canvas1 = document.getElementById(ID_PDF_CANVAS_1);
+    const canvas2 = document.getElementById(ID_PDF_CANVAS_2);
+    (canvas1 as HTMLCanvasElement).width = 0;
+    (canvas2 as HTMLCanvasElement).width = 0;
+  }
   void read();
 }
 
@@ -80,15 +88,16 @@ async function queueRenderPage(
   pageNum: number,
   offset: { top: number; bottom: number },
 ) {
-  window.pdf.setCanvasId(ID_PDF_CANVAS); // main.tsx よりも先に PdfJs.script.js を実行すること（window.pdf が undefined になる）
+  window.pdf.setCanvasId(ID_PDF_CANVAS_1, ID_PDF_CANVAS_2); // main.tsx よりも先に PdfJs.script.js を実行すること（window.pdf が undefined になる）
   const resizer: Resizer = (size) => {
     const elem = document.getElementById(ID_PDF_CONTAINER);
     if (!elem) return;
     const rect = elem.getBoundingClientRect();
     return calPageRect(rect, size, offset);
   };
-  const result = await window.pdf.queueRenderPageAsync(pageNum, resizer);
-  snapshot = { ...snapshot, pageRect: result?.pageRect };
+  const pageRect = await window.pdf.queueRenderPageAsync(pageNum, resizer);
+  if (!pageRect) return;
+  snapshot = { ...snapshot, pageRect };
   emitChange();
 }
 
@@ -100,9 +109,10 @@ declare global {
   interface Window {
     pdf: {
       /**
-       * レンダリング先の canvas を指定する
+       * レンダリング先の canvas を指定する。
+       * ダブルバッファリングを行うので 2 つ指定する。
        */
-      setCanvasId: (canvasId: string) => void;
+      setCanvasId: (canvasId_1: string, canvasId_2: string) => void;
 
       /**
        * PDFファイルを読み込む
@@ -119,7 +129,7 @@ declare global {
       queueRenderPageAsync: (
         pageNum: number,
         resizer: Resizer,
-      ) => Promise<{ pageRect: PageRect } | undefined>;
+      ) => Promise<PageRect | undefined>;
     };
   }
 }

@@ -8,55 +8,66 @@ let pdfDoc = null;
 let pageNum = 1;
 let pageRendering = false;
 let pageNumPending = null;
-let scale = 1;
-let canvasId = null;
-let canvas = null;
-let ctx = null;
+let canvases = [null, null];
+let ctxs = [null, null];
+let currentCanvas = 0;
 
-function renderPage(pageNum) {
+async function renderPage(pageNum, resizer) {
   pageRendering = true;
-  canvas ??= document.getElementById(canvasId);
-  ctx ??= canvas?.getContext("2d");
+  pageNumPending = null;
+  const canvas0 = canvases[currentCanvas];
+  currentCanvas = (1 + currentCanvas) % 2;
+  const canvas = canvases[currentCanvas];
+  const ctx = ctxs[currentCanvas];
+  canvas0.style.visibility = "visible";
+  canvas.style.visibility = "hidden";
 
-  // Using promise to fetch the page
-  pdfDoc.getPage(pageNum).then(function (page) {
-    var viewport = page.getViewport({ scale });
-    // Support HiDPI-screens.
-    var outputScale = window.devicePixelRatio || 1;
+  // ページサイズを取得
+  const page = await pdfDoc.getPage(pageNum);
+  const viewport0 = page.getViewport({ scale: 1 });
+  const pageRect = resizer(viewport0);
+  const scale = pageRect.rect.height / viewport0.height;
+  const viewport = page.getViewport({ scale });
 
-    canvas.width = Math.floor(viewport.width * outputScale);
-    canvas.height = Math.floor(viewport.height * outputScale);
-    canvas.style.width = Math.floor(viewport.width) + "px";
-    canvas.style.height = Math.floor(viewport.height) + "px";
+  // Support HiDPI-screens.
+  const outputScale = window.devicePixelRatio || 1;
 
-    var transform =
-      outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
+  canvas.width = Math.floor(viewport.width * outputScale);
+  canvas.height = Math.floor(viewport.height * outputScale);
+  canvas.style.width = Math.floor(viewport.width) + "px";
+  canvas.style.height = Math.floor(viewport.height) + "px";
 
-    // Render PDF page into canvas context
-    var renderContext = {
-      canvasContext: ctx,
-      transform: transform,
-      viewport: viewport,
-    };
-    var renderTask = page.render(renderContext);
+  const transform =
+    outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
 
-    // Wait for rendering to finish
-    renderTask.promise.then(function () {
-      pageRendering = false;
-      if (pageNumPending !== null) {
-        // New page rendering is pending
-        renderPage(pageNumPending);
-        pageNumPending = null;
-      }
-    });
-  });
+  // Render PDF page into canvas context
+  const renderContext = {
+    canvasContext: ctx,
+    transform: transform,
+    viewport,
+  };
+  const renderTask = page.render(renderContext);
+
+  // Wait for rendering to finish
+  await renderTask.promise;
+  canvas.style.visibility = "visible";
+  canvas0.style.visibility = "hidden";
+
+  if (pageNumPending !== null) {
+    return await renderPage(pageNumPending, resizer);
+  }
+  pageRendering = false;
+  return pageRect;
 }
 
 window.pdf = {
   /**
    * レンダリング先の canvas を指定する
    */
-  setCanvasId: (id) => (canvasId = id),
+  setCanvasId: (id_1, id_2) => {
+    canvases = [document.getElementById(id_1), document.getElementById(id_2)];
+    ctxs = canvases.map((c) => c.getContext("2d"));
+  },
 
   /**
    * PDFファイルを読み込む
@@ -90,20 +101,13 @@ window.pdf = {
     try {
       if (!pdfDoc || pageNum === undefined) return undefined;
 
-      // ページサイズを取得
-      const page = await pdfDoc.getPage(pageNum + 1);
-      const viewport = page.getViewport({ scale: 1 });
-      const pageRect = resizer(viewport);
-      scale = pageRect.rect.height / viewport.height;
-
       // レンダリング
       if (pageRendering) {
         pageNumPending = pageNum + 1;
+        return undefined;
       } else {
-        renderPage(pageNum + 1);
+        return await renderPage(pageNum + 1, resizer);
       }
-
-      return { pageRect };
     } catch (_) {
       return undefined;
     }
