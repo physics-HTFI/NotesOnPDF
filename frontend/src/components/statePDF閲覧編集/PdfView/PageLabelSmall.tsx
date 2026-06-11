@@ -18,12 +18,12 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
   const previousPageNum = useAtomValue(modelPdfNotes.previousPageNum.atomValue);
-  const pageNum = useAtomValue(modelPdfNotes.pageNum.atomValue);
+  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
   const pageLabel = useAtomValue(modelPdfNotes.pageLabel.atomValue);
   const path = useAtomValue(modelファイル.pdf.atomPath);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const setMouse = useSetAtom(modelUI.mouse.atom);
-  if (!path || !pdfNotes || pageNum === undefined) return <></>;
+  if (!path || !pdfNotes) return <></>;
   const coverage = GetCoverage(pdfNotes);
   const color = "#2e7d32";
 

@@ -30,6 +30,7 @@ export default function PdfView() {
   const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
   const scrollPage = useSetAtom(modelPdfNotes.update.atomScrollPage);
   const handleKeyDown = useSetAtom(modelPdfNotes.update.atomKeyDown);
+  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mode, setMode] = useState<Mode>(undefined);
@@ -159,9 +160,7 @@ export default function PdfView() {
           (!mode &&
             !moveNote &&
             !editNote &&
-            pdfNotes?.pages[pdfNotes.currentPage].style?.includes(
-              "excluded",
-            )) ??
+            pdfNotes?.pages[pageNum].style?.includes("excluded")) ??
           false
         }
       />

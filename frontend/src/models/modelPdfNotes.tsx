@@ -11,6 +11,7 @@ import {
   updatePageNum,
   type NoteType,
   type Page,
+  type PdfNotesWithCurrentPage,
   type Settings,
 } from "@/types/PdfNotes";
 import { usePdf } from "./utils/usePdf/usePdf";
@@ -18,35 +19,52 @@ import { debounce } from "@mui/material";
 
 const atomPdfNotes = atom<PdfNotes>();
 const atomPreviousPageNum = atom<number>();
-const atomInitialPdfNotes = atom<PdfNotes>();
+const atomInitialPdfNotesWithCurrentPage = atom<PdfNotesWithCurrentPage>();
 const atomInitialNotes = atom<NoteType[]>();
+const atomCurrentPageNum = atom<number>(0); // 現在ページ数は、ページ移動時の目次のリレンダーを押さえるため、pdfNotes とは独立に管理する
 
 //|
 //| 派生 atom
 //|
 
 const atomPreviousPageNumValue = atom((get) => get(atomPreviousPageNum));
-const atomAssignPdfNotes = atom(null, (_, set, pdfNotes?: PdfNotes) => {
-  set(atomPdfNotes, pdfNotes);
-  set(atomInitialPdfNotes, structuredClone(pdfNotes));
-  set(atomInitialNotes, undefined);
-  set(atomPreviousPageNum, undefined);
+const atomAssignPdfNotes = atom(
+  null,
+  (_, set, pdfNotesWithCurrentPage?: PdfNotesWithCurrentPage) => {
+    set(atomPdfNotes, pdfNotesWithCurrentPage);
+    set(
+      atomInitialPdfNotesWithCurrentPage,
+      structuredClone(pdfNotesWithCurrentPage),
+    );
+    set(atomInitialNotes, undefined);
+    set(atomPreviousPageNum, undefined);
+    set(atomCurrentPageNum, pdfNotesWithCurrentPage?.currentPage ?? 0);
+  },
+);
+const atomPdfNotesWithCurrentPage = atom((get) => {
+  const pdfNotes = get(atomPdfNotes);
+  if (!pdfNotes) return undefined;
+  return {
+    ...pdfNotes,
+    currentPage: get(atomCurrentPageNum),
+  } as PdfNotesWithCurrentPage;
 });
 const atomPageValue = atom((get) => {
   const notes = get(atomPdfNotes);
-  return notes?.pages[notes.currentPage];
+  const pageNum = get(atomCurrentPageNum);
+  if (!notes || pageNum === undefined) return undefined;
+  return notes.pages[pageNum];
 });
 const atomPageLabelValue = atom(
   (get) => `p. ${get(atomPageValue)?.num ?? "???"}`,
 );
-const atomPageNumValue = atom((get) => get(atomPdfNotes)?.currentPage);
 const atomInvalidValue = atom(
   (get) =>
     !get(atomPdfNotes) ||
     !get(atomPageValue) ||
     get(modelUI.openDrawer.pdfFileTree.atom) ||
     get(modelUI.waiting.atom) ||
-    get(atomPageNumValue) === undefined,
+    get(atomCurrentPageNum) === undefined,
 );
 
 /** % 単位 */
@@ -74,11 +92,13 @@ const _atomPopNote = atom(null, (get, set, note: NoteType) => {
 const _atomPushNote = atom(null, (get, set, note: NoteType) => {
   const pdfNotes = get(atomPdfNotes);
   const page = get(atomPageValue);
+  const pageNum = get(atomCurrentPageNum);
+
   if (!pdfNotes || !page) return;
   set(_atomUpdateNotesSnapshot);
   page.notes ??= [];
   page.notes.push(note);
-  pdfNotes.pages[pdfNotes.currentPage] = page;
+  pdfNotes.pages[pageNum] = page;
 });
 
 /**
@@ -121,7 +141,7 @@ const atomUpdatePageSettings = atom(
   (get, set, settings: Partial<Omit<Page, "notes">>, pageNum?: number) => {
     const pdfNotes = get(atomPdfNotes);
     if (!pdfNotes) return;
-    pageNum ??= pdfNotes.currentPage;
+    pageNum ??= get(atomCurrentPageNum);
     const page = pdfNotes.pages[pageNum];
     if (!page) return;
     pdfNotes.pages[pageNum] = { ...page, ...settings };
@@ -153,8 +173,9 @@ const atomUpdateFileSettings = atom(
 const atomChapterStartPageNumValue = atom((get) => {
   const pdfNotes = get(atomPdfNotes);
   if (get(atomInvalidValue) || !pdfNotes) return 0;
+  const currentPage = get(atomCurrentPageNum);
   let pageNum = 0;
-  for (let i = 1; i <= pdfNotes.currentPage; i++) {
+  for (let i = 1; i <= currentPage; i++) {
     if (pdfNotes.pages[i]?.chapter === undefined) continue;
     pageNum = i;
   }
@@ -166,6 +187,7 @@ const atomChapterStartPageNumValue = atom((get) => {
  */
 const atomPreferredLabelsValue = atom((get) => {
   const pdfNotes = get(atomPdfNotes);
+  const currentPage = get(atomCurrentPageNum);
   if (get(atomInvalidValue) || !pdfNotes)
     return {
       volumeLabel: "タイトル",
@@ -178,7 +200,7 @@ const atomPreferredLabelsValue = atom((get) => {
   let partNum = 1;
   let chapterNum = 1;
   let pageNum = 1;
-  for (let i = 0; i < pdfNotes.currentPage; i++) {
+  for (let i = 0; i < currentPage; i++) {
     ++pageNum;
     const page = pdfNotes.pages[i];
     if (!page) continue;
@@ -202,11 +224,12 @@ const atomPreferredLabelsValue = atom((get) => {
  */
 const atomJumpPage = atom(null, (get, set, num: number) => {
   const pdfNotes = get(atomPdfNotes);
+  const pageNum = get(atomCurrentPageNum);
   if (get(atomInvalidValue) || !pdfNotes) return;
   set(modelUI.alert.atomClear);
   if (num < 0 || pdfNotes.pages.length <= num) return;
-  set(atomPdfNotes, { ...pdfNotes, currentPage: num });
-  set(atomPreviousPageNum, pdfNotes.currentPage);
+  set(atomCurrentPageNum, num);
+  set(atomPreviousPageNum, pageNum);
   set(atomInitialNotes, undefined);
 });
 
@@ -217,7 +240,7 @@ const atomScrollPage = atom(
   null,
   (get, set, forward: boolean, type?: "section" | "chapter") => {
     const pages = get(atomPdfNotes)?.pages;
-    let nextPage = get(atomPageNumValue);
+    let nextPage = get(atomCurrentPageNum);
     if (get(atomInvalidValue) || !pages || nextPage === undefined) return;
     for (;;) {
       nextPage = nextPage + (forward ? 1 : -1);
@@ -318,7 +341,7 @@ const atomKeyDown = atom(null, (get, set, e: KeyboardEvent) => {
       }
     } else if (e.altKey) {
       // 注釈・設定の全リセット
-      const initialPdfNotes = get(atomInitialPdfNotes);
+      const initialPdfNotes = get(atomInitialPdfNotesWithCurrentPage);
       if (initialPdfNotes) {
         if (
           window.confirm(
@@ -352,7 +375,7 @@ export const modelPdfNotes = {
   fontScale: { use: useFontScale },
 
   page: { atomValue: atomPageValue },
-  pageNum: { atomValue: atomPageNumValue },
+  currentPageNum: { atom: atomCurrentPageNum },
   pageLabel: { atomValue: atomPageLabelValue },
   chapterStartPageNum: { atomValue: atomChapterStartPageNumValue },
   preferredLabels: { atomValue: atomPreferredLabelsValue },
@@ -377,27 +400,44 @@ export const modelPdfNotes = {
 const id = "modelPdfNotes";
 
 /**
- * 間隔をあけて`pdfNotes`を保存する
+ * 間隔をあけて`pdfNotes`を保存する。
+ * TODO: PDF ファイルを閉じたときに即時保存する。
  */
 const putPdfNotesDebounced = debounce(
   (save: () => Promise<void>) => save(),
   1000,
 );
 
+// ページ変更時の処理
+watchMaps.currentPage.set(id, () => {
+  const save = modelフォルダ.json.useSave();
+  const pdfNotesWithCurrentPage = useAtomValue(atomPdfNotesWithCurrentPage);
+  const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
+
+  return async (currentPage) => {
+    if (!pdfNotesWithCurrentPage || !jsonPath || currentPage === undefined)
+      return;
+    pdfNotesWithCurrentPage.currentPage = currentPage;
+    // 目次パネル中の選択されたページが隠れないようにスクロールする
+    document
+      .getElementById(String(currentPage))
+      ?.scrollIntoView({ block: "nearest" });
+    // 注釈ファイル保存
+    void putPdfNotesDebounced(() => save(pdfNotesWithCurrentPage, jsonPath));
+  };
+});
+
 // pdfNotes 変更時の処理
 watchMaps.pdfNotes.set(id, () => {
   const save = modelフォルダ.json.useSave();
   const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
-  const pageNum = useAtomValue(modelPdfNotes.pageNum.atomValue);
+  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
+  const pdfNotesWithCurrentPage = useAtomValue(atomPdfNotesWithCurrentPage);
 
-  return (pdfNotes) => {
-    if (!pdfNotes || !jsonPath || pageNum === undefined) return;
-    // 目次パネル中の選択されたページが隠れないようにスクロールする
-    document
-      .getElementById(String(pageNum))
-      ?.scrollIntoView({ block: "nearest" });
+  return () => {
+    if (!pdfNotesWithCurrentPage || !jsonPath || pageNum === undefined) return;
     // 注釈ファイル保存
-    void putPdfNotesDebounced(() => save(pdfNotes, jsonPath));
+    void putPdfNotesDebounced(() => save(pdfNotesWithCurrentPage, jsonPath));
   };
 });
 
@@ -423,7 +463,7 @@ watchMaps.pdfLoaded.set(id, () => {
   return async (loaded) => {
     if (!loaded || !jsonPath || !title || totalPages === undefined) return;
     // pdfNotes を読み込む
-    const pdfNotes = await read<PdfNotes>(jsonPath, false);
+    const pdfNotes = await read<PdfNotesWithCurrentPage>(jsonPath, false);
     if (pdfNotes && pdfNotes.version !== FORMAT_VERSION) {
       // TODO マイグレーション
       setAlert(

@@ -71,9 +71,9 @@ function useSetCoverages() {
 function useRenderPage() {
   const { queueRenderPage } = usePdf();
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
+  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
   return async () => {
     if (!pdfNotes) return;
-    const pageNum = pdfNotes.currentPage;
     const offset = {
       top: pdfNotes.settings.offsetTop,
       bottom: pdfNotes.settings.offsetBottom,

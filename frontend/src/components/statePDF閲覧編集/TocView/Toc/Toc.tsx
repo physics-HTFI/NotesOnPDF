@@ -12,7 +12,7 @@ import { modelPdfNotes } from "@/models/modelPdfNotes";
  */
 const ToC = () => {
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  const imageNum = useAtomValue(modelPdfNotes.pageNum.atomValue);
+  const imageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
   const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
   const chapterStart = useAtomValue(
     modelPdfNotes.chapterStartPageNum.atomValue,
@@ -30,9 +30,7 @@ const ToC = () => {
   for (let i = 0; i < pdfNotes.pages.length; i++) {
     const page = pdfNotes.pages[i];
     if (!page) continue;
-    const handleClick = () => {
-      jumpPage(i);
-    };
+    const handleClick = () => jumpPage(i);
 
     // 巻名、部名、章名を追加
     toc.push(
