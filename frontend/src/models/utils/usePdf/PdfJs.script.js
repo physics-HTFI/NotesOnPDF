@@ -72,15 +72,15 @@ window.pdf = {
   /**
    * PDFファイルを読み込む
    */
-  setDataAsync: async (arrayBuffer) => {
+  setUrlAsync: async (url) => {
     try {
-      if (!arrayBuffer) {
+      if (!url) {
         pdfDoc = undefined; // PDF の選択を解除したときにガベージコレクションの対象になることを期待
         return undefined;
       }
       const loadingTask = pdfjsLib.getDocument({
         // https://mozilla.github.io/pdf.js/api/
-        data: arrayBuffer,
+        url,
         cMapUrl: "https://unpkg.com/pdfjs-dist/cmaps/",
         standardFontDataUrl: "https://unpkg.com/pdfjs-dist/standard_fonts/",
         wasmUrl: "https://unpkg.com/pdfjs-dist/wasm/", // 画像のデコードが速くなることを期待

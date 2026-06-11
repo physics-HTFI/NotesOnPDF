@@ -1,5 +1,4 @@
 import type { PageRect, Resizer } from "@/types/PageRect";
-import { readBinaryAsync } from "./readBinary";
 import {
   ID_PDF_CANVAS_1,
   ID_PDF_CANVAS_2,
@@ -65,8 +64,13 @@ function setPdfHandle(
   onFinish: (totalPages?: number) => void,
 ) {
   const read = async () => {
-    const arrayBuffer = await readBinaryAsync(pdfHandle);
-    const result = await window.pdf.setDataAsync(arrayBuffer);
+    const file = await pdfHandle?.getFile();
+    const url = file ? URL.createObjectURL(file) : undefined;
+    if (currentUrl && url && currentUrl !== url) {
+      URL.revokeObjectURL(currentUrl);
+      currentUrl = url;
+    }
+    const result = await window.pdf.setUrlAsync(url);
     const totalPages = result?.totalPages;
     onFinish(totalPages);
     snapshot = { ...snapshot, totalPages };
@@ -80,6 +84,7 @@ function setPdfHandle(
   }
   void read();
 }
+let currentUrl: string | undefined = undefined;
 
 /**
  * 表示するページ数を設定。
@@ -127,8 +132,8 @@ declare global {
       /**
        * PDFファイルを読み込む
        */
-      setDataAsync: (
-        arrayBuffer?: ArrayBuffer,
+      setUrlAsync: (
+        url?: string,
       ) => Promise<{ totalPages: number } | undefined>;
 
       /**
