@@ -1,6 +1,7 @@
 import type { MousePosition } from "@/types/MousePosition";
 import { atom, useSetAtom } from "jotai";
 import { type ReactNode } from "react";
+import { watchMaps } from "./Watch/watchMaps";
 
 const atomAlert = atom<{ severity: "error" | "info"; message: ReactNode }>();
 const atomWaiting = atom<boolean>(false);
@@ -44,3 +45,28 @@ export const modelUI = {
 
   mouse: { atom: atomMouse },
 };
+
+//|
+//| watch
+//|
+
+const id = "modelUI";
+
+// ルート📁が変更されたときに、ドロワーを閉じる
+watchMaps.folder.set(id, () => {
+  const setOpenSettingsDrawer = useSetAtom(atomOpenSettingsDrawer);
+  const setOpenPdfFileTreeDrawer = useSetAtom(atomOpenPdfFileTreeDrawer);
+  return async (folder) => {
+    if (folder) return;
+    setOpenSettingsDrawer(false);
+    setOpenPdfFileTreeDrawer(false);
+  };
+});
+
+// PDF が変更されたときに、ドロワーを閉じる
+watchMaps.pdfPath.set(id, () => {
+  const setOpenSettingsDrawer = useSetAtom(atomOpenSettingsDrawer);
+  return async () => {
+    setOpenSettingsDrawer(false);
+  };
+});

@@ -67,6 +67,8 @@ function setPdfHandle(
     snapshot = { ...snapshot, totalPages };
     emitChange();
   };
+  const canvas = document.getElementById(ID_PDF_CANVAS) as HTMLCanvasElement;
+  if (canvas && !pdfHandle) canvas.width = 0;
   void read();
 }
 

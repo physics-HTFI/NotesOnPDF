@@ -158,7 +158,7 @@ watchMaps.pdfPath.set(id, () => {
     setPdfLoaded(false);
     setTotalPages(undefined);
     setPdfHandle(handle, (totalPages) => {
-      setOpenDrawer(false);
+      setOpenDrawer(!handle);
       if (path && totalPages) void addPdfHistory(path, totalPages);
       setTotalPages(totalPages);
       setWaiting(false);
