@@ -17,12 +17,10 @@ export default function PageInput({
   open: boolean;
   onClose: (newPage?: number) => void;
 }) {
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
+  const pages = useAtomValue(modelPdfNotes.atoms.pages);
+  const currentPage = useAtomValue(modelPdfNotes.atoms.currentPage);
   const displayedPageNumInit =
-    pdfNotes?.pages[pageNumInit ?? pageNum]?.num ??
-    pdfNotes?.pages[pageNum]?.num ??
-    1;
+    pages[pageNumInit ?? currentPage]?.num ?? pages[currentPage]?.num ?? 1;
   const [displayedPageNum, setDisplayedPageNum] = useState<number | "">(
     displayedPageNumInit,
   );
@@ -33,7 +31,7 @@ export default function PageInput({
     }, 10);
   }, []);
 
-  if (!pdfNotes || !open) return <></>;
+  if (!open) return <></>;
 
   // 閉じたときに値を更新する
   const handleClose = (cancel?: boolean) => {
@@ -42,7 +40,7 @@ export default function PageInput({
       displayedPageNumInit === displayedPageNum ||
       displayedPageNum === ""
         ? undefined
-        : fromDisplayedPage(pdfNotes, displayedPageNum);
+        : fromDisplayedPage(displayedPageNum, pages, currentPage);
     onClose(newPage);
   };
 
@@ -64,12 +62,8 @@ export default function PageInput({
             return;
           }
           const num = Number(e.target.value);
-          const numMin = pdfNotes.pages.reduce((a, b) =>
-            a.num < b.num ? a : b,
-          ).num;
-          const numMax = pdfNotes.pages.reduce((a, b) =>
-            a.num < b.num ? b : a,
-          ).num;
+          const numMin = pages.reduce((a, b) => (a.num < b.num ? a : b)).num;
+          const numMax = pages.reduce((a, b) => (a.num < b.num ? b : a)).num;
           if (num < numMin || numMax < num) return;
           setDisplayedPageNum(num);
         }}

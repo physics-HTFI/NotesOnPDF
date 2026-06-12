@@ -390,7 +390,6 @@ export const modelPdfNotes = {
   fontScale: { use: useFontScale },
 
   page: { atomValue: atomPage },
-  currentPageNum: { atom: atomsPdfNotes.currentPage },
   pageLabel: { atomValue: atomPageLabelValue },
   chapterStartPageNum: { atomValue: atomChapterStartPageNumValue },
   preferredLabels: { atomValue: atomPreferredLabelsValue },
@@ -438,7 +437,7 @@ watchMaps.currentPage.set(id, () => {
 watchMaps.pdfNotes.set(id, () => {
   const save = modelフォルダ.json.useSave();
   const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
-  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
+  const pageNum = useAtomValue(modelPdfNotes.atoms.currentPage);
 
   return (pdfNotes) => {
     if (!pdfNotes || !jsonPath || pageNum === undefined) return;

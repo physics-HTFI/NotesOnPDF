@@ -15,22 +15,19 @@ import { modelPdfNotes } from "@/models/modelPdfNotes";
  * 画面隅のページ数表示コンポーネント
  */
 export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
+  const pages = useAtomValue(modelPdfNotes.atoms.pages);
   const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
   const previousPageNum = useAtomValue(modelPdfNotes.previousPageNum.atomValue);
-  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
+  const pageNum = useAtomValue(modelPdfNotes.atoms.currentPage);
   const pageLabel = useAtomValue(modelPdfNotes.pageLabel.atomValue);
   const path = useAtomValue(modelファイル.pdf.atomPath);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const setMouse = useSetAtom(modelUI.mouse.atom);
-  if (!path || !pdfNotes) return <></>;
-  const coverage = GetCoverage(pdfNotes);
+  if (!path) return <></>;
+  const coverage = GetCoverage(pages);
   const color = "#2e7d32";
 
-  const { curTotal, total, curChapter, chapter } = getPageNums(
-    pdfNotes,
-    pageNum,
-  );
+  const { curTotal, total, curChapter, chapter } = getPageNums(pages, pageNum);
 
   return (
     <Stack
@@ -129,11 +126,11 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
 /**
  * 現在ページのページ番号を取得
  */
-function getPageNums(pdfNotes: PdfNotes, pageNum: number) {
+function getPageNums(pages: PdfNotes["pages"], pageNum: number) {
   const pageNums = { curTotal: 0, total: 0, curChapter: 0, chapter: 0 };
   let found = false;
-  for (let i = 0; i < pdfNotes.pages.length; i++) {
-    const p = pdfNotes.pages[i];
+  for (let i = 0; i < pages.length; i++) {
+    const p = pages[i];
     if (!p) continue;
     const before = i <= pageNum;
     const isChapterStart =

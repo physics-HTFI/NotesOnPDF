@@ -11,24 +11,23 @@ import { modelPdfNotes } from "@/models/modelPdfNotes";
  * @returns 目次の内容
  */
 const ToC = () => {
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  const imageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
+  const pages = useAtomValue(modelPdfNotes.atoms.pages);
+  const imageNum = useAtomValue(modelPdfNotes.atoms.currentPage);
   const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
   const chapterStart = useAtomValue(
     modelPdfNotes.chapterStartPageNum.atomValue,
   );
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
 
-  if (!pdfNotes) return [];
-  if (pdfNotes.pages.length !== openTooltips.length) {
-    setOpenTooltips(new Array(pdfNotes.pages.length).fill(false));
+  if (pages.length !== openTooltips.length) {
+    setOpenTooltips(new Array(pages.length).fill(false));
     return undefined;
   }
 
   const toc: ReactNode[] = [];
   let pageNum = 1;
-  for (let i = 0; i < pdfNotes.pages.length; i++) {
-    const page = pdfNotes.pages[i];
+  for (let i = 0; i < pages.length; i++) {
+    const page = pages[i];
     if (!page) continue;
     const handleClick = () => jumpPage(i);
 

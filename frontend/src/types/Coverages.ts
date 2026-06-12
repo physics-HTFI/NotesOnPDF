@@ -27,15 +27,14 @@ export default interface Coverages {
 /** `coverages.json`がない場合の初期値 */
 export const GetCoverages_empty: () => Coverages = () => ({ pdfs: {} });
 
-export const GetCoverage = (pdfNotes: PdfNotes): Coverage => {
+export const GetCoverage = (pages: PdfNotes["pages"]): Coverage => {
   const enabledPages =
-    pdfNotes.pages.length -
-    pdfNotes.pages.filter((p) => p.style?.includes("excluded")).length;
-  const notedPages = pdfNotes.pages.filter(
+    pages.length - pages.filter((p) => p.style?.includes("excluded")).length;
+  const notedPages = pages.filter(
     (p) => !p.style?.includes("excluded") && p.notes?.length,
   ).length;
   return {
-    allPages: pdfNotes.pages.length,
+    allPages: pages.length,
     enabledPages,
     notedPages,
     percent: Math.min(

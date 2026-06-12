@@ -25,12 +25,10 @@ export default function PdfView() {
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const setMouse = useSetAtom(modelUI.mouse.atom);
   const { pageRect } = usePdf();
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom); // これがないと Esc を押したときに更新されない
-  const page = useAtomValue(modelPdfNotes.page.atomValue); // これだとだめ（なぜ？）
+  const page = useAtomValue(modelPdfNotes.page.atomValue);
   const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
   const scrollPage = useSetAtom(modelPdfNotes.update.atomScrollPage);
   const handleKeyDown = useSetAtom(modelPdfNotes.update.atomKeyDown);
-  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mode, setMode] = useState<Mode>(undefined);
@@ -160,7 +158,7 @@ export default function PdfView() {
           (!mode &&
             !moveNote &&
             !editNote &&
-            pdfNotes?.pages[pageNum].style?.includes("excluded")) ??
+            page?.style?.includes("excluded")) ??
           false
         }
       />

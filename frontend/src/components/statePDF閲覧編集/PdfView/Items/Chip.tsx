@@ -4,7 +4,6 @@ import { type Mode } from "../SpeedDial";
 import type { Chip as ChipType, Node, NoteType } from "@/types/PdfNotes";
 import useCursor from "./utils/useCursor";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
-import { useAtomValue } from "jotai";
 
 /**
  * チップ
@@ -21,8 +20,7 @@ export default function Chip({
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
   const scale = modelPdfNotes.fontScale.use();
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  if (!pdfNotes || !scale) return <></>;
+  if (!scale) return <></>;
 
   return (
     <MuiChip

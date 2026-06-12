@@ -182,21 +182,22 @@ export function updatePageNum(pages: PdfNotes["pages"]) {
  * できなかった場合は、-1を返す。
  */
 export const fromDisplayedPage = (
-  pdfNotes: PdfNotes,
   displayedPageNumber: number,
+  pages: PdfNotes["pages"],
+  currentPage: PdfNotes["currentPage"],
 ): number => {
-  const current = pdfNotes.pages[pdfNotes.currentPage]?.num;
+  const current = pages[currentPage]?.num;
   if (current === undefined) return -1;
   if (displayedPageNumber <= current) {
     // 現在のページより小さい場合は、遡って探す
-    for (let i = pdfNotes.currentPage; i >= 0; i--) {
-      if (displayedPageNumber === pdfNotes.pages[i]?.num) {
+    for (let i = currentPage; i >= 0; i--) {
+      if (displayedPageNumber === pages[i]?.num) {
         return i;
       }
     }
   } else {
-    for (let i = pdfNotes.currentPage + 1; i < pdfNotes.pages.length; i++) {
-      if (displayedPageNumber === pdfNotes.pages[i]?.num) {
+    for (let i = currentPage + 1; i < pages.length; i++) {
+      if (displayedPageNumber === pages[i]?.num) {
         return i;
       }
     }

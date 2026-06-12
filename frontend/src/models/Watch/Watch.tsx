@@ -53,7 +53,7 @@ function WatchPdfFullLoaded() {
 }
 
 function WatchCurrentPage() {
-  const currentPage = useAtomValue(modelPdfNotes.currentPageNum.atom);
+  const currentPage = useAtomValue(modelPdfNotes.atoms.currentPage);
   return <WatchBase target={currentPage} useOnChange={watchMaps.currentPage} />;
 }
 

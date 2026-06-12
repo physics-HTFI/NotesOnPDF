@@ -23,7 +23,7 @@ export default function SettingsDrawer() {
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const setAppSettings = modelファイル.appSettings.useSet();
   const page = useAtomValue(modelPdfNotes.page.atomValue);
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
+  const settings = useAtomValue(modelPdfNotes.atoms.settings);
   const updatePageSettings = useSetAtom(
     modelPdfNotes.update.atomUpdatePageSettings,
   );
@@ -40,7 +40,7 @@ export default function SettingsDrawer() {
     "temporary",
   );
 
-  if (!appSettings || !pdfNotes) return <></>;
+  if (!appSettings || !settings) return <></>;
 
   // 部名・章名・ページ番号の候補など
   const { volumeLabel, partLabel, chapterLabel, pageNum } = preferredLabels;
@@ -196,7 +196,7 @@ export default function SettingsDrawer() {
           <Box sx={{ width: "90%", m: 1 }}>
             <LabelSlider
               label="文字サイズ"
-              value={pdfNotes.settings.fontSize}
+              value={settings.fontSize}
               minValue={50}
               maxValue={150}
               step={0.5}
@@ -207,7 +207,7 @@ export default function SettingsDrawer() {
             />
             <LabelSlider
               label="余白(上)"
-              value={pdfNotes.settings.offsetTop}
+              value={settings.offsetTop}
               minValue={0}
               maxValue={0.2}
               step={0.001}
@@ -219,7 +219,7 @@ export default function SettingsDrawer() {
             />
             <LabelSlider
               label="余白(下)"
-              value={pdfNotes.settings.offsetBottom}
+              value={settings.offsetBottom}
               minValue={0}
               maxValue={0.2}
               step={0.001}

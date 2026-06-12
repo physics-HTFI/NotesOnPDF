@@ -25,10 +25,9 @@ export default function PageLink({
 }) {
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
+  const pages = useAtomValue(modelPdfNotes.atoms.pages);
   const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
   const scale = modelPdfNotes.fontScale.use();
-  if (!pdfNotes) return <></>;
   return (
     <>
       <Chip
@@ -45,7 +44,7 @@ export default function PageLink({
         }}
         color="success"
         icon={<Shortcut />}
-        label={`p. ${pdfNotes.pages[params.page]?.num ?? "---"}`}
+        label={`p. ${pages[params.page]?.num ?? "---"}`}
         size="small"
         onMouseDown={(e) => {
           e.stopPropagation();

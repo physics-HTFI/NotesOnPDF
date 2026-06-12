@@ -20,11 +20,9 @@ export default function AddNotePalette({
 }) {
   const mouse = useAtomValue(modelUI.mouse.atom);
   const pageRect = usePdf()?.pageRect?.rect;
-  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
+  const pageNum = useAtomValue(modelPdfNotes.atoms.currentPage);
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  if (!mouse || !pageRect || !pdfNotes || !open || pageNum === undefined)
-    return <></>;
+  if (!mouse || !pageRect || !open || pageNum === undefined) return <></>;
 
   const L = 50;
 
