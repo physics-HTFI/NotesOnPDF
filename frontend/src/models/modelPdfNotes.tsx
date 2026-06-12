@@ -230,6 +230,7 @@ const atomPreferredLabelsValue = atom((get) => {
 const atomJumpPage = atom(null, (get, set, num: number) => {
   const pages = get(atomsPdfNotes.pages);
   const pageNum = get(atomsPdfNotes.currentPage);
+  const currentPage = get(atomsPdfNotes.currentPage);
   if (get(atomInvalidValue) || !pages) return;
   set(modelUI.alert.atomClear);
   if (num < 0 || pages.length <= num) return;
@@ -237,13 +238,14 @@ const atomJumpPage = atom(null, (get, set, num: number) => {
   set(atomPreviousPageNum, pageNum);
   set(atomInitialNotes, undefined);
   // 目次のハイライト用変数の更新
-  const currentPage = get(atomsPdfNotes.currentPage);
   set(get(atomAtomsIsSelectedPage)[pageNum], false);
   set(get(atomAtomsIsSelectedPage)[num], true);
   const chapterPageNum0 = getChapterStartPageNum(currentPage, pages);
   const chapterPageNum1 = getChapterStartPageNum(num, pages);
-  set(get(atomAtomsIsSelectedChapter)[chapterPageNum0], false);
-  set(get(atomAtomsIsSelectedChapter)[chapterPageNum1], true);
+  if (chapterPageNum0 !== undefined)
+    set(get(atomAtomsIsSelectedChapter)[chapterPageNum0], false);
+  if (chapterPageNum1 !== undefined)
+    set(get(atomAtomsIsSelectedChapter)[chapterPageNum1], true);
 });
 
 /**
@@ -394,6 +396,11 @@ export const modelPdfNotes = {
   chapterStartPageNum: { atomValue: atomChapterStartPageNumValue },
   preferredLabels: { atomValue: atomPreferredLabelsValue },
   previousPageNum: { atomValue: atomPreviousPageNumValue },
+
+  atomAtomsIsSelected: {
+    page: atomAtomsIsSelectedPage,
+    chapter: atomAtomsIsSelectedChapter,
+  },
 
   update: {
     atomPushNote,

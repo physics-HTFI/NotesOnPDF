@@ -177,8 +177,9 @@ watchMaps.pdfNotes.set(id, () => {
   const path = useAtomValue(atomPath);
 
   return (pdfNotes) => {
+    if (!pdfNotes) return;
     // coverages の更新
-    const newCoverages = getNewCoveragesOrUndefined(path, pdfNotes);
+    const newCoverages = getNewCoveragesOrUndefined(path, pdfNotes.pages);
     if (newCoverages) {
       void setCoverages(newCoverages);
     }

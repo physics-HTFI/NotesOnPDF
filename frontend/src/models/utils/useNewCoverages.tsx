@@ -14,12 +14,12 @@ export default function useNewCoverages() {
    * 更新済みの`coverages`を返す。更新不要の場合は`undefined`。
    */
   const getNewCoveragesOrUndefined = useCallback(
-    (path?: string, pdfNotes?: PdfNotes) => {
-      if (!path || !pdfNotes || !coverages || !fileTree) return undefined;
+    (path?: string, pages?: PdfNotes["pages"]) => {
+      if (!path || !pages || !coverages || !fileTree) return undefined;
       if (!findTreeItem(fileTree, path)) return undefined;
 
       const oldCov = coverages.pdfs[path];
-      const newCov = GetCoverage(pdfNotes);
+      const newCov = GetCoverage(pages);
       const unchanged =
         coverages.recentPath === path &&
         oldCov?.allPages === newCov.allPages &&

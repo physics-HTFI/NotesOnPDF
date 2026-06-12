@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import SettingsDrawer from "./SettingsDrawer/SettingsDrawer";
 import { grey } from "@mui/material/colors";
-import ToC from "./Toc/Toc";
 import { ButtonOpenSettings } from "./ButtonOpenSettings";
+import { ToC } from "./Toc/Toc";
 
 /**
  * 目次を表示するコンポーネント

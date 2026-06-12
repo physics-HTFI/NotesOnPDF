@@ -213,9 +213,16 @@ export function getChapterStartPageNum(
   pages: PdfNotes["pages"],
 ) {
   let pageNum = 0;
+  let isChapter = false;
   for (let i = 1; i <= currentPage; i++) {
-    if (pages[i].chapter === undefined) continue;
+    if (pages[i].chapter === undefined) {
+      if (pages[i].volume !== undefined || pages[i].part !== undefined) {
+        isChapter = false;
+      }
+      continue;
+    }
+    isChapter = true;
     pageNum = i;
   }
-  return pageNum;
+  return isChapter ? pageNum : undefined;
 }
