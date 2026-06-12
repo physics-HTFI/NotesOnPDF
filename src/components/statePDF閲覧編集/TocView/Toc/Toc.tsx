@@ -1,0 +1,141 @@
+import { type ReactNode, useState } from "react";
+import Separator from "./Separator";
+import Page from "./Page";
+import { MathJax } from "better-react-mathjax";
+import Label from "./Label";
+import "./style.css";
+import { useAtomValue, useSetAtom, type Atom } from "jotai";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
+import type PdfNotes from "@/types/PdfNotes";
+
+/**
+ * 目次の内容
+ */
+export function ToC() {
+  const pages = useAtomValue(modelPdfNotes.atoms.pages);
+  const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
+  const atomsIsSelectedPage = useAtomValue(
+    modelPdfNotes.atomAtomsIsSelected.page,
+  );
+  const atomsIsSelectedChapter = useAtomValue(
+    modelPdfNotes.atomAtomsIsSelected.chapter,
+  );
+
+  if (pages.length !== openTooltips.length) {
+    setOpenTooltips(new Array(pages.length).fill(false));
+    return undefined;
+  }
+
+  const toc: ReactNode[] = [];
+  let pageNum = 1;
+  for (let i = 0; i < pages.length; i++) {
+    toc.push(
+      <PageWithLabel
+        key={`${i}`}
+        i={i}
+        pageNum={pageNum}
+        pages={pages}
+        atomIsSelectedPage={atomsIsSelectedPage[i]}
+        atomIsSelectedChapter={atomsIsSelectedChapter[i]}
+        openTooltips={openTooltips}
+        setOpenTooltips={setOpenTooltips}
+      />,
+    );
+    ++pageNum;
+  }
+  return (
+    <MathJax hideUntilTypeset={"first"} dynamic>
+      {toc}
+    </MathJax>
+  );
+}
+
+function PageWithLabel({
+  i,
+  pageNum,
+  pages,
+  atomIsSelectedPage,
+  atomIsSelectedChapter,
+  openTooltips,
+  setOpenTooltips,
+}: {
+  i: number;
+  pageNum: number;
+  pages: PdfNotes["pages"];
+  atomIsSelectedPage: Atom<boolean>;
+  atomIsSelectedChapter: Atom<boolean>;
+  openTooltips?: boolean[];
+  setOpenTooltips?: (openTooltips: boolean[]) => void;
+}) {
+  const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
+  const handleClick = () => jumpPage(i);
+  const isSelectedPage = useAtomValue(atomIsSelectedPage);
+  const isSelectedChapter = useAtomValue(atomIsSelectedChapter);
+  const page = pages[i];
+  pageNum = page.numRestart ?? pageNum;
+
+  return (
+    <>
+      {/* 巻名、部名、章名を追加 */}
+      <Label key={`volume-${i}`} type="volume" pageNum={i} page={page} />
+      <Label key={`part-${i}`} type="part" pageNum={i} page={page} />
+      <Label
+        key={`chapter-${i}`}
+        type="chapter"
+        pageNum={i}
+        page={page}
+        highlight={isSelectedChapter}
+      />
+      {/* 節区切りを追加 */}
+      {page.style?.includes("break-before") && (
+        <Separator
+          key={`separator-${i}`}
+          onClick={handleClick}
+          tooltip={`p. ${pageNum}`}
+          index={i}
+          openTooltips={openTooltips}
+          setOpenTooltips={setOpenTooltips}
+        />
+      )}
+      {/* ページを追加 */}
+      <Page
+        key={`page-${i}`}
+        sectionBreak={
+          page.style?.includes("break-middle") ? "before" : undefined
+        }
+        tooltip={`p. ${pageNum}`}
+        isCurrent={isSelectedPage}
+        page={page}
+        onClick={handleClick}
+        index={i}
+        openTooltips={openTooltips}
+        setOpenTooltips={setOpenTooltips}
+      />
+      {page.style?.includes("break-middle") && (
+        <>
+          <Separator
+            key={`separator-inner-${i}`}
+            onClick={handleClick}
+            tooltip={`p. ${pageNum}`}
+            index={i}
+            openTooltips={openTooltips}
+            setOpenTooltips={setOpenTooltips}
+          />
+          <Page
+            key={`page-right-${i}`}
+            sectionBreak={
+              page.style.includes("break-middle") ? "after" : undefined
+            }
+            tooltip={`p. ${pageNum}`}
+            isCurrent={isSelectedPage}
+            page={page}
+            onClick={handleClick}
+            index={i}
+            openTooltips={openTooltips}
+            setOpenTooltips={setOpenTooltips}
+          />
+        </>
+      )}
+    </>
+  );
+}

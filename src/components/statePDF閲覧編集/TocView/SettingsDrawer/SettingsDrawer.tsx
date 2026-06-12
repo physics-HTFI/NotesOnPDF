@@ -1,0 +1,277 @@
+import { useState } from "react";
+import { Box, Drawer } from "@mui/material";
+import { editPageStyle } from "@/types/PdfNotes";
+import CheckboxText from "./CheckboxText";
+import SectionBreak from "./SectionBreak";
+import PageNumberRestart from "./PageNumberRestart";
+import LabelSlider from "./LabelSlider";
+import Checkbox from "./Checkbox";
+import ClickOptionSelect from "./ClickOptionSelect";
+import type AppSettings from "@/types/AppSettings";
+import IconClose from "./IconClose";
+import IconTogglePosition from "./IconTogglePosition";
+import Tabs from "./Tabs";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { modelUI } from "@/models/modelUI";
+import { modelファイル } from "../../../../models/modelファイル";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
+
+/**
+ * 設定パネル
+ */
+export default function SettingsDrawer() {
+  const appSettings = useAtomValue(modelファイル.appSettings.atom);
+  const setAppSettings = modelファイル.appSettings.useSet();
+  const page = useAtomValue(modelPdfNotes.page.atomValue);
+  const settings = useAtomValue(modelPdfNotes.atoms.settings);
+  const updatePageSettings = useSetAtom(
+    modelPdfNotes.update.atomUpdatePageSettings,
+  );
+  const preferredLabels = useAtomValue(modelPdfNotes.preferredLabels.atomValue);
+  const updateFileSettings = useSetAtom(
+    modelPdfNotes.update.atomUpdateFileSettings,
+  );
+  const [openDrawer, setOpenDrawer] = useAtom(modelUI.openDrawer.settings.atom);
+  const render = modelファイル.pdf.useRenderPage();
+
+  const [tab, setTab] = useState(0);
+  const [isBottom, setIsBottom] = useState(true);
+  const [variant, setVariant] = useState<"persistent" | "temporary">(
+    "temporary",
+  );
+
+  if (!appSettings || !settings) return <></>;
+
+  // 部名・章名・ページ番号の候補など
+  const { volumeLabel, partLabel, chapterLabel, pageNum } = preferredLabels;
+
+  // アプリ設定変更
+  const handleChangeAppSettings = (changed: Partial<AppSettings>) => {
+    const newSettings = {
+      ...appSettings,
+      ...changed,
+    };
+    void setAppSettings(newSettings);
+  };
+
+  // 閉じているときは`variant`を`temporary`にすることで、内部コンポーネントの再レンダーを防ぐ
+  const newVariant = openDrawer ? "persistent" : "temporary";
+  if (newVariant !== variant) {
+    if (openDrawer) {
+      setVariant(newVariant);
+    } else {
+      setTimeout(() => {
+        setVariant(newVariant);
+      }, 500);
+    }
+  }
+
+  return (
+    <Drawer
+      variant={variant}
+      anchor={isBottom ? "bottom" : "top"}
+      open={openDrawer}
+      onWheel={(e) => {
+        e.stopPropagation();
+      }}
+      slotProps={{
+        paper: {
+          square: false,
+          sx: {
+            position: "absolute",
+            borderRadius: isBottom ? "10px 10px 0 0" : "0 0 10px 10px",
+            overflow: "visible", // 「閉じるアイコン」を表示する
+          },
+        },
+      }}
+    >
+      <Box sx={{ width: "100%", fontSize: "80%" }}>
+        {/* 閉じるアイコン */}
+        <IconClose
+          isBottom={isBottom}
+          onClose={() => {
+            setOpenDrawer(false);
+          }}
+        />
+
+        {/* 設定パネル位置変更ボタン */}
+        <IconTogglePosition
+          isBottom={isBottom}
+          onToggleSettingsPosition={() => {
+            setIsBottom(!isBottom);
+          }}
+        />
+
+        {/* タブ */}
+        <Tabs tab={tab} setTab={setTab} />
+
+        {/* ページ設定 */}
+        {tab === 0 && (
+          <Box sx={{ mx: 1.5, mb: 1.5 }}>
+            {/* 巻区切り */}
+            <CheckboxText
+              label="巻区切り"
+              tooltip={
+                <span>
+                  [Alt+Enter] 区切りの切り替え
+                  <br />
+                  [目次のラベルをShift+クリック] ラベルを編集
+                </span>
+              }
+              text={page?.volume}
+              preferredText={volumeLabel}
+              onChange={(volume) => {
+                updatePageSettings({ volume });
+              }}
+            />
+            {/* 部区切り */}
+            <CheckboxText
+              label="部区切り"
+              tooltip={
+                <span>
+                  [Ctrl+Enter] 区切りの切り替え
+                  <br />
+                  [目次のラベルをShift+クリック] ラベルを編集
+                </span>
+              }
+              text={page?.part}
+              preferredText={partLabel}
+              onChange={(part) => {
+                updatePageSettings({ part });
+              }}
+            />
+            {/* 章区切り */}
+            <CheckboxText
+              label="章区切り"
+              tooltip={
+                <span>
+                  [Shift+Enter] 区切りの切り替え
+                  <br />
+                  [目次のラベルをShift+クリック] ラベルを編集
+                </span>
+              }
+              text={page?.chapter}
+              preferredText={chapterLabel}
+              onChange={(chapter) => {
+                updatePageSettings({ chapter });
+              }}
+            />
+            {/* 節区切り */}
+            <SectionBreak
+              breakBefore={page?.style?.includes("break-before")}
+              breakMiddle={page?.style?.includes("break-middle")}
+              onChange={(breakBefore, breakMiddle) => {
+                let style = editPageStyle(
+                  page?.style,
+                  "break-before",
+                  breakBefore,
+                );
+                style = editPageStyle(style, "break-middle", breakMiddle);
+                updatePageSettings({ style });
+              }}
+            />
+            {/* ページ番号 */}
+            <PageNumberRestart
+              numRestart={page?.numRestart}
+              preferredPageNumber={pageNum}
+              onChange={(numRestart) => {
+                updatePageSettings({ numRestart });
+              }}
+            />
+            {/* ページ除外 */}
+            <Checkbox
+              label="このページをグレーアウトする"
+              tooltip="[Escape] グレーアウトの切り替え"
+              checked={page?.style?.includes("excluded")}
+              onChange={(excluded) => {
+                const style = editPageStyle(page?.style, "excluded", excluded);
+                updatePageSettings({ style });
+              }}
+            />
+          </Box>
+        )}
+
+        {/* ファイル設定 */}
+        {tab === 1 && (
+          <Box sx={{ width: "90%", m: 1 }}>
+            <LabelSlider
+              label="文字サイズ"
+              value={settings.fontSize}
+              minValue={50}
+              maxValue={150}
+              step={0.5}
+              tooltipTitle="注釈内で使用される文字のサイズを調節します"
+              onChange={(fontSize) => {
+                updateFileSettings({ fontSize });
+              }}
+            />
+            <LabelSlider
+              label="余白(上)"
+              value={settings.offsetTop}
+              minValue={0}
+              maxValue={0.2}
+              step={0.001}
+              tooltipTitle="ページ上部の余白をカットします"
+              onChange={(offsetTop) => {
+                updateFileSettings({ offsetTop });
+                void render();
+              }}
+            />
+            <LabelSlider
+              label="余白(下)"
+              value={settings.offsetBottom}
+              minValue={0}
+              maxValue={0.2}
+              step={0.001}
+              tooltipTitle="ページ下部の余白をカットします"
+              onChange={(offsetBottom) => {
+                updateFileSettings({ offsetBottom });
+                void render();
+              }}
+            />
+          </Box>
+        )}
+
+        {/* アプリ設定 */}
+        {tab === 2 && (
+          <Box sx={{ width: "95%", p: 1 }}>
+            {/* モード解除 */}
+            <Checkbox
+              label="空クリックでモードを解除する"
+              checked={appSettings.cancelModeWithVoidClick}
+              tooltip="空クリックで変更／移動／削除モードを解除します"
+              onChange={(cancelModeWithVoidClick) => {
+                handleChangeAppSettings({ cancelModeWithVoidClick });
+              }}
+            />
+            {/* スナップ */}
+            <Checkbox
+              label="注釈の向きをスナップする"
+              checked={appSettings.snapNotes}
+              tooltip="カッコ注釈／マーカー注釈の向きを水平／鉛直に限定します"
+              onChange={(snapNotes) => {
+                handleChangeAppSettings({ snapNotes });
+              }}
+            />
+            {/* 右クリック */}
+            <ClickOptionSelect
+              label="注釈の右クリック"
+              value={appSettings.rightClick}
+              onChange={(rightClick) => {
+                handleChangeAppSettings({ rightClick });
+              }}
+            />
+            {/* 中クリック */}
+            <ClickOptionSelect
+              label="注釈の中クリック"
+              value={appSettings.middleClick}
+              onChange={(middleClick) => {
+                handleChangeAppSettings({ middleClick });
+              }}
+            />
+          </Box>
+        )}
+      </Box>
+    </Drawer>
+  );
+}

@@ -1,0 +1,66 @@
+import { type MouseEvent, useState } from "react";
+import { Chip } from "@mui/material";
+import { Shortcut } from "@mui/icons-material";
+import type {
+  Node,
+  NoteType,
+  PageLink as PageLinkType,
+} from "@/types/PdfNotes";
+import type { Mode } from "../SpeedDial";
+import useCursor from "./utils/useCursor";
+import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { useAtomValue, useSetAtom } from "jotai";
+
+/**
+ * ページへのリンク
+ */
+export default function PageLink({
+  params,
+  mode,
+  onMouseDown,
+}: {
+  params: PageLinkType;
+  mode?: Mode;
+  onMouseDown?: (e: MouseEvent, p: NoteType | Node) => void;
+}) {
+  const [hover, setHover] = useState(false);
+  const { cursor } = useCursor(mode);
+  const pages = useAtomValue(modelPdfNotes.atoms.pages);
+  const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
+  const scale = modelPdfNotes.fontScale.use();
+  return (
+    <>
+      <Chip
+        sx={{
+          position: "absolute",
+          left: `${100 * params.x}%`,
+          top: `${100 * params.y}%`,
+          cursor: cursor ?? "pointer",
+          opacity: mode && hover ? 0.5 : 1,
+          background: !mode && hover ? "mediumseagreen" : "green",
+          fontSize: "75%",
+          transformOrigin: "top left",
+          transform: `scale(${scale}%)`,
+        }}
+        color="success"
+        icon={<Shortcut />}
+        label={`p. ${pages[params.page]?.num ?? "---"}`}
+        size="small"
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          if (e.button === 0 && !mode) {
+            jumpPage(params.page);
+            return;
+          }
+          onMouseDown?.(e, params);
+        }}
+        onMouseEnter={() => {
+          setHover(true);
+        }}
+        onMouseLeave={() => {
+          setHover(false);
+        }}
+      />
+    </>
+  );
+}
