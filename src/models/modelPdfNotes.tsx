@@ -50,9 +50,9 @@ const atomPdfNotes = atom((get) => {
   return {
     title,
     version,
-    pages,
-    settings,
     currentPage,
+    settings,
+    pages,
   } satisfies PdfNotes as PdfNotes;
 });
 const atomPreviousPageNumValue = atom((get) => get(atomPreviousPageNum));
