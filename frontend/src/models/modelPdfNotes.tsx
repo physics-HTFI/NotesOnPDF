@@ -385,6 +385,7 @@ const atomKeyDown = atom(null, (get, set, e: KeyboardEvent) => {
 //|
 
 export const modelPdfNotes = {
+  atoms: atomsPdfNotes,
   pdfNotes: { atom: atomPdfNotes },
   fontScale: { use: useFontScale },
 

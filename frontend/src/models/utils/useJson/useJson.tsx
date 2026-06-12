@@ -39,7 +39,6 @@ function useSaveJson() {
     if (readOnly || !folder || !object) return;
     const file = await getFileFromPath(path, folder, true);
     const ok = await jsonUtils.write(object, file);
-    console.log("saved!");
     if (!ok) {
       await setReadOnly(true);
       setAlert(

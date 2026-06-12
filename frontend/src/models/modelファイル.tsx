@@ -13,6 +13,7 @@ import { usePdf } from "./utils/usePdf/usePdf";
 import { modelPDF履歴 } from "./modelPDF履歴";
 import { modelPdfNotes } from "./modelPdfNotes";
 import useNewCoverages from "@/models/utils/useNewCoverages";
+import { useCallback } from "react";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
@@ -70,16 +71,17 @@ function useSetCoverages() {
 
 function useRenderPage() {
   const { queueRenderPage } = usePdf();
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
-  return async () => {
-    if (!pdfNotes) return;
+  const settings = useAtomValue(modelPdfNotes.atoms.settings);
+  const pageNum = useAtomValue(modelPdfNotes.atoms.currentPage);
+  // useEffect から呼ぶので useCallback する。
+  return useCallback(async () => {
+    if (!settings) return;
     const offset = {
-      top: pdfNotes.settings.offsetTop,
-      bottom: pdfNotes.settings.offsetBottom,
+      top: settings.offsetTop,
+      bottom: settings.offsetBottom,
     };
     await queueRenderPage(pageNum, offset);
-  };
+  }, [pageNum, settings, queueRenderPage]);
 }
 
 //|

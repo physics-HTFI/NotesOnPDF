@@ -11,6 +11,7 @@ import TocView from "./components/statePDF閲覧編集/TocView/TocView";
 import PdfView from "./components/statePDF閲覧編集/PdfView/PdfView";
 import { Watch } from "./models/Watch/Watch";
 import { ID_PDF_CONTAINER } from "./types/CONSTANTS";
+import { queueRenderPage } from "./models/utils/usePdf/usePdf";
 
 /**
  * 数式表示のコンフィグ
@@ -71,14 +72,6 @@ const theme = createTheme({
 });
 
 export default function App() {
-  // 右クリックメニューを無効にする
-  useEffect(() => {
-    document.oncontextmenu = () => false;
-    return () => {
-      document.oncontextmenu = null;
-    };
-  }, []);
-
   return (
     <ThemeProvider theme={theme}>
       {/* フォルダ選択ダイアログ */}
@@ -117,7 +110,33 @@ export default function App() {
       </MathJaxContext>
       <Alert />
       <Waiting />
+
       <Watch />
+      <DisableRightClick />
+      <RenderWhenResize />
     </ThemeProvider>
   );
+}
+
+function DisableRightClick() {
+  // 右クリックメニューを無効にする
+  useEffect(() => {
+    document.oncontextmenu = () => false;
+    return () => {
+      document.oncontextmenu = null;
+    };
+  }, []);
+  return <></>;
+}
+
+function RenderWhenResize() {
+  useEffect(() => {
+    const elem = document.getElementById(ID_PDF_CONTAINER);
+    if (!elem) return;
+    const observer = new ResizeObserver(() => queueRenderPage());
+    observer.observe(elem);
+    return () => observer.disconnect();
+  }, []);
+
+  return <></>;
 }

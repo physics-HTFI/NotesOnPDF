@@ -89,18 +89,23 @@ let currentUrl: string | undefined = undefined;
 /**
  * 表示するページ数を設定。
  * 要素のサイズを取得。
+ * 引数がない場合は、前回の値を使用する。
  */
-async function queueRenderPage(
-  pageNum: number,
-  offset: { top: number; bottom: number },
+export async function queueRenderPage(
+  pageNum?: number,
+  offset?: { top: number; bottom: number },
 ) {
   window.pdf.setCanvasId(ID_PDF_CANVAS_1, ID_PDF_CANVAS_2); // main.tsx よりも先に PdfJs.script.js を実行すること（window.pdf が undefined になる）
+  if (pageNum !== undefined) pageNumPrev = pageNum;
+  if (offset !== undefined) offsetPrev = offset;
+  if (pageNumPrev === undefined) return;
+  if (offsetPrev === undefined) return;
   const resizer: Resizer = (size) => {
     const container = document.getElementById(ID_PDF_CONTAINER);
     const page = document.getElementById(ID_PDF_PAGE);
     if (!container || !page) return;
     const rect = container.getBoundingClientRect();
-    const pageRect = calPageRect(rect, size, offset);
+    const pageRect = calPageRect(rect, size, offsetPrev);
     if (pageRect?.rect) {
       page.style.width = `${pageRect?.rect?.width}px`;
       page.style.height = `${pageRect?.rect?.height}px`;
@@ -110,11 +115,13 @@ async function queueRenderPage(
     page.style.visibility = pageRect ? "visible" : "collapse";
     return pageRect;
   };
-  const pageRect = await window.pdf.queueRenderPageAsync(pageNum, resizer);
+  const pageRect = await window.pdf.queueRenderPageAsync(pageNumPrev, resizer);
   if (!pageRect) return;
   snapshot = { ...snapshot, pageRect };
   emitChange();
 }
+let pageNumPrev: number | undefined = undefined;
+let offsetPrev: Parameters<typeof queueRenderPage>[1] | undefined = undefined;
 
 //|
 //| 型
