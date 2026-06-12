@@ -19,7 +19,6 @@ export default function PageInput({
 }) {
   const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
   const pageNum = useAtomValue(modelPdfNotes.currentPageNum.atom);
-  const currentPage = useAtomValue(modelPdfNotes.currentPageNum.atom);
   const displayedPageNumInit =
     pdfNotes?.pages[pageNumInit ?? pageNum]?.num ??
     pdfNotes?.pages[pageNum]?.num ??
@@ -43,7 +42,7 @@ export default function PageInput({
       displayedPageNumInit === displayedPageNum ||
       displayedPageNum === ""
         ? undefined
-        : fromDisplayedPage(pdfNotes, displayedPageNum, currentPage);
+        : fromDisplayedPage(pdfNotes, displayedPageNum);
     onClose(newPage);
   };
 

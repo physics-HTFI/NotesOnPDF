@@ -1,18 +1,11 @@
 /**
  * 1つのPDFファイルに追加された全ての情報。
- * ただし、頻繁なリレンダーを防ぐため、現在ページは含まない
  */
 export default interface PdfNotes {
   title: string;
   version: number;
   pages: Page[];
   settings: Settings;
-}
-
-/**
- * 1つのPDFファイルに追加される全ての情報
- */
-export interface PdfNotesWithCurrentPage extends PdfNotes {
   currentPage: number;
 }
 
@@ -146,14 +139,14 @@ export interface Settings {
 export const createOrGetPdfNotes = (
   name: string,
   totalPages: number,
-  pdfNotes?: PdfNotesWithCurrentPage,
+  pdfNotes?: PdfNotes,
 ) => {
   if (pdfNotes && totalPages <= pdfNotes.pages.length) {
     pdfNotes.pages = pdfNotes.pages.slice(0, totalPages);
     return pdfNotes;
   }
   const addsTitle = !pdfNotes || pdfNotes.pages.length === 0; // pages===0は、ウェブ版で始めて開くPDFのタイトルを追加するために必要
-  const notes: PdfNotesWithCurrentPage = pdfNotes ?? {
+  const notes: PdfNotes = pdfNotes ?? {
     title: name,
     version: FORMAT_VERSION,
     currentPage: 0,
@@ -161,13 +154,14 @@ export const createOrGetPdfNotes = (
     pages: [],
   };
   // ページ数を `totalPages` に合わせる
+  const pages = notes.pages;
   for (let i = 0; totalPages && i < totalPages; i++) {
-    if (i < notes.pages.length) continue;
-    notes.pages.push({ num: i + 1 });
+    if (i < pages.length) continue;
+    pages.push({ num: i + 1 });
   }
-  updatePageNum(notes);
-  if (addsTitle && notes.pages[0]) {
-    notes.pages[0].volume = name;
+  updatePageNum(pages);
+  if (addsTitle && pages[0]) {
+    pages[0].volume = name;
   }
   return notes;
 };
@@ -175,9 +169,9 @@ export const createOrGetPdfNotes = (
 /**
  * ページ番号を更新する
  */
-export function updatePageNum(pdfNotes: PdfNotes) {
+export function updatePageNum(pages: PdfNotes["pages"]) {
   let num = 0;
-  for (const p of pdfNotes.pages) {
+  for (const p of pages) {
     num = p.numRestart ?? num + 1;
     p.num = num;
   }
@@ -190,19 +184,18 @@ export function updatePageNum(pdfNotes: PdfNotes) {
 export const fromDisplayedPage = (
   pdfNotes: PdfNotes,
   displayedPageNumber: number,
-  currentPage: number,
 ): number => {
-  const current = pdfNotes.pages[currentPage]?.num;
+  const current = pdfNotes.pages[pdfNotes.currentPage]?.num;
   if (current === undefined) return -1;
   if (displayedPageNumber <= current) {
     // 現在のページより小さい場合は、遡って探す
-    for (let i = currentPage; i >= 0; i--) {
+    for (let i = pdfNotes.currentPage; i >= 0; i--) {
       if (displayedPageNumber === pdfNotes.pages[i]?.num) {
         return i;
       }
     }
   } else {
-    for (let i = currentPage + 1; i < pdfNotes.pages.length; i++) {
+    for (let i = pdfNotes.currentPage + 1; i < pdfNotes.pages.length; i++) {
       if (displayedPageNumber === pdfNotes.pages[i]?.num) {
         return i;
       }
@@ -210,3 +203,18 @@ export const fromDisplayedPage = (
   }
   return -1;
 };
+
+/**
+ * 今いる章の開始ページの番号を返す
+ */
+export function getChapterStartPageNum(
+  currentPage: number,
+  pages: PdfNotes["pages"],
+) {
+  let pageNum = 0;
+  for (let i = 1; i <= currentPage; i++) {
+    if (pages[i].chapter === undefined) continue;
+    pageNum = i;
+  }
+  return pageNum;
+}
