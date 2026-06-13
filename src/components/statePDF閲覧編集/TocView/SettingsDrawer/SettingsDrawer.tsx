@@ -11,8 +11,8 @@ import type AppSettings from "@/types/AppSettings";
 import IconClose from "./IconClose";
 import IconTogglePosition from "./IconTogglePosition";
 import Tabs from "./Tabs";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { modelUI } from "@/models/modelUI";
+import { useAtomValue, useSetAtom } from "jotai";
+import { modelUI } from "@/models/modelUI/modelUI";
 import { modelファイル } from "../../../../models/modelファイル";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
@@ -31,7 +31,7 @@ export default function SettingsDrawer() {
   const updateFileSettings = useSetAtom(
     modelPdfNotes.update.atomUpdateFileSettings,
   );
-  const [openDrawer, setOpenDrawer] = useAtom(modelUI.openDrawer.settings.atom);
+  const [openDrawer, setOpenDrawer] = modelUI.openDrawer_settings.use();
   const render = modelファイル.pdf.useRenderPage();
 
   const [tab, setTab] = useState(0);

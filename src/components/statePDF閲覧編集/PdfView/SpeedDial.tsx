@@ -12,8 +12,7 @@ import {
   OpenWith,
 } from "@mui/icons-material";
 import { blue, green, grey, red } from "@mui/material/colors";
-import { useSetAtom } from "jotai";
-import { modelUI } from "@/models/modelUI";
+import { modelUI } from "@/models/modelUI/modelUI";
 
 export type Mode = undefined | "edit" | "move" | "delete";
 
@@ -29,7 +28,7 @@ export default function SpeedDial({
   setMode: (mode: Mode) => void;
   hidden: boolean;
 }) {
-  const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
+  const setOpenDrawer = modelUI.openDrawer_pdfSelector.useSet();
   const [open, setOpen] = useState(true);
 
   return (

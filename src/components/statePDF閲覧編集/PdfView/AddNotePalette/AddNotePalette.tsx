@@ -5,7 +5,7 @@ import Palette from "@/components/share/Palette/Palette";
 import { modelファイル } from "../../../../models/modelファイル";
 import { useAtomValue } from "jotai";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
-import { modelUI } from "@/models/modelUI";
+import { modelUI } from "@/models/modelUI/modelUI";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
@@ -18,7 +18,7 @@ export default function AddNotePalette({
   open: boolean;
   onClose: (note?: NoteType | Node) => void;
 }) {
-  const mouse = useAtomValue(modelUI.mouse.atom);
+  const mouse = modelUI.mouse.useValue();
   const pageRect = usePdf()?.pageRect?.rect;
   const pageNum = useAtomValue(modelPdfNotes.atoms.currentPage);
   const appSettings = useAtomValue(modelファイル.appSettings.atom);

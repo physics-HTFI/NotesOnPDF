@@ -5,6 +5,7 @@ import { modelフォルダ } from "../modelフォルダ";
 import { watchMaps } from "./watchMaps";
 import { modelPdfNotes } from "../modelPdfNotes";
 import { Watch_PDF履歴入出力 } from "../modelPDF履歴/Watch_PDF履歴入出力";
+import { Watch_ドロワー開閉 } from "../modelUI/Watch_ドロワー開閉";
 
 /**
  * 変更を監視したい変数を定義する
@@ -13,6 +14,7 @@ export function WatchAll() {
   return (
     <>
       <Watch_PDF履歴入出力 />
+      <Watch_ドロワー開閉 />
 
       <WatchFolder />
       <WatchPdfPath />

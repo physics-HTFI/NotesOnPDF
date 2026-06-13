@@ -14,7 +14,7 @@ import Svg from "@/components/share/Svg";
 import { modelファイル } from "../../../../models/modelファイル";
 import { useAtomValue, useSetAtom } from "jotai";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
-import { modelUI } from "@/models/modelUI";
+import { modelUI } from "@/models/modelUI/modelUI";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
@@ -31,7 +31,7 @@ export default function Items({
   onEdit: (note: NoteType) => void;
   onMove: (note: NoteType | NodeType) => void;
 }) {
-  const setMouse = useSetAtom(modelUI.mouse.atom);
+  const setMouse = modelUI.mouse.useSet();
   const pageRect = usePdf()?.pageRect?.rect;
   const appSettings = useAtomValue(modelファイル.appSettings.atom);
   const page = useAtomValue(modelPdfNotes.page.atomValue);

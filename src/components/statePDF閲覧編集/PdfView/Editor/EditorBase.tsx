@@ -1,7 +1,6 @@
 import { type ReactNode } from "react";
 import { Modal, Paper } from "@mui/material";
-import { useAtomValue } from "jotai";
-import { modelUI } from "@/models/modelUI";
+import { modelUI } from "@/models/modelUI/modelUI";
 
 /**
  * 画面クリック時にポップアップする編集ダイアログ
@@ -13,7 +12,7 @@ export default function EditorBase({
   children: ReactNode;
   onClose: () => void;
 }) {
-  const mouse = useAtomValue(modelUI.mouse.atom);
+  const mouse = modelUI.mouse.useValue();
   if (!mouse) return <></>;
 
   return (

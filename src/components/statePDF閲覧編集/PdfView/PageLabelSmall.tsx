@@ -8,7 +8,7 @@ import Progress from "@/components/statePDF選択/FileTreeView/Progress";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
 import { useAtomValue, useSetAtom } from "jotai";
 import { modelファイル } from "@/models/modelファイル";
-import { modelUI } from "@/models/modelUI";
+import { modelUI } from "@/models/modelUI/modelUI";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
@@ -22,7 +22,7 @@ export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
   const pageLabel = useAtomValue(modelPdfNotes.pageLabel.atomValue);
   const path = useAtomValue(modelファイル.pdf.atomPath);
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
-  const setMouse = useSetAtom(modelUI.mouse.atom);
+  const setMouse = modelUI.mouse.useSet();
   if (!path) return <></>;
   const coverage = GetCoverage(pages);
   const color = "#2e7d32";

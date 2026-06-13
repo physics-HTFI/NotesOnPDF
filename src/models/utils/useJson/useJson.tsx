@@ -1,4 +1,4 @@
-import { modelUI } from "@/models/modelUI";
+import { modelUI } from "@/models/modelUI/modelUI";
 import { useAtom, useAtomValue } from "jotai";
 import { modelフォルダ } from "../../modelフォルダ";
 import { jsonUtils } from "./jsonUtils";

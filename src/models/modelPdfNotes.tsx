@@ -3,7 +3,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { watchMaps } from "./Watch/watchMaps";
 import { modelファイル } from "./modelファイル";
 import { modelフォルダ } from "./modelフォルダ";
-import { modelUI } from "./modelUI";
+import { modelUI } from "./modelUI/modelUI";
 import {
   createOrGetPdfNotes,
   editPageStyle,
@@ -17,6 +17,8 @@ import {
 import { usePdf } from "./utils/usePdf/usePdf";
 import { debounce } from "@mui/material";
 import { splitAtom } from "jotai/utils";
+import { derivsUI } from "./modelUI/derivsUI";
+import { atomsUI } from "./modelUI/atomsUI";
 
 const atomsPdfNotes = {
   title: atom<string>(),
@@ -88,8 +90,8 @@ const atomPageLabelValue = atom((get) => `p. ${get(atomPage)?.num ?? "???"}`);
 const atomInvalidValue = atom(
   (get) =>
     !get(atomPdfNotes) ||
-    get(modelUI.openDrawer.pdfFileTree.atom) ||
-    get(modelUI.waiting.atom),
+    get(atomsUI.openDrawer_pdfSelector) ||
+    get(atomsUI.waiting),
 );
 
 /** % 単位 */
@@ -232,7 +234,7 @@ const atomJumpPage = atom(null, (get, set, num: number) => {
   const pageNum = get(atomsPdfNotes.currentPage);
   const currentPage = get(atomsPdfNotes.currentPage);
   if (get(atomInvalidValue) || !pages) return;
-  set(modelUI.alert.atomClear);
+  set(derivsUI.clearAlert);
   if (num < 0 || pages.length <= num) return;
   set(atomsPdfNotes.currentPage, num);
   set(atomPreviousPageNum, pageNum);
@@ -332,7 +334,7 @@ const atomKeyDown = atom(null, (get, set, e: KeyboardEvent) => {
     }
   } else if (e.key === "Delete") {
     const setAlert = (message: string) => {
-      set(modelUI.alert.atom, { severity: "info", message });
+      set(atomsUI.alert, { severity: "info", message });
     };
     if (e.shiftKey) {
       // ページ内注釈の全削除

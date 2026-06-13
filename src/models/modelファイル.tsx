@@ -1,4 +1,3 @@
-import { modelUI } from "@/models/modelUI";
 import type Coverages from "@/types/Coverages";
 import { findTreeItem, type FileTree } from "@/types/FileTree";
 import { atom, useAtomValue, useSetAtom } from "jotai";
@@ -14,6 +13,7 @@ import { modelPdfNotes } from "./modelPdfNotes";
 import useNewCoverages from "@/models/utils/useNewCoverages";
 import { useCallback } from "react";
 import { derivsPDF履歴 } from "./modelPDF履歴/derivsPDF履歴";
+import { atomsUI } from "./modelUI/atomsUI";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
@@ -144,10 +144,10 @@ watchMaps.folder.set(id, () => {
 
 // pdfPath 変更時の処理
 watchMaps.pdfPath.set(id, () => {
-  const setWaiting = useSetAtom(modelUI.waiting.atom);
+  const setWaiting = useSetAtom(atomsUI.waiting);
   const { setPdfHandle } = usePdf();
   const handle = useAtomValue(atomHandleValue);
-  const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
+  const setOpenDrawer = useSetAtom(atomsUI.openDrawer_pdfSelector);
   const setPdfLoaded = useSetAtom(atomPdfLoaded);
   const addPdfHistory = useSetAtom(derivsPDF履歴.history.add);
   const setTotalPages = useSetAtom(atomTotalPages);

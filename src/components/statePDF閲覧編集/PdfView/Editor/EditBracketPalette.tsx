@@ -4,8 +4,8 @@ import Palette from "@/components/share/Palette/Palette";
 import getVector from "./getVector";
 import Svg from "@/components/share/Svg";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
-import { useAtomValue, useSetAtom } from "jotai";
-import { modelUI } from "@/models/modelUI";
+import { useSetAtom } from "jotai";
+import { modelUI } from "@/models/modelUI/modelUI";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
@@ -19,7 +19,7 @@ export default function EditBracketPalette({
   onClose: () => void;
 }) {
   const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
-  const mouse = useAtomValue(modelUI.mouse.atom);
+  const mouse = modelUI.mouse.useValue();
   const pageRect = usePdf()?.pageRect?.rect;
   if (!pageRect || !mouse) return undefined;
 
