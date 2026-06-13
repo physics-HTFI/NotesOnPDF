@@ -2,7 +2,7 @@ import type PdfNotes from "@/types/PdfNotes";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { watchMaps } from "./Watch/watchMaps";
 import { modelファイル } from "./modelファイル";
-import { modelフォルダ } from "./modelフォルダ";
+import { modelフォルダ } from "./modelフォルダ/modelフォルダ";
 import { modelUI } from "./modelUI/modelUI";
 import {
   createOrGetPdfNotes,
@@ -469,7 +469,7 @@ watchMaps.pdfLoaded.set(id, () => {
   const assignPdfNotes = useSetAtom(atomAssignPdfNotes);
   const read = modelフォルダ.json.useRead();
   const setAlert = modelUI.alert.useSet();
-  const setReadOnly = useSetAtom(modelフォルダ.readOnly.atom);
+  const setReadOnly = modelフォルダ.readOnly.useSet();
   const title = useAtomValue(modelファイル.pdf.atomTitleValue);
   const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
   const totalPages = useAtomValue(modelファイル.pdf.atomTotalPagesValue);

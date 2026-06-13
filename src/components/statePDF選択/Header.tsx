@@ -3,9 +3,9 @@ import { Box } from "@mui/material";
 import { Reply, Restore } from "@mui/icons-material";
 import DialogPdfHistory from "./DialogPdfHistory/DialogPdfHistory";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
-import { modelフォルダ } from "@/models/modelフォルダ";
+import { modelフォルダ } from "@/models/modelフォルダ/modelフォルダ";
 import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly/ButtonToggleReadOnly";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { modelファイル } from "../../models/modelファイル";
 
 /**
@@ -14,7 +14,7 @@ import { modelファイル } from "../../models/modelファイル";
 export default function Header() {
   const fileTree = useAtomValue(modelファイル.fileTree.atomValue);
   const [openHistory, setOpenHistory] = useState(false);
-  const reset = useSetAtom(modelフォルダ.folder.atomReset);
+  const reset = modelフォルダ.folder.useReset();
 
   const disabled = !fileTree;
   return (

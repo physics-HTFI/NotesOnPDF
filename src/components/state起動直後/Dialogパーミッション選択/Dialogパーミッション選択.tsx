@@ -2,16 +2,15 @@ import { DialogContent, DialogTitle, Stack } from "@mui/material";
 import { Lock, LockOpen, Reply } from "@mui/icons-material";
 import { CardButton } from "./ui/CardButton";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
-import { modelフォルダ } from "../../../models/modelフォルダ";
-import { useAtomValue, useSetAtom } from "jotai";
+import { modelフォルダ } from "../../../models/modelフォルダ/modelフォルダ";
 
 /**
  * `folder` に対し、「読み込み専用」か「書き込み可能」かを選択するダイアログ
  */
 export default function Dialogパーミッション選択() {
-  const folder = useAtomValue(modelフォルダ.folder.atom);
-  const reset = useSetAtom(modelフォルダ.folder.atomReset);
-  const setPermission = useSetAtom(modelフォルダ.folder.atomSetPermission);
+  const folder = modelフォルダ.folder.useValue();
+  const reset = modelフォルダ.folder.useReset();
+  const setPermission = modelフォルダ.folder.useSetPermission();
 
   if (!folder) return null;
 

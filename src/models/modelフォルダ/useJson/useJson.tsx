@@ -1,10 +1,14 @@
 import { modelUI } from "@/models/modelUI/modelUI";
-import { useAtom, useAtomValue } from "jotai";
-import { modelフォルダ } from "../../modelフォルダ";
+import { useAtom } from "jotai";
+import { modelフォルダ } from "../../modelフォルダ/modelフォルダ";
 import { jsonUtils } from "./jsonUtils";
 import { getFileFromPath } from "./getFileFromPath";
-import { consoleDev } from "../consoleDebug";
+import { derivsフォルダ } from "../derivsフォルダ";
+import { consoleDev } from "@/models/utils/consoleDebug";
 
+/**
+ * 選択フォルダにおけるファイルの入出力を行う
+ */
 export const useJson = {
   /** 失敗時は undefined が返る */
   useRead: useReadJson,
@@ -18,7 +22,7 @@ export const useJson = {
 //|
 
 function useReadJson() {
-  const folder = useAtomValue(modelフォルダ.folder.atom);
+  const folder = modelフォルダ.folder.useValue();
   const setAlert = modelUI.alert.useSet();
 
   return async <T,>(path: string, alert: boolean) => {
@@ -33,12 +37,12 @@ function useReadJson() {
 }
 
 function useSaveJson() {
-  const folder = useAtomValue(modelフォルダ.folder.atom);
+  const folder = modelフォルダ.folder.useValue();
   const setAlert = modelUI.alert.useSet();
-  const [readOnly, setReadOnly] = useAtom(modelフォルダ.readOnly.atom);
+  const [readOnly, setReadOnly] = useAtom(derivsフォルダ.readOnly);
 
-  return async (object: unknown, path: string) => {
-    if (readOnly || !folder || !object) return;
+  return async <T,>(object: NonNullable<T>, path: string) => {
+    if (readOnly || !folder) return;
     const file = await getFileFromPath(path, folder, true);
     const ok = await jsonUtils.write(object, file);
     consoleDev(`write JSON: ${path}`);

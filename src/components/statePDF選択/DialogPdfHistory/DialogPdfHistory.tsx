@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
-import { modelフォルダ } from "@/models/modelフォルダ";
-import { useAtomValue, useSetAtom } from "jotai";
+import { modelフォルダ } from "@/models/modelフォルダ/modelフォルダ";
+import { useSetAtom } from "jotai";
 import { modelPDF履歴 } from "../../../models/modelPDF履歴/modelPDF履歴";
 import { modelファイル } from "../../../models/modelファイル";
 
@@ -28,7 +28,7 @@ export default function DialogPdfHistory({
   open: boolean;
   onClose: () => void;
 }) {
-  const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
+  const readOnly = modelフォルダ.readOnly.useValue();
   const history = modelPDF履歴.history.useValue();
   const deleteByPath = modelPDF履歴.history.useDeleteByPath();
   const deleteAll = modelPDF履歴.history.useDeleteAll();

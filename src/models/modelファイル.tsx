@@ -1,7 +1,7 @@
 import type Coverages from "@/types/Coverages";
 import { findTreeItem, type FileTree } from "@/types/FileTree";
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { modelフォルダ } from "./modelフォルダ";
+import { modelフォルダ } from "./modelフォルダ/modelフォルダ";
 import { useGetCoverages } from "./utils/useGetCoverages";
 import { PATH_COVERAGES, PATH_SETTINGS } from "@/types/CONSTANTS";
 import { getFileTree } from "./utils/getFileTree/getFileTree";
@@ -49,23 +49,23 @@ const atomHandleValue = atom((get) => {
 
 function useSetAppSettings() {
   const setAppSettings = useSetAtom(atomAppSettings);
-  const write = modelフォルダ.json.useSave();
+  const save = modelフォルダ.json.useSave();
 
   return async (appSettings?: AppSettings) => {
     if (!appSettings) return;
     setAppSettings(appSettings);
-    await write(appSettings, PATH_SETTINGS);
+    await save(appSettings, PATH_SETTINGS);
   };
 }
 
 function useSetCoverages() {
   const setCoverages = useSetAtom(atomCoverages);
-  const write = modelフォルダ.json.useSave();
+  const save = modelフォルダ.json.useSave();
 
   return async (coverages?: Coverages) => {
     if (!coverages) return;
     setCoverages(coverages);
-    await write(coverages, PATH_COVERAGES);
+    await save(coverages, PATH_COVERAGES);
   };
 }
 
@@ -112,7 +112,7 @@ const id = "modelPDFファイル";
 
 // folder 変更時の処理
 watchMaps.folder.set(id, () => {
-  const folder = useAtomValue(modelフォルダ.folder.atom);
+  const folder = modelフォルダ.folder.useValue();
   const setFileTree = useSetAtom(atomFileTree);
   const getCoverages = useGetCoverages();
   const setCoverages = useSetAtom(atomCoverages);

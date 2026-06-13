@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { modelファイル } from "../modelファイル";
-import { modelフォルダ } from "../modelフォルダ";
+import { modelフォルダ } from "../modelフォルダ/modelフォルダ";
 import { watchMaps } from "./watchMaps";
 import { modelPdfNotes } from "../modelPdfNotes";
 import { Watch_PDF履歴入出力 } from "../modelPDF履歴/Watch_PDF履歴入出力";
@@ -31,7 +31,7 @@ export function WatchAll() {
 //|
 
 function WatchFolder() {
-  const folder = useAtomValue(modelフォルダ.folder.atom);
+  const folder = modelフォルダ.folder.useValue();
   return <WatchUse target={folder} useOnChange={watchMaps.folder} />;
 }
 

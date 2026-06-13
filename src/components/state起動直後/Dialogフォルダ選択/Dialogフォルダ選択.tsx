@@ -5,15 +5,13 @@ import { useDirectoryExists } from "./use/useDirectoryExists/useDirectoryExists"
 import { Title } from "./ui/Title";
 import { Panelドラッグドロップ } from "./ui/Panelドラッグドロップ";
 import { useFolderHistory } from "./use/useFolderHistory/useFolderHistory";
-import { useAtomValue, useSetAtom } from "jotai";
-import { modelフォルダ } from "../../../models/modelフォルダ";
+import { modelフォルダ } from "../../../models/modelフォルダ/modelフォルダ";
 
 /**
  * 基準フォルダを選択するダイアログ
  */
 export function Dialogフォルダ選択() {
-  const folder = useAtomValue(modelフォルダ.folder.atom);
-  const setFolder = useSetAtom(modelフォルダ.folder.atom);
+  const [folder, setFolder] = modelフォルダ.folder.use();
   const historyUse = useFolderHistory();
   const { ifExists } = useDirectoryExists();
 
