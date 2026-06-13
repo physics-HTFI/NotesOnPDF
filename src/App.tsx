@@ -9,7 +9,7 @@ import { Alert } from "./components/global/Alert";
 import { Waiting } from "./components/global/Waiting";
 import TocView from "./components/statePDF閲覧編集/TocView/TocView";
 import PdfView from "./components/statePDF閲覧編集/PdfView/PdfView";
-import { Watch } from "./models/Watch/Watch";
+import { WatchAll } from "./models/Watch/WatchAll";
 import { ID_PDF_CONTAINER } from "./types/CONSTANTS";
 import { queueRenderPage } from "./models/utils/usePdf/usePdf";
 
@@ -111,7 +111,7 @@ export default function App() {
       <Alert />
       <Waiting />
 
-      <Watch />
+      <WatchAll />
       <DisableRightClick />
       <RenderWhenResize />
     </ThemeProvider>

@@ -10,10 +10,10 @@ import { watchMaps } from "./Watch/watchMaps";
 import type AppSettings from "@/types/AppSettings";
 import { GetAppSettings_default } from "@/types/AppSettings";
 import { usePdf } from "./utils/usePdf/usePdf";
-import { modelPDF履歴 } from "./modelPDF履歴";
 import { modelPdfNotes } from "./modelPdfNotes";
 import useNewCoverages from "@/models/utils/useNewCoverages";
 import { useCallback } from "react";
+import { derivsPDF履歴 } from "./modelPDF履歴/derivsPDF履歴";
 
 const atomFileTree = atom<FileTree>();
 const atomCoverages = atom<Coverages>();
@@ -149,7 +149,7 @@ watchMaps.pdfPath.set(id, () => {
   const handle = useAtomValue(atomHandleValue);
   const setOpenDrawer = useSetAtom(modelUI.openDrawer.pdfFileTree.atom);
   const setPdfLoaded = useSetAtom(atomPdfLoaded);
-  const { add: addPdfHistory } = modelPDF履歴.update.use();
+  const addPdfHistory = useSetAtom(derivsPDF履歴.history.add);
   const setTotalPages = useSetAtom(atomTotalPages);
 
   return async (path) => {
@@ -161,7 +161,7 @@ watchMaps.pdfPath.set(id, () => {
     setTotalPages(undefined);
     setPdfHandle(handle, (totalPages) => {
       setOpenDrawer(!handle);
-      if (path && totalPages) void addPdfHistory(path, totalPages);
+      if (path && totalPages) void addPdfHistory({ path, totalPages });
       setTotalPages(totalPages);
       setWaiting(false);
       setPdfLoaded(true);
