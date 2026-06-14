@@ -7,6 +7,7 @@ import {
 } from "@/types/CONSTANTS";
 import { useSyncExternalStore } from "react";
 import { calPageRect } from "./calPageRect";
+import { consoleDev } from "../consoleDebug";
 
 export function usePdf() {
   const { pageRect, totalPages } = useSyncExternalStore(
@@ -115,6 +116,7 @@ export async function queueRenderPage(
     page.style.visibility = pageRect ? "visible" : "collapse";
     return pageRect;
   };
+  consoleDev(`queueRenderPage: p. ${pageNumPrev}`);
   const pageRect = await window.pdf.queueRenderPageAsync(pageNumPrev, resizer);
   if (!pageRect) return;
   snapshot = { ...snapshot, pageRect };

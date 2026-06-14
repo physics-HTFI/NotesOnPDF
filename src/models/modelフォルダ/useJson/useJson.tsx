@@ -28,7 +28,7 @@ function useReadJson() {
   return async <T,>(path: string, alert: boolean) => {
     const file = await getFileFromPath(path, folder, false);
     const value = await jsonUtils.read<T>(file);
-    consoleDev(`read JSON: ${path}`);
+    consoleDev(`useReadJson: ${path}`);
     if (alert && !value) {
       setAlert("error", `読み込みに失敗しました："${path}"`);
     }
@@ -41,11 +41,11 @@ function useSaveJson() {
   const setAlert = modelUI.alert.useSet();
   const [readOnly, setReadOnly] = useAtom(derivsフォルダ.readOnly);
 
-  return async <T,>(object: NonNullable<T>, path: string) => {
-    if (readOnly || !folder) return;
+  return async <T,>(object: T, path: string) => {
+    if (readOnly || !folder || !object) return;
     const file = await getFileFromPath(path, folder, true);
     const ok = await jsonUtils.write(object, file);
-    consoleDev(`write JSON: ${path}`);
+    consoleDev(`useSaveJson: ${path}`);
     if (!ok) {
       await setReadOnly(true);
       setAlert(

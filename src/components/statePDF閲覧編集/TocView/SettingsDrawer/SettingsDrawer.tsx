@@ -13,14 +13,14 @@ import IconTogglePosition from "./IconTogglePosition";
 import Tabs from "./Tabs";
 import { useAtomValue, useSetAtom } from "jotai";
 import { modelUI } from "@/models/modelUI/modelUI";
-import { modelファイル } from "../../../../models/modelファイル";
+import { modelファイル } from "../../../../models/modelファイル/modelファイル";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
 /**
  * 設定パネル
  */
 export default function SettingsDrawer() {
-  const appSettings = useAtomValue(modelファイル.appSettings.atom);
+  const appSettings = modelファイル.appSettings.useValue();
   const setAppSettings = modelファイル.appSettings.useSet();
   const page = useAtomValue(modelPdfNotes.page.atomValue);
   const settings = useAtomValue(modelPdfNotes.atoms.settings);
@@ -32,7 +32,6 @@ export default function SettingsDrawer() {
     modelPdfNotes.update.atomUpdateFileSettings,
   );
   const [openDrawer, setOpenDrawer] = modelUI.openDrawer_settings.use();
-  const render = modelファイル.pdf.useRenderPage();
 
   const [tab, setTab] = useState(0);
   const [isBottom, setIsBottom] = useState(true);
@@ -214,7 +213,6 @@ export default function SettingsDrawer() {
               tooltipTitle="ページ上部の余白をカットします"
               onChange={(offsetTop) => {
                 updateFileSettings({ offsetTop });
-                void render();
               }}
             />
             <LabelSlider
@@ -226,7 +224,6 @@ export default function SettingsDrawer() {
               tooltipTitle="ページ下部の余白をカットします"
               onChange={(offsetBottom) => {
                 updateFileSettings({ offsetBottom });
-                void render();
               }}
             />
           </Box>

@@ -29,7 +29,7 @@ export const modelフォルダ = {
   json: {
     useRead: useJson.useRead,
 
-    /** `undefined` は引数に指定出来ないようにしている（型エラーになる）。 */
+    /** readOnly の場合、または引数が `undefined` の場合は何もしない。 */
     useSave: useJson.useSave,
   },
 };

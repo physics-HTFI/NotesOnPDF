@@ -1,13 +1,13 @@
-import { useAtomValue, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { Watch } from "../Watch/Watch";
-import { modelファイル } from "../modelファイル";
+import { modelファイル } from "../modelファイル/modelファイル";
 import { atomsUI } from "./atomsUI";
 
 /**
  * ドロワーの開閉を行う
  */
 export function Watch_ドロワー開閉() {
-  const pdfPath = useAtomValue(modelファイル.pdf.atomPath);
+  const pdfPath = modelファイル.pdf.path.useValue();
   const setOpenSettingsDrawer = useSetAtom(atomsUI.openDrawer_settings);
 
   return (

@@ -14,9 +14,8 @@ import {
 import { Delete } from "@mui/icons-material";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
 import { modelフォルダ } from "@/models/modelフォルダ/modelフォルダ";
-import { useSetAtom } from "jotai";
 import { modelPDF履歴 } from "../../../models/modelPDF履歴/modelPDF履歴";
-import { modelファイル } from "../../../models/modelファイル";
+import { modelファイル } from "../../../models/modelファイル/modelファイル";
 
 /**
  * PDFを開いた履歴
@@ -32,7 +31,7 @@ export default function DialogPdfHistory({
   const history = modelPDF履歴.history.useValue();
   const deleteByPath = modelPDF履歴.history.useDeleteByPath();
   const deleteAll = modelPDF履歴.history.useDeleteAll();
-  const setPath = useSetAtom(modelファイル.pdf.atomPath);
+  const setPath = modelファイル.pdf.path.useSet();
 
   return (
     <Backdrop

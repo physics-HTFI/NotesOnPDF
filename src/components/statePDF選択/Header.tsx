@@ -5,14 +5,13 @@ import DialogPdfHistory from "./DialogPdfHistory/DialogPdfHistory";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
 import { modelフォルダ } from "@/models/modelフォルダ/modelフォルダ";
 import { ButtonToggleReadOnly } from "./ButtonToggleReadOnly/ButtonToggleReadOnly";
-import { useAtomValue } from "jotai";
-import { modelファイル } from "../../models/modelファイル";
+import { modelファイル } from "../../models/modelファイル/modelファイル";
 
 /**
  * ファイルツリーの上部に表示されるボタンコントロール
  */
 export default function Header() {
-  const fileTree = useAtomValue(modelファイル.fileTree.atomValue);
+  const fileTree = modelファイル.fileTree.useValue();
   const [openHistory, setOpenHistory] = useState(false);
   const reset = modelフォルダ.folder.useReset();
 

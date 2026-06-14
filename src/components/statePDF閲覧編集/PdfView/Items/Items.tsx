@@ -11,7 +11,7 @@ import type { Mode } from "../SpeedDial";
 import type { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./utils/SvgDefs";
 import Svg from "@/components/share/Svg";
-import { modelファイル } from "../../../../models/modelファイル";
+import { modelファイル } from "../../../../models/modelファイル/modelファイル";
 import { useAtomValue, useSetAtom } from "jotai";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
 import { modelUI } from "@/models/modelUI/modelUI";
@@ -33,7 +33,7 @@ export default function Items({
 }) {
   const setMouse = modelUI.mouse.useSet();
   const pageRect = usePdf()?.pageRect?.rect;
-  const appSettings = useAtomValue(modelファイル.appSettings.atom);
+  const appSettings = modelファイル.appSettings.useValue();
   const page = useAtomValue(modelPdfNotes.page.atomValue);
   const popNote = useSetAtom(modelPdfNotes.update.atomPopNote);
   if (!page?.notes || !pageRect) return <SvgDefs />;

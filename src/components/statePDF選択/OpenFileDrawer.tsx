@@ -4,16 +4,15 @@ import Header from "@/components/statePDF選択/Header";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import { findTreeItem } from "@/types/FileTree";
 import { modelフォルダ } from "../../models/modelフォルダ/modelフォルダ";
-import { useAtomValue } from "jotai";
 import { modelUI } from "@/models/modelUI/modelUI";
-import { modelファイル } from "../../models/modelファイル";
+import { modelファイル } from "../../models/modelファイル/modelファイル";
 
 /**
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
-  const fileTree = useAtomValue(modelファイル.fileTree.atomValue);
-  const recentPath = useAtomValue(modelファイル.coverages.atom)?.recentPath;
+  const fileTree = modelファイル.fileTree.useValue();
+  const recentPath = modelファイル.coverages.useValue()?.recentPath;
   const [openDrawer, setOpenDrawer] = modelUI.openDrawer_pdfSelector.use();
 
   const readOnly = modelフォルダ.readOnly.useValue();

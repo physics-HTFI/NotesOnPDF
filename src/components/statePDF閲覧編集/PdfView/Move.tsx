@@ -11,7 +11,7 @@ import type { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import Svg from "@/components/share/Svg";
 import { useAtomValue } from "jotai";
-import { modelファイル } from "../../../models/modelファイル";
+import { modelファイル } from "../../../models/modelファイル/modelファイル";
 import { usePdf } from "@/models/utils/usePdf/usePdf";
 import { modelUI } from "@/models/modelUI/modelUI";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
@@ -34,7 +34,7 @@ export default function Move({
   const ref = useRef<HTMLElement>(undefined);
   const [mouse, setMouse] = modelUI.mouse.use();
   const pageRect = usePdf()?.pageRect?.rect;
-  const appSettings = useAtomValue(modelファイル.appSettings.atom);
+  const appSettings = modelファイル.appSettings.useValue();
   const page = useAtomValue(modelPdfNotes.page.atomValue);
   if (!params || !mouse || !pageRect || !appSettings) {
     if (dXY) setDXY(undefined); // 頂点編集中に`Esc`を押してキャンセル後に値が残るのを防ぐ

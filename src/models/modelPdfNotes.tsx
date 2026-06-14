@@ -1,7 +1,7 @@
 import type PdfNotes from "@/types/PdfNotes";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { watchMaps } from "./Watch/watchMaps";
-import { modelファイル } from "./modelファイル";
+import { modelファイル } from "./modelファイル/modelファイル";
 import { modelフォルダ } from "./modelフォルダ/modelフォルダ";
 import { modelUI } from "./modelUI/modelUI";
 import {
@@ -19,13 +19,14 @@ import { debounce } from "@mui/material";
 import { splitAtom } from "jotai/utils";
 import { derivsUI } from "./modelUI/derivsUI";
 import { atomsUI } from "./modelUI/atomsUI";
+import { atomsファイル } from "./modelファイル/atomsファイル";
 
 const atomsPdfNotes = {
   title: atom<string>(),
   version: atom<number>(),
   pages: atom<Page[]>([]),
   settings: atom<Settings>(),
-  currentPage: atom<number>(0),
+  currentPage: atom<number>(),
 };
 
 const atomPreviousPageNum = atom<number>();
@@ -48,7 +49,8 @@ const atomPdfNotes = atom((get) => {
   const pages = get(atomsPdfNotes.pages);
   const settings = get(atomsPdfNotes.settings);
   const currentPage = get(atomsPdfNotes.currentPage);
-  if (!title || !version || !settings) return undefined;
+  if (!title || !version || !settings || currentPage === undefined)
+    return undefined;
   return {
     title,
     version,
@@ -77,8 +79,8 @@ const atomAssignPdfNotes = atom(null, (_, set, pdfNotes?: PdfNotes) => {
 });
 const atomAtomPage = atom((get) => {
   const pdfNotes = get(atomPdfNotes);
-  if (!pdfNotes) return undefined;
   const pageNum = get(atomsPdfNotes.currentPage);
+  if (!pdfNotes || pageNum === undefined) return undefined;
   return get(atomAtomsPage)[pageNum];
 });
 const atomPage = atom((get) => {
@@ -157,7 +159,9 @@ const atomUpdatePageSettings = atom(
   null,
   (get, set, settings: Partial<Omit<Page, "notes">>, pageNum?: number) => {
     const pages = get(atomsPdfNotes.pages);
-    pageNum ??= get(atomsPdfNotes.currentPage);
+    const currentPage = get(atomsPdfNotes.currentPage);
+    if (currentPage === undefined) return;
+    pageNum ??= currentPage;
     pages[pageNum] = { ...pages[pageNum], ...settings };
     if (Object.keys(settings).includes("numRestart")) {
       updatePageNum(pages);
@@ -182,9 +186,9 @@ const atomUpdateFileSettings = atom(
  * 今いる章の開始ページの番号を返す
  */
 const atomChapterStartPageNumValue = atom((get) => {
-  if (get(atomInvalidValue)) return;
-  const pages = get(atomsPdfNotes.pages);
   const currentPage = get(atomsPdfNotes.currentPage);
+  if (get(atomInvalidValue) || currentPage === undefined) return;
+  const pages = get(atomsPdfNotes.pages);
   return getChapterStartPageNum(currentPage, pages);
 });
 
@@ -195,7 +199,7 @@ const atomPreferredLabelsValue = atom((get) => {
   const title = get(atomsPdfNotes.title);
   const pages = get(atomsPdfNotes.pages);
   const currentPage = get(atomsPdfNotes.currentPage);
-  if (get(atomInvalidValue) || title === undefined)
+  if (get(atomInvalidValue) || title === undefined || currentPage === undefined)
     return {
       volumeLabel: "タイトル",
       partLabel: "第??部",
@@ -231,16 +235,15 @@ const atomPreferredLabelsValue = atom((get) => {
  */
 const atomJumpPage = atom(null, (get, set, num: number) => {
   const pages = get(atomsPdfNotes.pages);
-  const pageNum = get(atomsPdfNotes.currentPage);
   const currentPage = get(atomsPdfNotes.currentPage);
-  if (get(atomInvalidValue) || !pages) return;
+  if (get(atomInvalidValue) || !pages || currentPage === undefined) return;
   set(derivsUI.clearAlert);
   if (num < 0 || pages.length <= num) return;
   set(atomsPdfNotes.currentPage, num);
-  set(atomPreviousPageNum, pageNum);
+  set(atomPreviousPageNum, currentPage);
   set(atomInitialNotes, undefined);
   // 目次のハイライト用変数の更新
-  set(get(atomAtomsIsSelectedPage)[pageNum], false);
+  set(get(atomAtomsIsSelectedPage)[currentPage], false);
   set(get(atomAtomsIsSelectedPage)[num], true);
   const chapterPageNum0 = getChapterStartPageNum(currentPage, pages);
   const chapterPageNum1 = getChapterStartPageNum(num, pages);
@@ -445,7 +448,7 @@ watchMaps.currentPage.set(id, () => {
 // pdfNotes 変更時の処理
 watchMaps.pdfNotes.set(id, () => {
   const save = modelフォルダ.json.useSave();
-  const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
+  const jsonPath = modelファイル.pdf.useJsonPathValue();
   const pageNum = useAtomValue(modelPdfNotes.atoms.currentPage);
 
   return (pdfNotes) => {
@@ -470,12 +473,12 @@ watchMaps.pdfLoaded.set(id, () => {
   const read = modelフォルダ.json.useRead();
   const setAlert = modelUI.alert.useSet();
   const setReadOnly = modelフォルダ.readOnly.useSet();
-  const title = useAtomValue(modelファイル.pdf.atomTitleValue);
-  const jsonPath = useAtomValue(modelファイル.pdf.atomJsonPathValue);
-  const totalPages = useAtomValue(modelファイル.pdf.atomTotalPagesValue);
+  const title = modelファイル.pdf.useTitleValue();
+  const jsonPath = modelファイル.pdf.useJsonPathValue();
+  const pdfInfo = useAtomValue(atomsファイル.pdf.info);
 
   return async (loaded) => {
-    if (!loaded || !jsonPath || !title || totalPages === undefined) return;
+    if (!loaded || !jsonPath || !title || pdfInfo.status !== "loaded") return;
     // pdfNotes を読み込む
     const pdfNotes = await read<PdfNotes>(jsonPath, false);
     if (pdfNotes && pdfNotes.version !== FORMAT_VERSION) {
@@ -490,17 +493,6 @@ watchMaps.pdfLoaded.set(id, () => {
       await setReadOnly(true);
       return;
     }
-    assignPdfNotes(createOrGetPdfNotes(title, totalPages, pdfNotes));
-  };
-});
-
-// PDF と pdfNotes のロードが終わった時の処理
-watchMaps.pdfFullLoaded.set(id, () => {
-  const render = modelファイル.pdf.useRenderPage();
-
-  return async (loaded) => {
-    // 初期ページをレンダリングする
-    if (!loaded) return;
-    await render();
+    assignPdfNotes(createOrGetPdfNotes(title, pdfInfo.totalPages, pdfNotes));
   };
 });
