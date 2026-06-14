@@ -3,10 +3,10 @@ import BracketItem from "../Items/Bracket";
 import Palette from "@/components/share/Palette/Palette";
 import getVector from "./getVector";
 import Svg from "@/components/share/Svg";
-import { usePdf } from "@/models/utils/usePdf/usePdf";
 import { useSetAtom } from "jotai";
 import { modelUI } from "@/models/modelUI/modelUI";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelファイル } from "@/models/modelファイル/modelファイル";
 
 /**
  * Bracketの編集パレット
@@ -20,7 +20,7 @@ export default function EditBracketPalette({
 }) {
   const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
   const mouse = modelUI.mouse.useValue();
-  const pageRect = usePdf()?.pageRect?.rect;
+  const pageRect = modelファイル.pdf.usePageRectValue()?.rect;
   if (!pageRect || !mouse) return undefined;
 
   const L = 40;

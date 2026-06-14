@@ -2,10 +2,10 @@ import { useAtomValue } from "jotai";
 import { Watch } from "../Watch/Watch";
 import { modelPdfNotes } from "../modelPdfNotes";
 import { useEffect } from "react";
-import { queueRenderPage } from "../utils/usePdf/usePdf";
 import { ID_PDF_CONTAINER } from "@/types/CONSTANTS";
 import { useRenderPage } from "./utils/useRenderPage";
 import { atomsファイル } from "./atomsファイル";
+import { pdfUtils } from "../../utils/pdfUtils/pdfUtils";
 
 /**
  * PDF の描画／再描画を行う
@@ -24,7 +24,7 @@ export function Watch_PDF描画() {
   useEffect(() => {
     const elem = document.getElementById(ID_PDF_CONTAINER);
     if (!elem) return;
-    const observer = new ResizeObserver(() => queueRenderPage());
+    const observer = new ResizeObserver(() => pdfUtils.queueRenderPage());
     observer.observe(elem);
     return () => observer.disconnect();
   }, []);

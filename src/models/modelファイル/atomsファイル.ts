@@ -1,5 +1,6 @@
 import type AppSettings from "@/types/AppSettings";
 import type Coverages from "@/types/Coverages";
+import type { PageRect } from "@/types/PageRect";
 import { atom } from "jotai";
 
 export const atomsファイル = {
@@ -8,6 +9,7 @@ export const atomsファイル = {
   pdf: {
     path: atom<string>(),
     info: atom<PdfStatus>({ status: "not-loaded" }),
+    pageRect: atom<PageRect>(),
   },
 };
 

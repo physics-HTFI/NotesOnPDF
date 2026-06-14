@@ -12,7 +12,6 @@ import { Box } from "@mui/material";
 import Svg from "@/components/share/Svg";
 import { useAtomValue } from "jotai";
 import { modelファイル } from "../../../models/modelファイル/modelファイル";
-import { usePdf } from "@/models/utils/usePdf/usePdf";
 import { modelUI } from "@/models/modelUI/modelUI";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 
@@ -33,7 +32,7 @@ export default function Move({
   const [dXY, setDXY] = useState<[number, number]>();
   const ref = useRef<HTMLElement>(undefined);
   const [mouse, setMouse] = modelUI.mouse.use();
-  const pageRect = usePdf()?.pageRect?.rect;
+  const pageRect = modelファイル.pdf.usePageRectValue()?.rect;
   const appSettings = modelファイル.appSettings.useValue();
   const page = useAtomValue(modelPdfNotes.page.atomValue);
   if (!params || !mouse || !pageRect || !appSettings) {

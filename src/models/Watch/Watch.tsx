@@ -25,4 +25,5 @@ export function Watch<T>({
 // Cannot update a component (A) while rendering a different component (B)
 // そのため、atom が変化したときのリレンダー中に setState/setAtom するのは避けるべき。
 // useEffect を使うという手もあるが、カスタムフック由来の関数があると、その関数については
-// useCallback 化しておくする必要があるのと、更新タイミングが読みづらくなるので避ける。
+// useCallback 化しておかないと無限ループになったり、依存配列が冗長になる割に、
+// それほどパフォーマンスが良くなるわけでもないので避ける。

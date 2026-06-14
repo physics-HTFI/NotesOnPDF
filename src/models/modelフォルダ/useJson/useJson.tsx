@@ -4,7 +4,7 @@ import { modelフォルダ } from "../../modelフォルダ/modelフォルダ";
 import { jsonUtils } from "./jsonUtils";
 import { getFileFromPath } from "./getFileFromPath";
 import { derivsフォルダ } from "../derivsフォルダ";
-import { consoleDev } from "@/models/utils/consoleDebug";
+import { consoleDev } from "@/utils/consoleDebug";
 
 /**
  * 選択フォルダにおけるファイルの入出力を行う

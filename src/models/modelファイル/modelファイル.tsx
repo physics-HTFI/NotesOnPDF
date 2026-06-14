@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { watchMaps } from "../Watch/watchMaps";
-import { usePdf } from "../utils/usePdf/usePdf";
 import { atomsUI } from "../modelUI/atomsUI";
 import { atomsファイル } from "./atomsファイル";
 import { derivsファイル } from "./derivsファイル";
+import { pdfUtils } from "../../utils/pdfUtils/pdfUtils";
 
 //|
 //| export
@@ -30,6 +30,7 @@ export const modelファイル = {
     },
     useTitleValue: () => useAtomValue(derivsファイル.titleValue),
     useJsonPathValue: () => useAtomValue(derivsファイル.jsonPathValue),
+    usePageRectValue: () => useAtomValue(atomsファイル.pdf.pageRect),
   },
 };
 
@@ -42,7 +43,6 @@ const id = "modelPDFファイル";
 // pdfPath 変更時の処理
 watchMaps.pdfPath.set(id, () => {
   const setWaiting = useSetAtom(atomsUI.waiting);
-  const { setPdfHandle } = usePdf();
   const handle = useAtomValue(derivsファイル.pdfHandleValue);
   const setOpenDrawer = useSetAtom(atomsUI.openDrawer_pdfSelector);
   const setPdfInfo = useSetAtom(atomsファイル.pdf.info);
@@ -53,7 +53,7 @@ watchMaps.pdfPath.set(id, () => {
     // PDF ファイル読み込み／アンロード
     setWaiting(true);
     setPdfInfo({ status: "not-loaded" });
-    setPdfHandle(handle, (totalPages) => {
+    pdfUtils.setPdfHandle(handle, (totalPages) => {
       setWaiting(false);
       setOpenDrawer(!handle);
       document.title = handle?.name ?? "NotesOnPDF";

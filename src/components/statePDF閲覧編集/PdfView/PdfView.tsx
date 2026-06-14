@@ -13,7 +13,6 @@ import { PdfImage } from "./PdfImage";
 import { modelUI } from "@/models/modelUI/modelUI";
 import { modelファイル } from "../../../models/modelファイル/modelファイル";
 import { useAtomValue, useSetAtom } from "jotai";
-import { usePdf } from "@/models/utils/usePdf/usePdf";
 import { modelPdfNotes } from "@/models/modelPdfNotes";
 import { ID_PDF_PAGE } from "@/types/CONSTANTS";
 
@@ -24,7 +23,7 @@ export default function PdfView() {
   const clearAlert = modelUI.alert.useClear();
   const appSettings = modelファイル.appSettings.useValue();
   const setMouse = modelUI.mouse.useSet();
-  const { pageRect } = usePdf();
+  const pageRect = modelファイル.pdf.usePageRectValue();
   const page = useAtomValue(modelPdfNotes.page.atomValue);
   const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
   const scrollPage = useSetAtom(modelPdfNotes.update.atomScrollPage);

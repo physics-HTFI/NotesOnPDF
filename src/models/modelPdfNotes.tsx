@@ -14,7 +14,6 @@ import {
   type Page,
   type Settings,
 } from "@/types/PdfNotes";
-import { usePdf } from "./utils/usePdf/usePdf";
 import { debounce } from "@mui/material";
 import { splitAtom } from "jotai/utils";
 import { derivsUI } from "./modelUI/derivsUI";
@@ -98,7 +97,7 @@ const atomInvalidValue = atom(
 
 /** % 単位 */
 function useFontScale() {
-  const { pageRect } = usePdf();
+  const pageRect = modelファイル.pdf.usePageRectValue();
   const settings = useAtomValue(atomsPdfNotes.settings);
   if (!settings || !pageRect?.rect) return 100;
   return (settings.fontSize * pageRect.rect.width) / 600;
