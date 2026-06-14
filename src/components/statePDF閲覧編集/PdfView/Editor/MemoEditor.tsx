@@ -4,8 +4,7 @@ import { type Memo } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { Help } from "@mui/icons-material";
 import TextareaAutosize from "@/components/share/TextAreaAutosize";
-import { useSetAtom } from "jotai";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * 注釈メモの編集ダイアログ
@@ -17,7 +16,7 @@ export default function MemoEditor({
   params: Memo;
   onClose: () => void;
 }) {
-  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
+  const updateNote = modelPdfNotes.update.useSetNote();
   const [text, setText] = useState(params.html);
   const [fold, setFold] = useState(params.style === "fold");
   const handleRef = useCallback((ref: HTMLTextAreaElement | null) => {

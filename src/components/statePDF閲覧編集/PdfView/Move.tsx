@@ -10,10 +10,9 @@ import Chip from "./Items/Chip";
 import type { Node, NoteType } from "@/types/PdfNotes";
 import { Box } from "@mui/material";
 import Svg from "@/components/share/Svg";
-import { useAtomValue } from "jotai";
 import { modelファイル } from "../../../models/modelファイル/modelファイル";
 import { modelUI } from "@/models/modelUI/modelUI";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * 移動中の注釈を表示するコンポーネント
@@ -34,7 +33,7 @@ export default function Move({
   const [mouse, setMouse] = modelUI.mouse.use();
   const pageRect = modelファイル.pdf.usePageRectValue()?.rect;
   const appSettings = modelファイル.appSettings.useValue();
-  const page = useAtomValue(modelPdfNotes.page.atomValue);
+  const page = modelPdfNotes.page.useValue();
   if (!params || !mouse || !pageRect || !appSettings) {
     if (dXY) setDXY(undefined); // 頂点編集中に`Esc`を押してキャンセル後に値が残るのを防ぐ
     return <></>;

@@ -12,8 +12,7 @@ import Move from "./Move";
 import { PdfImage } from "./PdfImage";
 import { modelUI } from "@/models/modelUI/modelUI";
 import { modelファイル } from "../../../models/modelファイル/modelファイル";
-import { useAtomValue, useSetAtom } from "jotai";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 import { ID_PDF_PAGE } from "@/types/CONSTANTS";
 
 /**
@@ -24,10 +23,10 @@ export default function PdfView() {
   const appSettings = modelファイル.appSettings.useValue();
   const setMouse = modelUI.mouse.useSet();
   const pageRect = modelファイル.pdf.usePageRectValue();
-  const page = useAtomValue(modelPdfNotes.page.atomValue);
-  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
-  const scrollPage = useSetAtom(modelPdfNotes.update.atomScrollPage);
-  const handleKeyDown = useSetAtom(modelPdfNotes.update.atomKeyDown);
+  const page = modelPdfNotes.page.useValue();
+  const updateNote = modelPdfNotes.update.useSetNote();
+  const scrollPage = modelPdfNotes.update.useScrollPage();
+  const handleKeyDown = modelPdfNotes.update.useKeyDown();
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [mode, setMode] = useState<Mode>(undefined);

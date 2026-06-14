@@ -6,20 +6,19 @@ import { GetCoverage } from "@/types/Coverages";
 import PageInput from "./Editor/PageInput";
 import Progress from "@/components/statePDF選択/FileTreeView/Progress";
 import TooltipIconButton from "@/components/share/TooltipIconButton";
-import { useAtomValue, useSetAtom } from "jotai";
 import { modelファイル } from "@/models/modelファイル/modelファイル";
 import { modelUI } from "@/models/modelUI/modelUI";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * 画面隅のページ数表示コンポーネント
  */
 export default function PageLabelSmall({ hidden }: { hidden: boolean }) {
-  const pages = useAtomValue(modelPdfNotes.atoms.pages);
-  const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
-  const previousPageNum = useAtomValue(modelPdfNotes.previousPageNum.atomValue);
-  const pageNum = useAtomValue(modelPdfNotes.atoms.currentPage);
-  const pageLabel = useAtomValue(modelPdfNotes.pageLabel.atomValue);
+  const pages = modelPdfNotes.pdfNotes.usePages();
+  const jumpPage = modelPdfNotes.update.useJumpPage();
+  const previousPageNum = modelPdfNotes.previousPageNum.useValue();
+  const pageNum = modelPdfNotes.pdfNotes.useCurrentPage();
+  const pageLabel = modelPdfNotes.pageLabel.useValue();
   const path = modelファイル.pdf.path.useValue();
   const [openJumpDialog, setOpenJumpDialog] = useState(false);
   const setMouse = modelUI.mouse.useSet();

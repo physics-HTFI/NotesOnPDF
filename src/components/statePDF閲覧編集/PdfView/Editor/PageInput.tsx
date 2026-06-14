@@ -2,8 +2,7 @@ import { useCallback, useState } from "react";
 import { TextField } from "@mui/material";
 import { fromDisplayedPage } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
-import { useAtomValue } from "jotai";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * ページ番号入力ダイアログ
@@ -17,8 +16,8 @@ export default function PageInput({
   open: boolean;
   onClose: (newPage?: number) => void;
 }) {
-  const pages = useAtomValue(modelPdfNotes.atoms.pages);
-  const currentPage = useAtomValue(modelPdfNotes.atoms.currentPage);
+  const pages = modelPdfNotes.pdfNotes.usePages();
+  const currentPage = modelPdfNotes.pdfNotes.useCurrentPage();
   const pageCandidate1 =
     pageNumInit === undefined ? undefined : pages[pageNumInit]?.num;
   const pageCandidate2 =

@@ -5,7 +5,7 @@ import { type Mode } from "../SpeedDial";
 import type { Node, Memo as NoteParams, NoteType } from "@/types/PdfNotes";
 import useCursor from "./utils/useCursor";
 import DOMPurify from "dompurify";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * テキストや数式
@@ -21,7 +21,7 @@ export default function Memo({
 }) {
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
-  const scale = modelPdfNotes.fontScale.use();
+  const scale = modelPdfNotes.fontScale.useValue();
   const htmlFolded = params.html.match(
     params.style === "fold" && !hover ? /^.*/ : /[\s\S]*/,
   )?.[0];

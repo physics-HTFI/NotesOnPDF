@@ -2,9 +2,8 @@ import type { Rect, Polygon } from "@/types/PdfNotes";
 import RectSvg from "../Items/Rect";
 import Palette from "@/components/share/Palette/Palette";
 import Svg from "@/components/share/Svg";
-import { useSetAtom } from "jotai";
 import { modelUI } from "@/models/modelUI/modelUI";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * 直方体、ポリゴンの編集パレット
@@ -16,7 +15,7 @@ export default function EditRectPalette({
   params: Polygon | Rect;
   onClose: () => void;
 }) {
-  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
+  const updateNote = modelPdfNotes.update.useSetNote();
   const mouse = modelUI.mouse.useValue();
   if (!mouse) return undefined;
 

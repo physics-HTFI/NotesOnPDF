@@ -12,9 +12,8 @@ import type { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./utils/SvgDefs";
 import Svg from "@/components/share/Svg";
 import { modelファイル } from "../../../../models/modelファイル/modelファイル";
-import { useAtomValue, useSetAtom } from "jotai";
 import { modelUI } from "@/models/modelUI/modelUI";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * 注釈を表示するコントロール
@@ -33,8 +32,8 @@ export default function Items({
   const setMouse = modelUI.mouse.useSet();
   const pageRect = modelファイル.pdf.usePageRectValue()?.rect;
   const appSettings = modelファイル.appSettings.useValue();
-  const page = useAtomValue(modelPdfNotes.page.atomValue);
-  const popNote = useSetAtom(modelPdfNotes.update.atomPopNote);
+  const page = modelPdfNotes.page.useValue();
+  const popNote = modelPdfNotes.update.usePopNote();
   if (!page?.notes || !pageRect) return <SvgDefs />;
 
   const props = <T extends NoteType | NodeType>(params: T) => ({

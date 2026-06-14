@@ -8,8 +8,7 @@ import type {
 } from "@/types/PdfNotes";
 import type { Mode } from "../SpeedDial";
 import useCursor from "./utils/useCursor";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
-import { useAtomValue, useSetAtom } from "jotai";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * ページへのリンク
@@ -25,9 +24,9 @@ export default function PageLink({
 }) {
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
-  const pages = useAtomValue(modelPdfNotes.atoms.pages);
-  const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
-  const scale = modelPdfNotes.fontScale.use();
+  const pages = modelPdfNotes.pdfNotes.usePages();
+  const jumpPage = modelPdfNotes.update.useJumpPage();
+  const scale = modelPdfNotes.fontScale.useValue();
   return (
     <>
       <Chip

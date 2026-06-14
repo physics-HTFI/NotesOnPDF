@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { Watch } from "../Watch/Watch";
 import { atomsファイル } from "./atomsファイル";
 import { derivsファイル } from "./derivsファイル";
-import { modelPdfNotes } from "../modelPdfNotes";
+import { modelPdfNotes } from "../modelPdfNotes/modelPdfNotes";
 import { getNewCoveragesOrUndefined } from "./utils/useNewCoverages";
 import { modelファイル } from "./modelファイル";
 
@@ -13,7 +13,7 @@ export function Watch_進捗更新() {
   const [coverages, setCoverages] = useAtom(atomsファイル.coverages);
   const fileTree = useAtomValue(derivsファイル.fileTreeValue);
   const path = modelファイル.pdf.path.useValue();
-  const pages = useAtomValue(modelPdfNotes.atoms.pages);
+  const pages = modelPdfNotes.pdfNotes.usePages();
 
   return (
     <>

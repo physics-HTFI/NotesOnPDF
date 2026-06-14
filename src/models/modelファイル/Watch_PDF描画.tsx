@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai";
 import { Watch } from "../Watch/Watch";
-import { modelPdfNotes } from "../modelPdfNotes";
+import { modelPdfNotes } from "../modelPdfNotes/modelPdfNotes";
 import { useEffect } from "react";
 import { ID_PDF_CONTAINER } from "@/types/CONSTANTS";
 import { useRenderPage } from "./utils/useRenderPage";
@@ -12,8 +12,8 @@ import { pdfUtils } from "../../utils/pdfUtils/pdfUtils";
  */
 export function Watch_PDF描画() {
   const render = useRenderPage();
-  const currentPage = useAtomValue(modelPdfNotes.atoms.currentPage);
-  const settings = useAtomValue(modelPdfNotes.atoms.settings);
+  const currentPage = modelPdfNotes.pdfNotes.useCurrentPage();
+  const settings = modelPdfNotes.pdfNotes.useSettings();
   const offset = settings
     ? { top: settings.offsetTop, bottom: settings.offsetBottom }
     : undefined;

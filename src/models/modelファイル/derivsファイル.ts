@@ -10,8 +10,10 @@ const {
 const atomFileTreeValue = atom((get) => getFileTree(get(atomsフォルダ.folder)));
 
 export const derivsファイル = {
+  /** フォルダ内の PDF ファイルツリーを取得する */
   fileTreeValue: atomFileTreeValue,
 
+  /** 保存すべき JSON ファイル（注釈ファイル）のパスを取得する */
   jsonPathValue: atom((get) => {
     const pdf = get(info);
     if (pdf.status !== "loaded") return undefined;

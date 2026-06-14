@@ -3,7 +3,7 @@ import { Chip as MuiChip } from "@mui/material";
 import { type Mode } from "../SpeedDial";
 import type { Chip as ChipType, Node, NoteType } from "@/types/PdfNotes";
 import useCursor from "./utils/useCursor";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * チップ
@@ -19,7 +19,7 @@ export default function Chip({
 }) {
   const [hover, setHover] = useState(false);
   const { cursor } = useCursor(mode);
-  const scale = modelPdfNotes.fontScale.use();
+  const scale = modelPdfNotes.fontScale.useValue();
   if (!scale) return <></>;
 
   return (

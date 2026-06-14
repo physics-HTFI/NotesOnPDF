@@ -3,9 +3,8 @@ import getInitialNote from "./getInitialNote";
 import Icon from "./Icon";
 import Palette from "@/components/share/Palette/Palette";
 import { modelファイル } from "../../../../models/modelファイル/modelファイル";
-import { useAtomValue } from "jotai";
 import { modelUI } from "@/models/modelUI/modelUI";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * PDFビュークリック時に表示されるパレット型コントロール
@@ -19,7 +18,7 @@ export default function AddNotePalette({
 }) {
   const mouse = modelUI.mouse.useValue();
   const pageRect = modelファイル.pdf.usePageRectValue()?.rect;
-  const pageNum = useAtomValue(modelPdfNotes.atoms.currentPage);
+  const pageNum = modelPdfNotes.pdfNotes.useCurrentPage();
   const appSettings = modelファイル.appSettings.useValue();
   if (!mouse || !pageRect || !open || pageNum === undefined) return <></>;
 

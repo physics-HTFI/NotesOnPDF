@@ -4,8 +4,7 @@ import Palette from "@/components/share/Palette/Palette";
 import getVector from "./getVector";
 import Svg from "@/components/share/Svg";
 import { modelUI } from "@/models/modelUI/modelUI";
-import { useSetAtom } from "jotai";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 import { modelファイル } from "@/models/modelファイル/modelファイル";
 
 /**
@@ -18,7 +17,7 @@ export default function EditArrowPalette({
   params: Arrow;
   onClose: () => void;
 }) {
-  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
+  const updateNote = modelPdfNotes.update.useSetNote();
   const mouse = modelUI.mouse.useValue();
   const pageRect = modelファイル.pdf.usePageRectValue()?.rect;
   if (!pageRect || !mouse) return undefined;
