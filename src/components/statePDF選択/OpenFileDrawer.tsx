@@ -3,22 +3,20 @@ import { Drawer } from "@mui/material";
 import Header from "@/components/statePDF選択/Header";
 import FileTreeView from "./FileTreeView/FileTreeView";
 import { findTreeItem } from "@/types/FileTree";
-import { modelフォルダ } from "../../models/modelフォルダ";
-import { useAtom, useAtomValue } from "jotai";
-import { modelUI } from "@/models/modelUI";
-import { modelファイル } from "../../models/modelファイル";
+import { modelフォルダ } from "../../models/modelフォルダ/modelフォルダ";
+import { modelUI } from "@/models/modelUI/modelUI";
+import { modelファイル } from "../../models/modelファイル/modelファイル";
 
 /**
  * ファイル一覧を表示するドロワー
  */
 export default function OpenFileDrawer() {
-  const fileTree = useAtomValue(modelファイル.fileTree.atomValue);
-  const recentPath = useAtomValue(modelファイル.coverages.atom)?.recentPath;
-  const [openDrawer, setOpenDrawer] = useAtom(
-    modelUI.openDrawer.pdfFileTree.atom,
-  );
+  const fileTree = modelファイル.fileTree.useValue();
+  const recentPath = modelファイル.coverages.useValue()?.recentPath;
+  const isOpenDrawer = modelUI.openDrawer_pdfSelector.useValue();
+  const closeDrawer = modelUI.openDrawer_pdfSelector.useClose();
 
-  const readOnly = useAtomValue(modelフォルダ.readOnly.atom);
+  const readOnly = modelフォルダ.readOnly.useValue();
   const [selectedPath, setSelectedPath] = useState<string>();
   const [expanded, setExpanded] = useState<string[]>([]);
 
@@ -42,8 +40,8 @@ export default function OpenFileDrawer() {
     <>
       <Drawer
         anchor="left"
-        open={openDrawer}
-        onClose={() => setOpenDrawer(false)}
+        open={isOpenDrawer}
+        onClose={closeDrawer}
         slotProps={{
           paper: {
             square: false,

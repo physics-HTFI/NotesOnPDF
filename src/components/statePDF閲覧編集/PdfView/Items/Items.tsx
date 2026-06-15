@@ -11,11 +11,9 @@ import type { Mode } from "../SpeedDial";
 import type { Node as NodeType, NoteType } from "@/types/PdfNotes";
 import SvgDefs from "./utils/SvgDefs";
 import Svg from "@/components/share/Svg";
-import { modelファイル } from "../../../../models/modelファイル";
-import { useAtomValue, useSetAtom } from "jotai";
-import { usePdf } from "@/models/utils/usePdf/usePdf";
-import { modelUI } from "@/models/modelUI";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelファイル } from "../../../../models/modelファイル/modelファイル";
+import { modelUI } from "@/models/modelUI/modelUI";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * 注釈を表示するコントロール
@@ -31,11 +29,11 @@ export default function Items({
   onEdit: (note: NoteType) => void;
   onMove: (note: NoteType | NodeType) => void;
 }) {
-  const setMouse = useSetAtom(modelUI.mouse.atom);
-  const pageRect = usePdf()?.pageRect?.rect;
-  const appSettings = useAtomValue(modelファイル.appSettings.atom);
-  const page = useAtomValue(modelPdfNotes.page.atomValue);
-  const popNote = useSetAtom(modelPdfNotes.update.atomPopNote);
+  const setMouse = modelUI.mouse.useSet();
+  const pageRect = modelファイル.pdf.usePageRectValue()?.rect;
+  const appSettings = modelファイル.appSettings.useValue();
+  const page = modelPdfNotes.page.useValue();
+  const popNote = modelPdfNotes.update.usePopNote();
   if (!page?.notes || !pageRect) return <SvgDefs />;
 
   const props = <T extends NoteType | NodeType>(params: T) => ({

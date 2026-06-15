@@ -2,8 +2,7 @@ import { useCallback, useState } from "react";
 import { TextField } from "@mui/material";
 import { fromDisplayedPage } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
-import { useAtomValue } from "jotai";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * ページ番号入力ダイアログ
@@ -17,10 +16,13 @@ export default function PageInput({
   open: boolean;
   onClose: (newPage?: number) => void;
 }) {
-  const pages = useAtomValue(modelPdfNotes.atoms.pages);
-  const currentPage = useAtomValue(modelPdfNotes.atoms.currentPage);
-  const displayedPageNumInit =
-    pages[pageNumInit ?? currentPage]?.num ?? pages[currentPage]?.num ?? 1;
+  const pages = modelPdfNotes.pdfNotes.usePages();
+  const currentPage = modelPdfNotes.pdfNotes.useCurrentPage();
+  const pageCandidate1 =
+    pageNumInit === undefined ? undefined : pages[pageNumInit]?.num;
+  const pageCandidate2 =
+    currentPage === undefined ? undefined : pages[currentPage]?.num;
+  const displayedPageNumInit = pageCandidate1 ?? pageCandidate2 ?? 1;
   const [displayedPageNum, setDisplayedPageNum] = useState<number | "">(
     displayedPageNumInit,
   );
@@ -31,7 +33,7 @@ export default function PageInput({
     }, 10);
   }, []);
 
-  if (!open) return <></>;
+  if (!open || currentPage === undefined) return null;
 
   // 閉じたときに値を更新する
   const handleClose = (cancel?: boolean) => {

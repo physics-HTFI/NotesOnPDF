@@ -1,7 +1,6 @@
 import { type PageLink } from "@/types/PdfNotes";
 import PageInput from "./PageInput";
-import { useSetAtom } from "jotai";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * ページリンクの編集ダイアログ
@@ -13,7 +12,7 @@ export default function PageLinkEditor({
   params: PageLink;
   onClose: () => void;
 }) {
-  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
+  const updateNote = modelPdfNotes.update.useSetNote();
 
   // 閉じたときに値を更新する
   const handleClose = (page?: number) => {

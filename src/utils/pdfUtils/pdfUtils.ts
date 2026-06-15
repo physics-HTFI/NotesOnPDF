@@ -5,59 +5,25 @@ import {
   ID_PDF_CONTAINER,
   ID_PDF_PAGE,
 } from "@/types/CONSTANTS";
-import { useSyncExternalStore } from "react";
 import { calPageRect } from "./calPageRect";
+import { consoleDev } from "../consoleDebug";
 
-export function usePdf() {
-  const { pageRect, totalPages } = useSyncExternalStore(
-    subscribePdf,
-    getSnapshotPdf,
-  );
-  return {
-    pageRect,
-    totalPages,
-    setPdfHandle,
-    queueRenderPage,
-  };
-}
+//|
+//| export
+//|
+
+export const pdfUtils = {
+  setPdfHandle,
+  queueRenderPage,
+};
 
 //|
 //| private
 //|
 
-let snapshot = {
-  totalPages: undefined as undefined | number,
-  pageRect: undefined as undefined | PageRect,
-};
-
-/**
- * callback の設定。
- * 引数で与えられた callback を実行すると、
- * `useSyncExternalStore` しているコンポーネントでリレンダーが走る。
- */
-function subscribePdf(callback: (typeof callbacks)[number]) {
-  callbacks.push(callback); // callback を保存しておいて、リレンダーしたいときに呼び出す。
-  return () => (callbacks = callbacks.filter((cb) => cb !== callback));
-}
-
-let callbacks: (() => void)[] = [];
-
-function emitChange() {
-  for (const callback of callbacks) {
-    callback();
-  }
-}
-
-/**
- * callback が呼ばれたときに更新される値
- */
-function getSnapshotPdf() {
-  return snapshot;
-}
-
 /**
  * PDF ファイルを読み込む。
- * ページ数を取得。
+ * `onFinish` を通じてページ数を取得できる。
  */
 function setPdfHandle(
   pdfHandle: FileSystemFileHandle | undefined,
@@ -73,8 +39,6 @@ function setPdfHandle(
     const result = await window.pdf.setUrlAsync(url);
     const totalPages = result?.totalPages;
     onFinish(totalPages);
-    snapshot = { ...snapshot, totalPages };
-    emitChange();
   };
   if (!pdfHandle) {
     const canvas1 = document.getElementById(ID_PDF_CANVAS_1);
@@ -88,18 +52,18 @@ let currentUrl: string | undefined = undefined;
 
 /**
  * 表示するページ数を設定。
- * 要素のサイズを取得。
  * 引数がない場合は、前回の値を使用する。
+ * 戻り値：要素のサイズ。
  */
-export async function queueRenderPage(
+async function queueRenderPage(
   pageNum?: number,
   offset?: { top: number; bottom: number },
 ) {
   window.pdf.setCanvasId(ID_PDF_CANVAS_1, ID_PDF_CANVAS_2); // main.tsx よりも先に PdfJs.script.js を実行すること（window.pdf が undefined になる）
   if (pageNum !== undefined) pageNumPrev = pageNum;
   if (offset !== undefined) offsetPrev = offset;
-  if (pageNumPrev === undefined) return;
-  if (offsetPrev === undefined) return;
+  if (pageNumPrev === undefined) return undefined;
+  if (offsetPrev === undefined) return undefined;
   const resizer: Resizer = (size) => {
     const container = document.getElementById(ID_PDF_CONTAINER);
     const page = document.getElementById(ID_PDF_PAGE);
@@ -113,12 +77,13 @@ export async function queueRenderPage(
       page.style.bottom = `${pageRect?.bottom}px`;
     }
     page.style.visibility = pageRect ? "visible" : "collapse";
+    const newRect = page.getClientRects().item(0); // 幅が狭いウィンドウサイズの場合に、top, bottom などを実際の値にする
+    if (pageRect && newRect) pageRect.rect = newRect;
     return pageRect;
   };
+  consoleDev(`queueRenderPage: p. ${pageNumPrev}`);
   const pageRect = await window.pdf.queueRenderPageAsync(pageNumPrev, resizer);
-  if (!pageRect) return;
-  snapshot = { ...snapshot, pageRect };
-  emitChange();
+  return pageRect;
 }
 let pageNumPrev: number | undefined = undefined;
 let offsetPrev: Parameters<typeof queueRenderPage>[1] | undefined = undefined;

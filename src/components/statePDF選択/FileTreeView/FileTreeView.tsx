@@ -2,8 +2,7 @@ import { RichTreeView } from "@mui/x-tree-view";
 import { CustomTreeItem } from "./CustomTreeItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from "@fortawesome/free-regular-svg-icons";
-import { useAtomValue, useSetAtom } from "jotai";
-import { modelファイル } from "../../../models/modelファイル";
+import { modelファイル } from "../../../models/modelファイル/modelファイル";
 
 /**
  * ファイル一覧を表示するコンポーネント
@@ -19,8 +18,8 @@ export default function FileTreeView({
   setSelectedItemPath: (path: string) => void;
   setExpandedItemPaths: (expanded: string[]) => void;
 }) {
-  const fileTree = useAtomValue(modelファイル.fileTree.atomValue);
-  const setPath = useSetAtom(modelファイル.pdf.atomPath);
+  const fileTree = modelファイル.fileTree.useValue();
+  const setPath = modelファイル.pdf.path.useSet();
 
   if (!fileTree) return null;
   return (

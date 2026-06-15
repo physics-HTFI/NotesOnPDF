@@ -1,10 +1,9 @@
 import { useCallback, useState } from "react";
 import { type Mode } from "../../SpeedDial";
-import { modelファイル } from "@/models/modelファイル";
-import { useAtomValue } from "jotai";
+import { modelファイル } from "@/models/modelファイル/modelファイル";
 
 export default function useCursor(mode?: Mode, disableEditable?: boolean) {
-  const appSettings = useAtomValue(modelファイル.appSettings.atom);
+  const appSettings = modelファイル.appSettings.useValue();
   const [hover, setHover] = useState(false);
 
   const isAlias = disableEditable

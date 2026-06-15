@@ -4,22 +4,19 @@ import Page from "./Page";
 import { MathJax } from "better-react-mathjax";
 import Label from "./Label";
 import "./style.css";
-import { useAtomValue, useSetAtom, type Atom } from "jotai";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { useAtomValue, type Atom } from "jotai";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 import type PdfNotes from "@/types/PdfNotes";
 
 /**
  * 目次の内容
  */
 export function ToC() {
-  const pages = useAtomValue(modelPdfNotes.atoms.pages);
+  const pages = modelPdfNotes.pdfNotes.usePages();
   const [openTooltips, setOpenTooltips] = useState<boolean[]>([]);
-  const atomsIsSelectedPage = useAtomValue(
-    modelPdfNotes.atomAtomsIsSelected.page,
-  );
-  const atomsIsSelectedChapter = useAtomValue(
-    modelPdfNotes.atomAtomsIsSelected.chapter,
-  );
+  const atomsIsSelectedPage = modelPdfNotes.atomsIsSelected.usePageValue();
+  const atomsIsSelectedChapter =
+    modelPdfNotes.atomsIsSelected.useChapterValue();
 
   if (pages.length !== openTooltips.length) {
     setOpenTooltips(new Array(pages.length).fill(false));
@@ -67,7 +64,7 @@ function PageWithLabel({
   openTooltips?: boolean[];
   setOpenTooltips?: (openTooltips: boolean[]) => void;
 }) {
-  const jumpPage = useSetAtom(modelPdfNotes.update.atomJumpPage);
+  const jumpPage = modelPdfNotes.update.useJumpPage();
   const handleClick = () => jumpPage(i);
   const isSelectedPage = useAtomValue(atomIsSelectedPage);
   const isSelectedChapter = useAtomValue(atomIsSelectedChapter);

@@ -10,8 +10,7 @@ import type {
 } from "@/types/PdfNotes";
 import { green } from "@mui/material/colors";
 import { type Mode } from "../SpeedDial";
-import { useAtomValue } from "jotai";
-import { modelファイル } from "../../../../models/modelファイル";
+import { modelファイル } from "../../../../models/modelファイル/modelファイル";
 
 /**
  * 注釈形状編集用ノード
@@ -29,7 +28,7 @@ export default function Nodes({
   pageRect: DOMRect;
   onMouseDown?: (e: MouseEvent, p: NoteType | NodeType) => void;
 }) {
-  const appSettings = useAtomValue(modelファイル.appSettings.atom);
+  const appSettings = modelファイル.appSettings.useValue();
 
   // 編集ノードの位置
   const points: [number, number][] =

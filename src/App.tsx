@@ -9,9 +9,8 @@ import { Alert } from "./components/global/Alert";
 import { Waiting } from "./components/global/Waiting";
 import TocView from "./components/statePDF閲覧編集/TocView/TocView";
 import PdfView from "./components/statePDF閲覧編集/PdfView/PdfView";
-import { Watch } from "./models/Watch/Watch";
+import { WatchAll } from "./models/Watch/WatchAll";
 import { ID_PDF_CONTAINER } from "./types/CONSTANTS";
-import { queueRenderPage } from "./models/utils/usePdf/usePdf";
 
 /**
  * 数式表示のコンフィグ
@@ -111,9 +110,8 @@ export default function App() {
       <Alert />
       <Waiting />
 
-      <Watch />
+      <WatchAll />
       <DisableRightClick />
-      <RenderWhenResize />
     </ThemeProvider>
   );
 }
@@ -126,17 +124,5 @@ function DisableRightClick() {
       document.oncontextmenu = null;
     };
   }, []);
-  return <></>;
-}
-
-function RenderWhenResize() {
-  useEffect(() => {
-    const elem = document.getElementById(ID_PDF_CONTAINER);
-    if (!elem) return;
-    const observer = new ResizeObserver(() => queueRenderPage());
-    observer.observe(elem);
-    return () => observer.disconnect();
-  }, []);
-
   return <></>;
 }

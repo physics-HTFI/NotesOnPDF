@@ -28,5 +28,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "src/models/utils/usePdf/PdfJs.script.js"]
+  "include": ["src", "src/utils/pdfUtils/PdfJs.script.js"]
 }

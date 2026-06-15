@@ -10,16 +10,14 @@ import type PdfNotes from "@/types/PdfNotes";
 import type { Chip } from "@/types/PdfNotes";
 import EditorBase from "./EditorBase";
 import { blue } from "@mui/material/colors";
-import { useAtomValue, useSetAtom } from "jotai";
-import { modelPdfNotes } from "@/models/modelPdfNotes";
+import { modelPdfNotes } from "@/models/modelPdfNotes/modelPdfNotes";
 
 /**
  * `pdfNotes`に含まれているチップ注釈のうち、出現回数が多い順に並べ替えて返す。
  */
-const getOptions = (pdfNotes?: PdfNotes): string[] => {
-  if (!pdfNotes) return [];
+const getOptions = (pages: PdfNotes["pages"]): string[] => {
   const counts: Record<string, number> = {};
-  for (const page of Object.values(pdfNotes.pages)) {
+  for (const page of pages) {
     if (!page.notes) continue;
     for (const n of page.notes) {
       if (n.type !== "Chip") continue;
@@ -41,12 +39,12 @@ export default function ChipEditor({
   params: Chip;
   onClose: () => void;
 }) {
-  const pdfNotes = useAtomValue(modelPdfNotes.pdfNotes.atom);
-  const updateNote = useSetAtom(modelPdfNotes.update.atomUpdateNote);
+  const pages = modelPdfNotes.pdfNotes.usePages();
+  const updateNote = modelPdfNotes.update.useSetNote();
   const [style, setStyle] = useState(params.style);
   const [rawText, setRawText] = useState(params.text);
   const [open, setOpen] = useState(params.text === "");
-  const options = useMemo(() => getOptions(pdfNotes), [pdfNotes]);
+  const options = useMemo(() => getOptions(pages), [pages]);
 
   // 閉じたときに値を更新する
   const handleClose = (newText?: string) => {
