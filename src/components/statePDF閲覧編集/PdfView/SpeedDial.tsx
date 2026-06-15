@@ -28,7 +28,7 @@ export default function SpeedDial({
   setMode: (mode: Mode) => void;
   hidden: boolean;
 }) {
-  const setOpenDrawer = modelUI.openDrawer_pdfSelector.useSet();
+  const openDrawer = modelUI.openDrawer_pdfSelector.useOpen();
   const [open, setOpen] = useState(true);
 
   return (
@@ -82,7 +82,7 @@ export default function SpeedDial({
           icon={<KeyboardArrowRight />}
           disableInteractive
           onClick={() => {
-            setOpenDrawer(true);
+            openDrawer();
             setMode(undefined);
           }}
           slotProps={{

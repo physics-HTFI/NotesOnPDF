@@ -13,7 +13,7 @@ export function getNewCoveragesOrUndefined(
   fileTree?: FileTree,
   path?: string,
 ) {
-  if (!path || !coverages || !fileTree) return undefined;
+  if (!path || !coverages || !fileTree || pages.length === 0) return undefined;
   if (!findTreeItem(fileTree, path)) return undefined;
 
   const oldCov = coverages.pdfs[path];

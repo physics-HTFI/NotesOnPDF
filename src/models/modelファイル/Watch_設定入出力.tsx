@@ -11,7 +11,7 @@ import { atomsファイル } from "./atomsファイル";
  */
 export function Watch_設定入出力() {
   const folder = modelフォルダ.folder.useValue();
-  const [settings, setSettings] = useAtom(atomsファイル.appSettings);
+  const [appSettings, setAppSettings] = useAtom(atomsファイル.appSettings);
   const read = modelフォルダ.json.useRead();
   const save = modelフォルダ.json.useSave();
 
@@ -25,15 +25,15 @@ export function Watch_設定入出力() {
             ...GetAppSettings_default(),
             ...((await read<AppSettings>(PATH_SETTINGS, false)) ?? {}),
           };
-          setSettings(settings);
+          setAppSettings(settings);
         }}
       />
 
-      {/* settings が変化したら保存する */}
+      {/* appSettings が変化したら保存する */}
       <Watch
-        target={settings}
+        target={appSettings}
         onChange={() => {
-          void save(settings, PATH_SETTINGS);
+          void save(appSettings, PATH_SETTINGS);
         }}
       />
     </>

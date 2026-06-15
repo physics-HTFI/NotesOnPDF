@@ -15,7 +15,7 @@ export function Watch_PDF履歴追加() {
       {/* PDF ファイルが読み込まれたら履歴を追加する */}
       <Watch
         target={pdfInfo}
-        onChange={async () => {
+        onChange={() => {
           if (pdfInfo.status !== "loaded") return;
           void addHistory(pdfInfo);
         }}

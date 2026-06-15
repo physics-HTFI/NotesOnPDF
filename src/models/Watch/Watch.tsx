@@ -8,14 +8,16 @@ export function Watch<T>({
   onChange,
 }: {
   target: T;
-  onChange: (newValue: T) => void;
+  onChange: (preValue: T) => void;
 }) {
-  const [currentTarget, setCurrentTarget] = useState<T>();
+  const [currentTarget, setCurrentTarget] = useState<T>(target);
+  // target で初期化しておかないと、起動時に👇の処理が実行されてしまう。
+  // そうすると、「コンポーネントのマウント前に setCurrentTarget が実行された」というエラーになる。
 
   if (currentTarget !== target) {
     setTimeout(() => {
       setCurrentTarget(target);
-      onChange(target);
+      onChange(currentTarget);
     }, 0);
   }
   return <></>;
@@ -25,5 +27,5 @@ export function Watch<T>({
 // Cannot update a component (A) while rendering a different component (B)
 // そのため、atom が変化したときのリレンダー中に setState/setAtom するのは避けるべき。
 // useEffect を使うという手もあるが、カスタムフック由来の関数があると、その関数については
-// useCallback 化しておかないと無限ループになったり、依存配列が冗長になる割に、
+// useCallback 化しておかないと無限ループになったり、依存配列が冗長になったり、実行タイミングが複雑になる割に、
 // それほどパフォーマンスが良くなるわけでもないので避ける。

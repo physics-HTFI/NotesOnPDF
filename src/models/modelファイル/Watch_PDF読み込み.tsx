@@ -1,19 +1,21 @@
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { Watch } from "../Watch/Watch";
 import { atomsファイル } from "./atomsファイル";
 import { pdfUtils } from "../../utils/pdfUtils/pdfUtils";
 import { derivsファイル } from "./derivsファイル";
 import { atomsUI } from "../modelUI/atomsUI";
+import { atomsフォルダ } from "../modelフォルダ/atomsフォルダ";
 
 /**
- * PDF の読み込みを行う
+ * PDF の読み込み／アンロードを行う
  */
-export function Watch_PDF描画() {
+export function Watch_PDF読み込み() {
   const setWaiting = useSetAtom(atomsUI.waiting);
   const handle = useAtomValue(derivsファイル.pdfHandleValue);
   const setOpenDrawer = useSetAtom(atomsUI.openDrawer_pdfSelector);
   const setPdfInfo = useSetAtom(atomsファイル.pdf.info);
-  const path = useAtomValue(atomsファイル.pdf.path);
+  const [path, setPath] = useAtom(atomsファイル.pdf.path);
+  const folder = useAtomValue(atomsフォルダ.folder);
 
   return (
     <>
@@ -34,6 +36,15 @@ export function Watch_PDF描画() {
               setPdfInfo({ status: "loaded", path, totalPages });
             }
           });
+        }}
+      />
+
+      {/* folder が非選択状態に戻ったらアンロード */}
+      <Watch
+        target={folder}
+        onChange={() => {
+          if (folder) return;
+          setPath(undefined);
         }}
       />
     </>

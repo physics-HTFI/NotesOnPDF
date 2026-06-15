@@ -1,5 +1,5 @@
 import type PdfNotes from "@/types/PdfNotes";
-import { atom, useAtomValue } from "jotai";
+import { atom } from "jotai";
 import {
   editPageStyle,
   getChapterStartPageNum,
@@ -35,6 +35,7 @@ const atomPdfNotesValue = atom((get) => {
   const pages = get(atomPages);
   const settings = get(atomSettings);
   const currentPage = get(atomCurrentPage);
+  console.log("!!!", pages);
   if (!title || !version || !settings || currentPage === undefined)
     return undefined;
   return {
@@ -51,10 +52,11 @@ const atomAssignPdfNotes = atom(null, (_, set, pdfNotes?: PdfNotes) => {
   set(atomVersion, pdfNotes?.version);
   set(atomPages, pdfNotes?.pages ?? []);
   set(atomSettings, pdfNotes?.settings);
-  set(atomCurrentPage, pdfNotes?.currentPage ?? 0);
+  set(atomCurrentPage, pdfNotes?.currentPage);
   set(atomsUndo.pdfNotes, structuredClone(pdfNotes));
   set(atomsUndo.notes, undefined);
   set(atomsUndo.pageNum, undefined);
+  console.log("###", pdfNotes?.pages);
   if (pdfNotes) {
     const flagsPage = Array<boolean>(pdfNotes.pages.length).fill(false);
     const flagsChapter = Array<boolean>(pdfNotes.pages.length).fill(false);
@@ -64,6 +66,7 @@ const atomAssignPdfNotes = atom(null, (_, set, pdfNotes?: PdfNotes) => {
   }
 });
 
+/** 今選択されている page の情報を持つ atom を取得する atom */
 const atomAtomPageValue = atom((get) => {
   const pdfNotes = get(atomPdfNotesValue);
   const currentPage = get(atomCurrentPage);
@@ -71,6 +74,7 @@ const atomAtomPageValue = atom((get) => {
   return get(atomsSplitPage.atomsPage)[currentPage];
 });
 
+/** 今選択されている page を取得する atom */
 const atomPageValue = atom((get) => {
   const atom = get(atomAtomPageValue);
   if (!atom) return undefined;
@@ -91,7 +95,7 @@ const atomInvalidValue = atom(
 /** % 単位 */
 const atomFontScaleValue = atom((get) => {
   const pageRect = get(atomsファイル.pdf.pageRect);
-  const settings = useAtomValue(atomSettings);
+  const settings = get(atomSettings);
   if (!settings || !pageRect?.rect) return 100;
   return (settings.fontSize * pageRect.rect.width) / 600;
 });
@@ -363,6 +367,7 @@ const atomKeyDown = atom(null, (get, set, e: KeyboardEvent) => {
       ) {
         set(atomAssignPdfNotes, initialPdfNotes);
         setAlert("全ての注釈・設定を、PDF読み込み直後の状態にリセットしました");
+        return; // 👇にある set() を回避する
       } else {
         return;
       }

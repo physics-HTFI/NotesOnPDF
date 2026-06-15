@@ -30,9 +30,9 @@ export const derivsファイル = {
   /** 選択されている PDF へのハンドルを取得する */
   pdfHandleValue: atom(async (get) => {
     const tree = await get(atomFileTreeValue);
-    const pdf = get(info);
-    if (!tree || pdf.status !== "loaded") return undefined;
-    const item = findTreeItem(tree, pdf.path);
+    const path = get(atomsファイル.pdf.path);
+    if (!tree || !path) return undefined;
+    const item = findTreeItem(tree, path);
     if (!item || item.type !== "file") return undefined;
     return item.handle;
   }),

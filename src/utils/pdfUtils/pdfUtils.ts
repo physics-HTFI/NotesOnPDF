@@ -77,6 +77,8 @@ async function queueRenderPage(
       page.style.bottom = `${pageRect?.bottom}px`;
     }
     page.style.visibility = pageRect ? "visible" : "collapse";
+    const newRect = page.getClientRects().item(0); // 幅が狭いウィンドウサイズの場合に、top, bottom などを実際の値にする
+    if (pageRect && newRect) pageRect.rect = newRect;
     return pageRect;
   };
   consoleDev(`queueRenderPage: p. ${pageNumPrev}`);

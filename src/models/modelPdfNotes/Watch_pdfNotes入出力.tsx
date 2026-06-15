@@ -39,7 +39,7 @@ export function Watch_pdfNotes入出力() {
 
   return (
     <>
-      {/* pdfNotes が変更されたら保存 */}
+      {/* pdfNotes が変更されたらデバウンス付きで保存 */}
       <Watch
         target={pdfNotes}
         onChange={async () => {
@@ -57,7 +57,7 @@ export function Watch_pdfNotes入出力() {
             assignPdfNotes(undefined);
             return;
           }
-          // pdfNotes を読み込む
+          // pdfNotes を読み込む。
           // ページ数の情報が必要なので、PDF の読み込みが終わってから実行している。
           const pdfNotes = await read<PdfNotes>(jsonPath, false);
           if (pdfNotes && pdfNotes.version !== FORMAT_VERSION) {

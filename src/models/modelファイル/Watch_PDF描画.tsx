@@ -5,13 +5,12 @@ import { useEffect } from "react";
 import { ID_PDF_CONTAINER } from "@/types/CONSTANTS";
 import { useRenderPage } from "./utils/useRenderPage";
 import { atomsファイル } from "./atomsファイル";
-import { pdfUtils } from "../../utils/pdfUtils/pdfUtils";
 
 /**
  * PDF の描画／再描画を行う
  */
 export function Watch_PDF描画() {
-  const render = useRenderPage();
+  const { render, rerenderWithCallback } = useRenderPage();
   const currentPage = modelPdfNotes.pdfNotes.useCurrentPage();
   const settings = modelPdfNotes.pdfNotes.useSettings();
   const offset = settings
@@ -24,19 +23,19 @@ export function Watch_PDF描画() {
   useEffect(() => {
     const elem = document.getElementById(ID_PDF_CONTAINER);
     if (!elem) return;
-    const observer = new ResizeObserver(() => pdfUtils.queueRenderPage());
-    observer.observe(elem);
+    const observer = new ResizeObserver(rerenderWithCallback);
+    observer.observe(elem); // ここを通過しただけで callback が一度実行されるので、依存引数がなるべく更新されないようにすること
     return () => observer.disconnect();
-  }, []);
+  }, [rerenderWithCallback]);
 
   return (
     <>
       {/* ページが変わったら再描画 */}
       <Watch
         target={currentPage}
-        onChange={() => {
-          if (currentPage === undefined) return;
-          void render();
+        onChange={(pre) => {
+          if (pre === undefined || currentPage === undefined) return; // PDF 読み込み直後は何もしない
+          void render(false);
         }}
       />
 
@@ -45,16 +44,16 @@ export function Watch_PDF描画() {
         target={loaded}
         onChange={() => {
           if (!loaded) return;
-          void render();
+          void render(false);
         }}
       />
 
       {/* PDF 表示位置オフセット設定が変わったら再描画 */}
       <Watch
         target={JSON.stringify(offset)}
-        onChange={() => {
-          if (!offset) return;
-          void render();
+        onChange={(pre) => {
+          if (!offset || !pre) return; // PDF 読み込み直後は何もしない
+          void render(true);
         }}
       />
     </>

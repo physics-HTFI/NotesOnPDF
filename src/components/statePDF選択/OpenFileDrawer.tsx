@@ -13,7 +13,8 @@ import { modelファイル } from "../../models/modelファイル/modelファイ
 export default function OpenFileDrawer() {
   const fileTree = modelファイル.fileTree.useValue();
   const recentPath = modelファイル.coverages.useValue()?.recentPath;
-  const [openDrawer, setOpenDrawer] = modelUI.openDrawer_pdfSelector.use();
+  const isOpenDrawer = modelUI.openDrawer_pdfSelector.useValue();
+  const closeDrawer = modelUI.openDrawer_pdfSelector.useClose();
 
   const readOnly = modelフォルダ.readOnly.useValue();
   const [selectedPath, setSelectedPath] = useState<string>();
@@ -39,8 +40,8 @@ export default function OpenFileDrawer() {
     <>
       <Drawer
         anchor="left"
-        open={openDrawer}
-        onClose={() => setOpenDrawer(false)}
+        open={isOpenDrawer}
+        onClose={closeDrawer}
         slotProps={{
           paper: {
             square: false,

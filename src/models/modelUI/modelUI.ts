@@ -32,7 +32,10 @@ export const modelUI = {
 
   /** PDF ファイル選択ドロワーの表示 */
   openDrawer_pdfSelector: {
-    use: () => useAtom(atomsUI.openDrawer_settings),
-    useSet: () => useSetAtom(atomsUI.openDrawer_settings),
+    use: () => useAtom(atomsUI.openDrawer_pdfSelector),
+
+    useValue: () => useAtomValue(atomsUI.openDrawer_pdfSelector),
+    useOpen: () => useSetAtom(derivsUI.open_pdfSelector),
+    useClose: () => useSetAtom(derivsUI.close_pdfSelector),
   },
 };
