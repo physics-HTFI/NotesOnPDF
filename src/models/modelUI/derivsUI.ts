@@ -8,7 +8,7 @@ export const derivsUI = {
     if (get(atomsファイル.pdf.info).status !== "loaded") return;
     set(atomsUI.openDrawer_pdfSelector, false);
   }),
-  open_pdfSelector: atom(null, (get, set) => {
+  open_pdfSelector: atom(null, (_, set) => {
     set(atomsUI.openDrawer_pdfSelector, true);
   }),
 };
