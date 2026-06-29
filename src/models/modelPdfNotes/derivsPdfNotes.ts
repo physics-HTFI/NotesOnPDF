@@ -152,15 +152,16 @@ const atomSetNote = atom(null, (get, set, pop: NoteType, push: NoteType) => {
 const atomSetPageSettings = atom(
   null,
   (get, set, settings: Partial<Omit<Page, "notes">>, pageNum?: number) => {
-    const pages = get(atomPages);
-    const currentPage = get(atomCurrentPage);
-    if (currentPage === undefined) return;
-    pageNum ??= currentPage;
-    pages[pageNum] = { ...pages[pageNum], ...settings };
+    pageNum ??= get(atomCurrentPage);
+    if (pageNum === undefined) return;
+    const atomPage = get(atomsSplitPage.atomsPage)[pageNum];
+    if (!atomPage) return;
+    set(atomPage, { ...get(atomPage), ...settings });
     if (Object.keys(settings).includes("numRestart")) {
+      const pages = [...get(atomPages)];
       updatePageNum(pages);
+      set(atomPages, pages);
     }
-    set(atomPages, [...pages]);
   },
 );
 
