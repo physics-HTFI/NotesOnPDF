@@ -35,7 +35,6 @@ const atomPdfNotesValue = atom((get) => {
   const pages = get(atomPages);
   const settings = get(atomSettings);
   const currentPage = get(atomCurrentPage);
-  console.log("!!!", pages);
   if (!title || !version || !settings || currentPage === undefined)
     return undefined;
   return {
@@ -56,7 +55,6 @@ const atomAssignPdfNotes = atom(null, (_, set, pdfNotes?: PdfNotes) => {
   set(atomsUndo.pdfNotes, structuredClone(pdfNotes));
   set(atomsUndo.notes, undefined);
   set(atomsUndo.pageNum, undefined);
-  console.log("###", pdfNotes?.pages);
   if (pdfNotes) {
     const flagsPage = Array<boolean>(pdfNotes.pages.length).fill(false);
     const flagsChapter = Array<boolean>(pdfNotes.pages.length).fill(false);
