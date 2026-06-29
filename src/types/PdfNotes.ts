@@ -214,7 +214,7 @@ export function getChapterStartPageNum(
 ) {
   let pageNum = 0;
   let isChapter = false;
-  for (let i = 1; i <= currentPage; i++) {
+  for (let i = 0; i <= currentPage; i++) {
     if (pages[i].chapter === undefined) {
       if (pages[i].volume !== undefined || pages[i].part !== undefined) {
         isChapter = false;

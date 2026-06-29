@@ -157,10 +157,18 @@ const atomSetPageSettings = atom(
     const atomPage = get(atomsSplitPage.atomsPage)[pageNum];
     if (!atomPage) return;
     set(atomPage, { ...get(atomPage), ...settings });
+    const pages = get(atomPages);
     if (Object.keys(settings).includes("numRestart")) {
-      const pages = [...get(atomPages)];
       updatePageNum(pages);
-      set(atomPages, pages);
+      set(atomPages, [...pages]);
+    }
+    // 目次のチャプター名ハイライトを更新する
+    if (Object.keys(settings).includes("chapter")) {
+      const atoms = get(atomsSplitPage.atomsIsSelectedChapter);
+      const chapterTop = settings.chapter !== undefined;
+      set(atoms[pageNum], chapterTop);
+      const preNum = getChapterStartPageNum(pageNum - 1, pages);
+      if (preNum !== undefined) set(atoms[preNum], !chapterTop);
     }
   },
 );
@@ -311,6 +319,15 @@ const atomKeyDown = atom(null, (get, set, e: KeyboardEvent) => {
       page.part = page.part === undefined ? partLabel : undefined;
     } else if (e.shiftKey) {
       page.chapter = page.chapter === undefined ? chapterLabel : undefined;
+      // 目次のチャプター名ハイライトを更新する
+      const pageNum = get(atomCurrentPage);
+      if (pageNum === undefined) return;
+      const pages = get(atomPages);
+      const atoms = get(atomsSplitPage.atomsIsSelectedChapter);
+      const chapterTop = page.chapter !== undefined;
+      set(atoms[pageNum], chapterTop);
+      const preNum = getChapterStartPageNum(pageNum - 1, pages);
+      if (preNum !== undefined) set(atoms[preNum], !chapterTop);
     } else {
       const breakBefore = page.style?.includes("break-before") === true;
       const breakMiddle = page.style?.includes("break-middle") === true;
