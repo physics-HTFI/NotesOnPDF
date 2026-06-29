@@ -44,7 +44,7 @@ export function Watch_pdfNotes入出力() {
         target={pdfNotes}
         onChange={async () => {
           if (!pdfNotes || !jsonPath) return;
-          void putPdfNotesDebounced(() => save(pdfNotes, jsonPath));
+          void putPdfNotesDebounced(() => save(pdfNotes, jsonPath, 4));
         }}
       />
 

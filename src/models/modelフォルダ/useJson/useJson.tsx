@@ -44,10 +44,10 @@ function useSaveJson() {
   const mode = useAtomValue(atomsフォルダ.mode); // フォルダ選択時の設定・進捗の読み込みで、保存処理が走るのを抑える
   const [readOnly, setReadOnly] = useAtom(derivsフォルダ.readOnly);
 
-  return async <T,>(object: T, path: string) => {
+  return async <T,>(object: T, path: string, digits?: number) => {
     if (readOnly || !folder || !object || !mode) return;
     const file = await getFileFromPath(path, folder, true);
-    const ok = await jsonUtils.write(object, file);
+    const ok = await jsonUtils.write(object, file, digits);
     consoleDev(`useSaveJson: ${path}`);
     if (!ok) {
       await setReadOnly(true);

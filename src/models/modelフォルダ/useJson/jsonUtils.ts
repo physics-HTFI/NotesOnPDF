@@ -56,14 +56,21 @@ async function readText(
 //|
 
 /**
- *  失敗時は `false` が返る
+ *  `digit` が設定されているときは、小数点以下 `digit` 桁だけ出力する。
+ *  失敗時は `false` が返る。
  */
 async function writeJson(
   object: unknown | undefined,
   fileHandle: FileSystemFileHandle | undefined,
+  digits?: number,
 ): Promise<boolean> {
   if (object === undefined || !fileHandle) return false;
-  return writeText(JSON.stringify(object), fileHandle);
+  let json = JSON.stringify(object);
+  if (digits && digits > 0) {
+    const regexp = new RegExp(`(\\d\\.\\d{${digits}})\\d*`, "g"); // replaceAll は、"g" がないと TypeError
+    json = json.replaceAll(regexp, "$1");
+  }
+  return writeText(json, fileHandle);
 }
 
 /**
