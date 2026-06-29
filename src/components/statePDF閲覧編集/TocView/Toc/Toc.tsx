@@ -24,13 +24,11 @@ export function ToC() {
   }
 
   const toc: ReactNode[] = [];
-  let pageNum = 1;
   for (let i = 0; i < pages.length; i++) {
     toc.push(
       <PageWithLabel
         key={`${i}`}
         i={i}
-        pageNum={pageNum}
         pages={pages}
         atomIsSelectedPage={atomsIsSelectedPage[i]}
         atomIsSelectedChapter={atomsIsSelectedChapter[i]}
@@ -38,7 +36,6 @@ export function ToC() {
         setOpenTooltips={setOpenTooltips}
       />,
     );
-    ++pageNum;
   }
   return (
     <MathJax hideUntilTypeset={"first"} dynamic>
@@ -49,7 +46,6 @@ export function ToC() {
 
 function PageWithLabel({
   i,
-  pageNum,
   pages,
   atomIsSelectedPage,
   atomIsSelectedChapter,
@@ -57,7 +53,6 @@ function PageWithLabel({
   setOpenTooltips,
 }: {
   i: number;
-  pageNum: number;
   pages: PdfNotes["pages"];
   atomIsSelectedPage: Atom<boolean>;
   atomIsSelectedChapter: Atom<boolean>;
@@ -69,7 +64,7 @@ function PageWithLabel({
   const isSelectedPage = useAtomValue(atomIsSelectedPage);
   const isSelectedChapter = useAtomValue(atomIsSelectedChapter);
   const page = pages[i];
-  pageNum = page.numRestart ?? pageNum;
+  const pageNum = page.num;
 
   return (
     <>
